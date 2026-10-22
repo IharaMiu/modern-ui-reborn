@@ -1,0 +1,27 @@
+{
+  "name": "modern-ui-reborn",
+  "version": "0.1.0",
+  "author": "IharaMiu",
+  "description": "SillyTavern & TauriTavern 现代化界面原生扩展",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "klona": "^2.0.6",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.21",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "^5.4.3",
+    "vite": "^8.3.5"
+  },
+  "allowScripts": {
+    "vue-demi@0.14.10": true,
+    "esbuild@0.21.5": true
+  }
+}

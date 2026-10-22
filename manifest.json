@@ -1,0 +1,11 @@
+{
+  "display_name": "现代化界面 (Modern UI Reborn)",
+  "loading_order": 10,
+  "requires": [],
+  "optional": [],
+  "js": "index.js",
+  "css": "style.css",
+  "author": "IharaMiu",
+  "version": "0.1"
+}
+

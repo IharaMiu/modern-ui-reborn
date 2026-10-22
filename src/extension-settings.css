@@ -1,0 +1,691 @@
+body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block.th-modern-extension-panel {
+  container: th-modern-extension-settings / inline-size;
+  overflow: hidden;
+}
+
+body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block.th-modern-extension-panel.openDrawer {
+  overflow: hidden;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-panel
+  > .extensions_block.th-modern-extension-layout {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  grid-template-columns: minmax(172px, 210px) minmax(0, 1fr);
+  flex: 1 1 auto;
+  gap: 6px 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+  padding: 0 2px 2px;
+  overflow: hidden;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-layout > :first-child {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav {
+  display: flex;
+  grid-row: 2;
+  grid-column: 1;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  padding: 7px;
+  overflow: hidden;
+  border: 1px solid var(--th-modern-line);
+  border-radius: var(--th-modern-radius-sm);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 72%, transparent);
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 26px;
+  padding: 0 5px;
+  color: var(--SmartThemeEmColor);
+  font-size: calc(var(--mainFontSize) * 0.86);
+  font-weight: 700;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  min-height: 20px;
+  padding-inline: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
+  color: var(--SmartThemeBodyColor);
+  font-size: calc(var(--mainFontSize) * 0.72);
+  font-variant-numeric: tabular-nums;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 0;
+  padding-right: 2px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  padding: 7px 9px 7px 12px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: var(--th-modern-radius-xs);
+  background: transparent;
+  color: var(--SmartThemeBodyColor);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--th-modern-motion-duration),
+    border-color var(--th-modern-motion-duration),
+    color var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-item::before {
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 4px;
+  width: 3px;
+  border-radius: 999px;
+  background: transparent;
+  content: '';
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-item:hover {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent);
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 10%, transparent);
+  color: var(--SmartThemeEmColor);
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-item:focus-visible {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 68%, var(--SmartThemeBorderColor));
+  outline: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 28%, transparent);
+  outline-offset: 1px;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-item.is-active {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 42%, var(--SmartThemeBorderColor));
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, transparent);
+  color: var(--SmartThemeEmColor);
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-item.is-active::before {
+  background: var(--SmartThemeQuoteColor);
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav-label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block:not(.th-modern-extension-mobile-accordion)
+  .th-modern-extension-layout > .th-modern-extension-column {
+  display: none !important;
+  grid-row: 2;
+  grid-column: 2;
+  box-sizing: border-box;
+  width: auto !important;
+  min-width: 0;
+  min-height: 0;
+  padding-right: 2px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block:not(.th-modern-extension-mobile-accordion)
+  .th-modern-extension-layout
+  > .th-modern-extension-column.is-active {
+  display: flex !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block:not(.th-modern-extension-mobile-accordion)
+  .th-modern-extension-host-hidden {
+  display: none !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-host-active:not(.extension_container) {
+  width: 100%;
+  min-width: 0;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block:not(.th-modern-extension-mobile-accordion)
+  .th-modern-extension-drawer-active {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--th-modern-line) !important;
+  border-radius: var(--th-modern-radius-sm) !important;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 72%, transparent) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+  overflow: visible !important;
+}
+
+/* 桌面端：隐藏顶层抽屉的折叠标题栏（下拉选单），直接展示设置项，由左侧侧边栏负责切换 */
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block:not(.th-modern-extension-mobile-accordion)
+  .th-modern-extension-drawer-active
+  > .inline-drawer-toggle {
+  display: none !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block:not(.th-modern-extension-mobile-accordion)
+  .th-modern-extension-drawer-active
+  > .inline-drawer-content {
+  display: block !important;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 14px 16px !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* 非 inline-drawer 结构的扩展宿主容器 */
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block:not(.th-modern-extension-mobile-accordion)
+  .th-modern-extension-host-active:not(:has(.th-modern-extension-drawer)) {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 14px 16px !important;
+  border: 1px solid var(--th-modern-line) !important;
+  border-radius: var(--th-modern-radius-sm) !important;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 72%, transparent) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-layout > hr {
+  grid-row: 3;
+  grid-column: 1 / -1;
+}
+
+body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-layout > hr + .alignitemscenter {
+  grid-row: 4;
+  grid-column: 1 / -1;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  .th-modern-extension-layout
+  > hr
+  + .alignitemscenter
+  + .alignitemsflexstart {
+  grid-row: 5;
+  grid-column: 1 / -1;
+}
+
+/* ========================================================
+   移动端扩展界面手风琴与微卡片重构
+   适配 .th-modern-extension-mobile-accordion 与 @media (max-width: 899.98px)
+   ======================================================== */
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  > .extensions_block.th-modern-extension-layout {
+  display: flex !important;
+  flex-flow: column nowrap !important;
+  gap: 10px;
+  grid-template-rows: none !important;
+  grid-template-columns: none !important;
+  padding: 4px 6px 36px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: auto;
+  scroll-padding-block: 8px;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-layout > :first-child {
+  flex: 0 0 auto;
+  gap: 8px;
+  padding: 6px 4px 8px;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block
+  .th-modern-extension-layout > :first-child :is(h3, h4, .standoutHeader) {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: auto !important;
+  margin: 0 0 6px 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  font-size: calc(var(--mainFontSize) * 1.15) !important;
+  font-weight: 700 !important;
+  color: var(--SmartThemeEmColor) !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block
+  .th-modern-extension-layout > :first-child :is(h3, h4, .standoutHeader)::before {
+  content: '' !important;
+  display: inline-block !important;
+  width: 4px !important;
+  height: 18px !important;
+  border-radius: 999px !important;
+  background: var(--SmartThemeQuoteColor) !important;
+  flex: 0 0 auto !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-nav {
+  display: none !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-layout
+  > .th-modern-extension-column {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-flow: column nowrap !important;
+  gap: 10px;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+  scrollbar-gutter: auto;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block
+  .th-modern-extension-column
+  > hr {
+  display: none !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-layout
+  > .th-modern-extension-column
+  > :is(.extension_container, .th-modern-panel-root, .inline-drawer) {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-layout
+  > .th-modern-extension-column
+  > .th-modern-extension-host-hidden {
+  display: revert !important;
+}
+
+/* 折叠状态：抽屉外壳完全透明无边框，无后方多余卡片框，由内部 toggle 作为单张卡片 */
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  overflow: visible;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer
+  > .inline-drawer-toggle {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 9px 13px !important;
+  overflow: hidden !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 32%, transparent) !important;
+  border-left: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 32%, transparent) !important;
+  border-radius: var(--th-modern-radius-xs, 8px) !important;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 82%, var(--SmartThemeBodyColor) 12%) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+  color: var(--SmartThemeBodyColor) !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  user-select: none !important;
+  transition:
+    background-color var(--th-modern-motion-duration) ease,
+    border-color var(--th-modern-motion-duration) ease,
+    box-shadow var(--th-modern-motion-duration) ease,
+    transform 0.12s ease !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer
+  > .inline-drawer-toggle:hover {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 36%, var(--SmartThemeBorderColor)) !important;
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, var(--SmartThemeBlurTintColor)) !important;
+  color: var(--SmartThemeEmColor) !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer
+  > .inline-drawer-toggle:active {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, var(--SmartThemeBlurTintColor)) !important;
+  transform: scale(0.992) !important;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer
+  > .inline-drawer-toggle
+  > :first-child {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: calc(var(--mainFontSize) * 0.96);
+  font-weight: 600;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer
+  > .inline-drawer-toggle
+  > :first-child::before,
+body.th-modern-enabled
+  #extensions_settings
+  .th-modern-extension-drawer
+  > .inline-drawer-toggle
+  > :first-child::before {
+  content: '';
+  display: inline-block;
+  width: 3.5px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--SmartThemeQuoteColor);
+  margin-right: 10px;
+  flex: 0 0 auto;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer
+  > .inline-drawer-toggle
+  .inline-drawer-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  color: var(--SmartThemeBodyColor);
+  font-size: 1.05em;
+  opacity: 0.75;
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer:has(> .inline-drawer-toggle .inline-drawer-icon.up)
+  > .inline-drawer-toggle
+  .inline-drawer-icon:not(.fa-circle-chevron-up),
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer:has(> .inline-drawer-content.open)
+  > .inline-drawer-toggle
+  .inline-drawer-icon:not(.fa-circle-chevron-up),
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer.open
+  > .inline-drawer-toggle
+  .inline-drawer-icon:not(.fa-circle-chevron-up) {
+  transform: rotate(180deg);
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer:has(> .inline-drawer-toggle .inline-drawer-icon.up)
+  > .inline-drawer-toggle
+  .inline-drawer-icon,
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer:has(> .inline-drawer-content.open)
+  > .inline-drawer-toggle
+  .inline-drawer-icon,
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer.open
+  > .inline-drawer-toggle
+  .inline-drawer-icon {
+  color: var(--SmartThemeQuoteColor);
+  opacity: 1;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-drawer
+  > .inline-drawer-content {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: hidden;
+  border: 0;
+  border-radius: 0;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 62%, transparent);
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-layout > hr {
+  flex: 0 0 auto;
+  width: 100%;
+  margin-block: 4px;
+}
+
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block.th-modern-extension-mobile-accordion
+  .th-modern-extension-layout > hr ~ * {
+  flex: 0 0 auto;
+}
+
+/* 媒体查询与 class 兜底：确保移动端与小屏视口一律享受现代化触控卡片 */
+@media (max-width: 899.98px) {
+  body.th-modern-enabled.th-modern-extension-settings
+    #rm_extensions_block
+    > .extensions_block.th-modern-extension-layout {
+    display: flex !important;
+    flex-flow: column nowrap !important;
+    gap: 10px !important;
+    padding: 4px 6px 36px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-nav {
+    display: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings
+    .th-modern-extension-layout
+    > .th-modern-extension-column {
+    display: flex !important;
+    flex-flow: column nowrap !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings
+    .th-modern-extension-layout
+    > .th-modern-extension-column
+    > .th-modern-extension-host-hidden {
+    display: revert !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings
+    #rm_extensions_block
+    .th-modern-extension-column
+    > hr {
+    display: none !important;
+  }
+
+  /* 移动端扩展内部表单控件触控优化 */
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='text'],
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='password'],
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='number'],
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block select,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block textarea {
+    box-sizing: border-box !important;
+    min-height: 36px !important;
+    padding: 6px 10px !important;
+    border-radius: var(--th-modern-radius-xs, 6px) !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 38%, transparent) !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 85%, var(--SmartThemeBodyColor) 15%) !important;
+    color: var(--SmartThemeBodyColor) !important;
+    font-size: calc(var(--mainFontSize) * 0.9) !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18) !important;
+    transition: border-color var(--th-modern-motion-duration) ease, box-shadow var(--th-modern-motion-duration) ease !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='text']:focus,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='password']:focus,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='number']:focus,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block select:focus,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block textarea:focus {
+    border-color: var(--SmartThemeQuoteColor) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 25%, transparent) !important;
+    outline: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block .menu_button,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block button.menu_button,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='button'].menu_button,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block button {
+    box-sizing: border-box !important;
+    min-height: unset !important;
+    height: auto !important;
+    padding: 3px 8px !important;
+    border-radius: var(--th-modern-radius-xs, 6px) !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 42%, transparent) !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 80%, var(--SmartThemeBodyColor) 20%) !important;
+    color: var(--SmartThemeBodyColor) !important;
+    font-size: calc(var(--mainFontSize) * 0.88) !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    transition: background-color var(--th-modern-motion-duration) ease,
+                border-color var(--th-modern-motion-duration) ease,
+                transform 0.12s ease !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block .menu_button:active,
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block button:active {
+    transform: scale(0.98) !important;
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, transparent) !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='range'] {
+    width: 100% !important;
+    height: 8px !important;
+    padding: 8px 0 !important;
+    margin: 8px 0 !important;
+    accent-color: var(--SmartThemeQuoteColor) !important;
+    touch-action: pan-y !important;
+    cursor: pointer !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block .range-block {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block .range-block input[type='range'] {
+    flex: 1 1 auto !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block .range-block input[type='number'] {
+    flex: 0 0 68px !important;
+    width: 68px !important;
+    min-height: 38px !important;
+    text-align: center !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block label:has(input[type='checkbox']):not(.modern-switch):not(:has(.modern-switch-slider)) {
+    min-height: unset !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    cursor: pointer !important;
+  }
+
+  body.th-modern-enabled.th-modern-extension-settings #rm_extensions_block input[type='checkbox']:not(.modern-switch input) {
+    width: 16px !important;
+    height: 16px !important;
+    accent-color: var(--SmartThemeQuoteColor) !important;
+  }
+}

@@ -147,3 +147,25 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Temporary and local files
+*.local
+*.bak
+*.backup
+tmp/
+temp/
+
+# SillyTavern extension entry files to ALWAYS keep
+!index.js
+!style.css
+!manifest.json

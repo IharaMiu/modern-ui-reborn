@@ -1,0 +1,2324 @@
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled {
+  --th-modern-wi-panel: color-mix(in srgb, var(--SmartThemeBlurTintColor) 86%, transparent);
+  --th-modern-wi-panel-soft: color-mix(in srgb, var(--SmartThemeBlurTintColor) 68%, transparent);
+  --th-modern-wi-card: color-mix(in srgb, var(--SmartThemeBlurTintColor) 56%, var(--SmartThemeBodyColor) 3%);
+  --th-modern-wi-border: color-mix(in srgb, var(--SmartThemeBorderColor) 78%, transparent);
+  --th-modern-wi-muted: color-mix(in srgb, var(--SmartThemeBodyColor) 58%, transparent);
+  --th-modern-wi-accent: var(--SmartThemeQuoteColor);
+  --th-modern-wi-button-bg: color-mix(in srgb, var(--SmartThemeBlurTintColor) 62%, var(--SmartThemeBodyColor) 6%);
+  --th-modern-wi-button-bg-hover: color-mix(in srgb, var(--th-modern-wi-accent) 16%, var(--SmartThemeBlurTintColor) 62%);
+  --th-modern-wi-control-size: 2rem;
+  --th-modern-wi-native-list-width: minmax(260px, 1fr);
+  overflow: hidden;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled > #WorldInfoheader + .flex-container {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled > .th-modern-drawer-titlebar .th-modern-drawer-actions #WI_panel_pin_div,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled > .th-modern-drawer-titlebar .th-modern-drawer-actions .notes-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  border-radius: var(--th-modern-radius-xs);
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent);
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled > .th-modern-drawer-titlebar .th-modern-drawer-actions #WI_panel_pin_div input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled > .th-modern-drawer-titlebar .th-modern-drawer-actions #WI_panel_pin_div label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled > .th-modern-drawer-titlebar .th-modern-drawer-actions #WI_panel_pin_div label > div,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled > .th-modern-drawer-titlebar .th-modern-drawer-actions .notes-link .note-link-span {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  gap: 0.4rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup > hr {
+  display: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wi-holder {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 0.4rem;
+  overflow: hidden;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18.5rem, 0.85fr);
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.38rem 0.5rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 8px;
+  background-color: var(--th-modern-wi-panel-soft);
+  transition: all var(--th-modern-motion-duration) ease;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock:has(.inline-drawer-icon.up) {
+  align-items: start;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock:has(.inline-drawer-icon.up) > .range-block:first-child {
+  align-self: start;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock > .range-block {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  align-self: stretch;
+  gap: 0.45rem;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock > .range-block:nth-child(2) {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .range-block-title,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .range-block-range {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .range-block-title small {
+  display: block;
+  overflow: hidden;
+  color: var(--th-modern-wi-muted);
+  font-size: calc(var(--mainFontSize) * 0.811);
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .select2-container {
+  width: 100% !important;
+  min-width: 0;
+}
+
+/* ── 世界信息顶部全局配置抽屉现代化重构 ── */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  transition: border-color var(--th-modern-motion-duration) ease, box-shadow var(--th-modern-motion-duration) ease;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer):hover {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 抽屉标题栏与折叠按钮 */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer > .inline-drawer-toggle,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) > .inline-drawer-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  min-height: var(--th-modern-wi-control-size, 2rem) !important;
+  padding: 0.35rem 0.65rem !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 5%, transparent) 75%,
+    transparent
+  ) !important;
+  color: var(--SmartThemeBodyColor) !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: background var(--th-modern-motion-duration) ease, color var(--th-modern-motion-duration) ease !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer > .inline-drawer-toggle:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) > .inline-drawer-toggle:hover {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 25%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 10%, transparent) 75%,
+    transparent
+  ) !important;
+  color: var(--SmartThemeEmColor, var(--SmartThemeBodyColor)) !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer > .inline-drawer-toggle b,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) > .inline-drawer-toggle b {
+  font-size: calc(var(--mainFontSize) * 0.88) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  color: inherit !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer > .inline-drawer-toggle .inline-drawer-icon,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) > .inline-drawer-toggle .inline-drawer-icon {
+  font-size: 0.95rem !important;
+  color: var(--SmartThemeQuoteColor) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer:has(.inline-drawer-icon.up) > .inline-drawer-toggle,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer):has(.inline-drawer-icon.up) > .inline-drawer-toggle {
+  border-bottom: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 38%, var(--SmartThemeBorderColor)) !important;
+}
+
+/* 抽屉内部展开容器（独立现代毛玻璃卡片） */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer > .inline-drawer-content,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) > .inline-drawer-content {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin-top: 4px;
+  margin-bottom: 6px;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 45%, transparent) !important;
+  border-radius: var(--th-modern-radius-sm, 10px) !important;
+  padding: 0.65rem 0.75rem;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 75%, transparent) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--SmartThemeBodyColor) !important;
+  box-shadow: 0 4px 18px -3px rgba(0, 0, 0, 0.45) !important;
+  overflow-x: hidden !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer > .inline-drawer-content > div,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) > .inline-drawer-content > div {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 滑块组与标题排版：统一步调与每行高度，杜绝左右列错位与换行下沉 */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer .range-block,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) .range-block {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  margin: 0.15rem 0 0.3rem !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer .range-block-title,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) .range-block-title {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 1.25rem !important;
+  min-height: 1.25rem !important;
+  max-height: 1.25rem !important;
+  line-height: 1.25rem !important;
+  margin: 0 0 1px !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer .range-block-title small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer .range-block-title span,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) .range-block-title small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) .range-block-title span {
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: calc(var(--mainFontSize) * 0.76) !important;
+  font-weight: 600 !important;
+  color: color-mix(in srgb, var(--SmartThemeBodyColor) 88%, transparent) !important;
+  white-space: nowrap !important;
+  letter-spacing: -0.01em !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer .range-block-range,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) .range-block-range {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 3px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 滑块 Range 样式 */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="range"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="range"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 100% !important;
+  height: 5px !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--SmartThemeBorderColor) 45%, transparent) !important;
+  outline: none !important;
+  margin: 4px 0 5px !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  border: none !important;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="range"]:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="range"]:hover {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 35%, var(--SmartThemeBorderColor)) !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="range"]::-webkit-slider-thumb,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="range"]::-webkit-slider-thumb {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  background: var(--SmartThemeQuoteColor) !important;
+  border: 2px solid color-mix(in srgb, var(--SmartThemeBlurTintColor) 30%, white) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45), 0 0 6px color-mix(in srgb, var(--SmartThemeQuoteColor) 50%, transparent) !important;
+  cursor: pointer !important;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="range"]::-webkit-slider-thumb:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 10px var(--SmartThemeQuoteColor) !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="range"]::-moz-range-thumb,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="range"]::-moz-range-thumb {
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  background: var(--SmartThemeQuoteColor) !important;
+  border: 2px solid color-mix(in srgb, var(--SmartThemeBlurTintColor) 30%, white) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45), 0 0 6px color-mix(in srgb, var(--SmartThemeQuoteColor) 50%, transparent) !important;
+  cursor: pointer !important;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease !important;
+}
+
+/* 数字输入框 Number Input 样式 */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="number"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="number"] {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 25px !important;
+  border-radius: 6px !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 50%, transparent) !important;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 88%, transparent) !important;
+  color: var(--SmartThemeBodyColor) !important;
+  text-align: center !important;
+  font-size: calc(var(--mainFontSize) * 0.84) !important;
+  font-weight: 600 !important;
+  font-family: var(--th-modern-mono-font, inherit) !important;
+  padding: 1px 3px !important;
+  margin: 0 !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="number"]:focus,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="number"]:focus {
+  outline: none !important;
+  border-color: var(--SmartThemeQuoteColor) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 25%, transparent) !important;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 96%, transparent) !important;
+}
+
+/* 复选框及标签 Checkbox & Label 样式：精准作用于包含 checkbox 的标签，绝不污染滑块与文本 */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer label:has(input[type="checkbox"]),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer label.checkbox_label,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer label.checkbox,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) label:has(input[type="checkbox"]),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) label.checkbox_label,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) label.checkbox {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
+  font-size: calc(var(--mainFontSize) * 0.81) !important;
+  font-weight: 500 !important;
+  color: color-mix(in srgb, var(--SmartThemeBodyColor) 88%, transparent) !important;
+  cursor: pointer !important;
+  padding: 0.16rem 0.32rem !important;
+  border-radius: 5px !important;
+  margin: 0.08rem 0 !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+  user-select: none !important;
+  white-space: nowrap !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer label:has(input[type="checkbox"]):hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer label.checkbox_label:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer label.checkbox:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) label:has(input[type="checkbox"]):hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) label.checkbox_label:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) label.checkbox:hover {
+  background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent) !important;
+  color: var(--SmartThemeBodyColor) !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="checkbox"] {
+  width: 1.08rem !important;
+  min-width: 1.08rem !important;
+  height: 1.08rem !important;
+  accent-color: var(--SmartThemeQuoteColor) !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  border-radius: 4px !important;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer input[type="checkbox"]:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) input[type="checkbox"]:hover {
+  transform: scale(1.12) !important;
+}
+
+/* 下拉选择框 Select（如插入策略） */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer select,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 30px !important;
+  border-radius: 7px !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 55%, transparent) !important;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 86%, transparent) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23888'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 9px center !important;
+  background-size: 13px !important;
+  color: var(--SmartThemeBodyColor) !important;
+  font-size: calc(var(--mainFontSize) * 0.84) !important;
+  font-weight: 500 !important;
+  padding: 0 26px 0 9px !important;
+  margin: 4px 0 0 !important;
+  cursor: pointer !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer select:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) select:hover {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 50%, var(--SmartThemeBorderColor)) !important;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 94%, transparent) !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer select:focus,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) select:focus {
+  outline: none !important;
+  border-color: var(--SmartThemeQuoteColor) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 25%, transparent) !important;
+}
+
+/* 提示图标与说明文字微调 */
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer [class*="fa-info"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer [class*="fa-circle-info"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) [class*="fa-info"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) [class*="fa-circle-info"] {
+  color: var(--SmartThemeQuoteColor) !important;
+  opacity: 0.85 !important;
+  font-size: 0.78em !important;
+  margin-left: 2px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer [class*="fa-exclamation"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock .inline-drawer [class*="fa-triangle-exclamation"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) [class*="fa-exclamation"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer:not(.world_entry .inline-drawer) [class*="fa-triangle-exclamation"] {
+  color: #f59e0b !important;
+  opacity: 0.9 !important;
+  font-size: 0.78em !important;
+  margin-left: 2px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+}
+
+/*
+ * Some forks use a full lorebook manager inside the global-world selector.
+ * Keep that feature-rich drawer compact without changing the upstream selector layout.
+ */
+@media (min-width: 900px) {
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock:has(#world_info_manager) {
+    align-items: start;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock:has(#world_info_manager) > .range-block {
+    align-self: start;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #WIMultiSelector:has(#world_info_manager) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-content: start;
+    align-items: start;
+  }
+
+  body.th-modern-enabled
+    #WorldInfo.th-modern-wi-enabled
+    #WIMultiSelector:has(#world_info_manager)
+    > .inline-drawer
+    > .inline-drawer-content {
+    max-height: clamp(14rem, 38dvh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-shell {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-height: 0;
+  flex: 1 1 auto;
+  gap: 0.4rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar {
+  min-width: 0;
+  padding: 0.28rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 8px;
+  background-color: var(--th-modern-wi-panel-soft);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar:empty {
+  display: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar > .flex-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar > .flex-container > small {
+  display: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar #world_create_button,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar .menu_button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--th-modern-wi-control-size);
+  min-width: var(--th-modern-wi-control-size);
+  height: var(--th-modern-wi-control-size);
+  min-height: var(--th-modern-wi-control-size);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 7px;
+  background-color: var(--th-modern-wi-button-bg);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar #world_create_button {
+  width: auto;
+  padding-inline: 0.55rem;
+  gap: 0.35rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar #world_editor_select,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar .select2-container {
+  flex: 1 1 10rem;
+  width: auto !important;
+  min-width: 8rem;
+  height: var(--th-modern-wi-control-size);
+  margin: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar .select2-selection {
+  min-height: var(--th-modern-wi-control-size);
+  border-color: var(--th-modern-wi-border);
+  border-radius: 7px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 76%, transparent);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar .select2-selection__rendered {
+  line-height: calc(var(--th-modern-wi-control-size) - 2px);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar .select2-selection__arrow {
+  height: var(--th-modern-wi-control-size);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar .menu_button:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar #world_create_button:hover {
+  background-color: var(--th-modern-wi-button-bg-hover);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar > .flex-container {
+  display: contents;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_search {
+  flex: 1 1 16rem;
+  min-width: 8rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_sort_order {
+  flex: 0 1 10rem;
+  min-width: 8rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_search,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_sort_order {
+  box-sizing: border-box;
+  height: var(--th-modern-wi-control-size);
+  min-height: var(--th-modern-wi-control-size);
+  margin: 0;
+  border-color: var(--th-modern-wi-border);
+  border-radius: 7px;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 0 1 auto;
+  min-width: 0;
+  min-height: var(--th-modern-wi-control-size);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: var(--th-modern-wi-control-size);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-pages ul {
+  display: flex;
+  align-items: center;
+  gap: 0.18rem;
+  margin: 0;
+  padding: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-pages a,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-size-changer,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination select {
+  box-sizing: border-box;
+  min-height: 1.85rem;
+  margin: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-nav {
+  color: var(--th-modern-wi-muted);
+  font-size: calc(var(--mainFontSize) * 0.811);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar .menu_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--th-modern-wi-control-size);
+  height: var(--th-modern-wi-control-size);
+  padding: 0;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 8px;
+  background-color: var(--th-modern-wi-button-bg);
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar .menu_button:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-action:hover {
+  background-color: var(--th-modern-wi-button-bg-hover);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar .danger,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-action.danger {
+  color: color-mix(in srgb, #ff7676 82%, var(--SmartThemeBodyColor));
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-more-menu {
+  position: relative;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled.th-modern-wi-multiselect .th-modern-wi-more-menu {
+  display: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-more-toggle {
+  list-style: none;
+  cursor: pointer;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-more-toggle::-webkit-details-marker {
+  display: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-more-popover {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  z-index: 12;
+  display: grid;
+  gap: 0.25rem;
+  width: min(15rem, 72vw);
+  padding: 0.35rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 8px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 96%, black 4%);
+  box-shadow: var(--th-modern-glass-shadow);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-more-menu:not([open]) > .th-modern-wi-more-popover {
+  display: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-more-popover .menu_button {
+  display: grid !important;
+  grid-template-columns: 1.2rem minmax(0, 1fr);
+  align-items: center;
+  justify-content: start;
+  gap: 0.45rem;
+  width: 100%;
+  height: var(--th-modern-wi-control-size);
+  padding: 0 0.5rem;
+  text-align: left;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-more-popover .menu_button::after {
+  content: attr(title);
+  overflow: hidden;
+  font-family: inherit;
+  font-size: calc(var(--mainFontSize) * 0.875);
+  font-weight: 550;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-main {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--th-modern-wi-native-list-width) minmax(0, 2fr);
+  gap: 0.55rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-list {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 8px;
+  background-color: var(--th-modern-wi-panel-soft);
+  box-shadow: var(--th-modern-glass-shadow);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-editor {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 8px;
+  background-color: var(--th-modern-wi-panel);
+  box-shadow: var(--th-modern-glass-shadow);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list {
+  display: block !important;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0.38rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list > :not(.world_entry) {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list .world_entry {
+  margin: 0 0 0.18rem;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background-color: var(--th-modern-wi-card);
+  color: var(--SmartThemeBodyColor);
+  cursor: pointer !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list .world_entry > form.world_entry_form,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list .world_entry > form.world_entry_form > .inline-drawer {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list .world_entry:hover,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list .world_entry.th-modern-wi-selected,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list .world_entry.th-modern-wi-row-checked {
+  border-color: color-mix(in srgb, var(--th-modern-wi-accent) 62%, transparent);
+  background-color: color-mix(in srgb, var(--th-modern-wi-accent) 13%, var(--SmartThemeBlurTintColor) 64%);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry > form.world_entry_form > .inline-drawer > .inline-drawer-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  min-height: 2.7rem;
+  gap: 0.34rem;
+  padding: 0.22rem 0.42rem;
+  cursor: pointer !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry > form.world_entry_form > .inline-drawer > .inline-drawer-header > :not(.drag-handle):not(.th-modern-wi-row-summary) {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry > form.world_entry_form > .inline-drawer > .inline-drawer-header > .drag-handle {
+  color: var(--th-modern-wi-muted);
+  cursor: grab;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry > form.world_entry_form > .inline-drawer > .inline-drawer-header .inline-drawer-toggle {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.46rem;
+  min-width: 0;
+  cursor: pointer !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-summary:focus-visible {
+  border-radius: 6px;
+  outline: 2px solid color-mix(in srgb, var(--th-modern-wi-accent) 72%, transparent);
+  outline-offset: 2px;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-select-dot {
+  display: none;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 4px;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled.th-modern-wi-multiselect .th-modern-wi-select-dot {
+  display: inline-block;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry.th-modern-wi-row-checked .th-modern-wi-select-dot {
+  border-color: var(--th-modern-wi-accent);
+  background-color: var(--th-modern-wi-accent);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-leading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-entry-state-icon {
+  width: 0.98rem;
+  height: 0.98rem;
+  border: 0.22rem solid var(--th-modern-wi-accent);
+  border-radius: 999px;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry[data-th-modern-entry-state="constant"] .th-modern-wi-entry-state-icon,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry[constant="true"] .th-modern-wi-entry-state-icon {
+  border-color: #3f8cff;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry[data-th-modern-entry-state="normal"] .th-modern-wi-entry-state-icon,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry[constant="false"] .th-modern-wi-entry-state-icon {
+  border-color: #29c76f;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry[data-th-modern-entry-state="vectorized"] .th-modern-wi-entry-state-icon {
+  border-color: color-mix(in srgb, #29c76f 62%, #3f8cff);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry.disabled .th-modern-wi-row-summary,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry[disabled="true"] .th-modern-wi-row-summary {
+  opacity: 0.55;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-text {
+  display: grid;
+  min-width: 0;
+  gap: 0.1rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-primary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-title {
+  font-size: calc(var(--mainFontSize) * 0.96);
+  line-height: 1.2;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-meta {
+  font-size: calc(var(--mainFontSize) * 0.768);
+  line-height: 1.2;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-title,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-meta,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-stats,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-field-label {
+  color: var(--th-modern-wi-muted);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-row-stats {
+  justify-self: end;
+  font-size: calc(var(--mainFontSize) * 0.747);
+  line-height: 1;
+  text-align: right;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list .world_entry > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet {
+  display: none !important;
+}
+
+/* Lazy editors used by some forks must briefly become measurable before their controls are created. */
+body.th-modern-enabled
+  #WorldInfo.th-modern-wi-enabled
+  #world_popup_entries_list
+  .world_entry.th-modern-wi-native-editor-loading
+  > form.world_entry_form
+  > .inline-drawer
+  > .inline-drawer-content.inline-drawer-outlet {
+  position: absolute !important;
+  display: block !important;
+  visibility: hidden;
+  width: 1px !important;
+  height: 1px !important;
+  min-width: 1px !important;
+  min-height: 1px !important;
+  overflow: hidden !important;
+  pointer-events: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-editor .th-modern-wi-editor-entry-host,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-editor .th-modern-wi-editor-entry-host > form.world_entry_form,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-editor .th-modern-wi-editor-entry-host > form.world_entry_form > .inline-drawer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-editor .th-modern-wi-active-editor-content {
+  display: block !important;
+  width: auto !important;
+  height: 100% !important;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface {
+  display: grid;
+  grid-template-rows: auto minmax(0, auto) minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+  padding: 0.5rem;
+  gap: 0.4rem;
+  overflow: hidden;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: var(--th-modern-wi-control-size);
+  padding-bottom: 0.32rem;
+  border-bottom: 1px solid var(--th-modern-wi-border);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-enable-dock {
+  display: flex;
+  align-items: center;
+  min-width: 4.5rem;
+  max-width: 7rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-actions {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-action {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--th-modern-wi-control-size);
+  height: var(--th-modern-wi-control-size);
+  padding: 0;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 8px;
+  background-color: var(--th-modern-wi-button-bg);
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-mobile-back {
+  display: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18rem;
+  width: max-content;
+  max-width: 100%;
+  padding: 0.14rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 46%, transparent);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-tab {
+  min-width: 3.25rem;
+  height: 1.72rem;
+  padding: 0 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--SmartThemeBodyColor);
+  cursor: pointer;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-tab.active {
+  background-color: color-mix(in srgb, var(--th-modern-wi-accent) 22%, var(--SmartThemeBlurTintColor) 48%);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panels {
+  min-height: 8rem;
+  max-height: clamp(10rem, 26vh, 16.5rem);
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding: 0.42rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 8px;
+  background-color: var(--th-modern-wi-panel-soft);
+}
+
+@media (min-width: 900px) {
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled
+    .th-modern-wi-panels:has(> .th-modern-wi-panel-insert:not([hidden])) {
+    max-height: clamp(14rem, 36vh, 16rem);
+  }
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.42rem 0.5rem;
+  align-items: start;
+  min-width: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel[hidden] {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled [hidden] {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main {
+  grid-template-columns: minmax(0, 2fr) minmax(5.25rem, 0.55fr) minmax(7.25rem, 0.7fr) minmax(8.5rem, 0.8fr);
+  grid-template-areas:
+    "title title state order"
+    "position detail no-recursion prevent-recursion"
+    "primary primary primary primary";
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-title-field {
+  grid-area: title;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-state-field {
+  grid-area: state;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-order-field {
+  grid-area: order;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-position-field {
+  grid-area: position;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-depth-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-outlet-field {
+  grid-area: detail;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-no-recursion-field {
+  grid-area: no-recursion;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-primary-key-field {
+  grid-area: primary;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-prevent-recursion-field {
+  grid-area: prevent-recursion;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-primary-key-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-secondary-key-field {
+  grid-column: 1 / span 9;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-logic-field {
+  grid-column: 10 / span 3;
+  grid-row: 1;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-primary-key-field {
+  grid-row: 1;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-secondary-key-field {
+  grid-row: 2;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-case-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-whole-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-group-scoring-field {
+  grid-row: 3;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-scan-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-automation-field {
+  grid-row: 4;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-case-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-scan-field {
+  grid-column: 1 / span 4;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-whole-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-automation-field {
+  grid-column: 5 / span 4;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-keywords .th-modern-wi-group-scoring-field {
+  grid-column: 9 / span 4;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel.th-modern-wi-panel-insert {
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+  grid-template-areas:
+    "position position position position position position position position position position position order order order probability probability probability use-probability use-probability use-probability"
+    "group group group group group group group group group-weight group-weight group-weight sticky sticky sticky cooldown cooldown cooldown delay delay delay"
+    "character character character character character character character character character character character character trigger trigger trigger trigger trigger trigger trigger trigger"
+    "no-recursion no-recursion no-recursion no-recursion no-recursion prevent-recursion prevent-recursion prevent-recursion prevent-recursion prevent-recursion delay-recursion delay-recursion delay-recursion delay-recursion delay-recursion budget budget budget budget budget";
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-position-field {
+  grid-area: position;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-position-kind="depth"] .th-modern-wi-panel-insert .th-modern-wi-position-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-position-kind="outlet"] .th-modern-wi-panel-insert .th-modern-wi-position-field {
+  grid-area: position;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-depth-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-outlet-field {
+  grid-area: depth;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-order-field {
+  grid-area: order;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-probability-field {
+  grid-area: probability;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-use-probability-field {
+  grid-area: use-probability;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-group-field {
+  grid-area: group;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-group-weight-field {
+  grid-area: group-weight;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-sticky-field {
+  grid-area: sticky;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-cooldown-field {
+  grid-area: cooldown;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-delay-field {
+  grid-area: delay;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-character-filter-field {
+  grid-area: character;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-generation-trigger-field {
+  grid-area: trigger;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-recursion-level-field {
+  grid-area: recursion;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-no-recursion-field {
+  grid-area: no-recursion;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-prevent-recursion-field {
+  grid-area: prevent-recursion;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-delay-recursion-field {
+  grid-area: delay-recursion;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert .th-modern-wi-budget-field {
+  grid-area: budget;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-position-kind="depth"] .th-modern-wi-panel-insert,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-position-kind="outlet"] .th-modern-wi-panel-insert {
+  grid-template-areas:
+    "position position position position position position position position depth depth depth order order order probability probability probability use-probability use-probability use-probability"
+    "group group group group group group group group group-weight group-weight group-weight sticky sticky sticky cooldown cooldown cooldown delay delay delay"
+    "character character character character character character character character character character character character trigger trigger trigger trigger trigger trigger trigger trigger"
+    "no-recursion no-recursion no-recursion no-recursion no-recursion prevent-recursion prevent-recursion prevent-recursion prevent-recursion prevent-recursion delay-recursion delay-recursion delay-recursion delay-recursion delay-recursion budget budget budget budget budget";
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-recursion-delay="true"] .th-modern-wi-panel-insert {
+  grid-template-areas:
+    "position position position position position position position position position position position order order order probability probability probability use-probability use-probability use-probability"
+    "group group group group group group group group group-weight group-weight group-weight sticky sticky sticky cooldown cooldown cooldown delay delay delay"
+    "character character character character character character character character trigger trigger trigger trigger trigger trigger trigger trigger recursion recursion recursion recursion"
+    "no-recursion no-recursion no-recursion no-recursion no-recursion prevent-recursion prevent-recursion prevent-recursion prevent-recursion prevent-recursion delay-recursion delay-recursion delay-recursion delay-recursion delay-recursion budget budget budget budget budget";
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-recursion-delay="true"][data-th-modern-position-kind="depth"] .th-modern-wi-panel-insert,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-recursion-delay="true"][data-th-modern-position-kind="outlet"] .th-modern-wi-panel-insert {
+  grid-template-areas:
+    "position position position position position position position position depth depth depth order order order probability probability probability use-probability use-probability use-probability"
+    "group group group group group group group group group-weight group-weight group-weight sticky sticky sticky cooldown cooldown cooldown delay delay delay"
+    "character character character character character character character character trigger trigger trigger trigger trigger trigger trigger trigger recursion recursion recursion recursion"
+    "no-recursion no-recursion no-recursion no-recursion no-recursion prevent-recursion prevent-recursion prevent-recursion prevent-recursion prevent-recursion delay-recursion delay-recursion delay-recursion delay-recursion delay-recursion budget budget budget budget budget";
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field {
+  grid-column: span 4;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(2),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(3),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(4) {
+  grid-row: 2;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(5),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(6),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(7) {
+  grid-row: 3;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(2),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(5) {
+  grid-column: 1 / span 4;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(3),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(6) {
+  grid-column: 5 / span 4;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(4),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-trigger .th-modern-wi-match-source-field:nth-child(7) {
+  grid-column: 9 / span 4;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-field {
+  display: grid;
+  flex: initial !important;
+  flex-basis: auto !important;
+  flex-grow: 0 !important;
+  flex-shrink: 1 !important;
+  width: auto !important;
+  min-width: 0;
+  max-width: 100% !important;
+  align-self: start;
+  align-content: start;
+  gap: 0.22rem;
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-field-wide,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-field-wide,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .keyprimary,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .keysecondary,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .characterFilter,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry_form_radios {
+  min-width: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .keyprimary,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .keysecondary {
+  position: relative;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-field-label {
+  min-width: 0;
+  overflow: hidden;
+  font-size: calc(var(--mainFontSize) * 0.832);
+  font-weight: 650;
+  line-height: 1.15;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-shared-slot,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-shared-control {
+  min-width: 0;
+  max-width: 100%;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-shared-control {
+  width: 100% !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-section-title {
+  min-width: 0;
+  color: var(--th-modern-wi-muted);
+  font-size: calc(var(--mainFontSize) * 0.875);
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0.1rem 0.15rem 0;
+  text-align: left;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-labeled-field > small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-labeled-field > label:first-child,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-labeled-field > .textAlignCenter,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-native-field.th-modern-wi-labeled-field > small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-native-field.th-modern-wi-labeled-field > label:first-child,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-native-field.th-modern-wi-labeled-field > .textAlignCenter,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-native-field > .th-modern-wi-field-label ~ small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-native-field > .th-modern-wi-field-label ~ label:first-of-type,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-native-field > .th-modern-wi-field-label ~ .textAlignCenter {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-primary-key-field .keyprimary > small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-secondary-key-field .keysecondary > small {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-labeled-field > .flex-container:first-of-type > small:first-child,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-native-field > .th-modern-wi-field-label ~ .flex-container:first-of-type > small:first-child {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-character-filter-field > .flex-container:first-of-type > small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-generation-trigger-field > .flex-container:first-of-type > small {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .world_entry_form_control,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .range-block,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .flex-container {
+  flex: initial !important;
+  flex-basis: auto !important;
+  min-width: 0;
+  max-width: 100%;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .world_entry_form_control > small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .range-block > small,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .world_entry_form_control > label:first-child,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .range-block > label:first-child {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--th-modern-wi-muted);
+  font-size: calc(var(--mainFontSize) * 0.832);
+  font-weight: 650;
+  line-height: 1.15;
+  text-align: left !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .textAlignCenter {
+  display: block;
+  width: 100%;
+  color: var(--th-modern-wi-muted) !important;
+  font-size: calc(var(--mainFontSize) * 0.832) !important;
+  font-weight: 650 !important;
+  line-height: 1.15 !important;
+  text-align: left !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .text_pole,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel select,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel textarea:not(.select2-search__field),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 !important;
+  padding: 0.35rem 0.5rem;
+  border-color: var(--th-modern-wi-border);
+  border-radius: 7px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 72%, transparent);
+  color: var(--SmartThemeBodyColor);
+  font-size: calc(var(--mainFontSize) * 0.981);
+  line-height: 1.35;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel input:not([type="checkbox"]):not([type="radio"]) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 2rem;
+  margin: 0 !important;
+  padding: 0.35rem 0.5rem;
+  border-color: var(--th-modern-wi-border);
+  border-radius: 7px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 72%, transparent);
+  color: var(--SmartThemeBodyColor);
+  color-scheme: dark;
+  font-size: calc(var(--mainFontSize) * 0.981);
+  line-height: 1.35;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel input[type="number"]::-webkit-inner-spin-button,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  border-radius: 4px;
+  background-color: color-mix(in srgb, var(--th-modern-wi-accent) 18%, var(--SmartThemeBlurTintColor) 50%);
+  cursor: pointer;
+  opacity: 0.78;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel select {
+  height: 2rem;
+  padding-inline: 0.45rem;
+  text-overflow: ellipsis;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-jump-shortcut {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 2rem;
+  overflow: hidden;
+  padding: 0 0.55rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 7px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 72%, transparent);
+  color: var(--SmartThemeBodyColor);
+  font-size: calc(var(--mainFontSize) * 0.96);
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-jump-shortcut:hover {
+  background-color: var(--th-modern-wi-button-bg-hover);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel input[type="radio"] {
+  width: auto !important;
+  min-width: 1em;
+  height: auto;
+  accent-color: var(--th-modern-wi-accent);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .checkbox,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .checkbox_label,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel label.checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-flow: row nowrap !important;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0;
+  font-size: calc(var(--mainFontSize) * 0.96);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-enable-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-selective-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-budget-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-priority-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-use-probability-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-no-recursion-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-prevent-recursion-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-delay-recursion-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-match-source-field {
+  display: flex;
+  align-items: center;
+  align-self: start;
+  gap: 0.4rem;
+  min-height: 2rem;
+  overflow: hidden;
+  padding: 0.25rem 0.45rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 7px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 50%, transparent);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-match-source-field {
+  justify-content: flex-start;
+  min-width: 0;
+  min-height: 2rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-shortcut-field.th-modern-wi-no-recursion-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-shortcut-field.th-modern-wi-prevent-recursion-field {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  gap: 0.4rem;
+  min-height: var(--th-modern-wi-control-size);
+  overflow: hidden;
+  padding: 0.25rem 0.45rem;
+  border: 1px solid var(--th-modern-wi-border);
+  border-radius: 7px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 50%, transparent);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-selective-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-budget-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-priority-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-use-probability-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-no-recursion-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-prevent-recursion-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-delay-recursion-field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-match-source-field {
+  display: grid !important;
+  grid-template-rows: min-content 1.05rem;
+  justify-items: start;
+  align-self: start;
+  gap: 0.22rem;
+  min-height: 0;
+  overflow: visible;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-shortcut-field.th-modern-wi-no-recursion-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-shortcut-field.th-modern-wi-prevent-recursion-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-selective-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-budget-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-priority-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-use-probability-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-no-recursion-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-prevent-recursion-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-delay-recursion-field input[type="checkbox"],
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-match-source-field input[type="checkbox"] {
+  justify-self: start;
+  width: 1.05rem !important;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  margin: 0 !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-selective-field > span:not(.th-modern-wi-field-label),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-budget-field > span:not(.th-modern-wi-field-label),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-priority-field > span:not(.th-modern-wi-field-label),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-use-probability-field > span:not(.th-modern-wi-field-label),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-no-recursion-field > span:not(.th-modern-wi-field-label),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-prevent-recursion-field > span:not(.th-modern-wi-field-label),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-delay-recursion-field > span:not(.th-modern-wi-field-label),
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-match-source-field > span:not(.th-modern-wi-field-label) {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-insert
+  :is(
+    .th-modern-wi-use-probability-field,
+    .th-modern-wi-no-recursion-field,
+    .th-modern-wi-prevent-recursion-field,
+    .th-modern-wi-delay-recursion-field,
+    .th-modern-wi-budget-field
+  )
+  > .th-modern-wi-field-label {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-enable-dock .th-modern-wi-enable-field {
+  width: 100%;
+  min-height: 2.2rem;
+  border-radius: 999px;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-enable-field .th-modern-wi-field-label {
+  flex: 1 1 auto;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .checkbox_label > span,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel label.checkbox > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container {
+  width: 100% !important;
+  min-width: 0;
+  max-width: 100%;
+  font-size: calc(var(--mainFontSize) * 0.96);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-selection--single,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-selection--multiple {
+  box-sizing: border-box;
+  min-height: 2rem;
+  border-color: var(--th-modern-wi-border);
+  border-radius: 7px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 72%, transparent);
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-selection--multiple {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+  min-height: 2.25rem;
+  height: auto;
+  overflow: visible;
+  padding: 0.25rem 1.95rem 0.25rem 0.5rem;
+  text-align: left;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-selection__rendered {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  gap: 0.18rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  margin: 0 !important;
+  margin-block: 0 !important;
+  margin-inline: 0 !important;
+  overflow: visible;
+  padding: 0 !important;
+  padding-block: 0 !important;
+  padding-inline: 0 !important;
+  list-style: none;
+  list-style-position: outside;
+  line-height: 1.35rem;
+  text-align: left;
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-selection__choice {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  float: none !important;
+  max-width: 100%;
+  margin: 0;
+  min-height: 1.35rem;
+  line-height: 1.25;
+  border-color: var(--th-modern-wi-border);
+  border-radius: 5px;
+  background-color: color-mix(in srgb, var(--th-modern-wi-accent) 14%, var(--SmartThemeBlurTintColor) 58%);
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-search--inline {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  float: none !important;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 1.35rem;
+  margin: 0;
+  vertical-align: middle;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-selection__rendered > .select2-search--inline:only-child {
+  flex: 1 1 auto;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .keyprimary .select2-container--default .select2-selection--multiple .select2-selection__rendered,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .keysecondary .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+  display: flex !important;
+  flex: 0 1 auto;
+  width: auto !important;
+  min-height: 1.35rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  padding-inline-start: 0 !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .keyprimary .select2-container--default .select2-selection--multiple > .select2-search--inline,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .keysecondary .select2-container--default .select2-selection--multiple > .select2-search--inline {
+  flex: 1 1 8rem;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-search__field {
+  box-sizing: border-box;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  height: 1.35rem !important;
+  min-height: 1.35rem !important;
+  max-height: 1.35rem !important;
+  margin: 0 !important;
+  padding: 0 0.1rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--SmartThemeBodyColor);
+  font-family: inherit;
+  font-size: calc(var(--mainFontSize) * 0.981);
+  line-height: 1.35rem !important;
+  overflow: hidden !important;
+  resize: none !important;
+  text-align: left;
+  vertical-align: middle;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .select2-container--default .select2-selection__rendered > .select2-search--inline:only-child .select2-search__field {
+  width: 100% !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-character-filter-field .select2-selection__placeholder,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-generation-trigger-field .select2-selection__placeholder,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-character-filter-field .select2-search__field,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-generation-trigger-field .select2-search__field {
+  box-sizing: border-box;
+  display: block;
+  width: 100% !important;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .keyprimary .switch_input_type_icon,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .keysecondary .switch_input_type_icon {
+  top: auto;
+  right: 0.45rem;
+  bottom: 0.52rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0;
+  padding: 0;
+  transform: none;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel select[name="entryStateSelector"] {
+  min-width: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel textarea.text_pole:not([name="content"]) {
+  min-height: 2rem;
+  max-height: 3.9rem;
+  resize: vertical;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel .th-modern-wi-order-field input[name="order"] {
+  width: min(100%, 5.8rem) !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel > .world_entry_form_control,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel > label {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel textarea[name="content"] {
+  grid-row: 3;
+  align-self: stretch;
+  height: 100% !important;
+  min-height: 0;
+  resize: none;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry_edit:empty,
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .inline-drawer-outlet:empty {
+  display: none !important;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-active-editor-content > .world_entry_edit {
+  display: none !important;
+}
+
+@media (max-width: 899.98px) {
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled {
+    --th-modern-wi-native-list-width: 100%;
+    overflow: visible;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wi-holder,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-shell {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-main {
+    display: block;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-list,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-editor {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-editor {
+    display: none;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled.th-modern-wi-mobile-detail-open > .th-modern-drawer-titlebar,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled.th-modern-wi-mobile-detail-open #wiTopBlock,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-shell.th-modern-wi-detail-open .th-modern-wi-worldbar,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-shell.th-modern-wi-detail-open .th-modern-wi-toolbar,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-shell.th-modern-wi-detail-open .th-modern-wi-native-list {
+    display: none;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-shell.th-modern-wi-detail-open .th-modern-wi-native-editor {
+    display: block;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_popup_entries_list {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    padding-inline: 0;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(6.5rem, 0.72fr) repeat(4, var(--th-modern-wi-control-size));
+    grid-template-areas:
+      "search sort new refresh multi more"
+      "pagination pagination pagination pagination pagination pagination";
+    align-items: center;
+    gap: 0.32rem;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_search {
+    grid-area: search;
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_sort_order {
+    grid-area: sort;
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination {
+    grid-area: pagination;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: var(--th-modern-wi-control-size);
+    padding: 0.16rem 0.25rem;
+    border: 1px solid var(--th-modern-wi-border);
+    border-radius: 8px;
+    background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 54%, transparent);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs {
+    display: flex;
+    flex: 1 0 max-content;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 1.75rem;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-pages ul {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-pages li,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-pages a,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-size-changer,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination select {
+    min-width: 1.9rem;
+    min-height: 1.75rem;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-pages a,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-size-changer,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination select {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 0.5rem;
+    border: 1px solid var(--th-modern-wi-border);
+    border-radius: 8px;
+    background-color: var(--th-modern-wi-button-bg);
+    color: var(--SmartThemeBodyColor);
+    line-height: 1.2;
+    text-decoration: none;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_info_pagination .paginationjs-nav {
+    min-width: max-content;
+    padding-inline: 0.35rem;
+    color: var(--th-modern-wi-muted);
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_popup_new {
+    grid-area: new;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar #world_refresh {
+    grid-area: refresh;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar .th-modern-wi-multi-toggle {
+    grid-area: multi;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar .th-modern-wi-delete-selected {
+    grid-area: more;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-toolbar .th-modern-wi-more-menu {
+    grid-area: more;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-mobile-back {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    width: 100%;
+    min-height: var(--th-modern-wi-control-size);
+    margin-bottom: 0.35rem;
+    border: 1px solid var(--th-modern-wi-border);
+    border-radius: 8px;
+    background-color: var(--th-modern-wi-button-bg);
+    color: var(--SmartThemeBodyColor);
+    font-family: inherit;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-entry-host,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-entry-host > form.world_entry_form,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-entry-host > form.world_entry_form > .inline-drawer,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-active-editor-content,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface {
+    height: auto !important;
+    min-height: 0;
+    overflow: visible !important;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface {
+    display: flex;
+    flex-direction: column;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-top {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "enable actions"
+      "tabs tabs";
+    align-items: center;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-enable-dock {
+    grid-area: enable;
+    max-width: none;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-actions {
+    grid-area: actions;
+    justify-self: end;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-tabs {
+    grid-area: tabs;
+    justify-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panels,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel > .world_entry_form_control,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel > label {
+    height: auto;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-content-panel textarea[name="content"] {
+    height: auto !important;
+    min-height: 52dvh;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-title-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-primary-key-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-secondary-key-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-position-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-group-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-automation-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-character-filter-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-generation-trigger-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-match-source-title {
+    grid-column: span 6;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-state-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-logic-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-selective-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-scan-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-case-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-whole-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-group-scoring-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-budget-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-outlet-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-priority-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-group-weight-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-probability-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-use-probability-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-sticky-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-cooldown-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-delay-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-no-recursion-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-prevent-recursion-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-delay-recursion-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-recursion-level-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-match-source-field {
+    grid-column: span 3;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-enable-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-depth-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-order-field {
+    grid-column: span 2;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel.th-modern-wi-panel-main {
+    grid-template-columns: minmax(0, 2fr) minmax(5.25rem, 0.55fr) minmax(7.25rem, 0.7fr) minmax(8.5rem, 0.8fr);
+    grid-template-areas:
+      "title title state order"
+      "position detail no-recursion prevent-recursion"
+      "primary primary primary primary";
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-title-field {
+    grid-area: title;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-state-field {
+    grid-area: state;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-order-field {
+    grid-area: order;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-position-field {
+    grid-area: position;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-depth-field,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-outlet-field {
+    grid-area: detail;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-no-recursion-field {
+    grid-area: no-recursion;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-prevent-recursion-field {
+    grid-area: prevent-recursion;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel-main .th-modern-wi-primary-key-field {
+    grid-area: primary;
+  }
+}
+
+@media (max-width: 560px) {
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock > .range-block,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock > .range-block:nth-child(2) {
+    grid-template-columns: minmax(5.5rem, auto) minmax(0, 1fr);
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar > .flex-container {
+    flex-wrap: wrap;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar #world_editor_select,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar .select2-container {
+    min-width: 7rem;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel:not(.th-modern-wi-panel-main):not(.th-modern-wi-panel-insert) > * {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel.th-modern-wi-panel-insert {
+    grid-template-columns: minmax(0, 1.65fr) repeat(3, minmax(4.5rem, 0.72fr));
+    grid-template-areas:
+      "position position order probability"
+      "use-probability group group group"
+      "group-weight sticky cooldown delay"
+      "character character trigger trigger"
+      "no-recursion prevent-recursion delay-recursion budget";
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-position-kind="depth"] .th-modern-wi-panel-insert,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-position-kind="outlet"] .th-modern-wi-panel-insert {
+    grid-template-areas:
+      "position position depth order"
+      "probability use-probability group group"
+      "group-weight sticky cooldown delay"
+      "character character trigger trigger"
+      "no-recursion prevent-recursion delay-recursion budget";
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-recursion-delay="true"] .th-modern-wi-panel-insert {
+    grid-template-areas:
+      "position position order probability"
+      "use-probability group group group"
+      "group-weight sticky cooldown delay"
+      "character character trigger trigger"
+      "recursion no-recursion prevent-recursion delay-recursion"
+      "budget budget budget budget";
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-recursion-delay="true"][data-th-modern-position-kind="depth"] .th-modern-wi-panel-insert,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-editor-surface[data-th-modern-recursion-delay="true"][data-th-modern-position-kind="outlet"] .th-modern-wi-panel-insert {
+    grid-template-areas:
+      "position position depth order"
+      "probability use-probability group group"
+      "group-weight sticky cooldown delay"
+      "character character trigger trigger"
+      "recursion no-recursion prevent-recursion delay-recursion"
+      "budget budget budget budget";
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-panel.th-modern-wi-panel-main {
+    grid-template-columns: minmax(0, 1fr) minmax(6.5rem, 0.48fr);
+    grid-template-areas:
+      "title title"
+      "state order"
+      "position detail"
+      "no-recursion prevent-recursion"
+      "primary primary";
+  }
+
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-field-wide,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-native-field-wide,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .keyprimary,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .keysecondary,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .characterFilter,
+  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .world_entry_form_radios {
+    grid-column: auto;
+  }
+}

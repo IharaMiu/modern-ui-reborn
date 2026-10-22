@@ -1,0 +1,3716 @@
+@charset "UTF-8";
+
+.th-modern-topbar-label,
+#th-modern-sidebar,
+#th-modern-sidebar-resize-handle,
+#th-modern-overlay-resize-handle {
+  display: none;
+}
+
+body.th-modern-enabled {
+  --th-modern-left-width-fallback: 360px;
+  --th-modern-left-collapsed-width: 76px;
+  --th-modern-left-active-width: var(--th-modern-left-width, var(--th-modern-left-width-fallback));
+  --th-modern-left-layout-width: var(--th-modern-left-active-width);
+  --th-modern-left-visual-width: var(--th-modern-left-active-width);
+  --th-modern-overlay-width-fallback: 960px;
+  --th-modern-overlay-reserved-width: 24px;
+  --th-modern-overlay-soft-max-width: max(
+    0px,
+    calc(100vw - var(--th-modern-left-layout-width) - var(--th-modern-overlay-reserved-width))
+  );
+  --th-modern-overlay-fullscreen-width: max(0px, calc(100vw - var(--th-modern-left-layout-width)));
+  --th-modern-main-min-width-fallback: 960px;
+  --th-modern-main-preferred-width: max(
+    var(--sheldWidth, 50vw),
+    var(--th-modern-main-min-width, var(--th-modern-main-min-width-fallback))
+  );
+  --th-modern-left-nav-top: 66px;
+  --th-modern-left-nav-min-height: 240px;
+  --th-modern-recent-min-height: 288px;
+  --th-modern-left-nav-max-height: clamp(
+    var(--th-modern-left-nav-min-height),
+    calc(100dvh - var(--th-modern-left-nav-top) - var(--th-modern-recent-min-height) - 12px),
+    960px
+  );
+  --th-modern-left-nav-height: min(360px, var(--th-modern-left-nav-max-height));
+  --th-modern-layout-z: 20;
+  --th-modern-layout-nav-z: 21;
+  --th-modern-overlay-z: 3000;
+  --th-modern-input-bottom-gap: 15px;
+  --th-modern-effective-input-bottom-gap: var(--th-modern-input-bottom-gap);
+  --th-modern-input-height: 96px;
+  --th-modern-input-stack-offset: 100%;
+  --th-modern-quick-reply-max-height: 40dvh;
+  --th-modern-quick-reply-reserve-height: 0px;
+  --th-modern-input-inline-inset: clamp(16px, 3vw, 28px);
+  --th-modern-radius-xs: 5px;
+  --th-modern-radius-sm: 7px;
+  --th-modern-gap: 10px;
+  --th-modern-main-gap: 14px;
+  --th-modern-line: color-mix(in srgb, var(--SmartThemeBorderColor) 72%, transparent);
+  --th-modern-surface: color-mix(in srgb, var(--SmartThemeBlurTintColor) 82%, black 18%);
+  --th-modern-surface-soft: color-mix(in srgb, var(--SmartThemeChatTintColor) 86%, transparent);
+  --th-modern-surface-strong: color-mix(in srgb, var(--SmartThemeBlurTintColor) 70%, var(--SmartThemeQuoteColor) 30%);
+  --th-modern-accent: var(--SmartThemeQuoteColor);
+  --th-modern-motion-duration: 160ms;
+  --animation-duration: var(--th-modern-motion-duration);
+  --animation-duration-2x: calc(var(--th-modern-motion-duration) * 2);
+  --th-modern-input-shadow:
+    0 18px 44px color-mix(in srgb, var(--SmartThemeShadowColor) 38%, transparent),
+    0 4px 16px color-mix(in srgb, var(--SmartThemeShadowColor) 20%, transparent);
+  --th-modern-soft-shadow:
+    0 12px 26px color-mix(in srgb, var(--SmartThemeShadowColor) 24%, transparent),
+    0 2px 8px color-mix(in srgb, var(--SmartThemeShadowColor) 18%, transparent);
+  --th-modern-glass-shadow:
+    8px 8px 8px color-mix(in srgb, var(--SmartThemeShadowColor) 46%, transparent),
+    12px 12px 14px color-mix(in srgb, var(--SmartThemeShadowColor) 34%, transparent),
+    inset 1px 1px 1.5px color-mix(in srgb, var(--SmartThemeBodyColor) 10%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%), transparent 46%),
+    var(--SmartThemeBlurTintColor);
+}
+
+body.th-modern-enabled.th-modern-sidebar-collapsed {
+  --th-modern-left-active-width: var(--th-modern-left-collapsed-width);
+  --th-modern-left-layout-width: var(--th-modern-left-collapsed-width);
+  --th-modern-left-visual-width: var(--th-modern-left-collapsed-width);
+}
+
+@media (min-width: 900px) and (max-width: 1199.98px) {
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) {
+    --th-modern-left-layout-width: var(--th-modern-left-collapsed-width);
+    --th-modern-left-visual-width: var(--th-modern-left-collapsed-width);
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse.th-modern-sidebar-temp-expanded:not(.th-modern-sidebar-collapsed) {
+    --th-modern-left-layout-width: var(--th-modern-left-width, var(--th-modern-left-width-fallback));
+    --th-modern-left-visual-width: var(--th-modern-left-width, var(--th-modern-left-width-fallback));
+  }
+}
+
+body.th-modern-enabled.th-modern-reduce-motion {
+  --th-modern-motion-duration: 1ms;
+  scroll-behavior: auto;
+}
+
+body.th-modern-enabled.th-modern-reduce-motion *,
+body.th-modern-enabled.th-modern-reduce-motion *::before,
+body.th-modern-enabled.th-modern-reduce-motion *::after {
+  animation-delay: 0s !important;
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-delay: 0s !important;
+  transition-duration: 1ms !important;
+}
+
+body.th-modern-enabled.th-modern-reduce-advanced-effects {
+  --th-modern-input-shadow: 0 0 0 transparent;
+  --th-modern-soft-shadow: 0 0 0 transparent;
+  --th-modern-glass-shadow: 0 0 0 transparent;
+}
+
+:where(body.th-modern-enabled #th-modern-sidebar),
+:where(body.th-modern-enabled #top-settings-holder > .drawer > .drawer-content),
+:where(body.th-modern-enabled #nonQRFormItems),
+:where(body.th-modern-enabled #send_form #file_form:not(.displayNone)),
+:where(body.th-modern-enabled #qr--bar > .qr--buttons .qr--button),
+:where(body.th-modern-enabled .th-modern-recent-list),
+  :where(body.th-modern-enabled .th-modern-failsafe-dialog) {
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 90%, black 10%);
+  box-shadow: var(--th-modern-glass-shadow);
+}
+
+body.th-modern-enabled,
+body.th-modern-enabled #chat,
+body.th-modern-enabled #top-settings-holder,
+body.th-modern-enabled #top-settings-holder > .drawer > .drawer-content,
+body.th-modern-enabled #right-nav-panel,
+body.th-modern-enabled #right-nav-panel .scrollableInner,
+body.th-modern-enabled .scrollableInner,
+body.th-modern-enabled #rm_api_block #main-API-selector-block,
+body.th-modern-enabled #rm_api_block #chat_completion_source[size],
+body.th-modern-enabled #rm_api_block #textgen_type[size],
+body.th-modern-enabled #rm_api_block.openDrawer > .flex-container.flexFlowColumn > div {
+  scrollbar-gutter: stable;
+}
+
+body.th-modern-enabled .menu_button,
+body.th-modern-enabled .right_menu_button,
+body.th-modern-enabled .mes_button,
+body.th-modern-enabled .interactable,
+body.th-modern-enabled button.menu_button {
+  border-radius: var(--th-modern-radius-xs);
+  transition:
+    background-color var(--th-modern-motion-duration),
+    border-color var(--th-modern-motion-duration),
+    color var(--th-modern-motion-duration),
+    opacity var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled .menu_button:hover,
+body.th-modern-enabled .right_menu_button:hover,
+body.th-modern-enabled .mes_button:hover,
+body.th-modern-enabled .interactable:hover {
+  background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
+  color: var(--SmartThemeEmColor);
+}
+
+body.th-modern-enabled .text_pole,
+body.th-modern-enabled input[type='text'],
+body.th-modern-enabled input[type='number'],
+body.th-modern-enabled input[type='search'],
+body.th-modern-enabled input[type='password'],
+body.th-modern-enabled textarea,
+body.th-modern-enabled select,
+body.th-modern-enabled .select2-container--default .select2-selection--single,
+body.th-modern-enabled .select2-container--default .select2-selection--multiple {
+  border: 1px solid var(--th-modern-line);
+  border-radius: var(--th-modern-radius-sm);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 78%, transparent);
+  color: var(--SmartThemeBodyColor);
+  box-shadow: none;
+}
+
+body.th-modern-enabled .text_pole:focus,
+body.th-modern-enabled input[type='text']:focus,
+body.th-modern-enabled input[type='number']:focus,
+body.th-modern-enabled input[type='search']:focus,
+body.th-modern-enabled input[type='password']:focus,
+body.th-modern-enabled textarea:focus,
+body.th-modern-enabled select:focus {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 70%, var(--SmartThemeBorderColor));
+  outline: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 32%, transparent);
+}
+
+body.th-modern-enabled .inline-drawer:not(.th-modern-extension-drawer) {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  margin-bottom: 8px;
+  overflow: visible !important;
+}
+
+body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header {
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 32px !important;
+  padding: 6px 12px !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, var(--SmartThemeBorderColor)) !important;
+  border-left: 3.5px solid var(--SmartThemeQuoteColor) !important;
+  border-radius: var(--th-modern-radius-xs, 6px) !important;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 4%, transparent) 70%,
+    transparent
+  ) !important;
+  color: var(--SmartThemeEmColor, var(--SmartThemeBodyColor)) !important;
+  font-weight: 650 !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  margin: 4px 0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18) !important;
+  transition: background var(--th-modern-motion-duration) ease,
+              border-color var(--th-modern-motion-duration) ease,
+              box-shadow var(--th-modern-motion-duration) ease !important;
+}
+
+body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header:hover {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 8%, transparent) 70%,
+    transparent
+  ) !important;
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 38%, var(--SmartThemeBorderColor)) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28), 0 0 10px color-mix(in srgb, var(--SmartThemeQuoteColor) 15%, transparent) !important;
+}
+
+body.th-modern-enabled .inline-drawer:not(.th-modern-extension-drawer) > .inline-drawer-content {
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 45%, transparent);
+  border-radius: var(--th-modern-radius-sm, 8px);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 65%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  margin-top: 4px;
+  margin-bottom: 6px;
+  padding: 8px 12px;
+}
+
+body.th-modern-enabled #right-nav-panel-tabs,
+body.th-modern-enabled .drawer-tabs,
+body.th-modern-enabled .tabs {
+  gap: 4px;
+}
+
+body.th-modern-enabled #right-nav-panel-tabs .right_menu_button,
+body.th-modern-enabled .drawer-tab,
+body.th-modern-enabled .tab {
+  border-radius: var(--th-modern-radius-xs);
+  padding-inline: 8px;
+}
+
+body.th-modern-enabled #chat {
+  border-color: var(--th-modern-line);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--SmartThemeChatTintColor) 86%, transparent), transparent 45%),
+    var(--SmartThemeChatTintColor);
+  scrollbar-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 40%, transparent) transparent;
+}
+
+body.th-modern-enabled #chat .mes,
+body.th-modern-enabled #chat .mes_block {
+  border-radius: var(--th-modern-radius-sm);
+}
+
+body.th-modern-enabled .mes_buttons,
+body.th-modern-enabled .extraMesButtons {
+  gap: 6px;
+}
+
+body.th-modern-enabled #form_sheld,
+body.th-modern-enabled #chat,
+body.th-modern-enabled #send_form {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+body.th-modern-enabled #chat {
+  padding-bottom: calc(
+    var(--th-modern-input-height) +
+      var(--th-modern-effective-input-bottom-gap) +
+      var(--th-modern-quick-reply-reserve-height) +
+      12px
+  );
+  transition: padding-bottom var(--th-modern-motion-duration) ease;
+}
+
+body.th-modern-enabled #form_sheld {
+  z-index: 45;
+  pointer-events: none;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.th-modern-enabled #form_sheld #dialogue_del_mes,
+body.th-modern-enabled #form_sheld #send_form {
+  pointer-events: auto;
+}
+
+body.th-modern-enabled #send_form {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  margin: 0;
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+}
+
+body.th-modern-enabled #send_form:focus-within,
+body.th-modern-enabled #send_form:has(#send_textarea:focus-visible) {
+  border-color: transparent !important;
+  outline: none !important;
+}
+
+body.th-modern-enabled #send_form #file_form:not(.displayNone) {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 8px;
+  border: 1px solid var(--th-modern-line);
+  border-radius: var(--th-modern-radius-sm);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--SmartThemeShadowColor) 24%, transparent);
+}
+
+body.th-modern-enabled #nonQRFormItems {
+  position: relative;
+  z-index: 2;
+  display: block;
+  align-items: stretch;
+  gap: 6px;
+  min-height: 94px;
+  padding: 14px 14px 12px;
+  border: 1px solid var(--th-modern-line);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 90%, black 10%);
+  box-shadow: var(--th-modern-input-shadow);
+  transition:
+    border-color var(--th-modern-motion-duration),
+    box-shadow var(--th-modern-motion-duration),
+    background-color var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled #nonQRFormItems:focus-within {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 48%, var(--th-modern-line));
+  box-shadow:
+    var(--th-modern-input-shadow),
+    0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent);
+}
+
+body.th-modern-enabled #leftSendForm,
+body.th-modern-enabled #rightSendForm {
+  position: absolute;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+body.th-modern-enabled #leftSendForm {
+  left: 12px;
+}
+
+body.th-modern-enabled #rightSendForm {
+  right: 10px;
+}
+
+body.th-modern-enabled #send_textarea {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 68px !important;
+  height: auto;
+  max-height: 34dvh !important;
+  margin: 0 !important;
+  border: none !important;
+  border-top: 0 !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  padding: 4px 10px 48px 10px !important;
+  clip-path: none !important;
+  resize: none !important;
+  color: var(--SmartThemeBodyColor) !important;
+  line-height: 1.45 !important;
+  text-align: left !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+body.th-modern-enabled #send_textarea::placeholder {
+  color: color-mix(in srgb, var(--SmartThemeBodyColor) 48%, transparent);
+}
+
+body.th-modern-enabled #send_textarea:focus,
+body.th-modern-enabled #send_textarea:focus-visible {
+  outline: none !important;
+}
+
+body.th-modern-enabled #leftSendForm > div,
+body.th-modern-enabled #rightSendForm > div:not(.mes_stop),
+body.th-modern-enabled #send_form .mes_stop {
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background-color: transparent;
+  color: color-mix(in srgb, var(--SmartThemeBodyColor) 82%, transparent);
+  opacity: 0.9;
+}
+
+body.th-modern-enabled #leftSendForm > div:hover,
+body.th-modern-enabled #rightSendForm > div:not(.mes_stop):hover,
+body.th-modern-enabled #send_form .mes_stop:hover {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent);
+  background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent);
+  color: var(--SmartThemeEmColor);
+  filter: none;
+  opacity: 1;
+}
+
+body.th-modern-enabled #send_but {
+  min-width: 0;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 34%, transparent);
+  color: var(--SmartThemeEmColor);
+}
+
+body.th-modern-enabled #rightSendForm > #send_but {
+  width: 38px !important;
+  height: 38px !important;
+  margin-left: 4px;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 36%, transparent) !important;
+  border-radius: 999px !important;
+  background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 42%, transparent) !important;
+  color: var(--SmartThemeEmColor) !important;
+  box-shadow: var(--th-modern-soft-shadow) !important;
+}
+
+body.th-modern-enabled #rightSendForm > #send_but:hover {
+  background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 58%, transparent) !important;
+}
+
+body.th-modern-enabled #qr--bar {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--th-modern-input-stack-offset) + 10px);
+  left: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  max-height: var(--th-modern-quick-reply-max-height);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 38px 0 0;
+  opacity: 1;
+  pointer-events: none;
+  transform: translateY(0) scale(1);
+  transform-origin: center bottom;
+  transition:
+    height calc(var(--th-modern-motion-duration) * 2) ease-in-out,
+    max-height var(--th-modern-motion-duration) ease,
+    opacity var(--th-modern-motion-duration) ease,
+    transform var(--th-modern-motion-duration) ease;
+}
+
+body.th-modern-enabled #qr--bar.popoutVisible {
+  padding-right: 44px;
+}
+
+body.th-modern-enabled.th-modern-quick-replies-collapsed #qr--bar {
+  max-height: 0;
+  overflow: hidden !important;
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+}
+
+body.th-modern-enabled.th-modern-quick-replies-collapsed #qr--bar > * {
+  pointer-events: none !important;
+}
+
+body.th-modern-enabled #th-modern-quick-reply-toggle {
+  position: absolute;
+  right: 10px;
+  bottom: calc(var(--th-modern-input-stack-offset) + 5px);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 26px;
+  width: 26px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--th-modern-line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 90%, black 10%);
+  box-shadow: var(--th-modern-soft-shadow);
+  color: var(--SmartThemeBodyColor);
+  font-size: calc(var(--mainFontSize) * 0.78);
+  line-height: 1;
+  opacity: 0.82;
+  pointer-events: auto;
+  transition:
+    bottom var(--th-modern-motion-duration) ease,
+    opacity var(--th-modern-motion-duration) ease,
+    transform var(--th-modern-motion-duration) ease,
+    background-color var(--th-modern-motion-duration) ease;
+}
+
+body.th-modern-enabled #th-modern-quick-reply-toggle:hover,
+body.th-modern-enabled #th-modern-quick-reply-toggle:focus-visible {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, var(--SmartThemeBlurTintColor));
+  color: var(--SmartThemeEmColor);
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+body.th-modern-enabled #th-modern-quick-reply-toggle[hidden] {
+  display: none !important;
+}
+
+body.th-modern-enabled #qr--bar > #qr--popoutTrigger {
+  display: none !important;
+}
+
+body.th-modern-enabled #qr--bar > .qr--buttons {
+  display: flex;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+body.th-modern-enabled .qr--button,
+body.th-modern-enabled .list-group-item,
+body.th-modern-enabled .character_select,
+body.th-modern-enabled .group_select,
+body.th-modern-enabled .bogus_folder_select {
+  border-radius: var(--th-modern-radius-xs);
+}
+
+body.th-modern-enabled #qr--bar > .qr--buttons .qr--button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  max-width: min(42vw, 18rem);
+  margin: 0;
+  padding: 4px 9px;
+  border: 1px solid var(--th-modern-line);
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 90%, black 10%);
+  box-shadow: var(--th-modern-soft-shadow);
+  color: color-mix(in srgb, var(--SmartThemeBodyColor) 82%, transparent);
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    transform var(--th-modern-motion-duration),
+    border-color var(--th-modern-motion-duration),
+    box-shadow var(--th-modern-motion-duration),
+    background-color var(--th-modern-motion-duration),
+    color var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled #qr--bar > .qr--buttons .qr--button:hover {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 34%, transparent);
+  background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, var(--SmartThemeBlurTintColor) 84%);
+  color: var(--SmartThemeEmColor);
+  filter: none;
+  transform: translateY(-1px);
+}
+
+body.th-modern-enabled #qr--bar > .qr--buttons .qr--button .qr--button-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled #qr--bar > .qr--buttons .qr--button > .qr--button-expander {
+  position: static;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 1em;
+  margin-left: 0.5em;
+  padding-left: 0.5em;
+}
+
+body.th-modern-enabled #qr--bar > .qr--buttons > .qr--buttons.qr--color .qr--button {
+  border-color: color-mix(in srgb, var(--qr--color) 42%, var(--th-modern-line));
+}
+
+body.th-modern-enabled #qr--bar > .qr--buttons > .qr--buttons.qr--color .qr--button::before {
+  content: none;
+  display: none;
+}
+
+body.th-modern-enabled .select2-dropdown,
+body.th-modern-enabled .ui-autocomplete,
+body.th-modern-enabled .list-group {
+  z-index: calc(var(--th-modern-overlay-z) + 30);
+  border: 1px solid var(--th-modern-line);
+  border-radius: var(--th-modern-radius-sm);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 94%, black 6%);
+  color: var(--SmartThemeBodyColor);
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--SmartThemeShadowColor) 28%, transparent);
+  overflow: auto;
+}
+
+body.th-modern-enabled .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable,
+body.th-modern-enabled .ui-menu-item-wrapper.ui-state-active {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent);
+  color: var(--SmartThemeEmColor);
+}
+
+body.th-modern-enabled .th-modern-failsafe-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  box-sizing: border-box;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: color-mix(in srgb, black 48%, transparent);
+}
+
+body.th-modern-enabled .th-modern-failsafe-dialog {
+  display: flex;
+  width: min(420px, 100%);
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--th-modern-line);
+  border-radius: var(--th-modern-radius-sm);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 94%, black 6%);
+  box-shadow: 0 18px 46px color-mix(in srgb, var(--SmartThemeShadowColor) 42%, transparent);
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled .th-modern-failsafe-dialog strong {
+  color: var(--SmartThemeEmColor);
+  font-size: calc(var(--mainFontSize) * 1.15);
+}
+
+body.th-modern-enabled .th-modern-failsafe-dialog p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+body.th-modern-enabled .th-modern-failsafe-actions {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 20px;
+}
+
+body.th-modern-enabled .th-modern-failsafe-actions .menu_button {
+  width: unset;
+  min-width: 5.5rem;
+  min-height: 36px;
+  margin: 0;
+  padding: 0.42rem 0.82rem;
+  white-space: nowrap;
+}
+
+body.th-modern-enabled .th-modern-failsafe-confirm {
+  background: color-mix(in srgb, crimson 42%, var(--SmartThemeQuoteColor) 18%);
+  color: white;
+}
+
+body.th-modern-enabled .th-modern-failsafe-dialog button:focus-visible,
+body.th-modern-enabled .th-modern-failsafe-dialog [tabindex]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 78%, white 22%);
+  outline-offset: 2px;
+}
+
+body.th-modern-enabled .th-modern-failsafe-shortcut {
+  display: inline-flex !important;
+  border-color: color-mix(in srgb, crimson 38%, var(--th-modern-line));
+  background: color-mix(in srgb, crimson 14%, var(--SmartThemeBlurTintColor) 72%);
+}
+
+body.th-modern-enabled .welcomePanel .welcomeShortcuts .th-modern-failsafe-shortcut:hover {
+  background: color-mix(in srgb, crimson 24%, var(--SmartThemeBlurTintColor) 68%);
+}
+
+body.th-modern-enabled #top-settings-holder > .drawer > .drawer-content {
+  box-sizing: border-box;
+  min-width: 0;
+  border-radius: 0 var(--th-modern-radius-sm) var(--th-modern-radius-sm) 0;
+}
+
+body.th-modern-enabled #top-settings-holder > .drawer > .drawer-content.openDrawer {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Pinned drawers can remain open together; keep the most recently opened one above the others. */
+body.th-modern-enabled #top-settings-holder > .drawer > .drawer-content.openDrawer.th-modern-drawer-active {
+  z-index: calc(var(--th-modern-overlay-z) + 1);
+}
+
+/* st-memory-enhancement：固定页签栏，并让各页签内容独立滚动。 */
+body.th-modern-enabled #top-settings-holder > #table_database_settings_drawer > #table_drawer_content.openDrawer {
+  overflow: hidden !important;
+}
+
+body.th-modern-enabled
+  #top-settings-holder
+  > #table_database_settings_drawer
+  > #table_drawer_content
+  > .th-modern-drawer-titlebar {
+  flex: 0 0 auto;
+}
+
+body.th-modern-enabled
+  #top-settings-holder
+  > #table_database_settings_drawer
+  > #table_drawer_content
+  > #table_button_container {
+  box-sizing: border-box;
+  align-items: center;
+  flex: 0 0 36px !important;
+  flex-wrap: nowrap;
+  gap: 6px;
+  height: 36px;
+  min-width: 0;
+  min-height: 36px;
+  max-height: 36px;
+}
+
+body.th-modern-enabled
+  #top-settings-holder
+  > #table_database_settings_drawer
+  > #table_drawer_content
+  > #table_button_container
+  > div {
+  align-items: center;
+  height: 36px;
+  min-width: 0;
+}
+
+body.th-modern-enabled
+  #top-settings-holder
+  > #table_database_settings_drawer
+  > #table_drawer_content
+  > #table_button_container
+  :is(#database_button, #editor_button, #setting_button) {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  margin: 0;
+  line-height: 1;
+}
+
+body.th-modern-enabled
+  #top-settings-holder
+  > #table_database_settings_drawer
+  > #table_drawer_content
+  > #app_header_table_container {
+  box-sizing: border-box;
+  flex: 1 1 0 !important;
+  height: 0;
+  min-width: 0;
+  min-height: 0;
+  max-height: none !important;
+  overflow: hidden !important;
+  overscroll-behavior: contain;
+}
+
+body.th-modern-enabled
+  #top-settings-holder
+  > #table_database_settings_drawer
+  > #table_drawer_content
+  > #app_header_table_container
+  > :is(#database-content, #editor-content, #setting-content) {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The plugin's draggable template canvas has an inline 500px minimum height. */
+body.th-modern-enabled
+  #top-settings-holder
+  > #table_database_settings_drawer
+  > #table_drawer_content
+  > #app_header_table_container
+  > #editor-content
+  #table_editor_container
+  > #contentContainer {
+  box-sizing: border-box;
+  min-height: 500px;
+}
+
+@media (max-width: 480px) {
+  body.th-modern-enabled
+    #top-settings-holder
+    > #table_database_settings_drawer
+    > #table_drawer_content
+    > #table_button_container
+    :is(#database_button, #editor_button, #setting_button) {
+    min-width: 0;
+    padding-inline: 8px;
+  }
+}
+
+body.th-modern-enabled .th-modern-drawer-titlebar {
+  position: relative;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 40px;
+  margin: 0 0 10px 0;
+  padding: 4px 6px;
+  border-bottom: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.th-modern-enabled .th-modern-drawer-title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--SmartThemeBodyColor) !important;
+  font-size: calc(var(--mainFontSize) * 1.1);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: none !important;
+  -webkit-text-fill-color: var(--SmartThemeBodyColor) !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+}
+
+body.th-modern-enabled .th-modern-drawer-actions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+body.th-modern-enabled .th-modern-drawer-close,
+body.th-modern-enabled .th-modern-drawer-fullscreen-toggle,
+body.th-modern-enabled .th-modern-drawer-actions .notes-link,
+body.th-modern-enabled .th-modern-drawer-actions .help_button,
+body.th-modern-enabled .th-modern-drawer-actions .help-button,
+body.th-modern-enabled .th-modern-drawer-actions a:has(.note-link-span),
+body.th-modern-enabled .th-modern-drawer-actions a[href*="docs.sillytavern.app"] {
+  position: static !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: none !important;
+  float: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 30px !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 30%, transparent) !important;
+  border-radius: var(--th-modern-radius-sm) !important;
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent) !important;
+  color: var(--SmartThemeBodyColor) !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+}
+
+body.th-modern-enabled .th-modern-drawer-actions .notes-link i,
+body.th-modern-enabled .th-modern-drawer-actions .notes-link .note-link-span,
+body.th-modern-enabled .th-modern-drawer-actions .note-link-span,
+body.th-modern-enabled .th-modern-drawer-actions a:has(.note-link-span) .note-link-span,
+body.th-modern-enabled .th-modern-drawer-actions .help_button i,
+body.th-modern-enabled .th-modern-drawer-actions .help-button i {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  font-size: calc(var(--mainFontSize) * 0.95) !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+}
+
+body.th-modern-enabled .th-modern-drawer-close:hover,
+body.th-modern-enabled .th-modern-drawer-fullscreen-toggle:hover,
+body.th-modern-enabled .th-modern-drawer-actions .notes-link:hover,
+body.th-modern-enabled .th-modern-drawer-actions .help_button:hover,
+body.th-modern-enabled .th-modern-drawer-actions .help-button:hover,
+body.th-modern-enabled .th-modern-drawer-actions a:has(.note-link-span):hover,
+body.th-modern-enabled .th-modern-drawer-actions a[href*="docs.sillytavern.app"]:hover,
+body.th-modern-enabled .th-modern-drawer-fullscreen-toggle.is-fullscreen {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 28%, transparent) !important;
+  color: var(--SmartThemeEmColor) !important;
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 44%, transparent) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 14%, transparent) !important;
+}
+
+/* 彻底清除抽屉正文原生旧绝对定位带来的右上角遮挡残留 */
+body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(.th-modern-drawer-titlebar) .notes-link,
+body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(.th-modern-drawer-titlebar) .note-link-span,
+body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(.th-modern-drawer-titlebar) .help_button,
+body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(.th-modern-drawer-titlebar) a:has(.note-link-span),
+body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(.th-modern-drawer-titlebar) a[href*="docs.sillytavern.app"] {
+  position: static !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  float: none !important;
+}
+
+body.th-modern-enabled .th-modern-icon-button.bi::before,
+body.th-modern-enabled .th-modern-drawer-close.bi::before,
+body.th-modern-enabled .th-modern-drawer-fullscreen-toggle.bi::before {
+  display: block;
+  line-height: 1;
+}
+
+@media (max-width: 899.98px) {
+  body.th-modern-enabled {
+    --th-modern-effective-input-bottom-gap: max(
+      var(--th-modern-input-bottom-gap),
+      env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  body.th-modern-enabled #top-settings-holder {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    justify-content: space-between !important;
+    border-bottom: 1px solid var(--th-modern-line) !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+    height: var(--topBarBlockSize, 40px) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  body.th-modern-enabled #top-settings-holder > .drawer {
+    display: flex !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  body.th-modern-enabled #top-settings-holder > .drawer > .drawer-toggle {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-left: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    transition: background-color var(--th-modern-motion-duration) ease,
+                border-color var(--th-modern-motion-duration) ease !important;
+  }
+
+  body.th-modern-enabled #top-settings-holder > .drawer > .drawer-toggle:hover {
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent) !important;
+  }
+
+  /* 移动端激活态：底部横向强调条，整体居中平铺，清除桌面端左侧竖条与多余内边距 */
+  body.th-modern-enabled #top-settings-holder > .drawer > .drawer-toggle:has(.drawer-icon.openIcon),
+  body.th-modern-enabled #top-settings-holder > .drawer.openDrawer > .drawer-toggle,
+  body.th-modern-enabled #top-settings-holder > .drawer:has(.drawer-content.openDrawer) > .drawer-toggle {
+    border: none !important;
+    border-left: none !important;
+    border-bottom: 3px solid var(--SmartThemeQuoteColor) !important;
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent) !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  body.th-modern-enabled #top-settings-holder .drawer-icon,
+  body.th-modern-enabled #top-settings-holder .drawer-icon:hover {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    filter: none !important;
+    position: relative !important;
+  }
+
+  /* 确保第三方主题在 ::after 上的图标在移动端水平垂直居中 */
+  body.th-modern-enabled #top-settings-holder .drawer-icon::after {
+    position: absolute !important;
+    inset: 0 !important;
+    background-position: center center !important;
+    background-size: 20px 20px !important;
+    background-repeat: no-repeat !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  body.th-modern-enabled #top-settings-holder > .drawer > .drawer-content {
+    position: fixed;
+    inset: var(--topBarBlockSize) 0 auto 0;
+    z-index: var(--th-modern-overlay-z);
+    display: none !important;
+    flex-direction: column;
+    width: 100dvw !important;
+    height: calc(100dvh - var(--topBarBlockSize));
+    max-width: 100dvw;
+    max-height: calc(100dvh - var(--topBarBlockSize));
+    margin: 0;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    overflow-y: auto;
+    border-radius: 0;
+    pointer-events: none;
+    transition:
+      opacity var(--th-modern-motion-duration) ease,
+      clip-path var(--th-modern-motion-duration) cubic-bezier(0.2, 0.8, 0.2, 1),
+      display var(--th-modern-motion-duration) allow-discrete !important;
+    transition-behavior: allow-discrete;
+    will-change: clip-path, opacity;
+    animation: none !important;
+  }
+
+  body.th-modern-enabled #top-settings-holder > .drawer > .drawer-content.openDrawer {
+    display: flex !important;
+    clip-path: inset(0);
+    opacity: 1;
+    pointer-events: auto;
+
+    @starting-style {
+      clip-path: inset(0 100% 0 0);
+      opacity: 0;
+    }
+  }
+
+  body.th-modern-enabled #form_sheld {
+    position: absolute;
+    right: max(8px, env(safe-area-inset-right));
+    bottom: var(--th-modern-effective-input-bottom-gap);
+    left: max(8px, env(safe-area-inset-left));
+    width: auto !important;
+    margin: 0;
+  }
+
+  body.th-modern-enabled #nonQRFormItems {
+    min-height: 88px;
+    padding: 12px 12px 10px;
+  }
+
+  body.th-modern-enabled #send_textarea {
+    min-height: 64px !important;
+    max-height: 28dvh !important;
+    padding: 4px 10px 46px 10px !important;
+  }
+
+  body.th-modern-enabled #qr--bar {
+    justify-content: flex-start;
+    padding: 0 38px 0 4px;
+  }
+
+  body.th-modern-enabled #qr--bar.popoutVisible {
+    padding-right: 38px;
+  }
+
+  body.th-modern-enabled #qr--bar > .qr--buttons {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  body.th-modern-enabled #qr--bar > .qr--buttons::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.th-modern-enabled #qr--bar > .qr--buttons .qr--button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 900px) {
+  body.th-modern-enabled.th-modern-two-column {
+    overflow-x: hidden;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-bar {
+    display: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #sheld {
+    --th-modern-main-available-width: calc(100vw - var(--th-modern-left-layout-width) - var(--th-modern-main-gap) * 2);
+    box-sizing: border-box;
+    width: min(var(--th-modern-main-available-width), var(--th-modern-main-preferred-width)) !important;
+    height: 100dvh !important;
+    max-width: none !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    top: 0 !important;
+    left: calc(
+        var(--th-modern-left-layout-width) + var(--th-modern-main-gap) +
+        max(0px, calc((var(--th-modern-main-available-width) - var(--th-modern-main-preferred-width)) * 0.5))
+    ) !important;
+    right: auto !important;
+    bottom: 0 !important;
+    margin: 0 !important;
+    transform: none;
+    transition:
+      left var(--th-modern-motion-duration) ease,
+      width var(--th-modern-motion-duration) ease;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-main-fill #sheld {
+    width: var(--th-modern-main-available-width) !important;
+    left: calc(var(--th-modern-left-layout-width) + var(--th-modern-main-gap)) !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-docked-drawer:is(
+      .th-modern-drawer-open,
+      .th-modern-drawer-switching
+    ):not(.th-modern-drawer-fullscreen)
+    #sheld {
+    --th-modern-main-available-width: max(
+      0px,
+      calc(
+        100vw - var(--th-modern-left-layout-width) -
+          min(
+            var(--th-modern-overlay-width, var(--th-modern-overlay-width-fallback)),
+            var(--th-modern-overlay-soft-max-width)
+          ) -
+          var(--th-modern-main-gap) * 2
+      )
+    );
+    width: var(--th-modern-main-available-width) !important;
+    left: calc(
+      var(--th-modern-left-layout-width) +
+        min(
+          var(--th-modern-overlay-width, var(--th-modern-overlay-width-fallback)),
+          var(--th-modern-overlay-soft-max-width)
+        ) +
+        var(--th-modern-main-gap)
+    ) !important;
+  }
+
+  body.th-modern-enabled.th-modern-resizing #sheld {
+    transition: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #form_sheld,
+  body.th-modern-enabled.th-modern-two-column #chat,
+  body.th-modern-enabled.th-modern-two-column #send_form {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #chat {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100% !important;
+    max-height: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #form_sheld {
+    position: absolute;
+    right: var(--th-modern-input-inline-inset);
+    bottom: var(--th-modern-input-bottom-gap);
+    left: var(--th-modern-input-inline-inset);
+    z-index: 45;
+    width: auto !important;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #form_sheld #dialogue_del_mes,
+  body.th-modern-enabled.th-modern-two-column #form_sheld #send_form {
+    pointer-events: auto;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #form_sheld {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #send_form {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0;
+    border: none !important;
+    border-width: 0 !important;
+    border-color: transparent !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0 !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #send_form:focus-within,
+  body.th-modern-enabled.th-modern-two-column #send_form:has(#send_textarea:focus-visible) {
+    border-color: transparent !important;
+    outline: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #send_form #file_form:not(.displayNone) {
+    margin-bottom: 8px;
+    border: 1px solid var(--th-modern-line);
+    border-radius: var(--th-modern-radius-sm);
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--SmartThemeShadowColor) 24%, transparent);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #nonQRFormItems {
+    display: block;
+    min-height: 94px;
+    padding: 14px 14px 12px;
+    box-shadow: var(--th-modern-input-shadow);
+    transition:
+      border-color var(--th-modern-motion-duration),
+      box-shadow var(--th-modern-motion-duration),
+      background-color var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #nonQRFormItems:focus-within {
+    border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 48%, var(--th-modern-line));
+    box-shadow:
+      var(--th-modern-input-shadow),
+      0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #send_textarea {
+    box-sizing: border-box !important;
+    display: block !important;
+    width: 100% !important;
+    min-height: 68px !important;
+    height: auto;
+    max-height: 34dvh !important;
+    margin: 0 !important;
+    border: none !important;
+    border-top: 0 !important;
+    border-bottom: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    padding: 4px 10px 48px 10px !important;
+    clip-path: none !important;
+    resize: none !important;
+    color: var(--SmartThemeBodyColor) !important;
+    line-height: 1.45 !important;
+    text-align: left !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #send_textarea::placeholder {
+    color: color-mix(in srgb, var(--SmartThemeBodyColor) 48%, transparent);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #leftSendForm,
+  body.th-modern-enabled.th-modern-two-column #rightSendForm {
+    position: absolute;
+    bottom: 10px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #leftSendForm {
+    left: 12px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rightSendForm {
+    right: 10px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #leftSendForm > div,
+  body.th-modern-enabled.th-modern-two-column #rightSendForm > div:not(.mes_stop),
+  body.th-modern-enabled.th-modern-two-column #send_form .mes_stop {
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background-color: transparent;
+    color: color-mix(in srgb, var(--SmartThemeBodyColor) 82%, transparent);
+    opacity: 0.9;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #leftSendForm > div:hover,
+  body.th-modern-enabled.th-modern-two-column #rightSendForm > div:not(.mes_stop):hover,
+  body.th-modern-enabled.th-modern-two-column #send_form .mes_stop:hover {
+    border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent);
+    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent);
+    color: var(--SmartThemeEmColor);
+    filter: none;
+    opacity: 1;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rightSendForm > #send_but {
+    width: 38px !important;
+    height: 38px !important;
+    margin-left: 4px;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 36%, transparent) !important;
+    border-radius: 999px !important;
+    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 42%, transparent) !important;
+    color: var(--SmartThemeEmColor) !important;
+    box-shadow: var(--th-modern-soft-shadow) !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rightSendForm > #send_but:hover {
+    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 58%, transparent) !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #qr--bar {
+    position: absolute;
+    right: 0;
+    bottom: calc(var(--th-modern-input-stack-offset) + 10px);
+    left: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    width: auto;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 44px;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #qr--bar.popoutVisible {
+    padding-right: 44px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-quick-replies-collapsed #qr--bar {
+    max-height: 0;
+    overflow: hidden !important;
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #qr--bar > #qr--popoutTrigger {
+    display: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #qr--bar > .qr--buttons {
+    display: flex;
+    justify-content: center;
+    width: auto;
+    max-width: 100%;
+    gap: 6px;
+    pointer-events: auto;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #qr--bar > .qr--buttons .qr--button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    max-width: min(42vw, 18rem);
+    margin: 0;
+    padding: 4px 9px;
+    border: 1px solid var(--th-modern-line);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--SmartThemeBlurTintColor) 90%, black 10%);
+    box-shadow: var(--th-modern-soft-shadow);
+    color: color-mix(in srgb, var(--SmartThemeBodyColor) 82%, transparent);
+    overflow: hidden;
+    white-space: nowrap;
+    transition:
+      transform var(--th-modern-motion-duration),
+      border-color var(--th-modern-motion-duration),
+      box-shadow var(--th-modern-motion-duration),
+      background-color var(--th-modern-motion-duration),
+      color var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #qr--bar > .qr--buttons .qr--button:hover {
+    border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 34%, transparent);
+    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, var(--SmartThemeBlurTintColor) 84%);
+    color: var(--SmartThemeEmColor);
+    filter: none;
+    transform: translateY(-1px);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #th-modern-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: var(--th-modern-layout-z);
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    width: var(--th-modern-left-visual-width);
+    height: 100dvh;
+    padding: 12px;
+    pointer-events: none;
+    transition: border-radius var(--th-modern-motion-duration) ease;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder {
+    position: fixed;
+    inset: var(--th-modern-left-nav-top) auto auto 0;
+    z-index: var(--th-modern-layout-nav-z);
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: var(--th-modern-left-visual-width);
+    height: var(--th-modern-left-nav-height);
+    max-height: var(--th-modern-left-nav-height);
+    margin: 0;
+    padding: 0 12px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    scrollbar-gutter: stable;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-drawer-open #top-settings-holder {
+    z-index: var(--th-modern-overlay-z);
+  }
+
+  /* 抽屉开启时：侧栏右侧圆角清零，与抽屉面板无缝相连，消除连接处的三角空隙 */
+  body.th-modern-enabled.th-modern-two-column:is(.th-modern-drawer-open, .th-modern-drawer-switching) #th-modern-sidebar {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-content {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse.th-modern-sidebar-temp-expanded:not(.th-modern-sidebar-collapsed) #th-modern-sidebar {
+    z-index: calc(var(--th-modern-overlay-z) - 2);
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse.th-modern-sidebar-temp-expanded:not(.th-modern-sidebar-collapsed) #top-settings-holder {
+    z-index: calc(var(--th-modern-overlay-z) - 1);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer {
+    display: block;
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    padding: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder .drawer-toggle,
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle {
+    position: relative !important;
+    overflow: hidden;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box;
+    align-items: center;
+    width: 100%;
+    min-height: 38px;
+    gap: 10px;
+    margin: 1px 0;
+    padding: 7px 9px;
+    border-radius: var(--th-modern-radius-sm);
+    color: var(--SmartThemeBodyColor);
+    cursor: pointer;
+    transition:
+      background-color var(--th-modern-motion-duration),
+      color var(--th-modern-motion-duration),
+      opacity var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > #rightNavHolder > #unimportantYes {
+    width: 100%;
+    height: auto;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:hover {
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:has(.drawer-icon.openIcon) {
+    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
+    color: var(--SmartThemeEmColor);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder .drawer-icon {
+    position: static !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    max-width: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0;
+    background-color: transparent;
+    box-shadow: none;
+    font-size: calc(var(--mainFontSize) * 1.05);
+    opacity: 0.82;
+    pointer-events: auto !important;
+    transition: opacity var(--th-modern-motion-duration);
+    transform: none !important;
+    filter: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder .drawer-icon:hover {
+    opacity: 0.82;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder .drawer-icon.openIcon {
+    opacity: 1;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* 核心修复（蓝本）：全行物理热区覆盖，使整行任何点击天然命中原生 .drawer-icon，完美实现单点开关与原生一致交互；
+     同时通过 11px 左对齐与 20px 尺寸约束，完美兼容 Gruvbox 等把 SVG 图标挂在 ::after 上的第三方主题，杜绝拉伸 */
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder .drawer-icon::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 2 !important;
+    background-color: transparent !important;
+    background-repeat: no-repeat !important;
+    background-position: 11px center !important;
+    background-size: 20px 20px !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    transition: filter 0.25s ease-out !important;
+  }
+
+  /* 悬停光晕安全挂载于叶子伪元素 ::after，避免触发父级包含块重排导致的高频抽搐跳动 */
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:hover .drawer-icon::after {
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--SmartThemeQuoteColor) 65%, transparent)) !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed #top-settings-holder .drawer-icon::after,
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) #top-settings-holder .drawer-icon::after {
+    background-position: center !important;
+    background-size: 22px 22px !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-topbar-label {
+    position: relative;
+    z-index: 1;
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--SmartThemeBodyColor);
+    font-size: calc(var(--mainFontSize) * 0.92);
+    line-height: 1.25;
+    pointer-events: none !important;
+    user-select: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body.th-modern-enabled.th-modern-two-column
+    #top-settings-holder
+    > .drawer
+    > .drawer-toggle:has(.drawer-icon.openIcon)
+    .th-modern-topbar-label {
+    color: inherit;
+  }
+
+  body.th-modern-enabled.th-modern-two-column:not(.th-modern-docked-drawer) #top-settings-holder > .drawer > .drawer-content {
+    position: fixed !important;
+    inset: 0 0 0 var(--th-modern-left-visual-width) !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: var(--th-modern-left-visual-width) !important;
+    z-index: var(--th-modern-overlay-z);
+    display: none !important;
+    width: auto !important;
+    max-width: none !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 100dvh !important;
+    margin: 0;
+    padding: 10px 16px;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    pointer-events: none;
+    transform: none;
+    transform-origin: left center;
+    transition:
+      opacity var(--th-modern-motion-duration) ease,
+      clip-path var(--th-modern-motion-duration) cubic-bezier(0.2, 0.8, 0.2, 1),
+      display var(--th-modern-motion-duration) allow-discrete !important;
+    transition-behavior: allow-discrete;
+    will-change: clip-path, opacity;
+    animation: none !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%) !important;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-docked-drawer #top-settings-holder > .drawer > .drawer-content {
+    position: fixed !important;
+    inset: 0 auto 0 var(--th-modern-left-visual-width) !important;
+    top: 0 !important;
+    right: auto !important;
+    bottom: 0 !important;
+    left: var(--th-modern-left-visual-width) !important;
+    z-index: var(--th-modern-overlay-z);
+    display: none !important;
+    width: min(
+      var(--th-modern-overlay-width, var(--th-modern-overlay-width-fallback)),
+      var(--th-modern-overlay-soft-max-width)
+    ) !important;
+    max-width: var(--th-modern-overlay-soft-max-width) !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 100dvh !important;
+    margin: 0;
+    padding: 5px;
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    pointer-events: none;
+    transform: none;
+    transform-origin: left center;
+    transition:
+      opacity var(--th-modern-motion-duration) ease,
+      clip-path var(--th-modern-motion-duration) cubic-bezier(0.2, 0.8, 0.2, 1),
+      display var(--th-modern-motion-duration) allow-discrete !important;
+    transition-behavior: allow-discrete;
+    will-change: clip-path, opacity;
+    animation: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-content.openDrawer {
+    display: flex !important;
+    clip-path: inset(0);
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+
+    @starting-style {
+      clip-path: inset(0 100% 0 0);
+      opacity: 0;
+    }
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-drawer-fullscreen
+    #top-settings-holder
+    > .drawer
+    > .drawer-content.th-modern-drawer-fullscreen-content {
+    width: var(--th-modern-overlay-fullscreen-width) !important;
+    max-width: var(--th-modern-overlay-fullscreen-width) !important;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-content.closedDrawer {
+    display: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-sidebar-brand,
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-section {
+    pointer-events: auto;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-sidebar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 44px;
+    margin-bottom: 10px;
+    padding: 0 8px;
+    color: var(--SmartThemeEmColor);
+    font-weight: 700;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-brand-main {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 10px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-brand-logo {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    object-fit: contain;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-brand-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-section {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: var(--th-modern-recent-min-height);
+    margin-top: calc(var(--th-modern-left-nav-height) + 6px);
+    padding-top: 10px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 4px;
+    padding: 2px 0 6px 0;
+    border: 0;
+    border-top: 1px solid var(--th-modern-line);
+    background: transparent;
+    color: color-mix(in srgb, var(--SmartThemeBodyColor) 78%, transparent);
+    font-family: inherit;
+    font-size: calc(var(--mainFontSize) * 0.9);
+    text-align: left;
+    cursor: default;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-section-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1 1 auto;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: var(--th-modern-radius-sm);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-weight: 500;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color var(--th-modern-motion-duration),
+      color var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-toggle:hover,
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-toggle:focus-visible {
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent);
+    color: var(--SmartThemeEmColor);
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-toggle:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 72%, transparent);
+    outline-offset: 2px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-collapse {
+    flex: 0 0 auto;
+    width: auto;
+    height: auto;
+    margin: 0;
+    background: transparent !important;
+    pointer-events: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-section-actions {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 4px;
+    padding-right: 2px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: var(--th-modern-radius-sm);
+    background: transparent;
+    color: var(--SmartThemeBodyColor);
+    cursor: pointer;
+    transition:
+      background-color var(--th-modern-motion-duration),
+      color var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-icon-button:hover {
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent);
+    color: var(--SmartThemeEmColor);
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed #th-modern-sidebar {
+    padding-inline: 8px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed #top-settings-holder {
+    padding-inline: 8px;
+    overflow-x: hidden;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed #top-settings-holder > .drawer > .drawer-toggle {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 7px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed #top-settings-holder .drawer-icon {
+    flex: 0 0 28px !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-topbar-label,
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-brand-name,
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-section-label,
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-section-actions,
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-recent-main,
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-recent-meta {
+    display: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-sidebar-brand {
+    gap: 4px;
+    padding-inline: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-brand-main {
+    flex: 0 0 auto;
+    justify-content: center;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-section-header {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-recent-toggle {
+    justify-content: center;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-recent-collapse {
+    margin-left: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) #th-modern-sidebar {
+    padding-inline: 8px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) #top-settings-holder {
+    padding-inline: 8px;
+    overflow-x: hidden;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) #top-settings-holder > .drawer > .drawer-toggle {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 7px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) #top-settings-holder .drawer-icon {
+    flex: 0 0 28px !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-topbar-label,
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-brand-name,
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-section-label,
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-section-actions,
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-recent-main,
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-recent-meta {
+    display: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-sidebar-brand {
+    gap: 4px;
+    padding-inline: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-brand-main {
+    flex: 0 0 auto;
+    justify-content: center;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-section-header {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded)
+    .th-modern-recent-toggle {
+    justify-content: center;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-recent-collapse {
+    margin-left: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-section.is-collapsed {
+    flex: 0 0 auto;
+    min-height: auto;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-section.is-collapsed .th-modern-recent-list {
+    display: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-list {
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 0;
+    margin-top: 4px;
+    padding: 6px;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 24%, transparent);
+    border-radius: var(--th-modern-radius-sm);
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 85%, black 15%);
+    box-shadow: var(--th-modern-glass-shadow);
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-gutter: auto;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 40%, transparent) transparent;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat {
+    display: grid;
+    box-sizing: border-box;
+    grid-template-columns: 32px minmax(0, 1fr) minmax(42px, 54px);
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 50px;
+    padding: 7px 9px;
+    border: 1px solid transparent;
+    border-radius: var(--th-modern-radius-sm);
+    background: transparent;
+    color: var(--SmartThemeBodyColor);
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color var(--th-modern-motion-duration),
+      border-color var(--th-modern-motion-duration),
+      color var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat:hover,
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat.is-current {
+    border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 42%, transparent);
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent);
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-recent-list {
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 6px 0;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-recent-chat {
+    display: inline-flex;
+    justify-content: center;
+    width: 44px;
+    min-height: 44px;
+    padding: 5px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-recent-list {
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 6px 0;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-recent-chat {
+    display: inline-flex;
+    justify-content: center;
+    width: 44px;
+    min-height: 44px;
+    padding: 5px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-avatar {
+    min-width: 0;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    border-radius: var(--th-modern-radius-sm);
+    background: var(--th-modern-surface-soft);
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-main {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-title,
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-message {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-title {
+    color: var(--SmartThemeBodyColor);
+    font-size: calc(var(--mainFontSize) * 0.9);
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-message,
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-meta,
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-state {
+    color: color-mix(in srgb, var(--SmartThemeBodyColor) 62%, transparent);
+    font-size: calc(var(--mainFontSize) * 0.78);
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-meta {
+    display: flex;
+    min-width: 0;
+    max-width: 54px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    white-space: nowrap;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-meta > span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body.th-modern-enabled.th-modern-two-column .th-modern-recent-state {
+    padding: 12px 8px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed .th-modern-recent-state {
+    display: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) .th-modern-recent-state {
+    display: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #th-modern-sidebar-resize-handle,
+  body.th-modern-enabled.th-modern-two-column #th-modern-overlay-resize-handle {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: calc(var(--th-modern-overlay-z) + 2);
+    box-sizing: border-box;
+    width: 14px;
+    cursor: ew-resize;
+    touch-action: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #th-modern-sidebar-resize-handle::before,
+  body.th-modern-enabled.th-modern-two-column #th-modern-overlay-resize-handle::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 56px;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 72%, transparent);
+    border-radius: 999px;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--SmartThemeQuoteColor) 42%, transparent),
+        color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent)
+      ),
+      color-mix(in srgb, var(--SmartThemeBlurTintColor) 78%, black 22%);
+    box-shadow:
+      0 10px 24px color-mix(in srgb, var(--SmartThemeShadowColor) 20%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--SmartThemeBodyColor) 18%, transparent);
+    content: '';
+    opacity: 0.62;
+    transform: translate(-50%, -50%);
+    transition:
+      opacity var(--th-modern-motion-duration),
+      transform var(--th-modern-motion-duration),
+      background-color var(--th-modern-motion-duration),
+      border-color var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #th-modern-sidebar-resize-handle::after,
+  body.th-modern-enabled.th-modern-two-column #th-modern-overlay-resize-handle::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 28px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--SmartThemeEmColor) 62%, transparent);
+    content: '';
+    opacity: 0.7;
+    transform: translate(-50%, -50%);
+  }
+
+  body.th-modern-enabled.th-modern-two-column:not(.th-modern-sidebar-collapsed):not(.th-modern-auto-collapse):not(.th-modern-drawer-open):not(.th-modern-drawer-switching) #th-modern-sidebar-resize-handle {
+    left: calc(var(--th-modern-left-visual-width) - 7px);
+    display: block;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-docked-drawer:is(
+      .th-modern-drawer-open,
+      .th-modern-drawer-switching
+    ):not(.th-modern-drawer-fullscreen):not(.th-modern-sidebar-collapsed):not(.th-modern-auto-collapse)
+    #th-modern-sidebar-resize-handle {
+    left: calc(var(--th-modern-left-visual-width) - 7px);
+    display: block;
+  }
+
+  body.th-modern-enabled.th-modern-two-column:is(.th-modern-drawer-open, .th-modern-drawer-switching):not(
+      .th-modern-drawer-fullscreen
+    )
+    #th-modern-overlay-resize-handle {
+    left: calc(
+      var(--th-modern-left-layout-width) +
+        min(
+          var(--th-modern-overlay-width, var(--th-modern-overlay-width-fallback)),
+          var(--th-modern-overlay-soft-max-width)
+        ) -
+        7px
+    );
+    display: block;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #th-modern-sidebar-resize-handle:hover::before,
+  body.th-modern-enabled.th-modern-two-column #th-modern-overlay-resize-handle:hover::before,
+  body.th-modern-enabled.th-modern-resizing #th-modern-sidebar-resize-handle::before,
+  body.th-modern-enabled.th-modern-resizing #th-modern-overlay-resize-handle::before {
+    border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 62%, var(--SmartThemeBorderColor));
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--SmartThemeQuoteColor) 62%, transparent),
+        color-mix(in srgb, var(--SmartThemeQuoteColor) 30%, transparent)
+      ),
+      color-mix(in srgb, var(--SmartThemeBlurTintColor) 72%, black 28%);
+    opacity: 1;
+    transform: translate(-50%, -50%) scaleX(1.24);
+  }
+
+  body.th-modern-enabled.th-modern-resizing,
+  body.th-modern-enabled.th-modern-resizing * {
+    cursor: ew-resize !important;
+    user-select: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block.openDrawer > .flex-container.flexFlowColumn {
+    display: grid;
+    flex: 1 1 auto;
+    grid-template-columns: minmax(280px, 330px) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: stretch;
+    gap: 14px;
+    min-height: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main-API-selector-block {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    grid-row: 1 / 3;
+    align-self: stretch;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    grid-column: 1;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 30%, transparent);
+    border-radius: var(--th-modern-radius-sm);
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 90%, black 10%);
+    box-shadow: var(--th-modern-glass-shadow);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main-API-selector-block select,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api {
+    width: 100%;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size],
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size],
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size] {
+    display: block;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 6px;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 45%, transparent);
+    border-radius: var(--th-modern-radius-sm);
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 88%, var(--SmartThemeBodyColor) 12%);
+    color: var(--SmartThemeBodyColor);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    accent-color: var(--SmartThemeQuoteColor);
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 50%, transparent) transparent;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size]:focus,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size]:focus,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size]:focus {
+    border-color: var(--SmartThemeQuoteColor);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, transparent),
+      inset 0 1px 3px rgba(0, 0, 0, 0.25);
+    outline: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size] option,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size] option,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size] option {
+    min-height: 28px;
+    padding: 6px 12px;
+    margin: 1px 0;
+    border-radius: var(--th-modern-radius-xs);
+    background-color: transparent;
+    color: color-mix(in srgb, var(--SmartThemeBodyColor) 85%, transparent);
+    cursor: pointer;
+    transition: background-color var(--th-modern-motion-duration), color var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size] option:hover,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size] option:hover,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size] option:hover {
+    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent) !important;
+    color: var(--SmartThemeEmColor) !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size] option:checked,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size] option:checked,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size] option:checked {
+    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 32%, var(--SmartThemeBlurTintColor) 68%) !important;
+    color: var(--SmartThemeEmColor) !important;
+    font-weight: 600;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size='1'],
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api:not([size]) {
+    flex: 0 0 auto;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    overflow: hidden !important;
+    padding: 6px 12px !important;
+    line-height: 26px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size]:not([size='1']) {
+    flex: 0 0 auto;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: 190px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size],
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size] {
+    flex: 1 1 auto;
+    min-height: 280px !important;
+    max-height: none;
+    height: auto !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size]::-webkit-scrollbar,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size]::-webkit-scrollbar,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size]::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size]::-webkit-scrollbar-track,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size]::-webkit-scrollbar-track,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size]::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size]::-webkit-scrollbar-thumb,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size]::-webkit-scrollbar-thumb,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size]::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 45%, transparent);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main_api[size]::-webkit-scrollbar-thumb:hover,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #chat_completion_source[size]::-webkit-scrollbar-thumb:hover,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #textgen_type[size]::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 75%, transparent);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block .th-modern-api-source-group {
+    display: flex;
+    min-height: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block .th-modern-api-source-group.is-empty {
+    display: none;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block .th-modern-api-source-group h4 {
+    flex: 0 0 auto;
+    margin-top: 0;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block #main-API-selector-block h4,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block .th-modern-api-source-group h4 {
+    color: var(--SmartThemeEmColor);
+    font-size: calc(var(--mainFontSize) * 0.95);
+  }
+
+
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block.openDrawer {
+    overflow: hidden;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block.openDrawer > .wide100p {
+    flex: 0 0 auto;
+    margin-bottom: 6px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block.openDrawer > .flex-container.flexFlowColumn > div:not(#main-API-selector-block):not(.th-modern-api-footer) {
+    grid-row: 1;
+    grid-column: 2;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block .th-modern-api-footer {
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  body.th-modern-enabled.th-modern-two-column #rm_api_block form,
+  body.th-modern-enabled.th-modern-two-column #rm_api_block [id$='_block'] {
+    min-width: 0;
+  }
+
+}
+
+/* ========================================================
+   API 连接界面：全端通用现代化视觉规范 (#rm_api_block)
+   ======================================================== */
+
+/* ── 标题与分区小标 ── */
+body.th-modern-enabled #rm_api_block > .wide100p h3,
+body.th-modern-enabled #rm_api_block h3#title_api {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  color: var(--SmartThemeEmColor);
+  font-size: calc(var(--mainFontSize) * 1.15);
+  font-weight: 700;
+  margin: 4px 0 10px;
+}
+
+body.th-modern-enabled #rm_api_block > .wide100p h3::before,
+body.th-modern-enabled #rm_api_block h3#title_api::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--SmartThemeQuoteColor);
+  flex: 0 0 auto;
+}
+
+body.th-modern-enabled #rm_api_block h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 8px;
+  color: var(--SmartThemeEmColor);
+  font-size: calc(var(--mainFontSize) * 0.95);
+  font-weight: 600;
+}
+
+body.th-modern-enabled #rm_api_block h4::before {
+  content: '';
+  display: inline-block;
+  width: 3.5px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--SmartThemeQuoteColor);
+  flex: 0 0 auto;
+}
+
+body.th-modern-enabled #rm_api_block .inline-drawer {
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 35%, transparent);
+  border-radius: var(--th-modern-radius-sm);
+  overflow: hidden;
+  margin: 8px 0;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 86%, black 14%);
+}
+
+body.th-modern-enabled #rm_api_block .inline-drawer-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 85%, var(--SmartThemeBodyColor) 15%);
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  color: var(--SmartThemeEmColor);
+  font-weight: 600;
+  margin: 0;
+  transition: background-color var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled #rm_api_block .inline-drawer-toggle:hover {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 14%, var(--SmartThemeBlurTintColor));
+}
+
+body.th-modern-enabled #rm_api_block .inline-drawer-toggle:not(:has(h4))::before {
+  content: '';
+  display: inline-block;
+  width: 3.5px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--SmartThemeQuoteColor);
+  flex: 0 0 auto;
+  margin-right: 4px;
+}
+
+body.th-modern-enabled #rm_api_block .inline-drawer-content {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 68%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 25%, transparent);
+}
+
+/* ── 表单控件统一美化（输入框、选择框、按钮） ── */
+body.th-modern-enabled #rm_api_block input[type='text'],
+body.th-modern-enabled #rm_api_block input[type='password'],
+body.th-modern-enabled #rm_api_block input[type='number'],
+body.th-modern-enabled #rm_api_block select:not([size]),
+body.th-modern-enabled #rm_api_block textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 12px !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 40%, transparent) !important;
+  border-radius: var(--th-modern-radius-sm) !important;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 85%, var(--SmartThemeBodyColor) 15%) !important;
+  color: var(--SmartThemeBodyColor) !important;
+  font-size: calc(var(--mainFontSize) * 0.92) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  transition:
+    border-color var(--th-modern-motion-duration),
+    box-shadow var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled #rm_api_block input[type='text']:focus,
+body.th-modern-enabled #rm_api_block input[type='password']:focus,
+body.th-modern-enabled #rm_api_block input[type='number']:focus,
+body.th-modern-enabled #rm_api_block select:not([size]):focus,
+body.th-modern-enabled #rm_api_block textarea:focus {
+  border-color: var(--SmartThemeQuoteColor) !important;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, transparent),
+    inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  outline: none !important;
+}
+
+body.th-modern-enabled #rm_api_block .menu_button,
+body.th-modern-enabled #rm_api_block button.menu_button,
+body.th-modern-enabled #rm_api_block input[type='button'].menu_button {
+  padding: 3px 8px !important;
+  min-height: unset !important;
+  height: auto !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 45%, transparent) !important;
+  border-radius: var(--th-modern-radius-xs, 6px) !important;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 80%, var(--SmartThemeBodyColor) 20%) !important;
+  color: var(--SmartThemeBodyColor) !important;
+  font-size: calc(var(--mainFontSize) * 0.88) !important;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--th-modern-motion-duration),
+    border-color var(--th-modern-motion-duration),
+    color var(--th-modern-motion-duration),
+    box-shadow var(--th-modern-motion-duration);
+}
+
+/* 严格守卫原生隐藏属性，避免被 CSS 规则意外唤醒 */
+body.th-modern-enabled #rm_api_block [style*='display: none'],
+body.th-modern-enabled #rm_api_block [style*='display:none'],
+body.th-modern-enabled #rm_api_block .hidden,
+body.th-modern-enabled #rm_api_block [hidden] {
+  display: none !important;
+}
+
+body.th-modern-enabled #rm_api_block .menu_button:hover,
+body.th-modern-enabled #rm_api_block button.menu_button:hover,
+body.th-modern-enabled #rm_api_block input[type='button'].menu_button:hover {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent) !important;
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 60%, transparent) !important;
+  color: var(--SmartThemeEmColor) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, transparent) !important;
+}
+
+body.th-modern-enabled #rm_api_block .online_status {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 14px;
+  padding: 9px 14px;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 35%, transparent);
+  border-radius: var(--th-modern-radius-sm);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 88%, black 12%);
+  color: var(--SmartThemeBodyColor);
+  font-size: calc(var(--mainFontSize) * 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body.th-modern-enabled #rm_api_block .th-modern-api-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 35%, transparent);
+  border-radius: var(--th-modern-radius-sm);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 88%, black 12%);
+}
+
+body.th-modern-enabled #rm_api_block .th-modern-api-footer .checkbox_label {
+  margin: 0;
+}
+
+body.th-modern-enabled #rm_api_block .th-modern-api-footer #viewSecrets {
+  color: var(--SmartThemeQuoteColor);
+  text-decoration: none;
+  cursor: pointer;
+  font-size: calc(var(--mainFontSize) * 0.9);
+  white-space: nowrap;
+  transition: color var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled #rm_api_block .th-modern-api-footer #viewSecrets:hover {
+  color: var(--SmartThemeEmColor);
+  text-decoration: underline;
+}
+
+body.th-modern-enabled #rm_api_block form,
+body.th-modern-enabled #rm_api_block [id$='_block'] {
+  min-width: 0;
+}
+
+/* ========================================================
+   移动端 API 连接界面现代化与触控重构 (#rm_api_block)
+   ======================================================== */
+@media (max-width: 899.98px) {
+  body.th-modern-enabled #rm_api_block {
+    box-sizing: border-box !important;
+    width: 100dvw !important;
+    max-width: 100dvw !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  body.th-modern-enabled #rm_api_block > .wide100p {
+    flex: 0 0 auto !important;
+    padding: 14px 16px 8px !important;
+    margin: 0 !important;
+  }
+
+  body.th-modern-enabled #rm_api_block > .wide100p h3,
+  body.th-modern-enabled #rm_api_block h3#title_api {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    font-size: calc(var(--mainFontSize) * 1.15) !important;
+    font-weight: 700 !important;
+    color: var(--SmartThemeEmColor) !important;
+  }
+
+  body.th-modern-enabled #rm_api_block > .wide100p h3::before,
+  body.th-modern-enabled #rm_api_block h3#title_api::before {
+    content: '' !important;
+    display: inline-block !important;
+    width: 4px !important;
+    height: 18px !important;
+    border-radius: 999px !important;
+    background: var(--SmartThemeQuoteColor) !important;
+    flex: 0 0 auto !important;
+  }
+
+  body.th-modern-enabled #rm_api_block > .flex-container.flexFlowColumn {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0 16px 36px !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+  }
+
+  /* 移动端顶部 API 模式选择器：微卡片化 */
+  body.th-modern-enabled #rm_api_block #main-API-selector-block {
+    position: relative !important;
+    top: auto !important;
+    z-index: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 14px !important;
+    margin: 0 !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 32%, transparent) !important;
+    border-radius: var(--th-modern-radius-sm, 12px) !important;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%),
+      color-mix(in srgb, var(--SmartThemeBlurTintColor) 86%, black 14%)
+    ) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16) !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body.th-modern-enabled #rm_api_block #main-API-selector-block h4,
+  body.th-modern-enabled #rm_api_block .th-modern-api-source-group h4 {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 0 4px !important;
+    font-size: calc(var(--mainFontSize) * 0.95) !important;
+    font-weight: 600 !important;
+    color: var(--SmartThemeEmColor) !important;
+  }
+
+  body.th-modern-enabled #rm_api_block #main-API-selector-block h4::before,
+  body.th-modern-enabled #rm_api_block .th-modern-api-source-group h4::before {
+    content: '' !important;
+    display: inline-block !important;
+    width: 3.5px !important;
+    height: 14px !important;
+    border-radius: 999px !important;
+    background: var(--SmartThemeQuoteColor) !important;
+    flex: 0 0 auto !important;
+  }
+
+  body.th-modern-enabled #rm_api_block #main-API-selector-block select,
+  body.th-modern-enabled #rm_api_block #main_api,
+  body.th-modern-enabled #rm_api_block #chat_completion_source,
+  body.th-modern-enabled #rm_api_block #textgen_type {
+    width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    padding: 6px 12px !important;
+    border-radius: var(--th-modern-radius-xs, 6px) !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 42%, transparent) !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 85%, var(--SmartThemeBodyColor) 15%) !important;
+    color: var(--SmartThemeBodyColor) !important;
+    font-size: calc(var(--mainFontSize) * 0.9) !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .th-modern-api-source-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .th-modern-api-source-group.is-empty {
+    display: none !important;
+  }
+
+  /* 移动端主体配置项流：全宽、干净、间距适宜 */
+  body.th-modern-enabled #rm_api_block > .flex-container.flexFlowColumn > div:not(#main-API-selector-block):not(.th-modern-api-footer) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  /* 移动端输入框触控强化：紧凑舒适，防止误触 */
+  body.th-modern-enabled #rm_api_block input[type='text'],
+  body.th-modern-enabled #rm_api_block input[type='password'],
+  body.th-modern-enabled #rm_api_block input[type='number'],
+  body.th-modern-enabled #rm_api_block select:not([size]),
+  body.th-modern-enabled #rm_api_block textarea {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 36px !important;
+    padding: 6px 10px !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 38%, transparent) !important;
+    border-radius: var(--th-modern-radius-xs, 6px) !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 86%, var(--SmartThemeBodyColor) 14%) !important;
+    color: var(--SmartThemeBodyColor) !important;
+    font-size: calc(var(--mainFontSize) * 0.9) !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    transition: border-color var(--th-modern-motion-duration) ease, box-shadow var(--th-modern-motion-duration) ease !important;
+  }
+
+  body.th-modern-enabled #rm_api_block input[type='text']:focus,
+  body.th-modern-enabled #rm_api_block input[type='password']:focus,
+  body.th-modern-enabled #rm_api_block input[type='number']:focus,
+  body.th-modern-enabled #rm_api_block select:not([size]):focus,
+  body.th-modern-enabled #rm_api_block textarea:focus {
+    border-color: var(--SmartThemeQuoteColor) !important;
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 25%, transparent),
+      inset 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    outline: none !important;
+  }
+
+  /* 移动端按钮触控优化：维持现代化风格，大小贴合酒馆原生紧凑规格 */
+  body.th-modern-enabled #rm_api_block .menu_button,
+  body.th-modern-enabled #rm_api_block button.menu_button,
+  body.th-modern-enabled #rm_api_block input[type='button'].menu_button {
+    box-sizing: border-box !important;
+    min-height: unset !important;
+    height: auto !important;
+    padding: 3px 8px !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 42%, transparent) !important;
+    border-radius: var(--th-modern-radius-xs, 6px) !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 82%, var(--SmartThemeBodyColor) 18%) !important;
+    color: var(--SmartThemeBodyColor) !important;
+    font-size: calc(var(--mainFontSize) * 0.88) !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: inline-flex;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    touch-action: manipulation !important;
+    transition: background-color var(--th-modern-motion-duration) ease,
+                border-color var(--th-modern-motion-duration) ease,
+                color var(--th-modern-motion-duration) ease,
+                transform 0.12s ease !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .menu_button:active,
+  body.th-modern-enabled #rm_api_block button.menu_button:active,
+  body.th-modern-enabled #rm_api_block input[type='button'].menu_button:active {
+    transform: scale(0.98) !important;
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent) !important;
+    border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 60%, transparent) !important;
+  }
+
+  /* 连接主按钮增强强调（如 #api_button_openai、.connect_button 等） */
+  body.th-modern-enabled #rm_api_block [id^='api_button_'],
+  body.th-modern-enabled #rm_api_block button[id*='connect'],
+  body.th-modern-enabled #rm_api_block .connect_button {
+    min-height: 34px !important;
+    padding: 6px 14px !important;
+    border-radius: var(--th-modern-radius-xs, 6px) !important;
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, var(--SmartThemeBlurTintColor) 78%) !important;
+    border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 55%, transparent) !important;
+    color: var(--SmartThemeEmColor) !important;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent) !important;
+  }
+
+  /* 移动端滑块触控支持：24px 大拇指触点与防滑音道 */
+  body.th-modern-enabled #rm_api_block input[type='range'] {
+    width: 100% !important;
+    height: 8px !important;
+    padding: 10px 0 !important;
+    margin: 8px 0 !important;
+    accent-color: var(--SmartThemeQuoteColor) !important;
+    touch-action: pan-y !important;
+    cursor: pointer !important;
+  }
+
+  /* 移动端内置抽屉：现代手风琴卡片 */
+  body.th-modern-enabled #rm_api_block .inline-drawer {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    margin: 10px 0 !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 32%, transparent) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 86%, black 14%) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .inline-drawer-toggle {
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    min-height: 38px !important;
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 88%, var(--SmartThemeBodyColor) 12%) !important;
+    color: var(--SmartThemeEmColor) !important;
+    font-size: calc(var(--mainFontSize) * 0.95) !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .inline-drawer-toggle::before {
+    content: '' !important;
+    display: inline-block !important;
+    width: 3.5px !important;
+    height: 14px !important;
+    border-radius: 999px !important;
+    background: var(--SmartThemeQuoteColor) !important;
+    margin-right: 8px !important;
+    flex: 0 0 auto !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .inline-drawer-content {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    padding: 14px;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 68%, transparent) !important;
+    border-top: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 25%, transparent) !important;
+  }
+
+  /* 移动端在线状态条：微渐变毛玻璃精致卡片 */
+  body.th-modern-enabled #rm_api_block .online_status {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    margin: 6px 0 0 !important;
+    padding: 10px 14px !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 32%, transparent) !important;
+    border-radius: 12px !important;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--SmartThemeChatTintColor) 75%, transparent),
+      color-mix(in srgb, var(--SmartThemeChatTintColor) 60%, transparent)
+    ) !important;
+    color: var(--SmartThemeBodyColor) !important;
+    font-size: calc(var(--mainFontSize) * 0.9) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  /* 移动端底部操作与秘钥查看卡片 */
+  body.th-modern-enabled #rm_api_block .th-modern-api-footer {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin: 6px 0 0 !important;
+    padding: 12px 14px !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 32%, transparent) !important;
+    border-radius: 12px !important;
+    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 88%, black 12%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .th-modern-api-footer .checkbox_label {
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: calc(var(--mainFontSize) * 0.88) !important;
+    cursor: pointer !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .th-modern-api-footer #viewSecrets {
+    display: inline-flex !important;
+    align-items: center !important;
+    min-height: 34px !important;
+    padding: 6px 14px !important;
+    border-radius: 8px !important;
+    border: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 45%, transparent) !important;
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 14%, transparent) !important;
+    color: var(--SmartThemeQuoteColor) !important;
+    font-size: calc(var(--mainFontSize) * 0.88) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all var(--th-modern-motion-duration) ease !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .th-modern-api-footer #viewSecrets:active {
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 28%, transparent) !important;
+    color: var(--SmartThemeEmColor) !important;
+  }
+}
+
+/* ========================================================
+   现代化二次美化与稳健性增强 (Secondary Visual Polish)
+   ======================================================== */
+
+body.th-modern-enabled *::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+body.th-modern-enabled *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body.th-modern-enabled *::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--SmartThemeBorderColor, #888) 32%, transparent);
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+body.th-modern-enabled *::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor, #4a9eff) 75%, transparent);
+}
+
+body.th-modern-enabled #th-modern-sidebar,
+body.th-modern-enabled #top-settings-holder > .drawer > .drawer-content {
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.15)) 35%, transparent);
+}
+
+body.th-modern-enabled .th-modern-recent-chat,
+body.th-modern-enabled .th-modern-recent-item {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  transition: background-color 0.18s ease, transform 0.18s ease, border-color 0.18s ease !important;
+}
+
+body.th-modern-enabled .th-modern-recent-chat:hover,
+body.th-modern-enabled .th-modern-recent-item:hover {
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor, #4a9eff) 14%, transparent) !important;
+  transform: translateX(2px) !important;
+}
+
+body.th-modern-enabled .th-modern-recent-avatar {
+  border-radius: 10px;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--SmartThemeShadowColor, #000) 25%, transparent);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body.th-modern-enabled .th-modern-recent-chat:hover .th-modern-recent-avatar,
+body.th-modern-enabled .th-modern-recent-item:hover .th-modern-recent-avatar {
+  transform: scale(1.06);
+}
+
+/* 统一 AI 响应配置中绑定预设等复选框按钮尺寸与居中对齐（限定在 #rm_api_block 作用域内，避免误伤用户设定等其他面板） */
+body.th-modern-enabled #rm_api_block label.menu_button:has(input[type='checkbox']),
+body.th-modern-enabled #rm_api_block label.menu_button_icon:has(input[type='checkbox']),
+body.th-modern-enabled #rm_api_block .menu_button_icon:has(input[type='checkbox']),
+body.th-modern-enabled #rm_api_block label[title*='绑定'],
+body.th-modern-enabled #rm_api_block [id*='bind_preset'],
+body.th-modern-enabled #rm_api_block [id*='preset_bind'],
+body.th-modern-enabled #rm_api_block [id*='bind_to_api'] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+}
+
+body.th-modern-enabled #rm_api_block label.menu_button input[type='checkbox'],
+body.th-modern-enabled #rm_api_block label.menu_button_icon input[type='checkbox'],
+body.th-modern-enabled #rm_api_block .menu_button:has(input[type='checkbox']) input[type='checkbox'],
+body.th-modern-enabled #rm_api_block label[title*='绑定'] input[type='checkbox'],
+body.th-modern-enabled #rm_api_block [id*='bind_preset'] input[type='checkbox'],
+body.th-modern-enabled #rm_api_block [id*='preset_bind'] input[type='checkbox'],
+body.th-modern-enabled #rm_api_block [id*='bind_to_api'] input[type='checkbox'] {
+  display: none !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.th-modern-enabled #rm_api_block label.menu_button:has(input[type='checkbox']) > i,
+body.th-modern-enabled #rm_api_block label.menu_button:has(input[type='checkbox']) > .fa,
+body.th-modern-enabled #rm_api_block label.menu_button:has(input[type='checkbox']) > .fa-solid,
+body.th-modern-enabled #rm_api_block label.menu_button_icon:has(input[type='checkbox']) > i,
+body.th-modern-enabled #rm_api_block label.menu_button_icon:has(input[type='checkbox']) > .fa,
+body.th-modern-enabled #rm_api_block label.menu_button_icon:has(input[type='checkbox']) > .fa-solid,
+body.th-modern-enabled #rm_api_block [id*='bind_preset'] > i,
+body.th-modern-enabled #rm_api_block [id*='bind_preset'] > .fa,
+body.th-modern-enabled #rm_api_block [id*='bind_preset'] > .fa-solid {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  font-size: 14px !important;
+  text-align: center !important;
+}
+
+/* AI 响应配置中提示词列表随菜单宽度自适应拉伸撑满 */
+body.th-modern-enabled #ai-config-button .drawer-content > * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.th-modern-enabled #completion_prompt_manager,
+body.th-modern-enabled #instruct_prompt_manager,
+body.th-modern-enabled [id*='completion_prompt_manager'],
+body.th-modern-enabled [id*='instruct_prompt_manager'],
+body.th-modern-enabled [id*='prompt_manager'],
+body.th-modern-enabled [class*='prompt_manager'],
+body.th-modern-enabled .range-block:has([id*='prompt_manager']),
+body.th-modern-enabled .range-block:has([class*='prompt_manager']),
+body.th-modern-enabled [id*='prompt_manager_list'],
+body.th-modern-enabled [class*='prompt_manager_list'],
+body.th-modern-enabled .prompt_manager_list {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body.th-modern-enabled [class*='prompt_manager_header'],
+body.th-modern-enabled [class*='prompt_manager_footer'] {
+  display: flex !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-sizing: border-box !important;
+}
+
+body.th-modern-enabled [class*='prompt_manager_footer'] select,
+body.th-modern-enabled select[id*='prompt_manager_footer'],
+body.th-modern-enabled select[id*='append_prompt'] {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.th-modern-enabled [id*='prompt_manager_list'] > li,
+body.th-modern-enabled [class*='prompt_manager_list'] > li,
+body.th-modern-enabled li[class*='prompt_manager_prompt'] {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+body.th-modern-enabled [class*='prompt_manager_list_head'],
+body.th-modern-enabled li[class*='prompt_manager_list_head'] {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  padding: 4px 6px !important;
+}
+
+body.th-modern-enabled [class*='prompt_manager_list_head'] > span,
+body.th-modern-enabled li[class*='prompt_manager_list_head'] > span {
+  white-space: nowrap !important;
+  display: inline-block !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: fit-content !important;
+  line-height: normal !important;
+}
+
+body.th-modern-enabled [class*='prompt_manager_list_head'] > span:first-child,
+body.th-modern-enabled li[class*='prompt_manager_list_head'] > span:first-child {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
+body.th-modern-enabled [class*='prompt_manager_list_head'] > span:last-child,
+body.th-modern-enabled li[class*='prompt_manager_list_head'] > span:last-child {
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+  white-space: nowrap !important;
+}
+
+body.th-modern-enabled #th-modern-sidebar-resize-handle,
+body.th-modern-enabled #th-modern-overlay-resize-handle {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.th-modern-enabled #th-modern-sidebar-resize-handle:hover,
+body.th-modern-enabled #th-modern-overlay-resize-handle:hover,
+body.th-modern-enabled.th-modern-resizing #th-modern-sidebar-resize-handle {
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor, #4a9eff) 65%, transparent) !important;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--SmartThemeQuoteColor, #4a9eff) 50%, transparent);
+}
+
+
+/* ========================================================
+   三次美化：精细打磨 (Tertiary Visual Refinement)
+   ======================================================== */
+
+/* ── 侧边栏品牌区：渐变文字 Logo + 更精致间距 ── */
+body.th-modern-enabled.th-modern-two-column .th-modern-sidebar-brand {
+  padding: 2px 10px 4px;
+  border-bottom: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 28%, transparent);
+  letter-spacing: 0.01em;
+}
+
+body.th-modern-enabled.th-modern-two-column .th-modern-brand-name {
+  background: linear-gradient(
+    90deg,
+    var(--SmartThemeEmColor),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 85%, var(--SmartThemeEmColor) 15%)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: calc(var(--mainFontSize) * 1.02);
+  letter-spacing: 0.02em;
+}
+
+/* ── 侧边栏 nav 项：活跃状态左侧指示条 + 悬浮微升浮（仅桌面端竖排生效） ── */
+@media (min-width: 900px) {
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle {
+    position: relative;
+    padding-left: 12px;
+    border-left: 2px solid transparent;
+    transition:
+      background-color var(--th-modern-motion-duration),
+      border-color var(--th-modern-motion-duration),
+      color var(--th-modern-motion-duration),
+      box-shadow var(--th-modern-motion-duration),
+      opacity var(--th-modern-motion-duration);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:hover {
+    border-left-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 38%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 10%, transparent);
+  }
+
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:has(.drawer-icon.openIcon) {
+    border-left-color: var(--SmartThemeQuoteColor);
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, transparent),
+      color-mix(in srgb, var(--SmartThemeQuoteColor) 10%, transparent) 60%,
+      transparent
+    ) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 14%, transparent);
+  }
+
+  /* 折叠状态下不显示左边框（居中布局） */
+  body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed #top-settings-holder > .drawer > .drawer-toggle,
+  body.th-modern-enabled.th-modern-two-column.th-modern-auto-collapse:not(.th-modern-sidebar-temp-expanded) #top-settings-holder > .drawer > .drawer-toggle {
+    border-left-color: transparent !important;
+    padding-left: 7px;
+  }
+}
+
+/* ── Drawer 图标：活跃时轻微 accent 着色 ── */
+body.th-modern-enabled.th-modern-two-column #top-settings-holder .drawer-icon.openIcon {
+  color: var(--SmartThemeQuoteColor);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--SmartThemeQuoteColor) 48%, transparent);
+  opacity: 1;
+}
+
+/* ── Drawer 标题栏：无背景、自然融入，标题使用高对比度正文字色 ── */
+body.th-modern-enabled .th-modern-drawer-titlebar {
+  background: transparent !important;
+  border-bottom: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+body.th-modern-enabled .th-modern-drawer-title {
+  color: var(--SmartThemeBodyColor) !important;
+  font-size: calc(var(--mainFontSize) * 1.1);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: none !important;
+  -webkit-text-fill-color: var(--SmartThemeBodyColor) !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+}
+
+/* ── Drawer 关闭/全屏按钮：更精致圆角 + 边框 ── */
+body.th-modern-enabled .th-modern-drawer-close,
+body.th-modern-enabled .th-modern-drawer-fullscreen-toggle,
+body.th-modern-enabled .th-modern-drawer-actions .notes-link,
+body.th-modern-enabled .th-modern-drawer-actions .help_button {
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 30%, transparent);
+  border-radius: var(--th-modern-radius-sm);
+  transition:
+    background-color var(--th-modern-motion-duration),
+    border-color var(--th-modern-motion-duration),
+    color var(--th-modern-motion-duration),
+    box-shadow var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled .th-modern-drawer-close:hover,
+body.th-modern-enabled .th-modern-drawer-fullscreen-toggle:hover,
+body.th-modern-enabled .th-modern-drawer-fullscreen-toggle.is-fullscreen {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 44%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 14%, transparent);
+}
+
+/* ── 内联折叠块：标题栏渐变增强 ── */
+body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 6%, transparent) 70%,
+    transparent
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
+  transition: background var(--th-modern-motion-duration);
+}
+
+body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header:hover {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 10%, transparent) 70%,
+    transparent
+  );
+}
+
+/* ── 输入框：发送按钮渐变 + 微光晕 ── */
+body.th-modern-enabled #rightSendForm > #send_but,
+body.th-modern-enabled.th-modern-two-column #rightSendForm > #send_but {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 58%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 36%, transparent)
+  ) !important;
+  box-shadow:
+    var(--th-modern-soft-shadow),
+    0 0 10px color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, transparent) !important;
+  transition:
+    background var(--th-modern-motion-duration),
+    box-shadow var(--th-modern-motion-duration),
+    transform var(--th-modern-motion-duration) !important;
+}
+
+body.th-modern-enabled #rightSendForm > #send_but:hover,
+body.th-modern-enabled.th-modern-two-column #rightSendForm > #send_but:hover {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 76%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 52%, transparent)
+  ) !important;
+  box-shadow:
+    var(--th-modern-soft-shadow),
+    0 0 16px color-mix(in srgb, var(--SmartThemeQuoteColor) 36%, transparent) !important;
+  transform: scale(1.06);
+}
+
+/* ── 输入框 focus 状态：底部轻发光 ── */
+body.th-modern-enabled #nonQRFormItems:focus-within {
+  box-shadow:
+    var(--th-modern-input-shadow),
+    0 0 0 1.5px color-mix(in srgb, var(--SmartThemeQuoteColor) 28%, transparent),
+    0 -2px 18px color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent) !important;
+}
+
+/* ── 最近聊天区段标题：增加 accent 点缀 ── */
+body.th-modern-enabled.th-modern-two-column .th-modern-section-header {
+  border-top: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, var(--th-modern-line));
+  letter-spacing: 0.02em;
+}
+
+body.th-modern-enabled.th-modern-two-column .th-modern-section-title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ── 最近聊天卡片：is-current 状态渐变 ── */
+body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat.is-current {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 52%, transparent) !important;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 8%, transparent) 70%,
+    transparent
+  ) !important;
+  box-shadow: inset 2px 0 0 var(--SmartThemeQuoteColor);
+}
+
+/* ── 最近聊天卡片悬浮：左侧 accent 线 + 轻微上浮 ── */
+body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat:hover:not(.is-current) {
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--SmartThemeQuoteColor) 60%, transparent);
+}
+
+/* ── 最近聊天头像：更圆润 + 轻描边 ── */
+body.th-modern-enabled.th-modern-two-column .th-modern-recent-avatar {
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 30%, transparent);
+  border-radius: 8px;
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat:hover .th-modern-recent-avatar {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 44%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
+  transform: scale(1.08);
+}
+
+body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat.is-current .th-modern-recent-avatar {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 56%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, transparent);
+}
+
+/* ── 聊天消息气泡：AI 消息轻微背景分区 ── */
+body.th-modern-enabled #chat .mes[is_user='false'] .mes_block {
+  background: color-mix(in srgb, var(--SmartThemeChatTintColor) 38%, transparent);
+  border-radius: var(--th-modern-radius-sm);
+}
+
+/* ── Inline-drawer 圆角由头部控制，无需外部包裹裁剪 ── */
+body.th-modern-enabled .inline-drawer.th-modern-extension-drawer {
+  border-radius: 9px;
+}
+
+/* ── API 选择器面板：左侧导航 header 样式统一 ── */
+body.th-modern-enabled #rm_api_block #main-API-selector-block {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--SmartThemeChatTintColor) 72%, transparent),
+    color-mix(in srgb, var(--SmartThemeChatTintColor) 58%, transparent)
+  );
+}
+
+/* ── 菜单按钮通用：更精致 hover 过渡 ── */
+body.th-modern-enabled .menu_button,
+body.th-modern-enabled .right_menu_button,
+body.th-modern-enabled .mes_button,
+body.th-modern-enabled .interactable {
+  transition:
+    background-color var(--th-modern-motion-duration) ease,
+    border-color var(--th-modern-motion-duration) ease,
+    color var(--th-modern-motion-duration) ease,
+    box-shadow var(--th-modern-motion-duration) ease,
+    opacity var(--th-modern-motion-duration) ease;
+}
+
+body.th-modern-enabled .menu_button:hover,
+body.th-modern-enabled .right_menu_button:hover,
+body.th-modern-enabled .mes_button:hover,
+body.th-modern-enabled .interactable:hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
+}
+
+/* ── 在线状态指示卡：微渐变背景 ── */
+body.th-modern-enabled #rm_api_block .online_status {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeChatTintColor) 72%, transparent),
+    color-mix(in srgb, var(--SmartThemeChatTintColor) 58%, transparent)
+  );
+}
+
+/* ── 快捷回复按钮：hover 轻微上浮阴影 ── */
+body.th-modern-enabled #qr--bar > .qr--buttons .qr--button:hover,
+body.th-modern-enabled.th-modern-two-column #qr--bar > .qr--buttons .qr--button:hover {
+  box-shadow:
+    var(--th-modern-soft-shadow),
+    0 2px 8px color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, transparent) !important;
+}
+
+/* ── 折叠/展开过渡手柄：更细腻 pseudo-element ── */
+body.th-modern-enabled.th-modern-two-column #th-modern-sidebar-resize-handle::before,
+body.th-modern-enabled.th-modern-two-column #th-modern-overlay-resize-handle::before {
+  height: 48px;
+  width: 4px;
+}
+
+/* ── Failsafe 对话框：更明显圆角 ── */
+body.th-modern-enabled .th-modern-failsafe-dialog {
+  border-radius: 12px;
+  box-shadow:
+    0 24px 60px color-mix(in srgb, var(--SmartThemeShadowColor) 52%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--SmartThemeBorderColor) 28%, transparent);
+}
+
+/* ── Select2 下拉框：更精致圆角 ── */
+body.th-modern-enabled .select2-dropdown,
+body.th-modern-enabled .ui-autocomplete,
+body.th-modern-enabled .list-group {
+  border-radius: 10px;
+  box-shadow:
+    0 16px 36px color-mix(in srgb, var(--SmartThemeShadowColor) 32%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--SmartThemeBorderColor) 22%, transparent);
+}
+
+/* ── 表单输入框 focus：accent 光晕 ── */
+body.th-modern-enabled .text_pole:focus,
+body.th-modern-enabled input[type='text']:focus,
+body.th-modern-enabled input[type='number']:focus,
+body.th-modern-enabled input[type='search']:focus,
+body.th-modern-enabled input[type='password']:focus,
+body.th-modern-enabled textarea:focus,
+body.th-modern-enabled select:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--SmartThemeQuoteColor) 14%, transparent);
+  transition:
+    border-color var(--th-modern-motion-duration),
+    box-shadow var(--th-modern-motion-duration);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   现代化抽屉与面板标题栏 / 分区标题（h3、h4、standoutHeader）
+   彻底替换原生黑色反光胶囊，升级为主题高亮微渐变卡片
+   ══════════════════════════════════════════════════════════════ */
+body.th-modern-enabled :is(
+  .drawer-content,
+  #top-settings-holder,
+  #user-settings-block,
+  #AdvancedFormatting,
+  #character_popup,
+  #persona_popup,
+  #shadow_popup,
+  #extensions_settings,
+  .popup:not(#chat *)
+) :is(
+  h4:not(.inline-drawer-toggle *):not(.inline-drawer-header *):not(#chat *):not(.mes_text *),
+  .standoutHeader:not(.inline-drawer-toggle *):not(.inline-drawer-header *),
+  .userSettingsInnerExpandable
+) {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 32px !important;
+  margin: 10px 0 6px !important;
+  padding: 6px 12px !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, var(--SmartThemeBorderColor)) !important;
+  border-left: 3.5px solid var(--SmartThemeQuoteColor) !important;
+  border-radius: var(--th-modern-radius-xs, 6px) !important;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 4%, transparent) 70%,
+    transparent
+  ) !important;
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 4%, transparent) 70%,
+    transparent
+  ) !important;
+  color: var(--SmartThemeEmColor, var(--SmartThemeBodyColor)) !important;
+  font-size: calc(var(--mainFontSize) * 0.94) !important;
+  font-weight: 650 !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.4 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  text-shadow: none !important;
+  transition: background var(--th-modern-motion-duration) ease,
+              border-color var(--th-modern-motion-duration) ease,
+              box-shadow var(--th-modern-motion-duration) ease !important;
+}
+
+body.th-modern-enabled :is(
+  .drawer-content,
+  #top-settings-holder,
+  #user-settings-block,
+  #AdvancedFormatting,
+  #character_popup,
+  #persona_popup,
+  #shadow_popup,
+  #extensions_settings,
+  .popup:not(#chat *)
+) :is(
+  h4:not(.inline-drawer-toggle *):not(.inline-drawer-header *):not(#chat *):not(.mes_text *),
+  .standoutHeader:not(.inline-drawer-toggle *):not(.inline-drawer-header *),
+  .userSettingsInnerExpandable
+):hover {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent),
+    color-mix(in srgb, var(--SmartThemeQuoteColor) 8%, transparent) 70%,
+    transparent
+  ) !important;
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 38%, var(--SmartThemeBorderColor)) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28), 0 0 10px color-mix(in srgb, var(--SmartThemeQuoteColor) 15%, transparent) !important;
+}
+
+/* 当 h4 处于可折叠抽屉标题（inline-drawer-toggle）内时，清除内部独立背景与边框 */
+body.th-modern-enabled .inline-drawer-toggle h4,
+body.th-modern-enabled .inline-drawer-header h4,
+body.th-modern-enabled .inline-drawer-toggle .standoutHeader,
+body.th-modern-enabled .inline-drawer-header .standoutHeader {
+  display: inline-block !important;
+  width: auto !important;
+  min-height: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  text-shadow: none !important;
+}
+
+/* 大分区标题 h3（如个人资料各大板块）：垂直强调条 + 柔和底部分隔线 */
+body.th-modern-enabled :is(
+  .drawer-content:not(#rm_api_block),
+  #top-settings-holder,
+  #user-settings-block,
+  #AdvancedFormatting,
+  #character_popup,
+  #persona_popup,
+  #shadow_popup,
+  .popup:not(#chat *)
+) > :is(h3, div > h3):not(#chat *):not(.mes_text *):not(.th-modern-drawer-titlebar *) {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: var(--SmartThemeEmColor, var(--SmartThemeBodyColor)) !important;
+  font-size: calc(var(--mainFontSize) * 1.06) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  margin: 14px 0 8px !important;
+  padding-bottom: 5px !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, var(--th-modern-line, rgba(255, 255, 255, 0.08))) !important;
+  background: transparent !important;
+  background-image: none !important;
+}
+
+body.th-modern-enabled :is(
+  .drawer-content:not(#rm_api_block),
+  #top-settings-holder,
+  #user-settings-block,
+  #AdvancedFormatting,
+  #character_popup,
+  #persona_popup,
+  #shadow_popup,
+  .popup:not(#chat *)
+) > :is(h3, div > h3):not(#chat *):not(.mes_text *):not(.th-modern-drawer-titlebar *)::before {
+  content: '';
+  display: inline-block;
+  width: 3.5px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--SmartThemeQuoteColor);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--SmartThemeQuoteColor) 45%, transparent);
+}
