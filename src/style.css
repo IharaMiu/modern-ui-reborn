@@ -1,3 +1,6 @@
+  body.th-modern-enabled.th-modern-two-column #qr--bar > #qr--popoutTrigger {
+    display: none !important;
+  }
 @charset "UTF-8";
 
 .th-modern-topbar-label,
@@ -1609,9 +1612,6 @@ body.th-modern-enabled .th-modern-drawer-fullscreen-toggle.bi::before {
     transform: translateY(6px) scale(0.98);
   }
 
-  body.th-modern-enabled.th-modern-two-column #qr--bar > #qr--popoutTrigger {
-    display: none !important;
-  }
 
   body.th-modern-enabled.th-modern-two-column #qr--bar > .qr--buttons {
     display: flex;

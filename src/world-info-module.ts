@@ -34,6 +34,8 @@ type MovedNode = {
 
 type NativeWorldInfoController = {
     destroy: () => boolean;
+    ensureLayout: (targetPopup?: HTMLElement) => boolean;
+    isMounted: () => boolean;
 };
 
 type ScheduleSummaryUpdate = (entry: HTMLElement) => void;
@@ -163,6 +165,24 @@ function getSelectableListEntry(target: EventTarget | null): HTMLElement | null 
 }
 
 function moveNode(node: Node, target: HTMLElement, moved: MovedNode[], beforeNode?: Node | null): void {
+    if (node.parentNode === target) {
+        if (beforeNode && node.nextSibling !== beforeNode) {
+            target.insertBefore(node, beforeNode);
+        }
+        return;
+    }
+
+    const existingIndex = moved.findIndex(m => m.node === node);
+    if (existingIndex !== -1) {
+        // 已有原始恢复标记，直接搬移到目标位置，避免覆盖或产生死循环标记
+        if (beforeNode) {
+            target.insertBefore(node, beforeNode);
+        } else {
+            target.append(node);
+        }
+        return;
+    }
+
     const parent = node.parentNode;
     if (!parent) {
         return;
@@ -987,6 +1007,12 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
     private narrowQueryHandler?: () => void;
     private readonly editorMoved: MovedNode[] = [];
     private readonly pendingSummaryUpdates = new Map<HTMLElement, number>();
+    private worldbar?: HTMLElement;
+    private toolbar?: HTMLElement;
+    private main?: HTMLElement;
+    private popupObserver?: MutationObserver;
+    private observedPopup?: HTMLElement;
+    private pendingReconcileFrame = 0;
     private multiButton?: HTMLButtonElement;
     private deleteSelectedButton?: HTMLButtonElement;
     private moreMenu?: HTMLDetailsElement;
@@ -1026,6 +1052,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
 
     mount(): void {
         if (this.mounted) {
+            this.ensureLayout();
             return;
         }
 
@@ -1039,13 +1066,17 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         this.mounted = true;
         this.selectedWorldName = getSelectedWorldName(this.document);
         worldInfo.classList.add(WORLD_INFO_NATIVE_CLASS);
-        this.buildLayout(popup, list);
+        this.ensureLayout(popup);
         this.bindResponsiveMode();
         this.bindEvents();
         this.enhanceEntries();
         if (!this.isNarrowMode()) {
             this.selectFirstEntry();
         }
+    }
+
+    isMounted(): boolean {
+        return this.mounted;
     }
 
     destroy(): boolean {
@@ -1056,6 +1087,13 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         worldInfo?.classList.remove(WORLD_INFO_NATIVE_CLASS, MULTI_SELECT_CLASS, ROOT_DETAIL_OPEN_CLASS);
         this.observer?.disconnect();
         this.observer = undefined;
+        this.popupObserver?.disconnect();
+        this.popupObserver = undefined;
+        this.observedPopup = undefined;
+        if (this.pendingReconcileFrame) {
+            this.window.cancelAnimationFrame(this.pendingReconcileFrame);
+            this.pendingReconcileFrame = 0;
+        }
         this.cancelPendingEditorRetry();
         this.cancelPendingSummaryUpdates();
         this.clearSelection();
@@ -1101,6 +1139,9 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         restoreMovedNodes(this.moved);
         this.shell?.remove();
         this.shell = undefined;
+        this.worldbar = undefined;
+        this.toolbar = undefined;
+        this.main = undefined;
         this.listPane = undefined;
         this.editorPane = undefined;
         this.moreMenu = undefined;
@@ -1166,61 +1207,177 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         return this.document.querySelector<HTMLElement>('#world_popup_entries_list');
     }
 
-    private buildLayout(popup: HTMLElement, list: HTMLElement): void {
-        const shell = makeElement(this.document, 'div', 'th-modern-wi-native-shell');
-        const worldbar = makeElement(this.document, 'div', 'th-modern-wi-worldbar');
-        const toolbar = makeElement(this.document, 'div', 'th-modern-wi-toolbar');
-        const main = makeElement(this.document, 'div', 'th-modern-wi-native-main');
-        const listPane = makeElement(this.document, 'div', 'th-modern-wi-native-list');
-        const editorPane = makeElement(this.document, 'div', 'th-modern-wi-native-editor');
+    private ensureToolbarButtons(toolbar: HTMLElement, popup: HTMLElement): void {
+        if (!this.multiButton || !this.multiButton.isConnected) {
+            this.multiButton = createIconButton(this.document, 'menu_button th-modern-wi-multi-toggle', '多选条目', 'fa-regular fa-square-check');
+            this.multiButton.addEventListener('click', () => this.toggleMultiSelect());
+        }
+        if (!this.deleteSelectedButton || !this.deleteSelectedButton.isConnected) {
+            this.deleteSelectedButton = createIconButton(this.document, 'menu_button th-modern-wi-delete-selected danger', '删除选中条目', 'fa-regular fa-trash-can');
+            this.deleteSelectedButton.hidden = this.selectedUids.size === 0;
+            this.deleteSelectedButton.addEventListener('click', () => void this.deleteSelectedEntries());
+        }
+        if (!this.moreMenu || !this.moreMenu.isConnected) {
+            const moreMenu = makeElement(this.document, 'details', 'th-modern-wi-more-menu');
+            const moreToggle = makeElement(this.document, 'summary', 'menu_button th-modern-wi-more-toggle');
+            moreToggle.title = '更多条目操作';
+            moreToggle.setAttribute('aria-label', '更多条目操作');
+            moreToggle.innerHTML = '<i class="fa-solid fa-ellipsis" aria-hidden="true"></i>';
+            const morePanel = makeElement(this.document, 'div', 'th-modern-wi-more-popover');
+            moreMenu.append(moreToggle, morePanel);
+            moreMenu.addEventListener('click', event => {
+                const action = targetToElement(event.target)?.closest('#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting');
+                if (action) {
+                    moreMenu.open = false;
+                }
+            });
+            this.moreMenu = moreMenu;
+        }
 
-        shell.append(worldbar, toolbar, main);
-        main.append(listPane, editorPane);
-        popup.append(shell);
+        const morePanel = this.moreMenu.querySelector<HTMLElement>('.th-modern-wi-more-popover');
+        if (morePanel) {
+            for (const selector of [
+                '#OpenAllWIEntries',
+                '#CloseAllWIEntries',
+                '#world_backfill_memos',
+                '#world_apply_current_sorting',
+            ]) {
+                const node = popup.querySelector<HTMLElement>(selector) ?? toolbar.querySelector<HTMLElement>(selector);
+                if (node && node.parentElement !== morePanel) {
+                    moveNode(node, morePanel, this.moved);
+                }
+            }
+        }
 
+        if (this.multiButton.parentElement !== toolbar) {
+            toolbar.append(this.multiButton);
+        }
+        if (this.deleteSelectedButton.parentElement !== toolbar) {
+            toolbar.append(this.deleteSelectedButton);
+        }
+        if (this.moreMenu.parentElement !== toolbar) {
+            toolbar.append(this.moreMenu);
+        }
+    }
+
+    public ensureLayout(targetPopup?: HTMLElement): boolean {
+        if (!this.mounted) {
+            return false;
+        }
+
+        const popup = targetPopup ?? this.findWorldPopup();
+        if (!popup || !popup.isConnected) {
+            return false;
+        }
+
+        let changed = false;
+
+        // 1. 清理多余空外壳（如多实例互抢或更新器脚本残留）
+        const list = this.findEntriesList();
+        const shells = Array.from(popup.querySelectorAll<HTMLElement>(':scope > .th-modern-wi-native-shell'));
+        for (const extra of shells) {
+            if (this.shell && extra !== this.shell) {
+                if (!list || !extra.contains(list)) {
+                    extra.remove();
+                    changed = true;
+                }
+            }
+        }
+
+        // 2. 确保主外壳 shell 挂载在 popup 直接子节点
+        if (!this.shell || !this.shell.isConnected || this.shell.parentElement !== popup) {
+            const existingShell = popup.querySelector<HTMLElement>(':scope > .th-modern-wi-native-shell');
+            if (existingShell) {
+                this.shell = existingShell;
+            } else {
+                this.shell = makeElement(this.document, 'div', 'th-modern-wi-native-shell');
+                popup.append(this.shell);
+                changed = true;
+            }
+        }
+
+        // 3. 确保 shell 内部骨架容器存在：worldbar / toolbar / main (listPane + editorPane)
+        let worldbar = this.shell.querySelector<HTMLElement>(':scope > .th-modern-wi-worldbar');
+        if (!worldbar) {
+            worldbar = makeElement(this.document, 'div', 'th-modern-wi-worldbar');
+            this.shell.prepend(worldbar);
+            changed = true;
+        }
+
+        let toolbar = this.shell.querySelector<HTMLElement>(':scope > .th-modern-wi-toolbar');
+        if (!toolbar) {
+            toolbar = makeElement(this.document, 'div', 'th-modern-wi-toolbar');
+            worldbar.after(toolbar);
+            changed = true;
+        }
+
+        let main = this.shell.querySelector<HTMLElement>(':scope > .th-modern-wi-native-main');
+        if (!main) {
+            main = makeElement(this.document, 'div', 'th-modern-wi-native-main');
+            this.shell.append(main);
+            changed = true;
+        }
+
+        let editorPane = main.querySelector<HTMLElement>(':scope > .th-modern-wi-native-editor');
+        if (!editorPane) {
+            editorPane = makeElement(this.document, 'div', 'th-modern-wi-native-editor');
+            main.append(editorPane);
+            changed = true;
+        }
+
+        let listPane = main.querySelector<HTMLElement>(':scope > .th-modern-wi-native-list');
+        if (!listPane) {
+            listPane = makeElement(this.document, 'div', 'th-modern-wi-native-list');
+            main.insertBefore(listPane, editorPane);
+            changed = true;
+        }
+
+        this.worldbar = worldbar;
+        this.toolbar = toolbar;
+        this.main = main;
+        this.listPane = listPane;
+        this.editorPane = editorPane;
+
+        // 4. 确保 shell 子容器顺序：worldbar → toolbar → main
+        const expectedOrder = [worldbar, toolbar, main];
+        const currentOrder = Array.from(this.shell.children).filter(child => expectedOrder.includes(child as HTMLElement));
+        if (expectedOrder.some((node, i) => currentOrder[i] !== node)) {
+            for (const node of expectedOrder) {
+                this.shell.append(node);
+            }
+            changed = true;
+        }
+
+        // 5. 确保 main 内部顺序：listPane → editorPane
+        if (main.firstElementChild !== listPane || main.lastElementChild !== editorPane) {
+            main.append(listPane, editorPane);
+            changed = true;
+        }
+
+        // 6. 条目列表必须位于 listPane 内，杜绝直接散落在 popup 中导致撑满全屏排版错位
+        if (list && list.parentElement !== listPane) {
+            moveNode(list, listPane, this.moved);
+            changed = true;
+        }
+
+        // 7. 世界书创建与选择控制行必须位于 worldbar 内
         const worldControls = popup.querySelector<HTMLElement>('#world_create_button')?.closest<HTMLElement>('.flex-container');
-        if (worldControls) {
+        if (worldControls && worldControls.parentElement !== worldbar) {
             moveNode(worldControls, worldbar, this.moved);
+            changed = true;
         }
 
+        // 8. 搜索与原生工具行必须位于 toolbar 内
         const nativeTools = popup.querySelector<HTMLElement>('#world_info_search')?.closest<HTMLElement>('.flex-container');
-        if (nativeTools) {
+        if (nativeTools && nativeTools.parentElement !== toolbar) {
             moveNode(nativeTools, toolbar, this.moved);
+            changed = true;
         }
 
-        this.multiButton = createIconButton(this.document, 'menu_button th-modern-wi-multi-toggle', '多选条目', 'fa-regular fa-square-check');
-        this.deleteSelectedButton = createIconButton(this.document, 'menu_button th-modern-wi-delete-selected danger', '删除选中条目', 'fa-regular fa-trash-can');
-        this.deleteSelectedButton.hidden = true;
-        this.multiButton.addEventListener('click', () => this.toggleMultiSelect());
-        this.deleteSelectedButton.addEventListener('click', () => void this.deleteSelectedEntries());
+        // 9. 确保工具栏操作按钮存在并挂载
+        this.ensureToolbarButtons(toolbar, popup);
 
-        const moreMenu = makeElement(this.document, 'details', 'th-modern-wi-more-menu');
-        const moreToggle = makeElement(this.document, 'summary', 'menu_button th-modern-wi-more-toggle');
-        moreToggle.title = '更多条目操作';
-        moreToggle.setAttribute('aria-label', '更多条目操作');
-        moreToggle.innerHTML = '<i class="fa-solid fa-ellipsis" aria-hidden="true"></i>';
-        const morePanel = makeElement(this.document, 'div', 'th-modern-wi-more-popover');
-        moreMenu.append(moreToggle, morePanel);
-        for (const selector of [
-            '#OpenAllWIEntries',
-            '#CloseAllWIEntries',
-            '#world_backfill_memos',
-            '#world_apply_current_sorting',
-        ]) {
-            const node = popup.querySelector<HTMLElement>(selector) ?? toolbar.querySelector<HTMLElement>(selector);
-            if (node) {
-                moveNode(node, morePanel, this.moved);
-            }
-        }
-        moreMenu.addEventListener('click', event => {
-            const action = targetToElement(event.target)?.closest('#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting');
-            if (action) {
-                moreMenu.open = false;
-            }
-        });
-        this.moreMenu = moreMenu;
-        toolbar.append(this.multiButton, this.deleteSelectedButton, moreMenu);
-
+        // 10. 提升图钉与帮助文档链接至顶栏操作区
         const titlebarActions = this.findWorldInfo()?.querySelector<HTMLElement>(':scope > .th-modern-drawer-titlebar .th-modern-drawer-actions');
         if (titlebarActions) {
             const firstButton = titlebarActions.firstElementChild;
@@ -1232,10 +1389,71 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             }
         }
 
-        moveNode(list, listPane, this.moved);
-        this.shell = shell;
-        this.listPane = listPane;
-        this.editorPane = editorPane;
+        // 11. 桌面宽屏模式下若编辑区为空，智能重新选中条目
+        if (!this.isNarrowMode() && !this.multiSelect) {
+            if (!editorPane.childElementCount) {
+                if (this.selectedEntry && this.selectedEntry.isConnected) {
+                    this.ensureEntryEditor(this.selectedEntry);
+                } else {
+                    this.selectFirstEntry();
+                }
+            }
+        }
+
+        this.syncResponsiveMode();
+        this.observePopup();
+        return changed;
+    }
+
+    private buildLayout(popup: HTMLElement, _list: HTMLElement): void {
+        this.ensureLayout(popup);
+    }
+
+    private observePopup(): void {
+        const popup = this.findWorldPopup();
+        if (!popup || this.observedPopup === popup) {
+            return;
+        }
+
+        this.popupObserver?.disconnect();
+        this.observedPopup = popup;
+        this.popupObserver = new this.window.MutationObserver(mutations => {
+            const needsReconcile = mutations.some(m => {
+                if (m.type !== 'childList') return false;
+                for (let i = 0; i < m.addedNodes.length; i++) {
+                    const node = m.addedNodes[i];
+                    if (node instanceof HTMLElement) {
+                        if (
+                            node.id === 'world_popup_entries_list' ||
+                            node.id === 'world_create_button' ||
+                            node.id === 'world_info_search' ||
+                            node.classList.contains('th-modern-wi-native-shell') ||
+                            node.classList.contains('flex-container')
+                        ) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            });
+
+            if (needsReconcile) {
+                this.scheduleLayoutReconciliation();
+            }
+        });
+        this.popupObserver.observe(popup, { childList: true });
+    }
+
+    private scheduleLayoutReconciliation(): void {
+        if (this.pendingReconcileFrame) {
+            return;
+        }
+        this.pendingReconcileFrame = this.window.requestAnimationFrame(() => {
+            this.pendingReconcileFrame = 0;
+            if (this.mounted) {
+                this.ensureLayout();
+            }
+        });
     }
 
     private bindEvents(): void {
@@ -1275,6 +1493,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             }
         });
         this.observeCurrentList();
+        this.observePopup();
     }
 
     private observeCurrentList(): void {
@@ -1305,6 +1524,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             if (!this.mounted) {
                 return;
             }
+            this.ensureLayout();
             this.syncSelectedWorld();
             this.observeCurrentList();
             this.enhanceEntries();
@@ -1785,10 +2005,28 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
         if (shouldEnable && isOpen) {
             controller ??= new NativeWorldInfoEnhancer();
             controller.mount();
+            controller.ensureLayout();
         } else if (!shouldEnable && unmount()) {
             refreshOriginalEditor(hostDocument);
         }
     };
+
+    const handleDocumentClick = (event: MouseEvent) => {
+        const target = targetToElement(event.target);
+        if (target?.closest('#WIDrawerIcon, .drawer-toggle, [data-target="WorldInfo"]')) {
+            hostWindow.requestAnimationFrame(() => {
+                if (controller?.isMounted()) {
+                    controller.ensureLayout();
+                }
+            });
+            hostWindow.setTimeout(() => {
+                if (controller?.isMounted()) {
+                    controller.ensureLayout();
+                }
+            }, 180);
+        }
+    };
+    hostDocument.addEventListener('click', handleDocumentClick, true);
 
     const scheduleSync = () => {
         if (scheduledSync) {
@@ -1821,6 +2059,7 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
         destroy() {
             stopWatch();
             observer?.disconnect();
+            hostDocument.removeEventListener('click', handleDocumentClick, true);
             if (scheduledSync) {
                 hostWindow.cancelAnimationFrame(scheduledSync);
                 scheduledSync = 0;

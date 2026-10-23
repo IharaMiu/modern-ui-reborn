@@ -2432,7 +2432,7 @@ function mountResizeHandles(store: ReturnType<typeof useModernLayoutStore>): { d
 
 function createMovedElementRestore(element: Element, target: Element, marker_label: string): () => void {
   if (element.parentElement === target) {
-    return _.noop;
+    return () => {};
   }
 
   const marker = element.ownerDocument.createComment(marker_label);

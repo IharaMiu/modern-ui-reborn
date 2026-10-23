@@ -7186,6 +7186,14 @@ function Nd(e) {
 	return !t || !t.closest("#world_popup_entries_list") || Md(t) ? null : jd(t);
 }
 function Pd(e, t, n, r) {
+	if (e.parentNode === t) {
+		r && e.nextSibling !== r && t.insertBefore(e, r);
+		return;
+	}
+	if (n.findIndex((t) => t.node === e) !== -1) {
+		r ? t.insertBefore(e, r) : t.append(e);
+		return;
+	}
 	let i = e.parentNode;
 	if (!i) return;
 	let a = t.ownerDocument.createComment("th-modern-wi-restore");
@@ -7498,6 +7506,12 @@ var ff = class {
 	narrowQueryHandler;
 	editorMoved = [];
 	pendingSummaryUpdates = /* @__PURE__ */ new Map();
+	worldbar;
+	toolbar;
+	main;
+	popupObserver;
+	observedPopup;
+	pendingReconcileFrame = 0;
 	multiButton;
 	deleteSelectedButton;
 	moreMenu;
@@ -7526,15 +7540,21 @@ var ff = class {
 		this.pendingSummaryUpdates.set(e, t);
 	};
 	mount() {
-		if (this.mounted) return;
+		if (this.mounted) {
+			this.ensureLayout();
+			return;
+		}
 		let e = this.findWorldInfo(), t = this.findWorldPopup(), n = this.findEntriesList();
-		e && t && n && (this.mounted = !0, this.selectedWorldName = Ed(this.document), e.classList.add(ld), this.buildLayout(t, n), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
+		e && t && n && (this.mounted = !0, this.selectedWorldName = Ed(this.document), e.classList.add(ld), this.ensureLayout(t), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
+	}
+	isMounted() {
+		return this.mounted;
 	}
 	destroy() {
 		let e = this.mounted;
-		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(ld, fd, hd), this.observer?.disconnect(), this.observer = void 0, this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), Cd.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
+		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(ld, fd, hd), this.observer?.disconnect(), this.observer = void 0, this.popupObserver?.disconnect(), this.popupObserver = void 0, this.observedPopup = void 0, this.pendingReconcileFrame &&= (this.window.cancelAnimationFrame(this.pendingReconcileFrame), 0), this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), Cd.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
 		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(ud, dd, gd);
-		return this.observedList = void 0, Fd(this.moved), this.shell?.remove(), this.shell = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
+		return this.observedList = void 0, Fd(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
 	}
 	bindResponsiveMode() {
 		this.narrowQuery = this.window.matchMedia("(max-width: 899.98px)"), this.narrowQueryHandler = () => this.syncResponsiveMode(), this.narrowQuery.addEventListener("change", this.narrowQueryHandler), this.syncResponsiveMode();
@@ -7574,38 +7594,91 @@ var ff = class {
 	findEntriesList() {
 		return this.document.querySelector("#world_popup_entries_list");
 	}
-	buildLayout(e, t) {
-		let n = Y(this.document, "div", "th-modern-wi-native-shell"), r = Y(this.document, "div", "th-modern-wi-worldbar"), i = Y(this.document, "div", "th-modern-wi-toolbar"), a = Y(this.document, "div", "th-modern-wi-native-main"), o = Y(this.document, "div", "th-modern-wi-native-list"), s = Y(this.document, "div", "th-modern-wi-native-editor");
-		n.append(r, i, a), a.append(o, s), e.append(n);
-		let c = e.querySelector("#world_create_button")?.closest(".flex-container");
-		c && Pd(c, r, this.moved);
-		let l = e.querySelector("#world_info_search")?.closest(".flex-container");
-		l && Pd(l, i, this.moved), this.multiButton = Id(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.deleteSelectedButton = Id(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = !0, this.multiButton.addEventListener("click", () => this.toggleMultiSelect()), this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries());
-		let u = Y(this.document, "details", "th-modern-wi-more-menu"), d = Y(this.document, "summary", "menu_button th-modern-wi-more-toggle");
-		d.title = "更多条目操作", d.setAttribute("aria-label", "更多条目操作"), d.innerHTML = "<i class=\"fa-solid fa-ellipsis\" aria-hidden=\"true\"></i>";
-		let f = Y(this.document, "div", "th-modern-wi-more-popover");
-		u.append(d, f);
-		for (let t of [
+	ensureToolbarButtons(e, t) {
+		if (this.multiButton && this.multiButton.isConnected || (this.multiButton = Id(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.multiButton.addEventListener("click", () => this.toggleMultiSelect())), this.deleteSelectedButton && this.deleteSelectedButton.isConnected || (this.deleteSelectedButton = Id(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = this.selectedUids.size === 0, this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries())), !this.moreMenu || !this.moreMenu.isConnected) {
+			let e = Y(this.document, "details", "th-modern-wi-more-menu"), t = Y(this.document, "summary", "menu_button th-modern-wi-more-toggle");
+			t.title = "更多条目操作", t.setAttribute("aria-label", "更多条目操作"), t.innerHTML = "<i class=\"fa-solid fa-ellipsis\" aria-hidden=\"true\"></i>";
+			let n = Y(this.document, "div", "th-modern-wi-more-popover");
+			e.append(t, n), e.addEventListener("click", (t) => {
+				Ad(t.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (e.open = !1);
+			}), this.moreMenu = e;
+		}
+		let n = this.moreMenu.querySelector(".th-modern-wi-more-popover");
+		if (n) for (let r of [
 			"#OpenAllWIEntries",
 			"#CloseAllWIEntries",
 			"#world_backfill_memos",
 			"#world_apply_current_sorting"
 		]) {
-			let n = e.querySelector(t) ?? i.querySelector(t);
-			n && Pd(n, f, this.moved);
+			let i = t.querySelector(r) ?? e.querySelector(r);
+			i && i.parentElement !== n && Pd(i, n, this.moved);
 		}
-		u.addEventListener("click", (e) => {
-			Ad(e.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (u.open = !1);
-		}), this.moreMenu = u, i.append(this.multiButton, this.deleteSelectedButton, u);
-		let p = this.findWorldInfo()?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
-		if (p) {
-			let e = p.firstElementChild;
+		this.multiButton.parentElement !== e && e.append(this.multiButton), this.deleteSelectedButton.parentElement !== e && e.append(this.deleteSelectedButton), this.moreMenu.parentElement !== e && e.append(this.moreMenu);
+	}
+	ensureLayout(e) {
+		if (!this.mounted) return !1;
+		let t = e ?? this.findWorldPopup();
+		if (!t || !t.isConnected) return !1;
+		let n = !1, r = this.findEntriesList(), i = Array.from(t.querySelectorAll(":scope > .th-modern-wi-native-shell"));
+		for (let e of i) this.shell && e !== this.shell && (r && e.contains(r) || (e.remove(), n = !0));
+		if (!this.shell || !this.shell.isConnected || this.shell.parentElement !== t) {
+			let e = t.querySelector(":scope > .th-modern-wi-native-shell");
+			e ? this.shell = e : (this.shell = Y(this.document, "div", "th-modern-wi-native-shell"), t.append(this.shell), n = !0);
+		}
+		let a = this.shell.querySelector(":scope > .th-modern-wi-worldbar");
+		a || (a = Y(this.document, "div", "th-modern-wi-worldbar"), this.shell.prepend(a), n = !0);
+		let o = this.shell.querySelector(":scope > .th-modern-wi-toolbar");
+		o || (o = Y(this.document, "div", "th-modern-wi-toolbar"), a.after(o), n = !0);
+		let s = this.shell.querySelector(":scope > .th-modern-wi-native-main");
+		s || (s = Y(this.document, "div", "th-modern-wi-native-main"), this.shell.append(s), n = !0);
+		let c = s.querySelector(":scope > .th-modern-wi-native-editor");
+		c || (c = Y(this.document, "div", "th-modern-wi-native-editor"), s.append(c), n = !0);
+		let l = s.querySelector(":scope > .th-modern-wi-native-list");
+		l || (l = Y(this.document, "div", "th-modern-wi-native-list"), s.insertBefore(l, c), n = !0), this.worldbar = a, this.toolbar = o, this.main = s, this.listPane = l, this.editorPane = c;
+		let u = [
+			a,
+			o,
+			s
+		], d = Array.from(this.shell.children).filter((e) => u.includes(e));
+		if (u.some((e, t) => d[t] !== e)) {
+			for (let e of u) this.shell.append(e);
+			n = !0;
+		}
+		(s.firstElementChild !== l || s.lastElementChild !== c) && (s.append(l, c), n = !0), r && r.parentElement !== l && (Pd(r, l, this.moved), n = !0);
+		let f = t.querySelector("#world_create_button")?.closest(".flex-container");
+		f && f.parentElement !== a && (Pd(f, a, this.moved), n = !0);
+		let p = t.querySelector("#world_info_search")?.closest(".flex-container");
+		p && p.parentElement !== o && (Pd(p, o, this.moved), n = !0), this.ensureToolbarButtons(o, t);
+		let m = this.findWorldInfo()?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
+		if (m) {
+			let e = m.firstElementChild;
 			for (let t of ["#WI_panel_pin_div", "#WorldInfoheader + .flex-container .notes-link"]) {
 				let n = this.findWorldInfo()?.querySelector(t);
-				n && n.parentElement !== p && Pd(n, p, this.moved, e);
+				n && n.parentElement !== m && Pd(n, m, this.moved, e);
 			}
 		}
-		Pd(t, o, this.moved), this.shell = n, this.listPane = o, this.editorPane = s;
+		return this.isNarrowMode() || this.multiSelect || c.childElementCount || (this.selectedEntry && this.selectedEntry.isConnected ? this.ensureEntryEditor(this.selectedEntry) : this.selectFirstEntry()), this.syncResponsiveMode(), this.observePopup(), n;
+	}
+	buildLayout(e, t) {
+		this.ensureLayout(e);
+	}
+	observePopup() {
+		let e = this.findWorldPopup();
+		e && this.observedPopup !== e && (this.popupObserver?.disconnect(), this.observedPopup = e, this.popupObserver = new this.window.MutationObserver((e) => {
+			e.some((e) => {
+				if (e.type !== "childList") return !1;
+				for (let t = 0; t < e.addedNodes.length; t++) {
+					let n = e.addedNodes[t];
+					if (n instanceof HTMLElement && (n.id === "world_popup_entries_list" || n.id === "world_create_button" || n.id === "world_info_search" || n.classList.contains("th-modern-wi-native-shell") || n.classList.contains("flex-container"))) return !0;
+				}
+				return !1;
+			}) && this.scheduleLayoutReconciliation();
+		}), this.popupObserver.observe(e, { childList: !0 }));
+	}
+	scheduleLayoutReconciliation() {
+		this.pendingReconcileFrame ||= this.window.requestAnimationFrame(() => {
+			this.pendingReconcileFrame = 0, this.mounted && this.ensureLayout();
+		});
 	}
 	bindEvents() {
 		this.documentClickHandler = (e) => {
@@ -7621,7 +7694,7 @@ var ff = class {
 		}
 		this.observer = new this.window.MutationObserver((e) => {
 			e.some((e) => e.addedNodes.length > 0 || e.removedNodes.length > 0) && this.scheduleEnhance();
-		}), this.observeCurrentList();
+		}), this.observeCurrentList(), this.observePopup();
 	}
 	observeCurrentList() {
 		if (!this.observer) return;
@@ -7630,7 +7703,7 @@ var ff = class {
 	}
 	scheduleEnhance() {
 		this.mounted && !this.pendingEnhance && (this.pendingEnhance = this.window.requestAnimationFrame(() => {
-			this.pendingEnhance = 0, this.mounted && (this.syncSelectedWorld(), this.observeCurrentList(), this.enhanceEntries(), this.restoreSelectionAfterRender());
+			this.pendingEnhance = 0, this.mounted && (this.ensureLayout(), this.syncSelectedWorld(), this.observeCurrentList(), this.enhanceEntries(), this.restoreSelectionAfterRender());
 		}));
 	}
 	enhanceEntries() {
@@ -7819,25 +7892,33 @@ function pf(e) {
 		let n = e.is_active && e.settings.modernWorldInfoEditor;
 		l(n, e.settings.modernWorldSelect);
 		let i = s();
-		p(i);
+		m(i);
 		let a = i?.classList.contains("openDrawer") ?? !1;
-		i?.classList.toggle(cd, n && (a || !!r)), n && a ? (r ??= new ff(), r.mount()) : !n && c() && mf(t);
-	}, d = () => {
+		i?.classList.toggle(cd, n && (a || !!r)), n && a ? (r ??= new ff(), r.mount(), r.ensureLayout()) : !n && c() && mf(t);
+	}, d = (e) => {
+		Ad(e.target)?.closest("#WIDrawerIcon, .drawer-toggle, [data-target=\"WorldInfo\"]") && (n.requestAnimationFrame(() => {
+			r?.isMounted() && r.ensureLayout();
+		}), n.setTimeout(() => {
+			r?.isMounted() && r.ensureLayout();
+		}, 180));
+	};
+	t.addEventListener("click", d, !0);
+	let f = () => {
 		o ||= n.requestAnimationFrame(u);
-	}, f = new n.MutationObserver(d);
-	function p(e) {
-		e !== a && (f.disconnect(), a = e, e && f.observe(e, {
+	}, p = new n.MutationObserver(f);
+	function m(e) {
+		e !== a && (p.disconnect(), a = e, e && p.observe(e, {
 			attributes: !0,
 			attributeFilter: ["class"]
 		}));
 	}
-	let m = Zn(() => [
+	let h = Zn(() => [
 		e.is_active,
 		e.settings.modernWorldInfoEditor,
 		e.settings.modernWorldSelect
-	], d, { immediate: !0 });
+	], f, { immediate: !0 });
 	return { destroy() {
-		m(), f?.disconnect(), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(cd), i?.destroy(), i = void 0, c() && mf(t);
+		h(), p?.disconnect(), t.removeEventListener("click", d, !0), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(cd), i?.destroy(), i = void 0, c() && mf(t);
 	} };
 }
 function mf(e) {
@@ -8761,7 +8842,7 @@ function wm(e) {
 	} };
 }
 function Tm(e, t, n) {
-	if (e.parentElement === t) return _.noop;
+	if (e.parentElement === t) return () => {};
 	let r = e.ownerDocument.createComment(n);
 	return e.before(r), t.append(e), () => {
 		r.parentNode && r.replaceWith(e);
