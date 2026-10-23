@@ -3310,8 +3310,23 @@ function uc(e, t) {
 	return n;
 }
 function dc(e, t) {
-	let n = t?.querySelector(":scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle"), r = n?.querySelector("b > span:first-child, strong > span:first-child") ?? n?.querySelector("b, strong, h3, h4"), i = e.querySelector("h3, h4, .standoutHeader");
-	return cc(r?.textContent ?? n?.textContent ?? i?.textContent) || cc(e.id.replace(/_container$/i, "").replaceAll("_", " ")) || "未命名扩展";
+	let n = t?.querySelector(":scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle"), r = n?.querySelector("b, strong, h3, h4") ?? n ?? e.querySelector("h3, h4, .standoutHeader");
+	if (!r) return {
+		title: cc(e.id.replace(/_container$/i, "").replaceAll("_", " ")) || "未命名扩展",
+		badge: null
+	};
+	let i = r.cloneNode(!0);
+	i.querySelectorAll("a, button, .notes-link, i, svg, .inline-drawer-icon").forEach((e) => e.remove());
+	let a = null, o = Array.from(i.querySelectorAll("span, small, em")).find((e) => {
+		let t = cc(e.textContent), n = e.classList.contains("text-red-500") || e.classList.contains("badge") || e.classList.contains("th-text-xs"), r = /^new!?$/i.test(t);
+		return (n || r) && t.length > 0;
+	});
+	o && (a = cc(o.textContent) || null, o.remove());
+	let s = cc(i.textContent);
+	return !s && a && (s = a, a = null), s ||= cc(e.id.replace(/_container$/i, "").replaceAll("_", " ")) || "未命名扩展", {
+		title: s,
+		badge: a
+	};
 }
 function fc(e) {
 	let t = L(), n = R(), r = null, i = null, a = null, o = null, s = null, c = [], l = [], u = S(), d = "", f = 0, p = 0, m = null, h = null, g = null, v = null, y = () => n.matchMedia("(max-width: 899.98px)").matches, b = y() || n.matchMedia(`(max-width: ${oc}px)`).matches, x = () => {
@@ -3331,17 +3346,19 @@ function fc(e) {
 	}
 	function w() {
 		let e = /* @__PURE__ */ new Map(), t = [], r = (n, r, i, a, o) => {
-			let s = dc(i, a), c = i.getAttribute("script_id") ?? a?.getAttribute("script_id") ?? r.getAttribute("script_id"), l = o ?? (i.id ? `id:${i.id}` : a?.id ? `id:${a.id}` : c ? `script:${c}` : `column:${n.id}:title:${s}`), u = e.get(l) ?? 0;
-			e.set(l, u + 1);
-			let d = u === 0 ? l : `${l}:${u}`, f = a?.querySelector(":scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle") ?? null, p = a?.querySelector(":scope > .inline-drawer-content") ?? null;
+			let { title: s, badge: c } = dc(i, a), l = i.getAttribute("script_id") ?? a?.getAttribute("script_id") ?? r.getAttribute("script_id"), u = o ?? (i.id ? `id:${i.id}` : a?.id ? `id:${a.id}` : l ? `script:${l}` : `column:${n.id}:title:${s}`), d = e.get(u) ?? 0;
+			e.set(u, d + 1);
+			let f = d === 0 ? u : `${u}:${d}`, p = a?.querySelector(":scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle") ?? null, m = a?.querySelector(":scope > .inline-drawer-content") ?? null;
 			t.push({
 				column: n,
-				content: p,
+				sourceHost: r,
+				content: m,
 				drawer: a,
-				header: f,
+				header: p,
 				host: i,
-				key: d,
-				title: s
+				key: f,
+				title: s,
+				badge: c
 			});
 		};
 		return c.forEach((e) => {
@@ -3377,16 +3394,24 @@ function fc(e) {
 		let e = t.createDocumentFragment();
 		l.forEach((n) => {
 			let r = t.createElement("button");
-			r.type = "button", r.className = Zs, r.dataset.extensionKey = n.key, r.title = n.title;
+			r.type = "button", r.className = Zs, r.dataset.extensionKey = n.key, r.title = n.badge ? `${n.title} (${n.badge})` : n.title;
 			let i = t.createElement("span");
-			i.className = "th-modern-extension-nav-label", i.textContent = n.title, r.append(i), e.append(r);
+			if (i.className = "th-modern-extension-nav-label", i.textContent = n.title, r.append(i), n.badge) {
+				let e = t.createElement("span");
+				e.className = "th-modern-extension-nav-badge", e.textContent = n.badge, r.append(e);
+			}
+			e.append(r);
 		}), o.replaceChildren(e), s.textContent = String(l.length), ee();
 	}
 	function ne() {
 		if (b) {
 			l.forEach((e) => {
 				e.host.classList.remove(tc, nc), e.drawer?.classList.remove(ic);
-			}), c.forEach((e) => e.classList.remove(ec)), ee();
+			}), c.forEach((e) => {
+				e.classList.remove(ec), Array.from(e.children).forEach((e) => {
+					e instanceof n.HTMLElement && e !== a && e.classList.remove(tc, nc);
+				});
+			}), ee();
 			return;
 		}
 		let e = l.find((e) => e.key === u) ?? null;
@@ -3395,8 +3420,11 @@ function fc(e) {
 			t.host.classList.toggle(tc, !n), t.host.classList.toggle(nc, n), t.drawer?.classList.toggle(ic, n), t.content && (t.content.classList.toggle("open", n), n && t.content.style.display === "none" && t.content.style.removeProperty("display"));
 		}), c.forEach((t) => {
 			let r = e?.column === t;
-			t.classList.toggle(ec, r), r && e && Array.from(t.children).forEach((t) => {
-				t instanceof n.HTMLElement && t !== a && !(t === e.host || t.contains(e.host)) && !t.classList.contains(tc) && t.classList.add(tc);
+			t.classList.toggle(ec, r), Array.from(t.children).forEach((t) => {
+				if (t instanceof n.HTMLElement && t !== a) {
+					let n = r && e ? t === e.sourceHost || t === e.host || t.contains(e.host) : !1;
+					t.classList.toggle(tc, !n);
+				}
 			});
 		}), ee();
 	}
@@ -3421,7 +3449,7 @@ function fc(e) {
 		l.forEach((e) => {
 			e.host.classList.remove(tc, nc), e.drawer?.classList.remove(rc, ic);
 		}), l = e, l.forEach((e) => e.drawer?.classList.add(rc)), l.some((e) => e.key === u) || (u = l.find(T)?.key ?? l[0]?.key ?? null, C(u));
-		let t = l.map((e) => `${e.key}\u0000${e.title}`).join("");
+		let t = l.map((e) => `${e.key}\u0000${e.title}\u0000${e.badge ?? ""}`).join("");
 		t !== d && (d = t, te()), ne(), D(), E();
 	}
 	function se() {
@@ -6255,7 +6283,9 @@ var Ul = "现代化界面", Wl = "modern_ui", Gl = 340, Kl = Hl({
 	leftSidebarWidth: Bl().min(320).max(460).default(360).catch(360),
 	overlayPanelWidth: Bl().min(720).default(960).catch(960),
 	mainChatMaxWidth: Bl().min(0).default(960).catch(960),
+	floatingChatInput: Vl().default(!0).catch(!0),
 	inputBottomGap: Bl().min(0).max(120).default(15).catch(15),
+	inputSideGap: Bl().min(0).max(80).default(16).catch(16),
 	quickReplyCollapsed: Vl().default(!1).catch(!1),
 	reduceMotion: Vl().default(!1).catch(!1),
 	reduceAdvancedEffects: Vl().default(!1).catch(!1),
@@ -6322,26 +6352,43 @@ var Zl = Ds(Ul, () => {
 }, nu = {
 	class: "checkbox_label",
 	for: "th_modern_two_column"
-}, ru = ["disabled"], iu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, au = { class: "flex-container alignitemscenter" }, ou = ["value"], su = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, cu = { class: "flex-container alignitemscenter" }, lu = ["value"], uu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, du = { class: "flex-container alignitemscenter" }, fu = ["value"], pu = { class: "flex-container alignitemscenter m-t-0_5" }, mu = { class: "range-block-range flex1" }, hu = ["min", "max"], gu = { class: "range-block-counter m-l-0_5" }, _u = [
+}, ru = ["disabled"], iu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, au = { class: "flex-container alignitemscenter" }, ou = ["value"], su = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, cu = { class: "flex-container alignitemscenter" }, lu = ["value"], uu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, du = { class: "flex-container alignitemscenter" }, fu = ["value"], pu = {
+	class: "checkbox_label",
+	for: "th_modern_floating_input"
+}, mu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, hu = { class: "flex-container alignitemscenter" }, gu = { class: "notes m-r-0_5" }, _u = { class: "flex-container alignitemscenter m-t-0_5" }, vu = { class: "range-block-range flex1" }, yu = [
+	"min",
+	"max",
+	"disabled"
+], bu = { class: "range-block-counter m-l-0_5" }, xu = [
 	"value",
 	"min",
-	"max"
-], vu = { class: "notes" }, yu = {
+	"max",
+	"disabled"
+], Su = { class: "notes" }, Cu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, wu = { class: "flex-container alignitemscenter" }, Tu = { class: "notes m-r-0_5" }, Eu = { class: "flex-container alignitemscenter m-t-0_5" }, Du = { class: "range-block-range flex1" }, Ou = [
+	"min",
+	"max",
+	"disabled"
+], ku = { class: "range-block-counter m-l-0_5" }, Au = [
+	"value",
+	"min",
+	"max",
+	"disabled"
+], ju = { class: "notes" }, Mu = {
 	class: "checkbox_label",
 	for: "th_modern_wi_editor"
-}, bu = ["disabled"], xu = {
+}, Nu = ["disabled"], Pu = {
 	class: "checkbox_label",
 	for: "th_modern_cm"
-}, Su = {
+}, Fu = {
 	class: "checkbox_label",
 	for: "th_modern_ext_settings"
-}, Cu = {
+}, Iu = {
 	class: "checkbox_label",
 	for: "th_modern_reduce_motion"
-}, wu = {
+}, Lu = {
 	class: "checkbox_label",
 	for: "th_modern_reduce_effects"
-}, Tu = /*#__PURE__*/ ((e, t) => {
+}, Ru = /*#__PURE__*/ ((e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
@@ -6366,21 +6413,21 @@ var Zl = Ds(Ul, () => {
 			class: "notes-link",
 			title: "恢复默认设置",
 			onClick: Vo(r, ["stop"])
-		}, [...i[18] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1)]])]), i[19] ||= I("div", { class: "inline-drawer-icon fa-solid fa-circle-chevron-down down" }, null, -1)]), I("div", eu, [
+		}, [...i[22] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1)]])]), i[23] ||= I("div", { class: "inline-drawer-icon fa-solid fa-circle-chevron-down down" }, null, -1)]), I("div", eu, [
 			I("label", tu, [Un(I("input", {
 				id: "th_modern_enabled",
 				"onUpdate:modelValue": i[0] ||= (e) => N(t).settings.enabled = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.enabled]]), i[20] ||= I("span", null, "启用现代化界面", -1)]),
-			i[36] ||= I("small", { class: "notes" }, "全面应用毛玻璃、常驻侧边栏与现代布局排版", -1),
-			i[37] ||= I("hr", null, null, -1),
-			i[38] ||= I("h4", null, "分栏与排版", -1),
+			}, null, 512), [[Fo, N(t).settings.enabled]]), i[24] ||= I("span", null, "启用现代化界面", -1)]),
+			i[43] ||= I("small", { class: "notes" }, "全面应用毛玻璃、常驻侧边栏与现代布局排版", -1),
+			i[44] ||= I("hr", null, null, -1),
+			i[45] ||= I("h4", null, "分栏与排版", -1),
 			I("label", nu, [Un(I("input", {
 				id: "th_modern_two_column",
 				"onUpdate:modelValue": i[1] ||= (e) => N(t).settings.desktopTwoColumn = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.desktopTwoColumn]]), i[21] ||= I("span", null, "宽屏两栏与滑出面板", -1)]),
-			i[39] ||= I("small", { class: "notes" }, "屏幕 ≥900px 时将左侧抽屉转为常驻侧边栏", -1),
+			}, null, 512), [[Fo, N(t).settings.desktopTwoColumn]]), i[25] ||= I("span", null, "宽屏两栏与滑出面板", -1)]),
+			i[46] ||= I("small", { class: "notes" }, "屏幕 ≥900px 时将左侧抽屉转为常驻侧边栏", -1),
 			I("label", {
 				class: ve(["checkbox_label", { "is-disabled": !N(t).settings.desktopTwoColumn }]),
 				for: "th_modern_docked_drawer"
@@ -6389,9 +6436,9 @@ var Zl = Ds(Ul, () => {
 				"onUpdate:modelValue": i[2] ||= (e) => N(t).settings.desktopDockedDrawer = e,
 				type: "checkbox",
 				disabled: !N(t).settings.desktopTwoColumn
-			}, null, 8, ru), [[Fo, N(t).settings.desktopDockedDrawer]]), i[22] ||= I("span", null, "固定三栏排版", -1)], 2),
-			i[40] ||= I("small", { class: "notes" }, "空间足够时固定右侧设置抽屉；窄屏自动降级为滑出面板", -1),
-			I("div", iu, [i[24] ||= I("span", null, "左侧栏宽度", -1), I("div", au, [I("input", {
+			}, null, 8, ru), [[Fo, N(t).settings.desktopDockedDrawer]]), i[26] ||= I("span", null, "固定三栏排版", -1)], 2),
+			i[47] ||= I("small", { class: "notes" }, "空间足够时固定右侧设置抽屉；窄屏自动降级为滑出面板", -1),
+			I("div", iu, [i[28] ||= I("span", null, "左侧栏宽度", -1), I("div", au, [I("input", {
 				value: N(t).settings.leftSidebarWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
@@ -6400,8 +6447,8 @@ var Zl = Ds(Ul, () => {
 				step: "4",
 				onChange: i[3] ||= (e) => n(e, "leftSidebarWidth", 320, 460),
 				onBlur: i[4] ||= (e) => n(e, "leftSidebarWidth", 320, 460)
-			}, null, 40, ou), i[23] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
-			I("div", su, [i[26] ||= I("span", null, "滑出面板偏好宽度", -1), I("div", cu, [I("input", {
+			}, null, 40, ou), i[27] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
+			I("div", su, [i[30] ||= I("span", null, "滑出面板偏好宽度", -1), I("div", cu, [I("input", {
 				value: N(t).settings.overlayPanelWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
@@ -6409,8 +6456,8 @@ var Zl = Ds(Ul, () => {
 				step: "20",
 				onChange: i[5] ||= (e) => n(e, "overlayPanelWidth", 720),
 				onBlur: i[6] ||= (e) => n(e, "overlayPanelWidth", 720)
-			}, null, 40, lu), i[25] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
-			I("div", uu, [i[28] ||= I("span", null, "主聊天最小宽度", -1), I("div", du, [I("input", {
+			}, null, 40, lu), i[29] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
+			I("div", uu, [i[32] ||= I("span", null, "主聊天最小宽度", -1), I("div", du, [I("input", {
 				value: N(t).settings.mainChatMaxWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
@@ -6418,95 +6465,132 @@ var Zl = Ds(Ul, () => {
 				step: "20",
 				onChange: i[7] ||= (e) => n(e, "mainChatMaxWidth", 0),
 				onBlur: i[8] ||= (e) => n(e, "mainChatMaxWidth", 0)
-			}, null, 40, fu), i[27] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
-			i[41] ||= I("small", { class: "notes" }, "0 表示跟随酒馆宽度比例始终铺满可用空间。", -1),
-			i[42] ||= I("hr", null, null, -1),
-			i[43] ||= I("h4", null, "输入框悬浮留白", -1),
-			I("div", pu, [I("div", mu, [Un(I("input", {
-				"onUpdate:modelValue": i[9] ||= (e) => N(t).settings.inputBottomGap = e,
-				type: "range",
-				class: "range_slider",
-				min: N(0),
-				max: N(120),
-				step: "1"
-			}, null, 8, hu), [[
-				Po,
-				N(t).settings.inputBottomGap,
-				void 0,
-				{ number: !0 }
-			]])]), I("div", gu, [I("input", {
-				value: N(t).settings.inputBottomGap,
-				class: "text_pole width60px text-center",
-				type: "number",
-				min: N(0),
-				max: N(120),
-				step: "1",
-				onChange: i[10] ||= (e) => n(e, "inputBottomGap", N(0), N(120)),
-				onBlur: i[11] ||= (e) => n(e, "inputBottomGap", N(0), N(120))
-			}, null, 40, _u)])]),
-			I("small", vu, "调整底部悬浮输入框与窗口底边的间距（" + Oe(N(t).settings.inputBottomGap) + " px），避免遮挡内容。", 1),
-			i[44] ||= I("hr", null, null, -1),
-			i[45] ||= I("h4", null, "增强子模块", -1),
-			I("label", yu, [Un(I("input", {
-				id: "th_modern_wi_editor",
-				"onUpdate:modelValue": i[12] ||= (e) => N(t).settings.modernWorldInfoEditor = e,
+			}, null, 40, fu), i[31] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
+			i[48] ||= I("small", { class: "notes" }, "0 表示跟随酒馆宽度比例始终铺满可用空间。", -1),
+			i[49] ||= I("hr", null, null, -1),
+			i[50] ||= I("h4", null, "输入框设置", -1),
+			I("label", pu, [Un(I("input", {
+				id: "th_modern_floating_input",
+				"onUpdate:modelValue": i[9] ||= (e) => N(t).settings.floatingChatInput = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.modernWorldInfoEditor]]), i[29] ||= I("span", null, "现代世界书管理", -1)]),
-			i[46] ||= I("small", { class: "notes" }, "优化世界书条目卡片瀑布流与条目编辑网格", -1),
+			}, null, 512), [[Fo, N(t).settings.floatingChatInput]]), i[33] ||= I("span", null, "悬浮输入框", -1)]),
+			i[51] ||= I("small", { class: "notes" }, "开启时输入框以毛玻璃胶囊形态悬浮于聊天区上方；关闭时与原版 SillyTavern 一样固定置底铺满。", -1),
+			I("div", { class: ve({ "is-disabled": !N(t).settings.floatingChatInput }) }, [
+				I("div", mu, [i[34] ||= I("span", null, "底部留白边距", -1), I("div", hu, [I("span", gu, Oe(N(t).settings.inputBottomGap) + " px", 1)])]),
+				I("div", _u, [I("div", vu, [Un(I("input", {
+					"onUpdate:modelValue": i[10] ||= (e) => N(t).settings.inputBottomGap = e,
+					type: "range",
+					class: "range_slider",
+					min: N(0),
+					max: N(120),
+					step: "1",
+					disabled: !N(t).settings.floatingChatInput
+				}, null, 8, yu), [[
+					Po,
+					N(t).settings.inputBottomGap,
+					void 0,
+					{ number: !0 }
+				]])]), I("div", bu, [I("input", {
+					value: N(t).settings.inputBottomGap,
+					class: "text_pole width60px text-center",
+					type: "number",
+					min: N(0),
+					max: N(120),
+					step: "1",
+					disabled: !N(t).settings.floatingChatInput,
+					onChange: i[11] ||= (e) => n(e, "inputBottomGap", N(0), N(120)),
+					onBlur: i[12] ||= (e) => n(e, "inputBottomGap", N(0), N(120))
+				}, null, 40, xu)])]),
+				I("small", Su, "调整悬浮输入框与窗口底边的间距（" + Oe(N(t).settings.inputBottomGap) + " px）。", 1),
+				I("div", Cu, [i[35] ||= I("span", null, "两侧留白边距", -1), I("div", wu, [I("span", Tu, Oe(N(t).settings.inputSideGap) + " px", 1)])]),
+				I("div", Eu, [I("div", Du, [Un(I("input", {
+					"onUpdate:modelValue": i[13] ||= (e) => N(t).settings.inputSideGap = e,
+					type: "range",
+					class: "range_slider",
+					min: N(0),
+					max: N(80),
+					step: "1",
+					disabled: !N(t).settings.floatingChatInput
+				}, null, 8, Ou), [[
+					Po,
+					N(t).settings.inputSideGap,
+					void 0,
+					{ number: !0 }
+				]])]), I("div", ku, [I("input", {
+					value: N(t).settings.inputSideGap,
+					class: "text_pole width60px text-center",
+					type: "number",
+					min: N(0),
+					max: N(80),
+					step: "1",
+					disabled: !N(t).settings.floatingChatInput,
+					onChange: i[14] ||= (e) => n(e, "inputSideGap", N(0), N(80)),
+					onBlur: i[15] ||= (e) => n(e, "inputSideGap", N(0), N(80))
+				}, null, 40, Au)])]),
+				I("small", ju, "调整悬浮输入框左右两侧的留白边距（" + Oe(N(t).settings.inputSideGap) + " px）。", 1)
+			], 2),
+			i[52] ||= I("hr", null, null, -1),
+			i[53] ||= I("h4", null, "增强子模块", -1),
+			I("label", Mu, [Un(I("input", {
+				id: "th_modern_wi_editor",
+				"onUpdate:modelValue": i[16] ||= (e) => N(t).settings.modernWorldInfoEditor = e,
+				type: "checkbox"
+			}, null, 512), [[Fo, N(t).settings.modernWorldInfoEditor]]), i[36] ||= I("span", null, "现代世界书管理", -1)]),
+			i[54] ||= I("small", { class: "notes" }, "优化世界书条目卡片瀑布流与条目编辑网格", -1),
 			I("label", {
 				class: ve(["checkbox_label", { "is-disabled": !N(t).settings.modernWorldInfoEditor }]),
 				for: "th_modern_wi_select"
 			}, [Un(I("input", {
 				id: "th_modern_wi_select",
-				"onUpdate:modelValue": i[13] ||= (e) => N(t).settings.modernWorldSelect = e,
+				"onUpdate:modelValue": i[17] ||= (e) => N(t).settings.modernWorldSelect = e,
 				type: "checkbox",
 				disabled: !N(t).settings.modernWorldInfoEditor
-			}, null, 8, bu), [[Fo, N(t).settings.modernWorldSelect]]), i[30] ||= I("span", null, "现代世界书选择器", -1)], 2),
-			i[47] ||= I("small", { class: "notes" }, "多端卡片式世界书下拉选择面板与收藏置顶", -1),
-			I("label", xu, [Un(I("input", {
+			}, null, 8, Nu), [[Fo, N(t).settings.modernWorldSelect]]), i[37] ||= I("span", null, "现代世界书选择器", -1)], 2),
+			i[55] ||= I("small", { class: "notes" }, "多端卡片式世界书下拉选择面板与收藏置顶", -1),
+			I("label", Pu, [Un(I("input", {
 				id: "th_modern_cm",
-				"onUpdate:modelValue": i[14] ||= (e) => N(t).settings.modernCharacterManagement = e,
+				"onUpdate:modelValue": i[18] ||= (e) => N(t).settings.modernCharacterManagement = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.modernCharacterManagement]]), i[31] ||= I("span", null, "现代角色管理界面", -1)]),
-			i[48] ||= I("small", { class: "notes" }, "美化角色卡片列表、头部操作栏与角色编辑抽屉", -1),
-			I("label", Su, [Un(I("input", {
+			}, null, 512), [[Fo, N(t).settings.modernCharacterManagement]]), i[38] ||= I("span", null, "现代角色管理界面", -1)]),
+			i[56] ||= I("small", { class: "notes" }, "美化角色卡片列表、头部操作栏与角色编辑抽屉", -1),
+			I("label", Fu, [Un(I("input", {
 				id: "th_modern_ext_settings",
-				"onUpdate:modelValue": i[15] ||= (e) => N(t).settings.modernExtensionSettings = e,
+				"onUpdate:modelValue": i[19] ||= (e) => N(t).settings.modernExtensionSettings = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.modernExtensionSettings]]), i[32] ||= I("span", null, "现代扩展设置抽屉", -1)]),
-			i[49] ||= I("small", { class: "notes" }, "将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展", -1),
-			i[50] ||= I("hr", null, null, -1),
-			i[51] ||= I("h4", null, "视觉与性能", -1),
-			I("label", Cu, [Un(I("input", {
+			}, null, 512), [[Fo, N(t).settings.modernExtensionSettings]]), i[39] ||= I("span", null, "现代扩展设置抽屉", -1)]),
+			i[57] ||= I("small", { class: "notes" }, "将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展", -1),
+			i[58] ||= I("hr", null, null, -1),
+			i[59] ||= I("h4", null, "视觉与性能", -1),
+			I("label", Iu, [Un(I("input", {
 				id: "th_modern_reduce_motion",
-				"onUpdate:modelValue": i[16] ||= (e) => N(t).settings.reduceMotion = e,
+				"onUpdate:modelValue": i[20] ||= (e) => N(t).settings.reduceMotion = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.reduceMotion]]), i[33] ||= I("span", null, "减弱动态效果", -1)]),
-			i[52] ||= I("small", { class: "notes" }, "最小化过渡与缩放动画，降低能耗并提升响应", -1),
-			I("label", wu, [Un(I("input", {
+			}, null, 512), [[Fo, N(t).settings.reduceMotion]]), i[40] ||= I("span", null, "减弱动态效果", -1)]),
+			i[60] ||= I("small", { class: "notes" }, "最小化过渡与缩放动画，降低能耗并提升响应", -1),
+			I("label", Lu, [Un(I("input", {
 				id: "th_modern_reduce_effects",
-				"onUpdate:modelValue": i[17] ||= (e) => N(t).settings.reduceAdvancedEffects = e,
+				"onUpdate:modelValue": i[21] ||= (e) => N(t).settings.reduceAdvancedEffects = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.reduceAdvancedEffects]]), i[34] ||= I("span", null, "精简高级特效", -1)]),
-			i[53] ||= I("small", { class: "notes" }, "关闭深度阴影与高强度发光滤镜", -1),
-			i[54] ||= I("hr", null, null, -1),
+			}, null, 512), [[Fo, N(t).settings.reduceAdvancedEffects]]), i[41] ||= I("span", null, "精简高级特效", -1)]),
+			i[61] ||= I("small", { class: "notes" }, "关闭深度阴影与高强度发光滤镜", -1),
+			i[62] ||= I("hr", null, null, -1),
 			I("div", { class: "flex-container justifyEnd m-t-1" }, [I("div", {
 				class: "menu_button",
 				title: "重置现代化界面设置",
 				onClick: r
-			}, [...i[35] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1), I("span", null, "恢复默认设置", -1)]])])
+			}, [...i[42] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1), I("span", null, "恢复默认设置", -1)]])])
 		])])) : ma("", !0);
 	}
-}), [["__scopeId", "data-v-510a6e80"]]), Eu = "th-modern-panel-root";
-function Du(e) {
-	$(`.${Eu}`).remove();
-	let t = Go(Tu).use(e), n = document.getElementById("modern-ui-reborn_container"), r = !1;
-	return n ? (n.classList.add(Eu), $(n).empty()) : (n = $("<div>").attr("id", "modern-ui-reborn_container").addClass(Eu).appendTo("#extensions_settings")[0], r = !0), t.mount(n), { destroy: () => {
-		t.unmount(), r ? $(n).remove() : $(n).empty().removeClass(Eu);
+}), [["__scopeId", "data-v-c3ef14dc"]]), zu = "th-modern-panel-root";
+function Bu(e) {
+	$(`.${zu}`).remove();
+	let t = Go(Ru).use(e), n = document.getElementById("modern-ui-reborn_container"), r = !1;
+	return n ? (n.classList.add(zu), $(n).empty()) : (n = $("<div>").attr("id", "modern-ui-reborn_container").addClass(zu).appendTo("#extensions_settings")[0], r = !0), t.mount(n), { destroy: () => {
+		t.unmount(), r ? $(n).remove() : $(n).empty().removeClass(zu);
 	} };
 }
 // src/mobile-world-select-module.ts
-var Ou = "(min-width: 1200px)", ku = "(max-width: 560px)", Au = "th-modern-mobile-world-source", ju = "th-modern-mobile-world-source-native", Mu = "th-modern-mobile-world-select2-source", Nu = "th-modern-mobile-world-control", Pu = "th-modern-mobile-world-picker", Fu = "th-modern-world-select-custom", Iu = "th_modern_world_book_favorites", Lu = 3e4, Ru = 90, zu = [
+var Vu = "(min-width: 1200px)", Hu = "(max-width: 560px)", Uu = "th-modern-mobile-world-source", Wu = "th-modern-mobile-world-source-native", Gu = "th-modern-mobile-world-select2-source", Ku = "th-modern-mobile-world-control", qu = "th-modern-mobile-world-picker", Ju = "th-modern-world-select-custom", Yu = "th_modern_world_book_favorites", Xu = 3e4, Zu = 90, Qu = [
 	{
 		key: "global",
 		selector: "#world_info",
@@ -6542,7 +6626,7 @@ var Ou = "(min-width: 1200px)", ku = "(max-width: 560px)", Au = "th-modern-mobil
 		placeholder: "未绑定人设世界书",
 		multiple: !1
 	}
-], Bu = {
+], $u = {
 	all: "全部",
 	enabled: "已启用",
 	favorites: "收藏"
@@ -6551,21 +6635,21 @@ function J(e, t, n) {
 	let r = e.createElement(t);
 	return n && (r.className = n), r;
 }
-function Vu(e, t) {
+function ed(e, t) {
 	let n = J(e, "i", t);
 	return n.setAttribute("aria-hidden", "true"), n;
 }
-function Hu(e) {
+function td(e) {
 	return e.normalize("NFKC").toLocaleLowerCase().trim();
 }
-function Uu(e) {
+function nd(e) {
 	return Array.isArray(e) ? Array.from(new Set(e.filter((e) => typeof e == "string").map((e) => e.trim()).filter(Boolean))) : [];
 }
-function Wu(e) {
+function rd(e) {
 	let t = e;
 	return t ? typeof t.closest == "function" ? t : t.nodeType === 3 ? t.parentElement ?? null : null : null;
 }
-var Gu = class {
+var id = class {
 	document;
 	window;
 	options;
@@ -6595,7 +6679,7 @@ var Gu = class {
 		}), this.document.addEventListener("click", this.captureRenameIntent, !0), this.favorites = this.readFavorites(), this.mountControllers(), this.applyEnabledState();
 	}
 	destroy() {
-		this.panelObserver.disconnect(), this.documentObserver.disconnect(), this.controllerRefreshFrame &&= (this.window.cancelAnimationFrame(this.controllerRefreshFrame), 0), this.document.removeEventListener("click", this.captureRenameIntent, !0), this.clearRenameIntent(), this.closePicker(), this.unmountControllers(), this.document.querySelector("#WorldInfo")?.classList.remove(Fu);
+		this.panelObserver.disconnect(), this.documentObserver.disconnect(), this.controllerRefreshFrame &&= (this.window.cancelAnimationFrame(this.controllerRefreshFrame), 0), this.document.removeEventListener("click", this.captureRenameIntent, !0), this.clearRenameIntent(), this.closePicker(), this.unmountControllers(), this.document.querySelector("#WorldInfo")?.classList.remove(Ju);
 	}
 	setEnabled(e) {
 		this.enabled === e || (this.enabled = e, this.closePicker()), this.applyEnabledState();
@@ -6604,7 +6688,7 @@ var Gu = class {
 		this.setEnabled(e), this.options.onEnabledChange(e);
 	}
 	openPicker(e) {
-		this.enabled && (this.closePicker(), this.refreshFavoritesAndCleanInvalid(), this.picker = new qu(this, e, () => {
+		this.enabled && (this.closePicker(), this.refreshFavoritesAndCleanInvalid(), this.picker = new od(this, e, () => {
 			this.picker = void 0;
 		}), this.picker.mount());
 	}
@@ -6636,7 +6720,7 @@ var Gu = class {
 		return t ? this.favorites.add(e) : this.favorites.delete(e), this.writeFavorites(), t;
 	}
 	applyEnabledState() {
-		this.document.querySelector("#WorldInfo")?.classList.toggle(Fu, this.enabled);
+		this.document.querySelector("#WorldInfo")?.classList.toggle(Ju, this.enabled);
 		for (let e of this.controllers) e.setNativeMode(!this.enabled);
 	}
 	mountControllers() {
@@ -6644,9 +6728,9 @@ var Gu = class {
 			let t = this.controllers[e];
 			t.source.isConnected ? t.syncSelect2Container() : (this.isPickerFor(t) && this.closePicker(), t.destroy(), this.controllers.splice(e, 1));
 		}
-		for (let e of zu) for (let t of this.document.querySelectorAll(e.selector)) {
+		for (let e of Qu) for (let t of this.document.querySelectorAll(e.selector)) {
 			if (t.closest(".template_element") || this.controllers.some((e) => e.source === t)) continue;
-			let n = new Ku(this, t, e);
+			let n = new ad(this, t, e);
 			n.mount(), n.setNativeMode(!this.enabled), this.controllers.push(n);
 		}
 	}
@@ -6659,9 +6743,9 @@ var Gu = class {
 	readFavorites() {
 		try {
 			let e = window.extension_settings?.modern_ui;
-			if (e && e[Iu]) return new Set(Uu(e[Iu]));
-			let t = localStorage.getItem(Iu);
-			return new Set(Uu(t ? JSON.parse(t) : []));
+			if (e && e[Yu]) return new Set(nd(e[Yu]));
+			let t = localStorage.getItem(Yu);
+			return new Set(nd(t ? JSON.parse(t) : []));
 		} catch (e) {
 			return console.warn("[现代化界面] 读取世界书收藏失败。", e), /* @__PURE__ */ new Set();
 		}
@@ -6669,7 +6753,7 @@ var Gu = class {
 	writeFavorites() {
 		try {
 			let e = [...this.favorites];
-			localStorage.setItem(Iu, JSON.stringify(e)), window.extension_settings?.modern_ui && (window.extension_settings.modern_ui[Iu] = e, typeof window.saveSettingsDebounced == "function" && window.saveSettingsDebounced()), this.variableWriteErrorNotified = !1;
+			localStorage.setItem(Yu, JSON.stringify(e)), window.extension_settings?.modern_ui && (window.extension_settings.modern_ui[Yu] = e, typeof window.saveSettingsDebounced == "function" && window.saveSettingsDebounced()), this.variableWriteErrorNotified = !1;
 		} catch (e) {
 			console.error("[现代化界面] 写入世界书收藏失败。", e), this.variableWriteErrorNotified ||= (toastr.error("世界书收藏保存失败，请稍后重试", "现代化界面"), !0);
 		}
@@ -6693,11 +6777,11 @@ var Gu = class {
 		this.pendingRename &&= (this.window.clearTimeout(this.pendingRename.timeout), void 0);
 	}
 	captureRenameIntent = (e) => {
-		if (!Wu(e.target)?.closest("#world_popup_name_button")) return;
+		if (!rd(e.target)?.closest("#world_popup_name_button")) return;
 		let t = this.document.querySelector("#world_editor_select")?.selectedOptions[0]?.label.trim() ?? "";
 		if (!t) return;
 		this.clearRenameIntent();
-		let n = this.window.setTimeout(() => this.clearRenameIntent(), Lu);
+		let n = this.window.setTimeout(() => this.clearRenameIntent(), Xu);
 		this.pendingRename = {
 			oldName: t,
 			timeout: n
@@ -6708,7 +6792,7 @@ var Gu = class {
 			this.controllerRefreshFrame = 0, this.mountControllers();
 		});
 	};
-}, Ku = class {
+}, ad = class {
 	config;
 	document;
 	source;
@@ -6733,17 +6817,17 @@ var Gu = class {
 	}
 	mount() {
 		if (this.wrapper) return;
-		this.source.classList.add(Au), this.surface = this.source.closest("#WorldInfo, .character_world, .persona_world") ?? this.source.parentElement ?? void 0, this.select2Container = this.findSelect2Container(), this.select2Container?.classList.add(Mu);
-		let e = J(this.document, "div", Nu);
+		this.source.classList.add(Uu), this.surface = this.source.closest("#WorldInfo, .character_world, .persona_world") ?? this.source.parentElement ?? void 0, this.select2Container = this.findSelect2Container(), this.select2Container?.classList.add(Gu);
+		let e = J(this.document, "div", Ku);
 		e.dataset.source = this.source.id || this.config.key;
 		let t = J(this.document, "button", "menu_button th-modern-mobile-world-trigger");
-		t.type = "button", t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-expanded", "false"), t.append(Vu(this.document, this.config.multiple ? "fa-solid fa-layer-group" : "fa-solid fa-book-open"));
+		t.type = "button", t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-expanded", "false"), t.append(ed(this.document, this.config.multiple ? "fa-solid fa-layer-group" : "fa-solid fa-book-open"));
 		let n = J(this.document, "span", "th-modern-mobile-world-trigger-text"), r = J(this.document, "span", "th-modern-mobile-world-trigger-primary"), i = J(this.document, "span", "th-modern-mobile-world-trigger-secondary");
 		n.append(r, i);
 		let a = J(this.document, "span", "th-modern-mobile-world-trigger-count");
-		t.append(n, a, Vu(this.document, "fa-solid fa-chevron-down th-modern-mobile-world-trigger-chevron"));
+		t.append(n, a, ed(this.document, "fa-solid fa-chevron-down th-modern-mobile-world-trigger-chevron"));
 		let o = J(this.document, "button", "menu_button menu_button_icon th-modern-mobile-world-native-return");
-		o.type = "button", o.title = "使用现代世界书选择器", o.append(Vu(this.document, "fa-solid fa-list-check"), J(this.document, "span")), o.lastElementChild.textContent = "现代选择", t.addEventListener("click", this.openPicker), o.addEventListener("click", this.returnToCustomMode), e.append(t, o), (this.select2Container ?? this.source).insertAdjacentElement("afterend", e), this.wrapper = e, this.trigger = t, this.primaryText = r, this.secondaryText = i, this.countBadge = a, this.nativeReturn = o, typeof this.window.$ == "function" ? (this.$source = this.window.$(this.source), this.$source.on(`change${this.namespace}`, this.onSourceChange)) : (this.nativeChangeHandler = this.onSourceChange, this.source.addEventListener("change", this.nativeChangeHandler)), this.observer = new this.window.MutationObserver(this.scheduleSync), this.observer.observe(this.source, {
+		o.type = "button", o.title = "使用现代世界书选择器", o.append(ed(this.document, "fa-solid fa-list-check"), J(this.document, "span")), o.lastElementChild.textContent = "现代选择", t.addEventListener("click", this.openPicker), o.addEventListener("click", this.returnToCustomMode), e.append(t, o), (this.select2Container ?? this.source).insertAdjacentElement("afterend", e), this.wrapper = e, this.trigger = t, this.primaryText = r, this.secondaryText = i, this.countBadge = a, this.nativeReturn = o, typeof this.window.$ == "function" ? (this.$source = this.window.$(this.source), this.$source.on(`change${this.namespace}`, this.onSourceChange)) : (this.nativeChangeHandler = this.onSourceChange, this.source.addEventListener("change", this.nativeChangeHandler)), this.observer = new this.window.MutationObserver(this.scheduleSync), this.observer.observe(this.source, {
 			attributes: !0,
 			attributeFilter: ["disabled"],
 			childList: !0,
@@ -6751,7 +6835,7 @@ var Gu = class {
 		}), this.syncTrigger();
 	}
 	destroy() {
-		this.syncFrame &&= (this.window.cancelAnimationFrame(this.syncFrame), 0), this.observer?.disconnect(), this.observer = void 0, this.$source?.off(`change${this.namespace}`, this.onSourceChange), this.$source = void 0, this.nativeChangeHandler &&= (this.source.removeEventListener("change", this.nativeChangeHandler), void 0), this.trigger?.removeEventListener("click", this.openPicker), this.nativeReturn?.removeEventListener("click", this.returnToCustomMode), this.wrapper?.remove(), this.wrapper = void 0, this.trigger = void 0, this.primaryText = void 0, this.secondaryText = void 0, this.countBadge = void 0, this.nativeReturn = void 0, this.source.classList.remove(Au, ju), this.select2Container?.classList.remove(Mu), this.select2Container = void 0, this.surface = void 0, this.nativeMode = !1;
+		this.syncFrame &&= (this.window.cancelAnimationFrame(this.syncFrame), 0), this.observer?.disconnect(), this.observer = void 0, this.$source?.off(`change${this.namespace}`, this.onSourceChange), this.$source = void 0, this.nativeChangeHandler &&= (this.source.removeEventListener("change", this.nativeChangeHandler), void 0), this.trigger?.removeEventListener("click", this.openPicker), this.nativeReturn?.removeEventListener("click", this.returnToCustomMode), this.wrapper?.remove(), this.wrapper = void 0, this.trigger = void 0, this.primaryText = void 0, this.secondaryText = void 0, this.countBadge = void 0, this.nativeReturn = void 0, this.source.classList.remove(Uu, Wu), this.select2Container?.classList.remove(Gu), this.select2Container = void 0, this.surface = void 0, this.nativeMode = !1;
 	}
 	getOptions() {
 		let e = Array.from(this.source.options).map((e, t) => {
@@ -6760,7 +6844,7 @@ var Gu = class {
 				disabled: e.disabled,
 				favoriteKey: e.value ? n : "",
 				label: n,
-				searchText: Hu(n),
+				searchText: td(n),
 				selected: e.selected,
 				sourceIndex: t,
 				value: e.value
@@ -6789,11 +6873,11 @@ var Gu = class {
 		t ? this.triggerSourceChange() : this.syncTrigger();
 	}
 	setNativeMode(e) {
-		this.nativeMode = e, this.surface?.classList.toggle(Fu, !e), this.source.classList.toggle(ju, e), this.wrapper?.classList.toggle("is-native", e), this.syncTrigger();
+		this.nativeMode = e, this.surface?.classList.toggle(Ju, !e), this.source.classList.toggle(Wu, e), this.wrapper?.classList.toggle("is-native", e), this.syncTrigger();
 	}
 	syncSelect2Container() {
 		let e = this.findSelect2Container();
-		e !== this.select2Container && (this.select2Container?.classList.remove(Mu), this.select2Container = e, this.select2Container?.classList.add(Mu), this.wrapper && (this.select2Container ?? this.source).insertAdjacentElement("afterend", this.wrapper));
+		e !== this.select2Container && (this.select2Container?.classList.remove(Gu), this.select2Container = e, this.select2Container?.classList.add(Gu), this.wrapper && (this.select2Container ?? this.source).insertAdjacentElement("afterend", this.wrapper));
 	}
 	syncTrigger() {
 		if (!this.trigger || !this.primaryText || !this.secondaryText || !this.countBadge) return;
@@ -6826,7 +6910,7 @@ var Gu = class {
 			this.syncFrame = 0, this.manager.notifySourceChanged(this);
 		});
 	};
-}, qu = class {
+}, od = class {
 	manager;
 	controller;
 	document;
@@ -6862,30 +6946,30 @@ var Gu = class {
 	}
 	mount() {
 		this.previousFocus = this.document.activeElement, this.options = this.controller.getOptions(), this.selectedValues = this.controller.getSelectedValues(), this.enabledSnapshot = new Set(this.selectedValues), this.favoriteSnapshot = this.manager.getFavorites();
-		let e = J(this.document, "dialog", Pu), t = `th-modern-mobile-world-picker-title-${this.controller.source.id}`;
+		let e = J(this.document, "dialog", qu), t = `th-modern-mobile-world-picker-title-${this.controller.source.id}`;
 		e.setAttribute("role", "dialog"), e.setAttribute("aria-labelledby", t), e.tabIndex = -1;
 		let n = J(this.document, "section", "th-modern-mobile-world-picker-sheet"), r = J(this.document, "span", "th-modern-mobile-world-picker-handle");
 		r.setAttribute("aria-hidden", "true");
 		let i = J(this.document, "header", "th-modern-mobile-world-picker-header"), a = J(this.document, "div", "th-modern-mobile-world-picker-heading"), o = J(this.document, "strong");
 		o.id = t, o.textContent = this.controller.config.title, a.append(o);
 		let s = J(this.document, "div", "th-modern-mobile-world-picker-header-actions"), c = J(this.document, "button", "menu_button th-modern-mobile-world-picker-native");
-		c.type = "button", c.append(Vu(this.document, "fa-solid fa-arrow-rotate-left"), this.document.createTextNode("原生界面")), c.addEventListener("click", this.useNativeMode);
+		c.type = "button", c.append(ed(this.document, "fa-solid fa-arrow-rotate-left"), this.document.createTextNode("原生界面")), c.addEventListener("click", this.useNativeMode);
 		let l = J(this.document, "button", "menu_button th-modern-mobile-world-picker-close");
-		l.type = "button", l.title = "关闭世界书选择", l.setAttribute("aria-label", "关闭世界书选择"), l.append(Vu(this.document, "fa-solid fa-xmark")), l.addEventListener("click", this.close), s.append(c, l), i.append(a, s);
+		l.type = "button", l.title = "关闭世界书选择", l.setAttribute("aria-label", "关闭世界书选择"), l.append(ed(this.document, "fa-solid fa-xmark")), l.addEventListener("click", this.close), s.append(c, l), i.append(a, s);
 		let u = J(this.document, "nav", "th-modern-mobile-world-picker-tabs");
 		u.setAttribute("role", "tablist"), u.setAttribute("aria-label", "世界书筛选"), u.addEventListener("click", this.onTabClick);
 		let d = J(this.document, "label", "th-modern-mobile-world-picker-search");
-		d.append(Vu(this.document, "fa-solid fa-magnifying-glass"));
+		d.append(ed(this.document, "fa-solid fa-magnifying-glass"));
 		let f = J(this.document, "input");
 		f.type = "search", f.placeholder = "搜索世界书名称…", f.autocomplete = "off", f.spellcheck = !1, f.setAttribute("enterkeyhint", "search"), f.addEventListener("input", this.onSearchInput), f.addEventListener("keydown", this.onSearchKeyDown);
 		let p = J(this.document, "button", "th-modern-mobile-world-picker-search-clear");
-		p.type = "button", p.title = "清空搜索", p.setAttribute("aria-label", "清空搜索"), p.append(Vu(this.document, "fa-solid fa-circle-xmark")), p.addEventListener("click", this.clearSearch), d.append(f, p);
+		p.type = "button", p.title = "清空搜索", p.setAttribute("aria-label", "清空搜索"), p.append(ed(this.document, "fa-solid fa-circle-xmark")), p.addEventListener("click", this.clearSearch), d.append(f, p);
 		let m = J(this.document, "div", "th-modern-mobile-world-picker-status");
 		m.setAttribute("aria-live", "polite");
 		let h = J(this.document, "div", "th-modern-mobile-world-picker-viewport");
 		h.tabIndex = 0, h.setAttribute("role", "listbox"), this.controller.config.multiple && h.setAttribute("aria-multiselectable", "true");
 		let g = J(this.document, "div", "th-modern-mobile-world-picker-rows"), v = J(this.document, "div", "th-modern-mobile-world-picker-empty"), y = this.document.createTextNode("没有找到匹配的世界书");
-		v.append(Vu(this.document, "fa-regular fa-folder-open"), y), h.append(g, v), n.append(r, i, u, d, m, h), e.append(n), e.addEventListener("touchstart", this.stopDrawerAutoClose, { passive: !0 }), e.addEventListener("mousedown", this.stopDrawerAutoClose), e.addEventListener("click", this.onOverlayClick), e.addEventListener("keydown", this.onKeyDown), this.window.addEventListener("resize", this.syncLayout, { passive: !0 }), this.overlay = e, this.sheet = n, this.tabs = u, this.searchInput = f, this.clearSearchButton = p, this.resultStatus = m, this.viewport = h, this.rows = g, this.emptyState = v, this.emptyStateText = y, this.renderTabs(), this.filterOptions(), this.document.body.append(e), e.showModal(), this.syncLayout(), this.controller.syncTrigger(), this.window.requestAnimationFrame(() => {
+		v.append(ed(this.document, "fa-regular fa-folder-open"), y), h.append(g, v), n.append(r, i, u, d, m, h), e.append(n), e.addEventListener("touchstart", this.stopDrawerAutoClose, { passive: !0 }), e.addEventListener("mousedown", this.stopDrawerAutoClose), e.addEventListener("click", this.onOverlayClick), e.addEventListener("keydown", this.onKeyDown), this.window.addEventListener("resize", this.syncLayout, { passive: !0 }), this.overlay = e, this.sheet = n, this.tabs = u, this.searchInput = f, this.clearSearchButton = p, this.resultStatus = m, this.viewport = h, this.rows = g, this.emptyState = v, this.emptyStateText = y, this.renderTabs(), this.filterOptions(), this.document.body.append(e), e.showModal(), this.syncLayout(), this.controller.syncTrigger(), this.window.requestAnimationFrame(() => {
 			this.layout === "wide" ? this.searchInput?.focus({ preventScroll: !0 }) : e.focus({ preventScroll: !0 });
 		});
 	}
@@ -6911,12 +6995,12 @@ var Gu = class {
 			let n = J(this.document, "button", "th-modern-mobile-world-picker-tab");
 			n.type = "button", n.dataset.tab = t, n.setAttribute("role", "tab"), n.setAttribute("aria-selected", String(this.activeTab === t)), n.classList.toggle("is-active", this.activeTab === t);
 			let r = t === "all" ? this.options.length : t === "enabled" ? this.selectedValues.size : this.manager.getFavorites().size;
-			n.append(this.document.createTextNode(Bu[t]), J(this.document, "span")), n.lastElementChild.textContent = String(r), e.append(n);
+			n.append(this.document.createTextNode($u[t]), J(this.document, "span")), n.lastElementChild.textContent = String(r), e.append(n);
 		}
 		this.tabs.replaceChildren(e);
 	}
 	filterOptions() {
-		let e = Hu(this.query), t = this.options;
+		let e = td(this.query), t = this.options;
 		this.activeTab === "enabled" ? t = t.filter((e) => this.enabledSnapshot.has(e.value)) : this.activeTab === "favorites" && (t = t.filter((e) => this.favoriteSnapshot.has(e.favoriteKey))), this.filteredOptions = e ? t.filter((t) => t.searchText.includes(e)) : [...t], this.viewport && (this.viewport.scrollTop = 0), this.updateStatus(t.length), this.renderRows();
 	}
 	renderRows() {
@@ -6940,14 +7024,14 @@ var Gu = class {
 			let n = J(this.document, "button", "th-modern-mobile-world-picker-row-select");
 			n.type = "button", n.addEventListener("click", this.onRowClick);
 			let r = J(this.document, "span", this.controller.config.multiple ? "th-modern-mobile-world-picker-checkbox" : "th-modern-mobile-world-picker-radio");
-			r.append(Vu(this.document, this.controller.config.multiple ? "fa-solid fa-check" : "fa-solid fa-circle"));
+			r.append(ed(this.document, this.controller.config.multiple ? "fa-solid fa-check" : "fa-solid fa-circle"));
 			let i = J(this.document, "span", "th-modern-mobile-world-picker-row-label"), a = this.document.createTextNode("");
 			i.append(a);
-			let o = Vu(this.document, "fa-solid fa-check th-modern-mobile-world-picker-row-check");
+			let o = ed(this.document, "fa-solid fa-check th-modern-mobile-world-picker-row-check");
 			o.hidden = !0, n.append(r, i, o);
 			let s = J(this.document, "button", "th-modern-mobile-world-picker-favorite");
 			s.type = "button", s.addEventListener("click", this.onRowClick);
-			let c = Vu(this.document, "fa-solid fa-star"), l = Vu(this.document, "fa-regular fa-star");
+			let c = ed(this.document, "fa-solid fa-star"), l = ed(this.document, "fa-regular fa-star");
 			c.hidden = !0, s.append(c, l), e.append(n, s), t.append(e), this.rowPool.push({
 				favoriteButton: s,
 				favoriteOffIcon: l,
@@ -6972,7 +7056,7 @@ var Gu = class {
 		this.clearSearchButton && (this.clearSearchButton.hidden = this.query.length === 0), this.emptyStateText && (this.emptyStateText.data = this.query ? "没有找到匹配的世界书" : this.activeTab === "favorites" ? "还没有收藏世界书" : this.activeTab === "enabled" ? "当前没有已启用的世界书" : "没有可选择的世界书");
 	}
 	getLayout() {
-		return this.window.matchMedia(Ou).matches ? "wide" : this.window.matchMedia(ku).matches ? "phone" : "narrow";
+		return this.window.matchMedia(Vu).matches ? "wide" : this.window.matchMedia(Hu).matches ? "phone" : "narrow";
 	}
 	positionWideSheet() {
 		if (!this.sheet) return;
@@ -6993,13 +7077,13 @@ var Gu = class {
 		this.layout = this.getLayout(), this.overlay && this.sheet && (this.overlay.dataset.layout = this.layout, this.overlay.setAttribute("aria-modal", String(this.layout !== "wide")), this.sheet.removeAttribute("style"), this.layout === "wide" && this.positionWideSheet());
 	};
 	onTabClick = (e) => {
-		let t = (Wu(e.target)?.closest(".th-modern-mobile-world-picker-tab"))?.dataset.tab;
+		let t = (rd(e.target)?.closest(".th-modern-mobile-world-picker-tab"))?.dataset.tab;
 		t && t !== this.activeTab && this.getAvailableTabs().includes(t) && (this.activeTab = t, this.manager.rememberTab(this.controller, t), this.renderTabs(), this.filterOptions());
 	};
 	onSearchInput = () => {
 		this.searchTimer && this.window.clearTimeout(this.searchTimer), this.searchTimer = this.window.setTimeout(() => {
 			this.searchTimer = 0, this.query = this.searchInput?.value ?? "", this.filterOptions();
-		}, Ru);
+		}, Zu);
 	};
 	onSearchKeyDown = (e) => {
 		e.key === "ArrowDown" && (e.preventDefault(), this.focusFilteredIndex(0));
@@ -7008,7 +7092,7 @@ var Gu = class {
 		this.searchInput && (this.searchInput.value = "", this.query = "", this.filterOptions(), this.searchInput.focus({ preventScroll: !0 }));
 	};
 	onRowClick = (e) => {
-		let t = Wu(e.target), n = t?.closest(".th-modern-mobile-world-picker-row");
+		let t = rd(e.target), n = t?.closest(".th-modern-mobile-world-picker-row");
 		if (!n) return;
 		let r = Number(n.dataset.sourceIndex), i = this.options.find((e) => e.sourceIndex === r);
 		if (!i) return;
@@ -7036,21 +7120,21 @@ var Gu = class {
 			e.preventDefault(), this.close();
 			return;
 		}
-		let t = Wu(e.target)?.closest(".th-modern-mobile-world-picker-row");
+		let t = rd(e.target)?.closest(".th-modern-mobile-world-picker-row");
 		if (!t || e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
 		let n = Number(t.dataset.sourceIndex), r = this.filteredOptions.findIndex((e) => e.sourceIndex === n);
 		r < 0 || (e.preventDefault(), this.focusFilteredIndex(r + (e.key === "ArrowDown" ? 1 : -1)));
 	};
 };
-function Ju(e) {
-	let t = new Gu(e);
+function sd(e) {
+	let t = new id(e);
 	return t.mount(), {
 		destroy: () => t.destroy(),
 		setEnabled: (e) => t.setEnabled(e)
 	};
 }
 // src/world-info-module.ts
-var Yu = "th-modern-wi-enabled", Xu = "th-modern-wi-native", Zu = "th-modern-wi-selected", Qu = "th-modern-wi-row-checked", $u = "th-modern-wi-multiselect", ed = "th-modern-wi-narrow", td = "th-modern-wi-detail-open", nd = "th-modern-wi-mobile-detail-open", rd = "th-modern-wi-native-editor-loading", id = "thModernTabsReady", ad = "thModernSummaryReady", od = "2026-07-18-compact-v2", sd = "thModernConditionalReady", cd = "thModernShortcutSyncReady", ld = "2026-07-08-tabs-v4", ud = /* @__PURE__ */ new Map(), dd = [
+var cd = "th-modern-wi-enabled", ld = "th-modern-wi-native", ud = "th-modern-wi-selected", dd = "th-modern-wi-row-checked", fd = "th-modern-wi-multiselect", pd = "th-modern-wi-narrow", md = "th-modern-wi-detail-open", hd = "th-modern-wi-mobile-detail-open", gd = "th-modern-wi-native-editor-loading", _d = "thModernTabsReady", vd = "thModernSummaryReady", yd = "2026-07-18-compact-v2", bd = "thModernConditionalReady", xd = "thModernShortcutSyncReady", Sd = "2026-07-08-tabs-v4", Cd = /* @__PURE__ */ new Map(), wd = [
 	["th-modern-wi-position-field", "select[name=\"position\"]"],
 	["th-modern-wi-depth-field", "input[name=\"depth\"]"],
 	["th-modern-wi-outlet-field", "input[name=\"outletName\"]"],
@@ -7058,50 +7142,50 @@ var Yu = "th-modern-wi-enabled", Xu = "th-modern-wi-native", Zu = "th-modern-wi-
 	["th-modern-wi-no-recursion-field", "input[name=\"excludeRecursion\"]"],
 	["th-modern-wi-prevent-recursion-field", "input[name=\"preventRecursion\"]"]
 ];
-function fd(e) {
+function Td(e) {
 	let t = e.getAttribute("uid") ?? e.dataset.uid, n = Number(t);
 	return Number.isFinite(n) ? n : void 0;
 }
-function pd(e) {
+function Ed(e) {
 	let t = e.querySelector("#world_editor_select");
 	return !t || t.value === "" ? "" : t.selectedOptions[0]?.textContent?.trim() ?? "";
 }
-function md(e) {
+function Dd(e) {
 	return typeof e == "object" && !!e && !Array.isArray(e);
 }
-function hd(e) {
-	return md(e) && typeof e.message == "string" ? e.message : String(e);
+function Od(e) {
+	return Dd(e) && typeof e.message == "string" ? e.message : String(e);
 }
-function gd(e, t, n) {
+function kd(e, t, n) {
 	let r = n.structuredClone(e);
-	if (!md(r) || !md(r.entries)) throw Error("世界书数据缺少 entries 对象");
+	if (!Dd(r) || !Dd(r.entries)) throw Error("世界书数据缺少 entries 对象");
 	let i = 0;
 	for (let [e, n] of Object.entries(r.entries)) {
-		let a = Number(md(n) && n.uid !== void 0 ? n.uid : e);
+		let a = Number(Dd(n) && n.uid !== void 0 ? n.uid : e);
 		Number.isFinite(a) && t.has(a) && (delete r.entries[e], i += 1);
 	}
 	if (i !== t.size) throw Error(`仅找到 ${i}/${t.size} 个待删除条目`);
-	return md(r.originalData) && Array.isArray(r.originalData.entries) && (r.originalData.entries = r.originalData.entries.filter((e) => {
-		let n = Number(md(e) ? e.uid ?? e.id : void 0);
+	return Dd(r.originalData) && Array.isArray(r.originalData.entries) && (r.originalData.entries = r.originalData.entries.filter((e) => {
+		let n = Number(Dd(e) ? e.uid ?? e.id : void 0);
 		return !Number.isFinite(n) || !t.has(n);
 	})), r;
 }
-function _d(e) {
+function Ad(e) {
 	let t = e;
 	return t ? typeof t.closest == "function" ? t : t.nodeType === 3 ? t.parentElement ?? null : null : null;
 }
-function vd(e) {
-	return _d(e)?.closest(".world_entry") ?? null;
+function jd(e) {
+	return Ad(e)?.closest(".world_entry") ?? null;
 }
-function yd(e) {
-	let t = _d(e);
+function Md(e) {
+	let t = Ad(e);
 	return t ? !!t.closest(".th-modern-wi-tab,.th-modern-wi-editor-surface,.th-modern-wi-editor-actions,.th-modern-wi-toolbar,.drag-handle,.inline-drawer-toggle,.move_entry_button,.duplicate_entry_button,.delete_entry_button,input,select,textarea,button,a,label,.menu_button,.select2,.select2-container") : !1;
 }
-function bd(e) {
-	let t = _d(e);
-	return !t || !t.closest("#world_popup_entries_list") || yd(t) ? null : vd(t);
+function Nd(e) {
+	let t = Ad(e);
+	return !t || !t.closest("#world_popup_entries_list") || Md(t) ? null : jd(t);
 }
-function xd(e, t, n, r) {
+function Pd(e, t, n, r) {
 	let i = e.parentNode;
 	if (!i) return;
 	let a = t.ownerDocument.createComment("th-modern-wi-restore");
@@ -7110,7 +7194,7 @@ function xd(e, t, n, r) {
 		node: e
 	});
 }
-function Sd(e) {
+function Fd(e) {
 	for (let t of [...e].reverse()) {
 		let e = t.marker.parentNode;
 		e && (e.insertBefore(t.node, t.marker), t.marker.remove());
@@ -7121,71 +7205,71 @@ function Y(e, t, n, r) {
 	let i = e.createElement(t);
 	return n && (i.className = n), r !== void 0 && (i.textContent = r), i;
 }
-function Cd(e, t, n, r) {
+function Id(e, t, n, r) {
 	let i = Y(e, "button", t);
 	return i.type = "button", i.title = n, i.setAttribute("aria-label", n), i.innerHTML = `<i class="${r}" aria-hidden="true"></i>`, i;
 }
-function wd(e, t, n, r = !1) {
+function Ld(e, t, n, r = !1) {
 	let i = Y(e, "label", `th-modern-wi-field${r ? " th-modern-wi-field-wide" : ""}`);
 	i.classList.add("th-modern-wi-labeled-field");
 	let a = Y(e, "span", "th-modern-wi-field-label", n);
 	return i.append(a, t), i;
 }
-function Td(e, t, n, r = "") {
+function Rd(e, t, n, r = "") {
 	t.append(Y(e, "div", `th-modern-wi-section-title${r ? ` ${r}` : ""}`, n));
 }
-function Ed(e) {
+function zd(e) {
 	return e ? e.closest(".world_entry_form_control,.range-block,.checkbox_label,label.checkbox,label,.flex-container") ?? e.parentElement : null;
 }
 function X(e, t, n, r, i, a = !1, o = "") {
-	let s = n.querySelector(r), c = Ed(s);
+	let s = n.querySelector(r), c = zd(s);
 	if (c && !c.closest(".th-modern-wi-panel")) {
 		if (i && c === s) {
-			let n = wd(e, c, i, a);
+			let n = Ld(e, c, i, a);
 			o && n.classList.add(o), t.append(n);
 		} else c.classList.add("th-modern-wi-native-field"), i && (c.classList.add("th-modern-wi-labeled-field"), c.querySelector(":scope > .th-modern-wi-field-label") || c.prepend(Y(e, "span", "th-modern-wi-field-label", i))), a && c.classList.add("th-modern-wi-native-field-wide"), o && c.classList.add(o), t.append(c);
 	}
 }
-function Dd(e, t, n, r, i = !1, a = "", o = "") {
+function Bd(e, t, n, r, i = !1, a = "", o = "") {
 	let s = t.querySelector(n)?.closest(r);
 	s && !s.closest(".th-modern-wi-panel") && (s.classList.add("th-modern-wi-native-field"), o && (s.classList.add("th-modern-wi-labeled-field"), s.querySelector(":scope > .th-modern-wi-field-label") || s.prepend(Y(L(), "span", "th-modern-wi-field-label", o))), i && s.classList.add("th-modern-wi-native-field-wide"), a && s.classList.add(a), e.append(s));
 }
-function Od(e, t, n, r, i, a = !1, o = "") {
+function Vd(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s || s.closest(".th-modern-wi-panel")) return;
-	let c = wd(e, s, i, a);
+	let c = Ld(e, s, i, a);
 	o && c.classList.add(o), t.append(c);
 }
-function kd(e) {
+function Hd(e) {
 	let t = e.ownerDocument.defaultView?.Event ?? Event;
 	e.dispatchEvent(new t("input", { bubbles: !0 })), e.dispatchEvent(new t("change", { bubbles: !0 }));
 }
-function Ad(e, t) {
+function Ud(e, t) {
 	let n = e.tagName.toLowerCase(), r = t.tagName.toLowerCase();
 	n === "input" && r === "input" && e.type === "checkbox" ? t.checked = e.checked : n === "select" && r === "select" ? t.selectedIndex = e.selectedIndex : t.value = e.value;
 }
-function jd(e, t, n) {
+function Wd(e, t, n) {
 	let r = [...Array.from(t.querySelectorAll(n)), ...Array.from(e.querySelectorAll(n))];
 	return r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? null;
 }
-function Md(e) {
-	return dd.find(([t]) => e.classList.contains(t))?.[1];
+function Gd(e) {
+	return wd.find(([t]) => e.classList.contains(t))?.[1];
 }
-function Nd(e, t) {
+function Kd(e, t) {
 	for (let n of t.querySelectorAll(".th-modern-wi-shortcut-field")) {
-		let r = Md(n);
+		let r = Gd(n);
 		if (!r) continue;
-		let i = n.querySelector("input, select"), a = jd(e, t, r);
-		if (!i || !a || i === a || i.dataset[cd] === "true") continue;
+		let i = n.querySelector("input, select"), a = Wd(e, t, r);
+		if (!i || !a || i === a || i.dataset[xd] === "true") continue;
 		let o = () => {
-			Ad(i, a), kd(a);
+			Ud(i, a), Hd(a);
 		}, s = () => {
-			Ad(a, i), i.disabled = a.disabled;
+			Ud(a, i), i.disabled = a.disabled;
 		};
-		i.addEventListener("input", o), i.addEventListener("change", o), a.addEventListener("input", s), a.addEventListener("change", s), i.dataset[cd] = "true", s();
+		i.addEventListener("input", o), i.addEventListener("change", o), a.addEventListener("input", s), a.addEventListener("change", s), i.dataset[xd] = "true", s();
 	}
 }
-function Pd(e, t, n, r, i, a = !1, o = "") {
+function qd(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s) return;
 	let c = s.tagName.toLowerCase() === "select", l = !c && s.type === "checkbox", u = c ? Y(e, "select") : Y(e, "input");
@@ -7203,25 +7287,25 @@ function Pd(e, t, n, r, i, a = !1, o = "") {
 	}
 	u.disabled = s.disabled;
 	let d = () => {
-		l ? s.checked = u.checked : c ? s.selectedIndex = u.selectedIndex : s.value = u.value, kd(s);
+		l ? s.checked = u.checked : c ? s.selectedIndex = u.selectedIndex : s.value = u.value, Hd(s);
 	}, f = () => {
 		l ? u.checked = s.checked : c ? u.selectedIndex = s.selectedIndex : u.value = s.value, u.disabled = s.disabled;
 	};
-	u.addEventListener("input", d), u.addEventListener("change", d), s.addEventListener("input", f), s.addEventListener("change", f), u.dataset[cd] = "true";
-	let p = wd(e, u, i, a);
+	u.addEventListener("input", d), u.addEventListener("change", d), s.addEventListener("input", f), s.addEventListener("change", f), u.dataset[xd] = "true";
+	let p = Ld(e, u, i, a);
 	p.classList.add("th-modern-wi-shortcut-field"), o && p.classList.add(o), t.append(p);
 }
-function Fd(e, t, n, r, i = !1, a = "") {
+function Jd(e, t, n, r, i = !1, a = "") {
 	let o = Y(e, "div", "th-modern-wi-shared-slot");
 	o.dataset.sharedName = r;
-	let s = wd(e, o, n, i);
+	let s = Ld(e, o, n, i);
 	return s.classList.add("th-modern-wi-shared-field", a), t.append(s), o;
 }
-function Id(e, t, n, r) {
-	let i = Ed(e.querySelector(t));
+function Yd(e, t, n, r) {
+	let i = zd(e.querySelector(t));
 	i && !i.closest(".th-modern-wi-panel") && (i.classList.add("th-modern-wi-shared-control"), i.dataset.sharedName = n, r[0]?.append(i));
 }
-function Ld(e, t) {
+function Xd(e, t) {
 	let n = [
 		t,
 		t.closest(".inline-drawer-content.inline-drawer-outlet"),
@@ -7230,20 +7314,20 @@ function Ld(e, t) {
 	];
 	return n.filter((e, t) => !!e && n.indexOf(e) === t);
 }
-function Rd(e, t, n, r) {
-	let i = Ld(e, t);
+function Zd(e, t, n, r) {
+	let i = Xd(e, t);
 	for (let e of i) {
 		let t = e.querySelector(`.th-modern-wi-shared-control[data-shared-name="${r}"]`);
 		if (t) return t;
 	}
 	for (let e of i) {
-		let t = Ed(e.querySelector(n));
+		let t = zd(e.querySelector(n));
 		if (t) return t.classList.add("th-modern-wi-shared-control"), t.dataset.sharedName = r, t;
 	}
 	return null;
 }
-function zd(e, t, n) {
-	let r = new Set(t.querySelectorAll(".th-modern-wi-shared-control[data-shared-name]")), i = Rd(e, t, ".keyprimary", "primary-key");
+function Qd(e, t, n) {
+	let r = new Set(t.querySelectorAll(".th-modern-wi-shared-control[data-shared-name]")), i = Zd(e, t, ".keyprimary", "primary-key");
 	i && r.add(i);
 	for (let e of r) {
 		let r = e.dataset.sharedName;
@@ -7252,8 +7336,8 @@ function zd(e, t, n) {
 		i && e.parentElement !== i && i.append(e);
 	}
 }
-function Bd(e, t) {
-	let n = t.querySelector(".th-modern-wi-panel:not([hidden])")?.querySelector(".th-modern-wi-position-field select"), r = Array.from(t.querySelectorAll(".th-modern-wi-position-field select, select[name=\"position\"]")), i = n ?? r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? e.querySelector("select[name=\"position\"]"), a = t.querySelector("input[name=\"delay_until_recursion\"]") ?? e.querySelector("input[name=\"delay_until_recursion\"]"), o = i?.value, s = i?.selectedOptions[0]?.textContent?.trim().toLowerCase() ?? "", c = Ud(i) ? "depth" : o === "7" || s.includes("outlet") || s.includes("锚点") ? "outlet" : "normal", l = !!a?.checked;
+function $d(e, t) {
+	let n = t.querySelector(".th-modern-wi-panel:not([hidden])")?.querySelector(".th-modern-wi-position-field select"), r = Array.from(t.querySelectorAll(".th-modern-wi-position-field select, select[name=\"position\"]")), i = n ?? r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? e.querySelector("select[name=\"position\"]"), a = t.querySelector("input[name=\"delay_until_recursion\"]") ?? e.querySelector("input[name=\"delay_until_recursion\"]"), o = i?.value, s = i?.selectedOptions[0]?.textContent?.trim().toLowerCase() ?? "", c = nf(i) ? "depth" : o === "7" || s.includes("outlet") || s.includes("锚点") ? "outlet" : "normal", l = !!a?.checked;
 	t.dataset.thModernPositionKind = c, t.dataset.thModernRecursionDelay = l ? "true" : "false";
 	for (let e of t.querySelectorAll(".th-modern-wi-depth-field")) {
 		e.hidden = c !== "depth";
@@ -7262,60 +7346,60 @@ function Bd(e, t) {
 	for (let e of t.querySelectorAll(".th-modern-wi-outlet-field")) e.hidden = c !== "outlet";
 	for (let e of t.querySelectorAll(".th-modern-wi-recursion-level-field")) e.hidden = !l;
 }
-function Vd(e, t) {
-	let n = () => Bd(e, t);
-	if (t.dataset[sd] !== "true") {
+function ef(e, t) {
+	let n = () => $d(e, t);
+	if (t.dataset[bd] !== "true") {
 		let e = (e) => {
-			_d(e.target)?.closest(".th-modern-wi-position-field, select[name=\"position\"], .th-modern-wi-delay-recursion-field, input[name=\"delay_until_recursion\"]") && n();
+			Ad(e.target)?.closest(".th-modern-wi-position-field, select[name=\"position\"], .th-modern-wi-delay-recursion-field, input[name=\"delay_until_recursion\"]") && n();
 		};
-		t.addEventListener("input", e), t.addEventListener("change", e), t.dataset[sd] = "true";
+		t.addEventListener("input", e), t.addEventListener("change", e), t.dataset[bd] = "true";
 	}
 	n();
 }
-function Hd(e, t = e) {
-	return t.querySelector("textarea[name=\"comment\"]")?.value.trim() || `UID ${fd(e) ?? ""}`.trim();
+function tf(e, t = e) {
+	return t.querySelector("textarea[name=\"comment\"]")?.value.trim() || `UID ${Td(e) ?? ""}`.trim();
 }
-function Ud(e) {
+function nf(e) {
 	let t = e?.selectedOptions[0], n = e?.value, r = t?.dataset.role, i = t?.textContent?.trim().toLowerCase() ?? "";
 	return n === "4" || r === "0" || r === "1" || r === "2" || i.includes("@d") || i.includes("depth") || i.includes("深度");
 }
-function Wd(e) {
+function rf(e) {
 	let t = e.querySelector("select[name=\"position\"]"), n = t?.selectedOptions[0]?.textContent?.trim() || "", r = e.querySelector("input[name=\"depth\"]")?.value.trim();
-	return Ud(t) && r ? `${n} ${r}` : n;
+	return nf(t) && r ? `${n} ${r}` : n;
 }
-function Gd(e, t = e) {
+function af(e, t = e) {
 	let n = e.querySelector(".th-modern-wi-row-summary");
 	if (!n) return;
 	let r = t.querySelector("input[name=\"order\"]")?.value, i = t.querySelector("select[name=\"entryStateSelector\"]")?.value, a = n.querySelector(".th-modern-wi-row-title"), o = n.querySelector(".th-modern-wi-row-meta"), s = n.querySelector(".th-modern-wi-row-stats");
-	a && (a.textContent = Hd(e, t)), o && (o.textContent = Wd(t)), s && (s.textContent = r ? `#${r}` : ""), i && (e.dataset.thModernEntryState = i);
+	a && (a.textContent = tf(e, t)), o && (o.textContent = rf(t)), s && (s.textContent = r ? `#${r}` : ""), i && (e.dataset.thModernEntryState = i);
 }
-function Kd(e, t, n) {
+function of(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-header");
 	if (!r) return;
 	let i = r.querySelector(".th-modern-wi-row-summary");
-	i || (i = Y(e, "div", "th-modern-wi-row-summary"), i.tabIndex = 0, i.setAttribute("role", "button"), i.setAttribute("aria-label", "打开世界书条目"), r.append(i)), i.dataset.layoutVersion !== od && (i.innerHTML = "<span class=\"th-modern-wi-row-leading\" aria-hidden=\"true\"><span class=\"th-modern-wi-select-dot\"></span><span class=\"th-modern-wi-entry-state-icon\"></span></span><span class=\"th-modern-wi-row-text\"><span class=\"th-modern-wi-row-primary\"><strong class=\"th-modern-wi-row-title\"></strong><span class=\"th-modern-wi-row-stats\"></span></span><small class=\"th-modern-wi-row-meta\"></small></span>", i.dataset.layoutVersion = od), t.dataset[ad] !== "true" && (t.dataset[ad] = "true", t.addEventListener("input", () => n(t)), t.addEventListener("change", () => n(t))), Gd(t);
+	i || (i = Y(e, "div", "th-modern-wi-row-summary"), i.tabIndex = 0, i.setAttribute("role", "button"), i.setAttribute("aria-label", "打开世界书条目"), r.append(i)), i.dataset.layoutVersion !== yd && (i.innerHTML = "<span class=\"th-modern-wi-row-leading\" aria-hidden=\"true\"><span class=\"th-modern-wi-select-dot\"></span><span class=\"th-modern-wi-entry-state-icon\"></span></span><span class=\"th-modern-wi-row-text\"><span class=\"th-modern-wi-row-primary\"><strong class=\"th-modern-wi-row-title\"></strong><span class=\"th-modern-wi-row-stats\"></span></span><small class=\"th-modern-wi-row-meta\"></small></span>", i.dataset.layoutVersion = yd), t.dataset[vd] !== "true" && (t.dataset[vd] = "true", t.addEventListener("input", () => n(t)), t.addEventListener("change", () => n(t))), af(t);
 }
-function qd(e, t, n = e) {
+function sf(e, t, n = e) {
 	e.dataset.thModernActiveTab = t;
 	for (let e of n.querySelectorAll(".th-modern-wi-tab")) {
 		let n = e.dataset.panel === t;
 		e.classList.toggle("active", n), e.setAttribute("aria-selected", String(n));
 	}
 	for (let e of n.querySelectorAll(".th-modern-wi-panel")) e.hidden = e.dataset.panel !== t;
-	zd(e, n, t), Bd(e, n), n.querySelector(".th-modern-wi-panels")?.scrollTo({
+	Qd(e, n, t), $d(e, n), n.querySelector(".th-modern-wi-panels")?.scrollTo({
 		top: 0,
 		left: 0
 	});
 }
-function Jd(e) {
-	let t = fd(e);
+function cf(e) {
+	let t = Td(e);
 	if (t !== void 0) {
-		let e = ud.get(t);
-		if (e) return ud.delete(t), e;
+		let e = Cd.get(t);
+		if (e) return Cd.delete(t), e;
 	}
 	return e.dataset.thModernActiveTab || "main";
 }
-function Yd(e) {
+function lf(e) {
 	let t = e.querySelector("select[name=\"entryStateSelector\"]");
 	if (!t) return;
 	let n = {
@@ -7328,22 +7412,22 @@ function Yd(e) {
 		t && (e.textContent = t);
 	}
 }
-function Xd(e, t) {
+function uf(e, t) {
 	t.dataset.thModernSwitchCaptureReady !== "true" && (t.addEventListener("click", (t) => {
-		let n = _d(t.target);
+		let n = Ad(t.target);
 		if (!n?.closest(".switch_input_type_icon")) return;
-		let r = fd(e);
+		let r = Td(e);
 		if (r !== void 0) {
 			let t = n.closest(".th-modern-wi-panel")?.dataset.panel || e.dataset.thModernActiveTab || "keywords";
-			ud.set(r, t);
+			Cd.set(r, t);
 		}
 	}, !0), t.dataset.thModernSwitchCaptureReady = "true"), t.onclick = (n) => {
 		if (n.defaultPrevented) return;
-		let r = _d(n.target), i = r?.closest(".th-modern-wi-tab");
+		let r = Ad(n.target), i = r?.closest(".th-modern-wi-tab");
 		if (i && t.contains(i)) {
 			let r = i.dataset.panel;
 			if (!r) return;
-			n.preventDefault(), qd(e, r, t);
+			n.preventDefault(), sf(e, r, t);
 			return;
 		}
 		let a = r?.closest(".th-modern-wi-action");
@@ -7356,18 +7440,18 @@ function Xd(e, t) {
 		o && (n.preventDefault(), e.querySelector(o)?.click());
 	};
 }
-function Zd(e, t, n) {
+function df(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet"), i = t.querySelector(".world_entry_edit");
 	if (!r || !i) return !1;
-	if (t.dataset[id] === "true") {
+	if (t.dataset[_d] === "true") {
 		let e = r.querySelector(":scope > .th-modern-wi-editor-surface");
-		if (e) return e.dataset.thModernLayoutVersion = ld, Yd(t), Xd(t, e), Nd(t, e), Vd(t, e), qd(t, Jd(t), e), !0;
-		delete t.dataset[id];
+		if (e) return e.dataset.thModernLayoutVersion = Sd, lf(t), uf(t, e), Kd(t, e), ef(t, e), sf(t, cf(t), e), !0;
+		delete t.dataset[_d];
 	}
-	t.dataset[id] = "true", Kd(e, t, n), Yd(t);
+	t.dataset[_d] = "true", of(e, t, n), lf(t);
 	let a = Y(e, "div", "th-modern-wi-editor-surface");
-	a.dataset.thModernLayoutVersion = ld;
-	let o = Y(e, "div", "th-modern-wi-editor-top"), s = Y(e, "div", "th-modern-wi-enable-dock"), c = Y(e, "div", "th-modern-wi-editor-actions"), l = Cd(e, "menu_button th-modern-wi-action", "移动/复制到其他世界书", "fa-solid fa-arrow-right-arrow-left"), u = Cd(e, "menu_button th-modern-wi-action", "复制条目", "fa-regular fa-copy"), d = Cd(e, "menu_button th-modern-wi-action danger", "删除条目", "fa-regular fa-trash-can");
+	a.dataset.thModernLayoutVersion = Sd;
+	let o = Y(e, "div", "th-modern-wi-editor-top"), s = Y(e, "div", "th-modern-wi-enable-dock"), c = Y(e, "div", "th-modern-wi-editor-actions"), l = Id(e, "menu_button th-modern-wi-action", "移动/复制到其他世界书", "fa-solid fa-arrow-right-arrow-left"), u = Id(e, "menu_button th-modern-wi-action", "复制条目", "fa-regular fa-copy"), d = Id(e, "menu_button th-modern-wi-action danger", "删除条目", "fa-regular fa-trash-can");
 	l.dataset.action = "move", u.dataset.action = "duplicate", d.dataset.action = "delete", c.append(l, u, d);
 	let f = Y(e, "div", "th-modern-wi-tabs"), p = Y(e, "div", "th-modern-wi-panels"), m = [
 		["main", "主要"],
@@ -7378,25 +7462,25 @@ function Zd(e, t, n) {
 	for (let [n, r] of m) {
 		let i = Y(e, "button", "th-modern-wi-tab", r);
 		i.type = "button", i.dataset.panel = n, i.addEventListener("click", (e) => {
-			e.preventDefault(), qd(t, n, a);
+			e.preventDefault(), sf(t, n, a);
 		}), f.append(i);
 		let o = Y(e, "div", "th-modern-wi-panel");
 		o.classList.add(`th-modern-wi-panel-${n}`), o.dataset.panel = n, p.append(o), h.set(n, o);
 	}
 	let g = Y(e, "div", "th-modern-wi-content-panel");
-	o.append(s, f, c), a.append(o, p, g), r.prepend(a), Xd(t, a), Od(e, s, t, ".killSwitch", "启用", !1, "th-modern-wi-enable-field");
+	o.append(s, f, c), a.append(o, p, g), r.prepend(a), uf(t, a), Vd(e, s, t, ".killSwitch", "启用", !1, "th-modern-wi-enable-field");
 	let v = h.get("main");
-	Od(e, v, t, "textarea[name=\"comment\"]", "条目标题/备注", !0, "th-modern-wi-title-field"), Od(e, v, t, "select[name=\"entryStateSelector\"]", "条目状态", !1, "th-modern-wi-state-field"), Pd(e, v, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Pd(e, v, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), Pd(e, v, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Pd(e, v, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Pd(e, v, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field");
-	let y = Fd(e, v, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
-	Pd(e, v, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field");
-	let b = h.get("keywords"), x = Fd(e, b, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
-	X(e, b, t, "select[name=\"entryLogicType\"]", "逻辑", !1, "th-modern-wi-logic-field"), X(e, b, t, ".keysecondary", "可选过滤器", !0, "th-modern-wi-secondary-key-field"), X(e, b, t, "select[name=\"caseSensitive\"]", "区分大小写", !1, "th-modern-wi-case-field"), X(e, b, t, "select[name=\"matchWholeWords\"]", "全词匹配", !1, "th-modern-wi-whole-field"), X(e, b, t, "select[name=\"useGroupScoring\"]", "组评分", !1, "th-modern-wi-group-scoring-field"), X(e, b, t, "input[name=\"scanDepth\"]", "扫描深度", !1, "th-modern-wi-scan-field"), X(e, b, t, "input[name=\"automationId\"]", "自动化 ID", !1, "th-modern-wi-automation-field"), Id(t, ".keyprimary", "primary-key", [y, x]);
+	Vd(e, v, t, "textarea[name=\"comment\"]", "条目标题/备注", !0, "th-modern-wi-title-field"), Vd(e, v, t, "select[name=\"entryStateSelector\"]", "条目状态", !1, "th-modern-wi-state-field"), qd(e, v, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), qd(e, v, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), qd(e, v, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), qd(e, v, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), qd(e, v, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field");
+	let y = Jd(e, v, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
+	qd(e, v, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field");
+	let b = h.get("keywords"), x = Jd(e, b, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
+	X(e, b, t, "select[name=\"entryLogicType\"]", "逻辑", !1, "th-modern-wi-logic-field"), X(e, b, t, ".keysecondary", "可选过滤器", !0, "th-modern-wi-secondary-key-field"), X(e, b, t, "select[name=\"caseSensitive\"]", "区分大小写", !1, "th-modern-wi-case-field"), X(e, b, t, "select[name=\"matchWholeWords\"]", "全词匹配", !1, "th-modern-wi-whole-field"), X(e, b, t, "select[name=\"useGroupScoring\"]", "组评分", !1, "th-modern-wi-group-scoring-field"), X(e, b, t, "input[name=\"scanDepth\"]", "扫描深度", !1, "th-modern-wi-scan-field"), X(e, b, t, "input[name=\"automationId\"]", "自动化 ID", !1, "th-modern-wi-automation-field"), Yd(t, ".keyprimary", "primary-key", [y, x]);
 	let S = h.get("insert");
-	Od(e, S, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Od(e, S, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), X(e, S, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Od(e, S, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Od(e, S, t, "input[name=\"probability\"]", "触发概率", !1, "th-modern-wi-probability-field"), X(e, S, t, "input[name=\"useProbability\"]", "使用概率", !1, "th-modern-wi-use-probability-field"), X(e, S, t, "input[name=\"group\"]", "包含组", !0, "th-modern-wi-group-field"), X(e, S, t, "input[name=\"groupWeight\"]", "分组权重", !1, "th-modern-wi-group-weight-field"), X(e, S, t, "input[name=\"sticky\"]", "黏附", !1, "th-modern-wi-sticky-field"), X(e, S, t, "input[name=\"cooldown\"]", "冷却", !1, "th-modern-wi-cooldown-field"), X(e, S, t, "input[name=\"delay\"]", "延迟", !1, "th-modern-wi-delay-field"), Dd(S, t, "select[name=\"characterFilter\"]", ".flex4", !0, "th-modern-wi-character-filter-field", "绑定到角色或标签"), Dd(S, t, "select[name=\"triggers\"]", ".flex4", !0, "th-modern-wi-generation-trigger-field", "筛选生成触发器"), X(e, S, t, "input[name=\"delayUntilRecursionLevel\"]", "递归等级", !1, "th-modern-wi-recursion-level-field"), X(e, S, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field"), X(e, S, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field"), X(e, S, t, "input[name=\"delay_until_recursion\"]", "延迟到递归", !1, "th-modern-wi-delay-recursion-field"), X(e, S, t, "input[name=\"ignoreBudget\"]", "无视回复限额", !1, "th-modern-wi-budget-field");
+	Vd(e, S, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Vd(e, S, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), X(e, S, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Vd(e, S, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Vd(e, S, t, "input[name=\"probability\"]", "触发概率", !1, "th-modern-wi-probability-field"), X(e, S, t, "input[name=\"useProbability\"]", "使用概率", !1, "th-modern-wi-use-probability-field"), X(e, S, t, "input[name=\"group\"]", "包含组", !0, "th-modern-wi-group-field"), X(e, S, t, "input[name=\"groupWeight\"]", "分组权重", !1, "th-modern-wi-group-weight-field"), X(e, S, t, "input[name=\"sticky\"]", "黏附", !1, "th-modern-wi-sticky-field"), X(e, S, t, "input[name=\"cooldown\"]", "冷却", !1, "th-modern-wi-cooldown-field"), X(e, S, t, "input[name=\"delay\"]", "延迟", !1, "th-modern-wi-delay-field"), Bd(S, t, "select[name=\"characterFilter\"]", ".flex4", !0, "th-modern-wi-character-filter-field", "绑定到角色或标签"), Bd(S, t, "select[name=\"triggers\"]", ".flex4", !0, "th-modern-wi-generation-trigger-field", "筛选生成触发器"), X(e, S, t, "input[name=\"delayUntilRecursionLevel\"]", "递归等级", !1, "th-modern-wi-recursion-level-field"), X(e, S, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field"), X(e, S, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field"), X(e, S, t, "input[name=\"delay_until_recursion\"]", "延迟到递归", !1, "th-modern-wi-delay-recursion-field"), X(e, S, t, "input[name=\"ignoreBudget\"]", "无视回复限额", !1, "th-modern-wi-budget-field");
 	let C = h.get("trigger");
-	return Td(e, C, "额外匹配来源", "th-modern-wi-match-source-title"), X(e, C, t, "input[name=\"matchCharacterDescription\"]", "角色描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterPersonality\"]", "角色性格", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchScenario\"]", "情景", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchPersonaDescription\"]", "用户设定描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterDepthPrompt\"]", "角色备注", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCreatorNotes\"]", "创作者的注释", !1, "th-modern-wi-match-source-field"), X(e, g, t, "textarea[name=\"content\"]", "正文", !0), Nd(t, a), Vd(t, a), qd(t, Jd(t), a), !0;
+	return Rd(e, C, "额外匹配来源", "th-modern-wi-match-source-title"), X(e, C, t, "input[name=\"matchCharacterDescription\"]", "角色描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterPersonality\"]", "角色性格", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchScenario\"]", "情景", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchPersonaDescription\"]", "用户设定描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterDepthPrompt\"]", "角色备注", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCreatorNotes\"]", "创作者的注释", !1, "th-modern-wi-match-source-field"), X(e, g, t, "textarea[name=\"content\"]", "正文", !0), Kd(t, a), ef(t, a), sf(t, cf(t), a), !0;
 }
-var Qd = class {
+var ff = class {
 	document;
 	window;
 	moved = [];
@@ -7437,20 +7521,20 @@ var Qd = class {
 	scheduleSummaryUpdate = (e) => {
 		if (!this.mounted || this.pendingSummaryUpdates.has(e)) return;
 		let t = this.window.requestAnimationFrame(() => {
-			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && Gd(e);
+			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && af(e);
 		});
 		this.pendingSummaryUpdates.set(e, t);
 	};
 	mount() {
 		if (this.mounted) return;
 		let e = this.findWorldInfo(), t = this.findWorldPopup(), n = this.findEntriesList();
-		e && t && n && (this.mounted = !0, this.selectedWorldName = pd(this.document), e.classList.add(Xu), this.buildLayout(t, n), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
+		e && t && n && (this.mounted = !0, this.selectedWorldName = Ed(this.document), e.classList.add(ld), this.buildLayout(t, n), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
 	}
 	destroy() {
 		let e = this.mounted;
-		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(Xu, $u, nd), this.observer?.disconnect(), this.observer = void 0, this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), ud.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
-		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(Zu, Qu, rd);
-		return this.observedList = void 0, Sd(this.moved), this.shell?.remove(), this.shell = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
+		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(ld, fd, hd), this.observer?.disconnect(), this.observer = void 0, this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), Cd.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
+		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(ud, dd, gd);
+		return this.observedList = void 0, Fd(this.moved), this.shell?.remove(), this.shell = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
 	}
 	bindResponsiveMode() {
 		this.narrowQuery = this.window.matchMedia("(max-width: 899.98px)"), this.narrowQueryHandler = () => this.syncResponsiveMode(), this.narrowQuery.addEventListener("change", this.narrowQueryHandler), this.syncResponsiveMode();
@@ -7460,7 +7544,7 @@ var Qd = class {
 	}
 	syncResponsiveMode() {
 		let e = this.isNarrowMode(), t = e && this.mobileDetailOpen && !!this.selectedEntry;
-		this.shell?.classList.toggle(ed, e), this.findWorldInfo()?.classList.toggle(nd, t), e ? this.shell?.classList.toggle(td, t) : (this.mobileDetailOpen = !1, this.shell?.classList.remove(td), this.selectFirstEntry());
+		this.shell?.classList.toggle(pd, e), this.findWorldInfo()?.classList.toggle(hd, t), e ? this.shell?.classList.toggle(md, t) : (this.mobileDetailOpen = !1, this.shell?.classList.remove(md), this.selectFirstEntry());
 	}
 	openMobileDetail() {
 		if (!this.isNarrowMode()) return;
@@ -7494,9 +7578,9 @@ var Qd = class {
 		let n = Y(this.document, "div", "th-modern-wi-native-shell"), r = Y(this.document, "div", "th-modern-wi-worldbar"), i = Y(this.document, "div", "th-modern-wi-toolbar"), a = Y(this.document, "div", "th-modern-wi-native-main"), o = Y(this.document, "div", "th-modern-wi-native-list"), s = Y(this.document, "div", "th-modern-wi-native-editor");
 		n.append(r, i, a), a.append(o, s), e.append(n);
 		let c = e.querySelector("#world_create_button")?.closest(".flex-container");
-		c && xd(c, r, this.moved);
+		c && Pd(c, r, this.moved);
 		let l = e.querySelector("#world_info_search")?.closest(".flex-container");
-		l && xd(l, i, this.moved), this.multiButton = Cd(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.deleteSelectedButton = Cd(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = !0, this.multiButton.addEventListener("click", () => this.toggleMultiSelect()), this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries());
+		l && Pd(l, i, this.moved), this.multiButton = Id(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.deleteSelectedButton = Id(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = !0, this.multiButton.addEventListener("click", () => this.toggleMultiSelect()), this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries());
 		let u = Y(this.document, "details", "th-modern-wi-more-menu"), d = Y(this.document, "summary", "menu_button th-modern-wi-more-toggle");
 		d.title = "更多条目操作", d.setAttribute("aria-label", "更多条目操作"), d.innerHTML = "<i class=\"fa-solid fa-ellipsis\" aria-hidden=\"true\"></i>";
 		let f = Y(this.document, "div", "th-modern-wi-more-popover");
@@ -7508,27 +7592,27 @@ var Qd = class {
 			"#world_apply_current_sorting"
 		]) {
 			let n = e.querySelector(t) ?? i.querySelector(t);
-			n && xd(n, f, this.moved);
+			n && Pd(n, f, this.moved);
 		}
 		u.addEventListener("click", (e) => {
-			_d(e.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (u.open = !1);
+			Ad(e.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (u.open = !1);
 		}), this.moreMenu = u, i.append(this.multiButton, this.deleteSelectedButton, u);
 		let p = this.findWorldInfo()?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
 		if (p) {
 			let e = p.firstElementChild;
 			for (let t of ["#WI_panel_pin_div", "#WorldInfoheader + .flex-container .notes-link"]) {
 				let n = this.findWorldInfo()?.querySelector(t);
-				n && n.parentElement !== p && xd(n, p, this.moved, e);
+				n && n.parentElement !== p && Pd(n, p, this.moved, e);
 			}
 		}
-		xd(t, o, this.moved), this.shell = n, this.listPane = o, this.editorPane = s;
+		Pd(t, o, this.moved), this.shell = n, this.listPane = o, this.editorPane = s;
 	}
 	bindEvents() {
 		this.documentClickHandler = (e) => {
-			let t = _d(e.target);
-			this.moreMenu?.open && t && !this.moreMenu.contains(t) && (this.moreMenu.open = !1), bd(e.target) && this.onEntryClick(e);
+			let t = Ad(e.target);
+			this.moreMenu?.open && t && !this.moreMenu.contains(t) && (this.moreMenu.open = !1), Nd(e.target) && this.onEntryClick(e);
 		}, this.documentKeyDownHandler = (e) => this.onEntryKeyDown(e), this.documentChangeHandler = (e) => {
-			_d(e.target)?.matches("#world_editor_select") && this.syncSelectedWorld();
+			Ad(e.target)?.matches("#world_editor_select") && this.syncSelectedWorld();
 		}, this.document.addEventListener("click", this.documentClickHandler, !0), this.document.addEventListener("keydown", this.documentKeyDownHandler, !0), this.document.addEventListener("change", this.documentChangeHandler, !0);
 		let e = this.document.querySelector("#world_editor_select");
 		if (e) {
@@ -7553,9 +7637,9 @@ var Qd = class {
 		this.observeCurrentList();
 		let e = this.findEntriesList();
 		if (e) {
-			for (let t of e.querySelectorAll(":scope > .world_entry")) if (Kd(this.document, t, this.scheduleSummaryUpdate), this.multiSelect || this.selectedUids.size > 0) {
-				let e = fd(t);
-				t.classList.toggle(Qu, e !== void 0 && this.selectedUids.has(e));
+			for (let t of e.querySelectorAll(":scope > .world_entry")) if (of(this.document, t, this.scheduleSummaryUpdate), this.multiSelect || this.selectedUids.size > 0) {
+				let e = Td(t);
+				t.classList.toggle(dd, e !== void 0 && this.selectedUids.has(e));
 			}
 		}
 	}
@@ -7563,23 +7647,23 @@ var Qd = class {
 		this.selectedEntry?.isConnected || (this.clearSelection(), this.mobileDetailOpen = !1, this.syncResponsiveMode(), this.isNarrowMode() || this.selectFirstEntry());
 	}
 	syncSelectedWorld() {
-		let e = pd(this.document);
+		let e = Ed(this.document);
 		if (e !== this.selectedWorldName) {
-			this.selectedWorldName = e, this.worldRevision += 1, this.clearSelection(), this.cancelPendingSummaryUpdates(), this.selectedUids.clear(), ud.clear();
-			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(Qu);
+			this.selectedWorldName = e, this.worldRevision += 1, this.clearSelection(), this.cancelPendingSummaryUpdates(), this.selectedUids.clear(), Cd.clear();
+			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(dd);
 			this.updateDeleteSelectedButton();
 		}
 	}
 	onEntryKeyDown(e) {
 		if (this.deleteBusy || e.repeat || e.key !== "Enter" && e.key !== " ") return;
-		let t = _d(e.target)?.closest(".th-modern-wi-row-summary"), n = t ? bd(t) : null;
+		let t = Ad(e.target)?.closest(".th-modern-wi-row-summary"), n = t ? Nd(t) : null;
 		n && (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.multiSelect ? this.toggleEntrySelected(n) : this.selectEntry(n));
 	}
 	onEntryClick(e) {
 		if (this.deleteBusy) return;
-		let t = bd(e.target);
+		let t = Nd(e.target);
 		if (!t) return;
-		let n = _d(e.target);
+		let n = Ad(e.target);
 		this.nativeEditorToggleEntry === t && n?.closest(".inline-drawer-toggle") || (this.multiSelect ? (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.toggleEntrySelected(t)) : (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.selectEntry(t)));
 	}
 	selectFirstEntry() {
@@ -7588,14 +7672,14 @@ var Qd = class {
 		e && this.selectEntry(e);
 	}
 	clearSelection() {
-		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(rd), this.detachEntryEditor(), this.selectedEntry?.classList.remove(Zu), this.selectedEntry = void 0;
+		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(gd), this.detachEntryEditor(), this.selectedEntry?.classList.remove(ud), this.selectedEntry = void 0;
 	}
 	selectEntry(e) {
-		this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(Zu), this.ensureEntryEditor(e), this.openMobileDetail());
+		this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(ud), this.ensureEntryEditor(e), this.openMobileDetail());
 	}
 	ensureEntryEditor(e) {
-		if (e.classList.contains(rd)) return;
-		if (this.cancelPendingEditorRetry(), Kd(this.document, e, this.scheduleSummaryUpdate), Zd(this.document, e, this.scheduleSummaryUpdate)) {
+		if (e.classList.contains(gd)) return;
+		if (this.cancelPendingEditorRetry(), of(this.document, e, this.scheduleSummaryUpdate), df(this.document, e, this.scheduleSummaryUpdate)) {
 			this.attachEntryEditor(e);
 			return;
 		}
@@ -7607,10 +7691,10 @@ var Qd = class {
 			} finally {
 				this.nativeEditorToggleEntry = void 0;
 			}
-			e.classList.add(rd);
+			e.classList.add(gd);
 		}
 		let r = 0, i = this.editorRetryRevision, a = () => {
-			this.mounted && this.selectedEntry === e && i === this.editorRetryRevision && (r += 1, Zd(this.document, e, this.scheduleSummaryUpdate) ? (e.classList.remove(rd), this.attachEntryEditor(e)) : r > 20 ? e.classList.remove(rd) : this.pendingEditorRetry = this.window.setTimeout(() => {
+			this.mounted && this.selectedEntry === e && i === this.editorRetryRevision && (r += 1, df(this.document, e, this.scheduleSummaryUpdate) ? (e.classList.remove(gd), this.attachEntryEditor(e)) : r > 20 ? e.classList.remove(gd) : this.pendingEditorRetry = this.window.setTimeout(() => {
 				this.pendingEditorRetry = 0, a();
 			}, 50));
 		};
@@ -7631,34 +7715,34 @@ var Qd = class {
 	detachEntryEditor() {
 		let e = this.selectedEntry;
 		for (let e of this.editorMoved) e.node.nodeType === 1 && e.node.classList.remove("th-modern-wi-active-editor-content");
-		Sd(this.editorMoved), e && Gd(e), this.editorPane?.replaceChildren();
+		Fd(this.editorMoved), e && af(e), this.editorPane?.replaceChildren();
 	}
 	attachEntryEditor(e) {
 		if (!this.editorPane || this.selectedEntry !== e) return;
 		let t = e.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet");
 		if (!t || t.closest(".th-modern-wi-native-editor")) return;
 		this.detachEntryEditor();
-		let n = Cd(this.document, "menu_button th-modern-wi-mobile-back", "返回世界书条目列表", "fa-solid fa-arrow-left");
+		let n = Id(this.document, "menu_button th-modern-wi-mobile-back", "返回世界书条目列表", "fa-solid fa-arrow-left");
 		n.append(Y(this.document, "span", "", "返回条目列表")), n.addEventListener("click", (e) => {
 			e.preventDefault(), this.closeMobileDetail();
 		});
 		let r = Y(this.document, "div", `${e.className} th-modern-wi-editor-entry-host`);
 		for (let t of Array.from(e.attributes)) t.name !== "class" && r.setAttribute(t.name, t.value);
-		let i = Y(this.document, "form", "world_entry_form"), a = Y(this.document, "div", "inline-drawer"), o = () => Gd(e, r);
-		r.addEventListener("input", o), r.addEventListener("change", o), i.append(a), r.append(i), this.editorPane.replaceChildren(n, r), t.classList.add("th-modern-wi-active-editor-content"), xd(t, a, this.editorMoved), Gd(e, r);
+		let i = Y(this.document, "form", "world_entry_form"), a = Y(this.document, "div", "inline-drawer"), o = () => af(e, r);
+		r.addEventListener("input", o), r.addEventListener("change", o), i.append(a), r.append(i), this.editorPane.replaceChildren(n, r), t.classList.add("th-modern-wi-active-editor-content"), Pd(t, a, this.editorMoved), af(e, r);
 	}
 	toggleMultiSelect() {
 		if (!this.deleteBusy) {
-			if (this.multiSelect = !this.multiSelect, this.findWorldInfo()?.classList.toggle($u, this.multiSelect), this.multiButton?.classList.toggle("active", this.multiSelect), !this.multiSelect) {
+			if (this.multiSelect = !this.multiSelect, this.findWorldInfo()?.classList.toggle(fd, this.multiSelect), this.multiButton?.classList.toggle("active", this.multiSelect), !this.multiSelect) {
 				this.selectedUids.clear();
-				for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(Qu);
+				for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(dd);
 			}
 			this.updateDeleteSelectedButton();
 		}
 	}
 	toggleEntrySelected(e) {
-		let t = fd(e);
-		t !== void 0 && (this.selectedUids.has(t) ? (this.selectedUids.delete(t), e.classList.remove(Qu)) : (this.selectedUids.add(t), e.classList.add(Qu)), this.updateDeleteSelectedButton());
+		let t = Td(e);
+		t !== void 0 && (this.selectedUids.has(t) ? (this.selectedUids.delete(t), e.classList.remove(dd)) : (this.selectedUids.add(t), e.classList.add(dd)), this.updateDeleteSelectedButton());
 	}
 	updateDeleteSelectedButton() {
 		if (!this.deleteSelectedButton) return;
@@ -7675,18 +7759,18 @@ var Qd = class {
 		} else this.lockedWorldSelect &&= (this.lockedWorldSelect.element.disabled = this.lockedWorldSelect.wasDisabled, void 0);
 	}
 	isDeleteContextCurrent(e, t) {
-		return this.mounted && this.worldRevision === t && pd(this.document) === e;
+		return this.mounted && this.worldRevision === t && Ed(this.document) === e;
 	}
 	async deleteSelectedEntries() {
 		if (this.deleteBusy) return;
 		let e = Array.from(this.selectedUids);
 		if (!e.length) return;
-		let t = pd(this.document);
+		let t = Ed(this.document);
 		if (!t) {
 			toastr.error("无法确定当前正在编辑的世界书");
 			return;
 		}
-		let n = this.worldRevision, r = e.map((e) => this.document.querySelector(`.world_entry[uid="${e}"]`)).filter((e) => !!e).map((e) => Hd(e)).slice(0, 5).join("、"), i = e.length > 5 ? ` 等 ${e.length} 项` : "", a = `确认删除 ${e.length} 个世界书条目？\n${r}${i}`;
+		let n = this.worldRevision, r = e.map((e) => this.document.querySelector(`.world_entry[uid="${e}"]`)).filter((e) => !!e).map((e) => tf(e)).slice(0, 5).join("、"), i = e.length > 5 ? ` 等 ${e.length} 项` : "", a = `确认删除 ${e.length} 个世界书条目？\n${r}${i}`;
 		if (!this.window.confirm(a) || !this.isDeleteContextCurrent(t, n)) return;
 		let o = new Set(e);
 		this.setDeleteBusy(!0);
@@ -7694,22 +7778,22 @@ var Qd = class {
 		try {
 			if (s = await SillyTavern.loadWorldInfo(t), !this.isDeleteContextCurrent(t, n)) return;
 			if (!s) throw Error(`无法读取世界书“${t}”`);
-			let e = gd(s, o, this.window);
+			let e = kd(s, o, this.window);
 			if (!this.isDeleteContextCurrent(t, n) || (c = !0, await SillyTavern.saveWorldInfo(t, e, !0), !this.isDeleteContextCurrent(t, n))) return;
 		} catch (e) {
 			if (c && s) try {
 				await SillyTavern.saveWorldInfo(t, s, !0);
 			} catch (e) {
-				console.error("[现代化界面] 恢复世界书缓存失败", e), toastr.error(`恢复世界书原数据失败：${hd(e)}`);
+				console.error("[现代化界面] 恢复世界书缓存失败", e), toastr.error(`恢复世界书原数据失败：${Od(e)}`);
 			}
-			console.error("[现代化界面] 世界书批量删除失败", e), toastr.error(`删除世界书条目失败：${hd(e)}`);
+			console.error("[现代化界面] 世界书批量删除失败", e), toastr.error(`删除世界书条目失败：${Od(e)}`);
 			return;
 		} finally {
 			this.setDeleteBusy(!1);
 		}
 		if (this.isDeleteContextCurrent(t, n)) {
 			this.clearSelection(), this.selectedUids.clear();
-			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(Qu);
+			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(dd);
 			this.updateDeleteSelectedButton();
 			try {
 				await SillyTavern.reloadWorldInfoEditor(t, !0);
@@ -7719,12 +7803,12 @@ var Qd = class {
 		}
 	}
 };
-function $d(e) {
+function pf(e) {
 	let t = L(), n = R(), r, i, a = null, o = 0, s = () => t.querySelector("#WorldInfo"), c = () => {
 		let e = r?.destroy() ?? !1;
 		return r = void 0, e;
 	}, l = (t, n) => {
-		t ? i ? i.setEnabled(n) : i = Ju({
+		t ? i ? i.setEnabled(n) : i = sd({
 			enabled: n,
 			onEnabledChange: (t) => {
 				e.settings.modernWorldSelect = t;
@@ -7737,7 +7821,7 @@ function $d(e) {
 		let i = s();
 		p(i);
 		let a = i?.classList.contains("openDrawer") ?? !1;
-		i?.classList.toggle(Yu, n && (a || !!r)), n && a ? (r ??= new Qd(), r.mount()) : !n && c() && ef(t);
+		i?.classList.toggle(cd, n && (a || !!r)), n && a ? (r ??= new ff(), r.mount()) : !n && c() && mf(t);
 	}, d = () => {
 		o ||= n.requestAnimationFrame(u);
 	}, f = new n.MutationObserver(d);
@@ -7753,11 +7837,11 @@ function $d(e) {
 		e.settings.modernWorldSelect
 	], d, { immediate: !0 });
 	return { destroy() {
-		m(), f?.disconnect(), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(Yu), i?.destroy(), i = void 0, c() && ef(t);
+		m(), f?.disconnect(), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(cd), i?.destroy(), i = void 0, c() && mf(t);
 	} };
 }
-function ef(e) {
-	let t = pd(e);
+function mf(e) {
+	let t = Ed(e);
 	if (t) try {
 		SillyTavern.reloadWorldInfoEditor(t, !0);
 	} catch (e) {
@@ -7765,55 +7849,55 @@ function ef(e) {
 	}
 }
 // src/index.ts
-var tf = "th-modern-enabled", nf = "th-modern-two-column", rf = "th-modern-three-column", af = "th-modern-docked-drawer", of = "th-modern-main-fill", sf = "th-modern-reduce-motion", cf = "th-modern-reduce-advanced-effects", lf = "th-modern-sidebar-collapsed", uf = "th-modern-auto-collapse", df = "th-modern-sidebar-temp-expanded", ff = "th-modern-resizing", pf = "th-modern-drawer-fullscreen", mf = "th-modern-drawer-open", hf = "th-modern-drawer-switching", gf = "th-modern-quick-replies-collapsed", _f = "th-modern-bootstrap-icons", vf = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css", yf = "th-modern-sidebar", bf = "th-modern-sidebar-resize-handle", xf = "th-modern-overlay-resize-handle", Sf = "th-modern-quick-reply-toggle", Cf = "th-modern-topbar-label", wf = "th-modern-drawer-titlebar", Tf = "th-modern-drawer-title", Ef = "th-modern-drawer-actions", Df = "th-modern-drawer-close", Of = "th-modern-drawer-fullscreen-toggle", kf = "th-modern-drawer-fullscreen-content", Af = "th-modern-drawer-active", jf = "thModernFullscreenPinned", Mf = "thModernFullscreenWasPinned", Nf = "thModernDockedPinned", Pf = "thModernDockedWasPinned", Ff = "th-modern-api-source-group", If = "th-modern-api-footer", Lf = "th-reset", Rf = "th-modern-failsafe-shortcut", zf = "SillyTavern", Bf = "TavernHelper.modernLayout.dispose", Vf = "TavernHelper.modernLayout.runtimes", Hf = "TavernHelper.modernLayout.sidebarCollapsed", Uf = "TavernHelper.modernLayout.recentCollapsed", Wf = 15, Gf = "(min-width: 900px) and (max-width: 1199.98px)", Kf = "(min-width: 900px)", qf = 320, Jf = 460, Yf = 720, Xf = 24, Zf = 480, Qf = 1e3, $f = "--th-modern-left-nav-height", ep = "--th-modern-input-height", tp = "--th-modern-input-stack-offset", np = "--th-modern-quick-reply-max-height", rp = "--th-modern-quick-reply-reserve-height", ip = 66, ap = 240, op = 288, sp = 12, cp = "modern-ui", lp = "1.0.0", up = !1;
-function dp(e, t, n, r) {
+var hf = "th-modern-enabled", gf = "th-modern-two-column", _f = "th-modern-three-column", vf = "th-modern-docked-drawer", yf = "th-modern-main-fill", bf = "th-modern-floating-input", xf = "th-modern-reduce-motion", Sf = "th-modern-reduce-advanced-effects", Cf = "th-modern-sidebar-collapsed", wf = "th-modern-auto-collapse", Tf = "th-modern-sidebar-temp-expanded", Ef = "th-modern-resizing", Df = "th-modern-drawer-fullscreen", Of = "th-modern-drawer-open", kf = "th-modern-drawer-switching", Af = "th-modern-quick-replies-collapsed", jf = "th-modern-bootstrap-icons", Mf = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css", Nf = "th-modern-sidebar", Pf = "th-modern-sidebar-resize-handle", Ff = "th-modern-overlay-resize-handle", If = "th-modern-quick-reply-toggle", Lf = "th-modern-topbar-label", Rf = "th-modern-drawer-titlebar", zf = "th-modern-drawer-title", Bf = "th-modern-drawer-actions", Vf = "th-modern-drawer-close", Hf = "th-modern-drawer-fullscreen-toggle", Uf = "th-modern-drawer-fullscreen-content", Wf = "th-modern-drawer-active", Gf = "thModernFullscreenPinned", Kf = "thModernFullscreenWasPinned", qf = "thModernDockedPinned", Jf = "thModernDockedWasPinned", Yf = "th-modern-api-source-group", Xf = "th-modern-api-footer", Zf = "th-reset", Qf = "th-modern-failsafe-shortcut", $f = "SillyTavern", ep = "TavernHelper.modernLayout.dispose", tp = "TavernHelper.modernLayout.runtimes", np = "TavernHelper.modernLayout.sidebarCollapsed", rp = "TavernHelper.modernLayout.recentCollapsed", ip = 15, ap = "(min-width: 900px) and (max-width: 1199.98px)", op = "(min-width: 900px)", sp = 320, cp = 460, lp = 720, up = 24, dp = 480, fp = 1e3, pp = "--th-modern-left-nav-height", mp = "--th-modern-input-height", hp = "--th-modern-input-stack-offset", gp = "--th-modern-quick-reply-max-height", _p = "--th-modern-quick-reply-reserve-height", vp = 66, yp = 240, bp = 288, xp = 12, Sp = "modern-ui", Cp = "1.0.0", wp = !1;
+function Tp(e, t, n, r) {
 	return typeof e != "number" || !Number.isFinite(e) ? r : Math.min(Math.max(e, t), n);
 }
-function fp() {
+function Ep() {
 	let e = L();
 	return [e.documentElement, e.body];
 }
-function pp() {
+function Dp() {
 	return R().localStorage;
 }
-function mp(e) {
+function Op(e) {
 	try {
-		return pp()?.getItem(e) === "true";
+		return Dp()?.getItem(e) === "true";
 	} catch (e) {
 		return console.warn(`[${Ul}] 读取浏览器状态失败。`, e), !1;
 	}
 }
-function hp(e, t) {
+function kp(e, t) {
 	try {
-		pp()?.setItem(e, String(t));
+		Dp()?.setItem(e, String(t));
 	} catch (e) {
 		console.warn(`[${Ul}] 保存浏览器状态失败。`, e);
 	}
 }
-function gp(e, t) {
-	fp().forEach((n) => {
+function Ap(e, t) {
+	Ep().forEach((n) => {
 		n.style.getPropertyValue(e) !== t && n.style.setProperty(e, t);
 	});
 }
 function Z(e) {
-	fp().forEach((t) => {
+	Ep().forEach((t) => {
 		t.style.getPropertyValue(e) && t.style.removeProperty(e);
 	});
 }
-function _p(e, t) {
+function jp(e, t) {
 	let n = Number.parseFloat(e);
 	return Number.isFinite(n) ? n : t;
 }
-function vp(e, t, n) {
+function Mp(e, t, n) {
 	e.forEach((e) => {
 		e.style.getPropertyValue(t) !== n && e.style.setProperty(t, n);
 	});
 }
-function yp() {
+function Np() {
 	let e = L();
-	if (e.getElementById(_f)) return { destroy: () => {} };
+	if (e.getElementById(jf)) return { destroy: () => {} };
 	let t = e.createElement("link");
-	return t.id = _f, t.rel = "stylesheet", t.href = vf, t.dataset.thModernOwned = "true", e.head.append(t), { destroy: () => t.remove() };
+	return t.id = jf, t.rel = "stylesheet", t.href = Mf, t.dataset.thModernOwned = "true", e.head.append(t), { destroy: () => t.remove() };
 }
 function Q() {
 	let e = R?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n;
@@ -7822,9 +7906,9 @@ function Q() {
 	} catch {
 		n = void 0;
 	}
-	return n && typeof n == "object" || (n = t ?? e), Array.isArray(n.characters) || (n.characters = Cp()), Array.isArray(n.groups) || (n.groups = wp()), n.characterId === void 0 && (n.characterId = e.this_chid ?? e.characterId), n.groupId === void 0 && (n.groupId = e.selected_group ?? e.groupId), typeof n.getCurrentChatId != "function" && (n.getCurrentChatId = () => e.getCurrentChatId?.() ?? e.selected_and_active_chat), n;
+	return n && typeof n == "object" || (n = t ?? e), Array.isArray(n.characters) || (n.characters = Lp()), Array.isArray(n.groups) || (n.groups = Rp()), n.characterId === void 0 && (n.characterId = e.this_chid ?? e.characterId), n.groupId === void 0 && (n.groupId = e.selected_group ?? e.groupId), typeof n.getCurrentChatId != "function" && (n.getCurrentChatId = () => e.getCurrentChatId?.() ?? e.selected_and_active_chat), n;
 }
-function bp() {
+function Pp() {
 	let e, t = !1, n = async () => {
 		let e = R(), n = L().baseURI || e.location.href, r = new URL("script.js", n).href, i = new URL("scripts/group-chats.js", n).href, a = e.Function, [o, s] = await a("mainModuleUrl", "groupModuleUrl", "return Promise.all([import(mainModuleUrl), import(groupModuleUrl)]);")(r, i), c = o, l = s;
 		if (typeof c.selectCharacterById != "function" || typeof c.isGenerating != "function" || typeof c.isChatSaving != "boolean" || typeof c.setActiveCharacter != "function" || typeof c.setActiveGroup != "function" || typeof l.openGroupChat != "function" || typeof l.openGroupById != "function") throw Error("当前 SillyTavern 缺少最近聊天所需的导航能力。");
@@ -7852,10 +7936,10 @@ function bp() {
 		}
 	};
 }
-function xp(e) {
+function Fp(e) {
 	return e instanceof DOMException && e.name === "AbortError";
 }
-function Sp() {
+function Ip() {
 	let e = window.SillyTavern?.getContext?.(), t = (window.SillyTavern?.accountStorage ?? e?.accountStorage ?? window.accountStorage ?? localStorage)?.getItem?.("pinnedChats");
 	if (typeof t != "string") return [];
 	try {
@@ -7865,21 +7949,21 @@ function Sp() {
 		return console.warn(`[${Ul}] 读取最近聊天置顶状态失败。`, e), [];
 	}
 }
-function Cp() {
+function Lp() {
 	let e = R?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n = t?.getContext?.();
 	return Array.isArray(n?.characters) ? n.characters : Array.isArray(e.characters) ? e.characters : Array.isArray(t?.characters) ? t.characters : Array.isArray(window.characters) ? window.characters : [];
 }
-function wp() {
+function Rp() {
 	let e = R?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n = t?.getContext?.();
 	return Array.isArray(n?.groups) ? n.groups : Array.isArray(e.groups) ? e.groups : Array.isArray(t?.groups) ? t.groups : Array.isArray(window.groups) ? window.groups : [];
 }
-function Tp(e) {
-	if (e) return Cp().find((t) => t?.avatar === e);
+function zp(e) {
+	if (e) return Lp().find((t) => t?.avatar === e);
 }
-function Ep(e) {
-	if (e) return wp().find((t) => t?.id === e);
+function Bp(e) {
+	if (e) return Rp().find((t) => t?.id === e);
 }
-function Dp(e) {
+function Vp(e) {
 	if (!e) return;
 	let t = window.SillyTavern?.getContext?.(), n = window.SillyTavern?.timestampToMoment ?? t?.timestampToMoment;
 	if (typeof n == "function") try {
@@ -7890,7 +7974,7 @@ function Dp(e) {
 		return r(e);
 	} catch {}
 }
-function Op(e, t) {
+function Hp(e, t) {
 	if (!t) return "img/groupchat.png";
 	let n = window.SillyTavern?.getContext?.(), r = window.SillyTavern?.getThumbnailUrl ?? n?.getThumbnailUrl ?? window.getThumbnailUrl;
 	if (typeof r == "function") try {
@@ -7898,10 +7982,10 @@ function Op(e, t) {
 	} catch {}
 	return t.startsWith("http://") || t.startsWith("https://") || t.startsWith("/") ? t : `/characters/${encodeURIComponent(t)}`;
 }
-function kp(e) {
-	let t = Tp(e.avatar), n = Ep(e.group);
+function Up(e) {
+	let t = zp(e.avatar), n = Bp(e.group);
 	if (!t && !n) return;
-	let r = e.chat_name ?? e.file_name.replace(/\.jsonl$/i, ""), i = Dp(e.last_mes), a = "", o = "";
+	let r = e.chat_name ?? e.file_name.replace(/\.jsonl$/i, ""), i = Vp(e.last_mes), a = "", o = "";
 	if (i?.format) try {
 		a = i.format("l"), o = i.format("LL LT");
 	} catch {}
@@ -7913,7 +7997,7 @@ function kp(e) {
 		...e,
 		chat_name: r,
 		char_name: t?.name ?? String(n?.name ?? ""),
-		char_thumbnail: t ? Op("avatar", t.avatar) : "img/groupchat.png",
+		char_thumbnail: t ? Hp("avatar", t.avatar) : "img/groupchat.png",
 		date_short: a,
 		date_long: o,
 		is_group: !!n,
@@ -7926,35 +8010,35 @@ function kp(e) {
 		last_mes: e.last_mes ?? ""
 	};
 }
-function Ap() {
+function Wp() {
 	let e = window.SillyTavern?.getContext?.();
 	return typeof window.SillyTavern?.getRequestHeaders == "function" ? window.SillyTavern.getRequestHeaders() : typeof e?.getRequestHeaders == "function" ? e.getRequestHeaders() : typeof window.getRequestHeaders == "function" ? window.getRequestHeaders() : {
 		"Content-Type": "application/json",
 		"X-CSRF-Token": window.token || ""
 	};
 }
-async function jp(e) {
+async function Gp(e) {
 	let t = await fetch("/api/chats/recent", {
 		method: "POST",
-		headers: Ap(),
+		headers: Wp(),
 		body: JSON.stringify({
-			max: Wf,
-			pinned: Sp()
+			max: ip,
+			pinned: Ip()
 		}),
 		cache: "no-cache",
 		signal: e
 	});
 	if (!t.ok) throw Error(`HTTP ${t.status}`);
 	let n = await t.json();
-	return Array.isArray(n) ? n.map((e) => kp(e)).filter((e) => e !== void 0).slice(0, Wf) : [];
+	return Array.isArray(n) ? n.map((e) => Up(e)).filter((e) => e !== void 0).slice(0, ip) : [];
 }
-function Mp(e) {
+function Kp(e) {
 	return (e ?? "").replace(/\.jsonl$/i, "");
 }
-async function Np(e, t) {
+async function qp(e, t) {
 	let n = await fetch("/api/characters/chats", {
 		method: "POST",
-		headers: Ap(),
+		headers: Wp(),
 		body: JSON.stringify({
 			avatar_url: e,
 			simple: !0
@@ -7966,22 +8050,22 @@ async function Np(e, t) {
 	return !r || typeof r != "object" ? !1 : (Array.isArray(r) ? r : Object.values(r)).some((e) => {
 		if (!e || typeof e != "object") return !1;
 		let n = e, r = typeof n.file_id == "string" ? n.file_id : void 0, i = typeof n.file_name == "string" ? n.file_name : void 0;
-		return Mp(r ?? i) === t;
+		return Kp(r ?? i) === t;
 	});
 }
-function Pp(e) {
-	let t = Q(), n = Mp(e.chat_name ?? e.file_name);
-	if (!n || Mp(t.getCurrentChatId?.()) !== n) return !1;
+function Jp(e) {
+	let t = Q(), n = Kp(e.chat_name ?? e.file_name);
+	if (!n || Kp(t.getCurrentChatId?.()) !== n) return !1;
 	if (e.is_group && e.group) return String(t.groupId ?? "") === e.group;
 	if (!e.avatar || t.groupId) return !1;
-	let r = (Array.isArray(t.characters) ? t.characters : Cp()).findIndex((t) => t?.avatar === e.avatar);
+	let r = (Array.isArray(t.characters) ? t.characters : Lp()).findIndex((t) => t?.avatar === e.avatar);
 	return r !== -1 && String(t.characterId) === String(r);
 }
-function Fp(e, t) {
+function Yp(e, t) {
 	let n = $("<button>").attr({
 		type: "button",
 		title: e.date_long ? `${e.char_name} - ${e.chat_name}\n${e.date_long}` : `${e.char_name} - ${e.chat_name}`
-	}).addClass("th-modern-recent-chat").toggleClass("is-current", Pp(e)).on("click", () => t(e)), r = $("<span>").addClass("th-modern-recent-avatar");
+	}).addClass("th-modern-recent-chat").toggleClass("is-current", Jp(e)).on("click", () => t(e)), r = $("<span>").addClass("th-modern-recent-avatar");
 	$("<img>").attr({
 		src: e.char_thumbnail || "img/ai4.png",
 		alt: e.char_name || "聊天头像"
@@ -7991,39 +8075,39 @@ function Fp(e, t) {
 	let a = $("<span>").addClass("th-modern-recent-meta");
 	return $("<span>").text(e.date_short ?? "").appendTo(a), $("<span>").text(`${e.chat_items ?? 0} 条`).appendTo(a), n.append(r, i, a);
 }
-async function Ip(e, t, n) {
-	let r = Mp(e.chat_name ?? e.file_name);
+async function Xp(e, t, n) {
+	let r = Kp(e.chat_name ?? e.file_name);
 	if (!r) throw Error("最近聊天缺少聊天文件名。");
 	let i = R?.() ?? window, a = Q(), o = i.SillyTavern?.saveSettingsDebounced ?? a?.saveSettingsDebounced ?? i.saveSettingsDebounced, s = i.SillyTavern?.openGroupChat ?? a?.openGroupChat ?? i.openGroupChat, c = i.SillyTavern?.selectCharacterById ?? a?.selectCharacterById ?? i.selectCharacterById, l = i.SillyTavern?.openCharacterChat ?? a?.openCharacterChat ?? i.openCharacterChat;
 	if (e.is_group && e.group) {
-		if (!Ep(e.group)) throw Error("未找到对应群组。");
+		if (!Bp(e.group)) throw Error("未找到对应群组。");
 		if (String(Q().groupId ?? "") !== e.group) {
 			let r = await t.openGroupById(e.group);
 			if (n(), !r && String(Q().groupId ?? "") !== e.group) throw Error("群组切换被聊天保存或生成状态阻止。");
 		}
 		if (String(Q().groupId ?? "") !== e.group) throw Error("群组未能正确激活。");
-		if (t.setActiveGroup(e.group), o?.(), Mp(Q().getCurrentChatId?.()) !== r && (await s?.(e.group, r), n()), String(Q().groupId ?? "") !== e.group || Mp(Q().getCurrentChatId?.()) !== r) throw Error("群组聊天不存在或未能正确打开。");
+		if (t.setActiveGroup(e.group), o?.(), Kp(Q().getCurrentChatId?.()) !== r && (await s?.(e.group, r), n()), String(Q().groupId ?? "") !== e.group || Kp(Q().getCurrentChatId?.()) !== r) throw Error("群组聊天不存在或未能正确打开。");
 	} else if (e.avatar) {
 		let i = () => {
 			let e = Q().characters;
-			return Array.isArray(e) ? e : Cp();
+			return Array.isArray(e) ? e : Lp();
 		}, a = i().findIndex((t) => t?.avatar === e.avatar);
 		if (a === -1) throw Error("未找到对应角色。");
-		if (!await Np(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
+		if (!await qp(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
 		if (n(), a = i().findIndex((t) => t?.avatar === e.avatar), a === -1) throw Error("角色已不存在。");
 		await c?.(a), n();
 		let s = i()[Number(Q().characterId)];
 		if (Q().groupId || s?.avatar !== e.avatar) throw Error("角色切换被聊天保存或生成状态阻止。");
-		if (t.setActiveCharacter(e.avatar), o?.(), Mp(Q().getCurrentChatId?.()) !== r) {
-			if (!await Np(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
+		if (t.setActiveCharacter(e.avatar), o?.(), Kp(Q().getCurrentChatId?.()) !== r) {
+			if (!await qp(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
 			if (n(), Q().groupId || i()[Number(Q().characterId)]?.avatar !== e.avatar) throw Error("角色已不再处于激活状态。");
 			t.setActiveCharacter(e.avatar), await l?.(r), n();
 		}
 		let u = i()[Number(Q().characterId)];
-		if (Q().groupId || u?.avatar !== e.avatar || Mp(Q().getCurrentChatId?.()) !== r) throw Error("角色聊天未能正确打开。");
+		if (Q().groupId || u?.avatar !== e.avatar || Kp(Q().getCurrentChatId?.()) !== r) throw Error("角色聊天未能正确打开。");
 	} else throw Error("最近聊天缺少角色或群组标识。");
 }
-function Lp(e, t) {
+function Zp(e, t) {
 	let n = String(e ?? "").replace(/\s+/g, " ").trim();
 	if (n) {
 		if (t === "version") {
@@ -8034,20 +8118,20 @@ function Lp(e, t) {
 		if (!(!n || n.length > 64 || n.includes("://"))) return n;
 	}
 }
-function Rp(e = L()) {
+function Qp(e = L()) {
 	for (let t of [
 		".welcomeHeaderVersionDisplay",
 		"#version_display_welcome",
 		"#version_display"
 	]) {
-		let n = Lp(e.querySelector(t)?.textContent, "version");
+		let n = Zp(e.querySelector(t)?.textContent, "version");
 		if (n) return n;
 	}
-	return Lp(e.querySelector("meta[name=\"application-name\"]")?.content, "plain") || Lp(e.querySelector(".welcomePanel .welcomeHeaderLogo")?.alt, "logo") || (Lp(e.title, "plain") ?? zf);
+	return Zp(e.querySelector("meta[name=\"application-name\"]")?.content, "plain") || Zp(e.querySelector(".welcomePanel .welcomeHeaderLogo")?.alt, "logo") || (Zp(e.title, "plain") ?? $f);
 }
-function zp(e) {
-	let t = R(), n = L(), r = $("<div>").attr("id", yf).addClass("th-modern-sidebar recentChat"), i = $("<div>").addClass("th-modern-sidebar-brand"), a = $("<span>").addClass("th-modern-brand-main").appendTo(i), o = $("<img>").addClass("th-modern-brand-logo welcomeHeaderLogo").attr("src", "img/logo.png").appendTo(a), s = $("<span>").addClass("th-modern-brand-name").appendTo(a), c = () => {
-		let e = Rp(n);
+function $p(e) {
+	let t = R(), n = L(), r = $("<div>").attr("id", Nf).addClass("th-modern-sidebar recentChat"), i = $("<div>").addClass("th-modern-sidebar-brand"), a = $("<span>").addClass("th-modern-brand-main").appendTo(i), o = $("<img>").addClass("th-modern-brand-logo welcomeHeaderLogo").attr("src", "img/logo.png").appendTo(a), s = $("<span>").addClass("th-modern-brand-name").appendTo(a), c = () => {
+		let e = Qp(n);
 		s.text(e), o.attr("alt", `${e} Logo`);
 	};
 	c();
@@ -8068,7 +8152,7 @@ function zp(e) {
 		type: "button",
 		title: "折叠侧边栏",
 		"aria-pressed": "false"
-	}).addClass("th-modern-icon-button th-modern-sidebar-toggle bi bi-chevron-left").appendTo(i), d = $("<section>").addClass("th-modern-recent-section"), f = `${yf}-recent-list`, p = $("<div>").addClass("th-modern-section-header"), m = $("<span>").addClass("th-modern-section-actions"), h = $("<button>").attr({
+	}).addClass("th-modern-icon-button th-modern-sidebar-toggle bi bi-chevron-left").appendTo(i), d = $("<section>").addClass("th-modern-recent-section"), f = `${Nf}-recent-list`, p = $("<div>").addClass("th-modern-section-header"), m = $("<span>").addClass("th-modern-section-actions"), h = $("<button>").attr({
 		type: "button",
 		title: "折叠最近聊天",
 		"aria-controls": f,
@@ -8076,9 +8160,9 @@ function zp(e) {
 	}).addClass("th-modern-section-title th-modern-recent-toggle"), g = $("<span>").attr("aria-hidden", "true").addClass("th-modern-icon-button th-modern-recent-collapse bi bi-chevron-up").appendTo(h);
 	$("<span>").addClass("th-modern-section-label").text("最近聊天").appendTo(h);
 	let v = (e, t = !0) => {
-		$(L().body).toggleClass(lf, e), $(L().body).removeClass(df), r.toggleClass("is-collapsed", e), y(), t && hp(Hf, e);
+		$(L().body).toggleClass(Cf, e), $(L().body).removeClass(Tf), r.toggleClass("is-collapsed", e), y(), t && kp(np, e);
 	}, y = () => {
-		let e = L().body, t = e.classList.contains(lf), n = e.classList.contains(uf) && !e.classList.contains(df), r = t || n;
+		let e = L().body, t = e.classList.contains(Cf), n = e.classList.contains(wf) && !e.classList.contains(Tf), r = t || n;
 		u.toggleClass("bi-chevron-left", !r).toggleClass("bi-chevron-right", r).attr({
 			title: r ? "展开侧边栏" : "折叠侧边栏",
 			"aria-pressed": String(r)
@@ -8088,14 +8172,14 @@ function zp(e) {
 		d.toggleClass("is-collapsed", e), h.attr({
 			title: n,
 			"aria-expanded": String(!e)
-		}), g.toggleClass("bi-chevron-up", !e).toggleClass("bi-chevron-down", e), t && hp(Uf, e);
+		}), g.toggleClass("bi-chevron-up", !e).toggleClass("bi-chevron-down", e), t && kp(rp, e);
 	}, x = () => {
 		b(!d.hasClass("is-collapsed"));
 	};
 	u.on("click", (e) => {
 		e.preventDefault(), e.stopPropagation();
 		let t = L().body;
-		t.classList.contains(uf) && !t.classList.contains(lf) ? (t.classList.toggle(df), y()) : v(!t.classList.contains(lf));
+		t.classList.contains(wf) && !t.classList.contains(Cf) ? (t.classList.toggle(Tf), y()) : v(!t.classList.contains(Cf));
 	}), h.on("click", (e) => {
 		e.preventDefault(), x();
 	});
@@ -8112,32 +8196,32 @@ function zp(e) {
 	return w.observe(L().body, {
 		attributes: !0,
 		attributeFilter: ["class"]
-	}), v(mp(Hf), !1), b(mp(Uf), !1), y(), {
+	}), v(Op(np), !1), b(Op(rp), !1), y(), {
 		$list: C,
 		destroy: () => {
-			w.disconnect(), l.disconnect(), $(L().body).removeClass(lf), r.remove();
+			w.disconnect(), l.disconnect(), $(L().body).removeClass(Cf), r.remove();
 		}
 	};
 }
-function Bp(e) {
+function em(e) {
 	e.empty().append($("<div>").addClass("th-modern-recent-state").text("正在读取最近聊天..."));
 }
-function Vp(e, t) {
+function tm(e, t) {
 	let n = t instanceof Error ? t.message : String(t);
 	e.empty().append($("<div>").addClass("th-modern-recent-state").text(`读取失败：${n}`));
 }
-function Hp(e) {
-	let t = bp(), n, r = 0, i = 0, a = !1, o = !1, s = (t) => {
+function nm(e) {
+	let t = Pp(), n, r = 0, i = 0, a = !1, o = !1, s = (t) => {
 		a = t, e.toggleClass("is-navigating", t).attr("aria-busy", String(t)), e.find("button").prop("disabled", t);
 	}, c = (e) => {
-		if (o || a || Pp(e)) return;
+		if (o || a || Jp(e)) return;
 		let n = ++i, r = () => {
 			if (o || n !== i) throw new DOMException("导航已取消。", "AbortError");
 		};
 		s(!0), t.get().then(async (t) => {
-			r(), await Ip(e, t, r);
+			r(), await Xp(e, t, r);
 		}).catch((e) => {
-			if (xp(e)) return;
+			if (Fp(e)) return;
 			let t = e instanceof Error ? e.message : String(e);
 			toastr.error(`打开最近聊天失败：${t}`, Ul), console.error(`[${Ul}] 打开最近聊天失败。`, e);
 		}).finally(() => {
@@ -8149,12 +8233,12 @@ function Hp(e) {
 			if (o) return;
 			n?.abort(), n = new AbortController();
 			let t = ++r;
-			Bp(e), jp(n.signal).then((n) => {
+			em(e), Gp(n.signal).then((n) => {
 				o || t !== r || (e.empty(), n.length === 0 ? e.append($("<div>").addClass("th-modern-recent-state").text("暂无最近聊天")) : (n.forEach((t) => {
-					e.append(Fp(t, c));
+					e.append(Yp(t, c));
 				}), a && s(!0)));
 			}).catch((n) => {
-				o || t !== r || xp(n) || Vp(e, n);
+				o || t !== r || Fp(n) || tm(e, n);
 			});
 		},
 		destroy: () => {
@@ -8162,113 +8246,113 @@ function Hp(e) {
 		}
 	};
 }
-function Up(e) {
+function rm(e) {
 	let t = e.children(".drawer-icon").first();
 	return String(t.attr("title") || e.attr("title") || e.text()).trim();
 }
-function Wp() {
-	return L().querySelector(`#top-settings-holder > .drawer > .drawer-content.${kf}`) ?? void 0;
+function im() {
+	return L().querySelector(`#top-settings-holder > .drawer > .drawer-content.${Uf}`) ?? void 0;
 }
-function Gp() {
-	let e = Wp();
-	$(`.${Of}`, L()).each((t, n) => {
-		let r = up && !!(e && $(n).closest(".drawer-content")[0] === e);
+function am() {
+	let e = im();
+	$(`.${Hf}`, L()).each((t, n) => {
+		let r = wp && !!(e && $(n).closest(".drawer-content")[0] === e);
 		$(n).toggleClass("is-fullscreen", r).toggleClass("bi-arrows-fullscreen", !r).toggleClass("bi-fullscreen-exit", r).attr({
 			title: r ? "恢复面板宽度" : "全屏显示面板",
 			"aria-label": r ? "恢复面板宽度" : "全屏显示面板"
 		});
 	});
 }
-function Kp(e) {
+function om(e) {
 	let t = L(), n = e === void 0 ? !!t.querySelector("#top-settings-holder > .drawer > .drawer-content.openDrawer") : e.length > 0;
-	t.body.classList.contains(mf) !== n && t.body.classList.toggle(mf, n);
+	t.body.classList.contains(Of) !== n && t.body.classList.toggle(Of, n);
 }
-function qp(e) {
-	if (e.dataset[Pf] === void 0) {
+function sm(e) {
+	if (e.dataset[Jf] === void 0) {
 		let t = e.classList.contains("pinnedOpen");
-		e.dataset[Pf] = String(t), t || (e.dataset[Nf] = "true");
+		e.dataset[Jf] = String(t), t || (e.dataset[qf] = "true");
 	}
 	e.classList.add("pinnedOpen");
 }
-function Jp(e) {
-	if (e.dataset[Pf] === void 0) return;
-	let t = e.dataset[Pf] === "true";
-	e.dataset[Nf] === "true" ? e.classList.remove("pinnedOpen") : t && e.classList.add("pinnedOpen"), delete e.dataset[Nf], delete e.dataset[Pf];
+function cm(e) {
+	if (e.dataset[Jf] === void 0) return;
+	let t = e.dataset[Jf] === "true";
+	e.dataset[qf] === "true" ? e.classList.remove("pinnedOpen") : t && e.classList.add("pinnedOpen"), delete e.dataset[qf], delete e.dataset[Jf];
 }
-function Yp(e) {
-	let t = L(), n = t.body.classList.contains(af), r = new Set(e);
+function lm(e) {
+	let t = L(), n = t.body.classList.contains(vf), r = new Set(e);
 	t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
-		n && r.has(e) ? qp(e) : e.classList.contains(kf) || Jp(e);
+		n && r.has(e) ? sm(e) : e.classList.contains(Uf) || cm(e);
 	});
 }
-function Xp() {
-	let e = Wp();
+function um() {
+	let e = im();
 	if (e) {
-		let t = e.dataset[Mf] === "true", n = e.dataset[Mf] === void 0 || !t;
-		$(e).removeClass(kf), n ? $(e).removeClass("pinnedOpen") : t && $(e).addClass("pinnedOpen"), delete e.dataset[jf], delete e.dataset[Mf];
+		let t = e.dataset[Kf] === "true", n = e.dataset[Kf] === void 0 || !t;
+		$(e).removeClass(Uf), n ? $(e).removeClass("pinnedOpen") : t && $(e).addClass("pinnedOpen"), delete e.dataset[Gf], delete e.dataset[Kf];
 	}
-	L().body.classList.remove(pf), Kp();
+	L().body.classList.remove(Df), om();
 }
-function Zp() {
-	up = !1, Xp(), Gp();
+function dm() {
+	wp = !1, um(), am();
 }
-function Qp(e) {
-	let t = Wp();
-	if (t && t !== e && Xp(), !(e instanceof (L().defaultView ?? window).HTMLElement)) return;
+function fm(e) {
+	let t = im();
+	if (t && t !== e && um(), !(e instanceof (L().defaultView ?? window).HTMLElement)) return;
 	let n = L().body, r = $(e);
-	if (e.dataset[Mf] === void 0) {
+	if (e.dataset[Kf] === void 0) {
 		let t = r.hasClass("pinnedOpen");
-		e.dataset[Mf] = String(t), t || (e.dataset[jf] = "true");
+		e.dataset[Kf] = String(t), t || (e.dataset[Gf] = "true");
 	}
-	r.addClass(`${kf} pinnedOpen openDrawer`).removeClass("closedDrawer");
+	r.addClass(`${Uf} pinnedOpen openDrawer`).removeClass("closedDrawer");
 	let i = r.closest(".drawer").find(".drawer-icon").first();
-	i.hasClass("closedIcon") && i.removeClass("closedIcon").addClass("openIcon"), n.classList.add(pf), Kp([e]), n.classList.contains(uf) && !n.classList.contains(lf) && n.classList.add(df), Gp();
+	i.hasClass("closedIcon") && i.removeClass("closedIcon").addClass("openIcon"), n.classList.add(Df), om([e]), n.classList.contains(wf) && !n.classList.contains(Cf) && n.classList.add(Tf), am();
 }
-function $p(e, t) {
-	up = t, t ? Qp(e) : Zp();
+function pm(e, t) {
+	wp = t, t ? fm(e) : dm();
 }
-function em(e) {
-	Wp() === e && Xp();
+function mm(e) {
+	im() === e && um();
 	let t = $(e);
 	if (!t.hasClass("openDrawer")) return;
-	Jp(e), t.removeClass("openDrawer pinnedOpen").addClass("closedDrawer");
+	cm(e), t.removeClass("openDrawer pinnedOpen").addClass("closedDrawer");
 	let n = t.closest(".drawer").find(".drawer-icon").first();
-	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), Kp();
+	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), om();
 }
-function tm() {
+function hm() {
 	let e = L(), t = e.defaultView ?? window, n = /* @__PURE__ */ new Map(), r = 0, i, a = 0, o, s = (t, n) => {
 		n?.classList.contains("openDrawer") ? o = n : o?.isConnected && o.classList.contains("openDrawer") || (o = t[t.length - 1]);
 		let r = t.length > 1;
-		e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(Af, r && e === o));
+		e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(Wf, r && e === o));
 	}, c = () => {
-		a !== 0 && (t.clearTimeout(a), a = 0), i = void 0, e.body.classList.remove(hf);
+		a !== 0 && (t.clearTimeout(a), a = 0), i = void 0, e.body.classList.remove(kf);
 	}, l = (n) => {
-		i = n, e.body.classList.add(hf), a !== 0 && t.clearTimeout(a), a = t.setTimeout(() => {
-			a = 0, i = void 0, e.body.classList.remove(hf), Kp();
-		}, Qf);
+		i = n, e.body.classList.add(kf), a !== 0 && t.clearTimeout(a), a = t.setTimeout(() => {
+			a = 0, i = void 0, e.body.classList.remove(kf), om();
+		}, fp);
 	}, u = () => {
 		r === 0 && (r = t.requestAnimationFrame(() => {
 			r = 0, d();
 		}));
 	}, d = () => {
-		let t = Wp(), n = Array.from(e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
-		if (s(n), Yp(n), Kp(n), i && (!i.isConnected || i.classList.contains("openDrawer")) && c(), !t) {
-			if (e.body.classList.contains(pf) && e.body.classList.remove(pf), up && n[0]) {
-				Qp(n[0]);
+		let t = im(), n = Array.from(e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
+		if (s(n), lm(n), om(n), i && (!i.isConnected || i.classList.contains("openDrawer")) && c(), !t) {
+			if (e.body.classList.contains(Df) && e.body.classList.remove(Df), wp && n[0]) {
+				fm(n[0]);
 				return;
 			}
-			Gp();
+			am();
 			return;
 		}
 		if (!t.isConnected || !t.classList.contains("openDrawer")) {
-			Xp(), up && n[0] ? Qp(n[0]) : Gp();
+			um(), wp && n[0] ? fm(n[0]) : am();
 			return;
 		}
 		let r = n.find((e) => e !== t);
-		r && (Xp(), em(t), up ? Qp(r) : Gp());
+		r && (um(), mm(t), wp ? fm(r) : am());
 	}, f = () => {
 		$("#top-settings-holder .drawer-toggle").each((e, t) => {
-			let r = $(t), i = Up(r);
+			let r = $(t), i = rm(r);
 			if (i) {
 				let e = t, a = n.get(e);
 				a ? a.written = i : n.set(e, {
@@ -8280,18 +8364,18 @@ function tm() {
 					"aria-label": i
 				});
 			}
-			r.children(`.${Cf}`).length > 0 || i && $("<span>").addClass(Cf).text(i).appendTo(r);
+			r.children(`.${Lf}`).length > 0 || i && $("<span>").addClass(Lf).text(i).appendTo(r);
 		});
 		let e = ".notes-link, .help_button, .help-button, a:has(.note-link-span), a[href*=\"docs.sillytavern.app\"], .note-link-span, [title*=\"帮助\"], [title*=\"Help\"]", t = (t) => {
-			let n = t.find(e).not(`.${wf} *`);
+			let n = t.find(e).not(`.${Rf} *`);
 			if (n.length === 0) return $();
 			let r = n.first(), i = r.closest("a, button, .notes-link, .help_button");
 			return i.length > 0 ? i : r;
 		};
 		$("#top-settings-holder .drawer-content").each((n, r) => {
-			let i = $(r), a = i.attr("id"), o = a !== "WorldInfo" && a !== "rm_extensions_block", s = i.children(`.${wf}`), c = s.first();
+			let i = $(r), a = i.attr("id"), o = a !== "WorldInfo" && a !== "rm_extensions_block", s = i.children(`.${Rf}`), c = s.first();
 			if (s.slice(1).remove(), c.length > 0) {
-				let n = c.find(`.${Ef}`).first();
+				let n = c.find(`.${Bf}`).first();
 				if (!o) n.find(e).remove();
 				else if (!(n.find(e).length > 0)) {
 					let e = t(i);
@@ -8299,9 +8383,9 @@ function tm() {
 				}
 				return;
 			}
-			let l = Up(i.closest(".drawer").children(".drawer-toggle").first()), u = $("<div>").addClass(wf);
-			$("<span>").addClass(Tf).text(l || "菜单").appendTo(u);
-			let d = $("<div>").addClass(Ef).appendTo(u);
+			let l = rm(i.closest(".drawer").children(".drawer-toggle").first()), u = $("<div>").addClass(Rf);
+			$("<span>").addClass(zf).text(l || "菜单").appendTo(u);
+			let d = $("<div>").addClass(Bf).appendTo(u);
 			if (o) {
 				let e = t(i);
 				e.length > 0 && d.append(e);
@@ -8310,29 +8394,29 @@ function tm() {
 				type: "button",
 				title: "全屏显示面板",
 				"aria-label": "全屏显示面板"
-			}).addClass(`${Of} bi bi-arrows-fullscreen`).appendTo(d), $("<button>").attr({
+			}).addClass(`${Hf} bi bi-arrows-fullscreen`).appendTo(d), $("<button>").attr({
 				type: "button",
 				title: "关闭面板"
-			}).addClass(`${Df} bi bi-x-lg`).appendTo(d), i.prepend(u);
-		}), Gp(), d();
+			}).addClass(`${Vf} bi bi-x-lg`).appendTo(d), i.prepend(u);
+		}), am(), d();
 	}, p = (n) => {
 		let r = n.target instanceof t.Element ? n.target : null, i = r?.closest("#top-settings-holder > .drawer > .drawer-toggle, #top-settings-holder .drawer-toggle"), a = r?.closest(".drawer-opener");
 		if (i || a) {
 			let t = i?.closest(".drawer") ?? i?.parentElement ?? (a?.dataset.target ? e.getElementById(a.dataset.target) : null), n = t?.querySelector(":scope > .drawer-content") ?? t?.querySelector(".drawer-content"), r = !!n?.classList.contains("openDrawer");
-			if (e.body.classList.contains(af)) {
+			if (e.body.classList.contains(vf)) {
 				let t = Array.from(e.querySelectorAll("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"));
 				n && !r && t.length > 0 && l(n), t.forEach((e) => {
-					e !== n && Jp(e);
+					e !== n && cm(e);
 				});
 			}
 		}
-		let o = r?.closest(`.${Of}, .${Df}`);
+		let o = r?.closest(`.${Hf}, .${Vf}`);
 		if (!o) {
 			i && u();
 			return;
 		}
 		let s = o.closest("#top-settings-holder > .drawer > .drawer-content");
-		s && (n.preventDefault(), n.stopPropagation(), o.classList.contains(Of) ? $p(s, Wp() !== s) : (em(s), u()));
+		s && (n.preventDefault(), n.stopPropagation(), o.classList.contains(Hf) ? pm(s, im() !== s) : (mm(s), u()));
 	}, m = e.getElementById("top-settings-holder"), h = m instanceof t.HTMLElement ? new t.MutationObserver((n) => {
 		let r = n.find((e) => e.target instanceof t.HTMLElement && !(e.oldValue?.split(/\s+/).includes("openDrawer") ?? !1) && e.target.classList.contains("openDrawer"))?.target;
 		if (r instanceof t.HTMLElement) {
@@ -8364,14 +8448,14 @@ function tm() {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), e.addEventListener("click", p, !0), { destroy: () => {
-		r !== 0 && t.cancelAnimationFrame(r), c(), y?.disconnect(), h?.disconnect(), b.disconnect(), e.removeEventListener("click", p, !0), Zp(), e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
-			Jp(e), e.classList.remove(Af);
-		}), o = void 0, $(`.${Cf}`).remove(), $(`.${wf}`).remove(), n.forEach((e, t) => {
+		r !== 0 && t.cancelAnimationFrame(r), c(), y?.disconnect(), h?.disconnect(), b.disconnect(), e.removeEventListener("click", p, !0), dm(), e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
+			cm(e), e.classList.remove(Wf);
+		}), o = void 0, $(`.${Lf}`).remove(), $(`.${Rf}`).remove(), n.forEach((e, t) => {
 			t.getAttribute("title") === e.written && (e.title === null ? t.removeAttribute("title") : t.setAttribute("title", e.title)), t.getAttribute("aria-label") === e.written && (e.ariaLabel === null ? t.removeAttribute("aria-label") : t.setAttribute("aria-label", e.ariaLabel));
 		}), n.clear();
 	} };
 }
-function nm(e, t) {
+function gm(e, t) {
 	let n = L(), r = n.activeElement;
 	$(".th-modern-failsafe-overlay", n).remove();
 	let i = $("<div>").addClass("th-modern-failsafe-overlay"), a = "th-modern-failsafe-title", o = "th-modern-failsafe-description", s = $("<div>").attr({
@@ -8380,7 +8464,7 @@ function nm(e, t) {
 		"aria-labelledby": a,
 		"aria-describedby": o
 	}).addClass("th-modern-failsafe-dialog").appendTo(i);
-	$("<strong>").attr("id", a).text("关闭现代化界面？").appendTo(s), $("<p>").attr("id", o).text(`将立即还原 ${Rp(n)} 原始布局，并保持关闭状态。之后可以在酒馆助手设置里重新启用。`).appendTo(s);
+	$("<strong>").attr("id", a).text("关闭现代化界面？").appendTo(s), $("<p>").attr("id", o).text(`将立即还原 ${Qp(n)} 原始布局，并保持关闭状态。之后可以在酒馆助手设置里重新启用。`).appendTo(s);
 	let c = $("<div>").addClass("th-modern-failsafe-actions").appendTo(s), l = !1, u = () => {
 		l || (l = !0, i.off("keydown", p), i.remove(), t(), r?.isConnected && typeof r.focus == "function" && r.focus());
 	}, d = $("<button>").attr("type", "button").addClass("menu_button").text("取消").on("click", u).appendTo(c), f = $("<button>").attr("type", "button").addClass("menu_button th-modern-failsafe-confirm").text("关闭并还原").on("click", () => {
@@ -8399,18 +8483,18 @@ function nm(e, t) {
 		e.target === i[0] && u();
 	}), i.on("keydown", p), $(n.body).append(i), d[0].focus(), u;
 }
-function rm(e) {
+function _m(e) {
 	let t = L(), n = R(), r = "", i = !1, a, o = () => {
-		!i && e.is_active && (i = !0, a = nm(e, () => {
+		!i && e.is_active && (i = !0, a = gm(e, () => {
 			i = !1, a = void 0;
 		}));
 	}, s = (e) => {
-		e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || (r = `${r}${e.key.toLowerCase()}`.slice(-8), r === Lf && (r = "", o()));
+		e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || (r = `${r}${e.key.toLowerCase()}`.slice(-8), r === Zf && (r = "", o()));
 	}, c = (e) => {
 		let n = e.querySelector(".welcomeShortcuts");
-		if (!n || n.querySelector(`.${Rf}`)) return;
+		if (!n || n.querySelector(`.${Qf}`)) return;
 		let r = t.createElement("button");
-		r.type = "button", r.className = `menu_button menu_button_icon ${Rf}`, r.title = "关闭现代化界面并还原原始布局", r.setAttribute("aria-label", "重置界面");
+		r.type = "button", r.className = `menu_button menu_button_icon ${Qf}`, r.title = "关闭现代化界面并还原原始布局", r.setAttribute("aria-label", "重置界面");
 		let i = t.createElement("i");
 		i.className = "fa-solid fa-arrow-rotate-left", i.setAttribute("aria-hidden", "true");
 		let a = t.createElement("span");
@@ -8418,7 +8502,7 @@ function rm(e) {
 	}, l = (e) => {
 		e instanceof n.Element && e.matches(".welcomePanel") && c(e), e.querySelectorAll(".welcomePanel").forEach(c);
 	}, u = (e) => {
-		(e.target instanceof n.Element ? e.target : null)?.closest(`.${Rf}`) && (e.preventDefault(), e.stopPropagation(), o());
+		(e.target instanceof n.Element ? e.target : null)?.closest(`.${Qf}`) && (e.preventDefault(), e.stopPropagation(), o());
 	};
 	l(t);
 	let d = new n.MutationObserver((e) => {
@@ -8432,10 +8516,10 @@ function rm(e) {
 		childList: !0,
 		subtree: !0
 	}), t.addEventListener("keydown", s, !0), t.addEventListener("click", u, !0), { destroy: () => {
-		d.disconnect(), a?.(), t.removeEventListener("keydown", s, !0), t.removeEventListener("click", u, !0), t.querySelectorAll(`.${Rf}`).forEach((e) => e.remove());
+		d.disconnect(), a?.(), t.removeEventListener("keydown", s, !0), t.removeEventListener("click", u, !0), t.querySelectorAll(`.${Qf}`).forEach((e) => e.remove());
 	} };
 }
-function im(e, t, n, r) {
+function vm(e, t, n, r) {
 	let i = r.get(e);
 	i ? i.applied[t] !== void 0 && e.style[t] !== i.applied[t] && (i.original[t] = e.style[t]) : (i = {
 		original: {
@@ -8447,31 +8531,31 @@ function im(e, t, n, r) {
 		applied: {}
 	}, r.set(e, i)), e.style[t] !== n && (e.style[t] = n), i.applied[t] = n;
 }
-function am(e, t) {
+function ym(e, t) {
 	let n = e.ownerDocument.defaultView ?? R(), r = n.getComputedStyle(e);
 	if (r.display === "none" || r.visibility === "hidden" || r.position !== "absolute" && r.position !== "fixed") return;
 	let i = e.getBoundingClientRect();
 	if (i.width < 8 || i.height < 8) return;
 	let a = Math.max(160, n.innerWidth - 16), o = Math.max(120, n.innerHeight - 16), s = `${a}px`, c = `${o}px`, l = Math.min(Math.max(i.left, 8), n.innerWidth - Math.min(i.width, a) - 8), u = Math.min(Math.max(i.top, 8), n.innerHeight - Math.min(i.height, o) - 8), d = Math.abs(l - i.left) > 1, f = Math.abs(u - i.top) > 1, p = (d || f) && r.position === "absolute" ? e.offsetParent : null, m = p?.getBoundingClientRect(), h, g;
 	if (d) {
-		let e = _p(r.marginLeft, 0);
+		let e = jp(r.marginLeft, 0);
 		h = `${r.position === "fixed" ? l : p && m ? l - m.left - p.clientLeft + p.scrollLeft - e : l + n.scrollX - e}px`;
 	}
 	if (f) {
-		let e = _p(r.marginTop, 0);
+		let e = jp(r.marginTop, 0);
 		g = `${r.position === "fixed" ? u : p && m ? u - m.top - p.clientTop + p.scrollTop - e : u + n.scrollY - e}px`;
 	}
-	im(e, "maxWidth", s, t), im(e, "maxHeight", c, t), h !== void 0 && im(e, "left", h, t), g !== void 0 && im(e, "top", g, t);
+	vm(e, "maxWidth", s, t), vm(e, "maxHeight", c, t), h !== void 0 && vm(e, "left", h, t), g !== void 0 && vm(e, "top", g, t);
 }
-function om() {
+function bm() {
 	let e = L(), t = e.defaultView ?? window, n = ".select2-container--open, .select2-dropdown, .ui-autocomplete, .list-group, #export_format_popup, #rawPromptPopup", r = /* @__PURE__ */ new Map(), i = 0, a = () => {
 		i = 0, r.forEach((e, t) => {
 			t.isConnected || r.delete(t);
 		}), e.querySelectorAll(n).forEach((e) => {
-			am(e, r);
+			ym(e, r);
 		});
 	}, o = () => {
-		e.body.classList.contains(ff) || i === 0 && (i = t.requestAnimationFrame(a));
+		e.body.classList.contains(Ef) || i === 0 && (i = t.requestAnimationFrame(a));
 	}, s = (e) => e instanceof t.Element && (e.matches(n) || !!e.querySelector(n)), c = new t.MutationObserver((e) => {
 		e.some((e) => [...e.addedNodes].some(s)) && o();
 	});
@@ -8487,9 +8571,9 @@ function om() {
 		}), r.clear();
 	} };
 }
-function sm(e) {
+function xm(e) {
 	let t = L(), n = t.defaultView ?? window, r = t.createElement("button");
-	r.id = Sf, r.type = "button", r.className = "menu_button bi", r.setAttribute("aria-controls", "qr--bar"), r.hidden = !0;
+	r.id = If, r.type = "button", r.className = "menu_button bi", r.setAttribute("aria-controls", "qr--bar"), r.hidden = !0;
 	let i = 0, a, o = new n.ResizeObserver(() => p()), s = new n.MutationObserver(p), c = () => {
 		a &&= (a.element.toggleAttribute("inert", a.inert), a.ariaHidden === null ? a.element.removeAttribute("aria-hidden") : a.element.setAttribute("aria-hidden", a.ariaHidden), void 0);
 	}, l = (e) => {
@@ -8529,20 +8613,20 @@ function sm(e) {
 				"style"
 			]
 		}), l(h), !p || !h) {
-			r.remove(), r.hidden = !0, Z(ep), Z(tp), Z(np), Z(rp);
+			r.remove(), r.hidden = !0, Z(mp), Z(hp), Z(gp), Z(_p);
 			return;
 		}
 		r.parentElement !== p && p.append(r);
-		let g = t.body.classList.contains(gf), v = d(h);
+		let g = t.body.classList.contains(Af), v = d(h);
 		r.hidden = !v, r.classList.toggle("bi-chevron-down", v && !g), r.classList.toggle("bi-chevron-up", v && g), r.setAttribute("aria-expanded", String(v && !g)), r.setAttribute("aria-label", g ? "展开快速回复栏" : "收起快速回复栏"), r.title = g ? "展开快速回复栏" : "收起快速回复栏", h.toggleAttribute("inert", g || a?.inert === !0), g ? h.setAttribute("aria-hidden", "true") : a?.ariaHidden === null ? h.removeAttribute("aria-hidden") : a && h.setAttribute("aria-hidden", a.ariaHidden);
 		let y = Math.ceil(m?.getBoundingClientRect().height ?? p.getBoundingClientRect().height);
-		gp(ep, `${Math.max(0, y)}px`);
+		Ap(mp, `${Math.max(0, y)}px`);
 		let b = p.getBoundingClientRect();
-		gp(tp, `${Math.max(0, Math.ceil(b.bottom - u(p)))}px`);
+		Ap(hp, `${Math.max(0, Math.ceil(b.bottom - u(p)))}px`);
 		let x = v ? Math.max(0, Math.ceil(h.scrollHeight)) : 0;
-		gp(np, `${x}px`);
+		Ap(gp, `${x}px`);
 		let S = r.hidden ? 0 : Math.ceil(r.getBoundingClientRect().height || 26), C = Math.ceil(h.getBoundingClientRect().height), w = g || !g && x > 1 && C <= 1 ? 0 : x;
-		gp(rp, `${v ? Math.max(S + 6, w + 10) : 0}px`);
+		Ap(_p, `${v ? Math.max(S + 6, w + 10) : 0}px`);
 	};
 	function p() {
 		i === 0 && (i = n.requestAnimationFrame(f));
@@ -8563,41 +8647,41 @@ function sm(e) {
 		t.preventDefault(), t.stopPropagation(), e.settings.quickReplyCollapsed = !e.settings.quickReplyCollapsed;
 	};
 	return r.addEventListener("click", v), n.addEventListener("resize", p), p(), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), h.disconnect(), g.disconnect(), s.disconnect(), o.disconnect(), r.removeEventListener("click", v), r.remove(), c(), n.removeEventListener("resize", p), Z(ep), Z(tp), Z(np), Z(rp);
+		i !== 0 && n.cancelAnimationFrame(i), h.disconnect(), g.disconnect(), s.disconnect(), o.disconnect(), r.removeEventListener("click", v), r.remove(), c(), n.removeEventListener("resize", p), Z(mp), Z(hp), Z(gp), Z(_p);
 	} };
 }
-function cm(e) {
-	let t = L(), n = t.defaultView ?? window, r = n.matchMedia(Gf), i = 0, a = () => {
-		mm(e.settings, e.is_active, e.should_use_two_column);
+function Sm(e) {
+	let t = L(), n = t.defaultView ?? window, r = n.matchMedia(ap), i = 0, a = () => {
+		Om(e.settings, e.is_active, e.should_use_two_column);
 	}, o = () => {
 		i === 0 && (i = n.requestAnimationFrame(() => {
 			i = 0, a();
 		}));
 	}, s = (e) => {
 		let r = t.body;
-		if (!r.classList.contains(uf) || r.classList.contains(lf)) return;
-		let i = !!(e.target instanceof n.Element ? e.target : null)?.closest(`#${yf}, #top-settings-holder`);
-		r.classList.contains(pf) ? r.classList.add(df) : r.classList.contains(df) && !i && r.classList.remove(df);
+		if (!r.classList.contains(wf) || r.classList.contains(Cf)) return;
+		let i = !!(e.target instanceof n.Element ? e.target : null)?.closest(`#${Nf}, #top-settings-holder`);
+		r.classList.contains(Df) ? r.classList.add(Tf) : r.classList.contains(Tf) && !i && r.classList.remove(Tf);
 	};
 	return r.addEventListener("change", o), n.addEventListener("resize", o), t.addEventListener("pointerdown", s, !0), a(), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), r.removeEventListener("change", o), n.removeEventListener("resize", o), t.removeEventListener("pointerdown", s, !0), t.body.classList.remove(uf, df);
+		i !== 0 && n.cancelAnimationFrame(i), r.removeEventListener("change", o), n.removeEventListener("resize", o), t.removeEventListener("pointerdown", s, !0), t.body.classList.remove(wf, Tf);
 	} };
 }
-function lm() {
+function Cm() {
 	let e = L(), t = e.defaultView ?? window, n = e.getElementById("top-settings-holder"), r = 0, i = (e) => {
 		let n = e.getBoundingClientRect(), r = t.getComputedStyle(e);
-		return n.height + _p(r.marginTop, 0) + _p(r.marginBottom, 0);
+		return n.height + jp(r.marginTop, 0) + jp(r.marginBottom, 0);
 	}, a = () => {
 		if (r = 0, !(n instanceof t.HTMLElement)) {
-			Z($f);
+			Z(pp);
 			return;
 		}
 		let a = e.body;
-		if (!a.classList.contains(tf) || !a.classList.contains(nf)) {
-			Z($f);
+		if (!a.classList.contains(hf) || !a.classList.contains(gf)) {
+			Z(pp);
 			return;
 		}
-		let o = t.getComputedStyle(a), s = _p(o.getPropertyValue("--th-modern-left-nav-top"), ip), c = _p(o.getPropertyValue("--th-modern-left-nav-min-height"), ap), l = _p(o.getPropertyValue("--th-modern-recent-min-height"), op), u = Math.max(c, t.innerHeight - s - l - sp), d = t.getComputedStyle(n), f = _p(d.paddingTop, 0) + _p(d.paddingBottom, 0), p = Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).reduce((e, n) => {
+		let o = t.getComputedStyle(a), s = jp(o.getPropertyValue("--th-modern-left-nav-top"), vp), c = jp(o.getPropertyValue("--th-modern-left-nav-min-height"), yp), l = jp(o.getPropertyValue("--th-modern-recent-min-height"), bp), u = Math.max(c, t.innerHeight - s - l - xp), d = t.getComputedStyle(n), f = jp(d.paddingTop, 0) + jp(d.paddingBottom, 0), p = Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).reduce((e, n) => {
 			let r = n.closest(".drawer");
 			if (r?.classList.contains("mc3-hidden") || r?.classList.contains("displayNone") || r?.hidden || n.classList.contains("mc3-hidden") || n.classList.contains("displayNone") || n.hidden) return e;
 			let a = r ? t.getComputedStyle(r) : null;
@@ -8605,7 +8689,7 @@ function lm() {
 			let o = t.getComputedStyle(n);
 			return o.display === "none" || o.visibility === "hidden" ? e : e + i(n);
 		}, f);
-		gp($f, `${Math.ceil(Math.min(Math.max(p, c), u))}px`);
+		Ap(pp, `${Math.ceil(Math.min(Math.max(p, c), u))}px`);
 	}, o = () => {
 		r === 0 && (r = t.requestAnimationFrame(a));
 	}, s = n instanceof t.HTMLElement ? new t.ResizeObserver(o) : void 0, c = () => {
@@ -8623,44 +8707,44 @@ function lm() {
 			"hidden"
 		]
 	}), c();
-	let u = e.body.classList.contains(tf) && e.body.classList.contains(nf), d = new t.MutationObserver(() => {
-		let t = e.body.classList.contains(tf) && e.body.classList.contains(nf);
+	let u = e.body.classList.contains(hf) && e.body.classList.contains(gf), d = new t.MutationObserver(() => {
+		let t = e.body.classList.contains(hf) && e.body.classList.contains(gf);
 		t !== u && (u = t, o());
 	});
 	return d.observe(e.body, {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), t.addEventListener("resize", o), o(), { destroy: () => {
-		r !== 0 && t.cancelAnimationFrame(r), l?.disconnect(), s?.disconnect(), d.disconnect(), t.removeEventListener("resize", o), Z($f);
+		r !== 0 && t.cancelAnimationFrame(r), l?.disconnect(), s?.disconnect(), d.disconnect(), t.removeEventListener("resize", o), Z(pp);
 	} };
 }
-function um(e) {
-	let t = L(), n = t.defaultView ?? window, r = $("<div>").attr("id", bf).appendTo("body"), i = $("<div>").attr("id", xf).appendTo("body"), a, o = (r, i) => {
+function wm(e) {
+	let t = L(), n = t.defaultView ?? window, r = $("<div>").attr("id", Pf).appendTo("body"), i = $("<div>").attr("id", Ff).appendTo("body"), a, o = (r, i) => {
 		if (r.button !== 0) return;
-		let o = t.body, s = t.getElementById(yf), c = t.querySelector("#top-settings-holder > .drawer > .drawer-content.openDrawer"), l = o.classList.contains(af);
-		if (i === "sidebar" && (!s || c && !l || o.classList.contains(lf) || o.classList.contains(uf)) || i === "overlay" && !c) return;
+		let o = t.body, s = t.getElementById(Nf), c = t.querySelector("#top-settings-holder > .drawer > .drawer-content.openDrawer"), l = o.classList.contains(vf);
+		if (i === "sidebar" && (!s || c && !l || o.classList.contains(Cf) || o.classList.contains(wf)) || i === "overlay" && !c) return;
 		a?.(), r.preventDefault();
 		let u = r.target;
 		try {
 			u?.setPointerCapture?.(r.pointerId);
 		} catch {}
-		let d = r.clientX, f = i === "sidebar" ? s.getBoundingClientRect().width : c.getBoundingClientRect().width, p = c?.getBoundingClientRect().left ?? 0, m = i === "sidebar" ? "--th-modern-left-width" : "--th-modern-overlay-width", h = fp(), g = Math.round(f), v = 0;
-		o.classList.add(ff);
+		let d = r.clientX, f = i === "sidebar" ? s.getBoundingClientRect().width : c.getBoundingClientRect().width, p = c?.getBoundingClientRect().left ?? 0, m = i === "sidebar" ? "--th-modern-left-width" : "--th-modern-overlay-width", h = Ep(), g = Math.round(f), v = 0;
+		o.classList.add(Ef);
 		let y = () => {
-			v = 0, vp(h, m, `${g}px`);
+			v = 0, Mp(h, m, `${g}px`);
 		}, b = (e) => {
 			e !== g && (g = e, v === 0 && (v = n.requestAnimationFrame(y)));
 		}, x = (e) => {
 			let t = e.clientX - d;
 			if (i === "sidebar") {
-				let e = c ? n.innerWidth - c.getBoundingClientRect().width - Zf - 28 : Jf, r = l ? Math.min(Jf, e) : Jf;
-				b(Math.round(dp(f + t, qf, r, 360)));
+				let e = c ? n.innerWidth - c.getBoundingClientRect().width - dp - 28 : cp, r = l ? Math.min(cp, e) : cp;
+				b(Math.round(Tp(f + t, sp, r, 360)));
 				return;
 			}
-			let r = l ? 508 : Xf, a = Math.max(Yf, n.innerWidth - p - r);
-			b(Math.round(dp(f + t, Yf, a, 960)));
+			let r = l ? 508 : up, a = Math.max(lp, n.innerWidth - p - r);
+			b(Math.round(Tp(f + t, lp, a, 960)));
 		}, S = () => {
-			v !== 0 && (n.cancelAnimationFrame(v), y()), i === "sidebar" && e.settings.leftSidebarWidth !== g && (e.settings.leftSidebarWidth = g), i === "overlay" && e.settings.overlayPanelWidth !== g && (e.settings.overlayPanelWidth = g), o.classList.remove(ff);
+			v !== 0 && (n.cancelAnimationFrame(v), y()), i === "sidebar" && e.settings.leftSidebarWidth !== g && (e.settings.leftSidebarWidth = g), i === "overlay" && e.settings.overlayPanelWidth !== g && (e.settings.overlayPanelWidth = g), o.classList.remove(Ef);
 			try {
 				u?.hasPointerCapture?.(r.pointerId) && u.releasePointerCapture(r.pointerId);
 			} catch {}
@@ -8673,18 +8757,18 @@ function um(e) {
 	}), i.on("pointerdown", (e) => {
 		o(e.originalEvent, "overlay");
 	}), { destroy: () => {
-		a?.(), r.remove(), i.remove(), t.body.classList.remove(ff);
+		a?.(), r.remove(), i.remove(), t.body.classList.remove(Ef);
 	} };
 }
-function dm(e, t, n) {
+function Tm(e, t, n) {
 	if (e.parentElement === t) return _.noop;
 	let r = e.ownerDocument.createComment(n);
 	return e.before(r), t.append(e), () => {
 		r.parentNode && r.replaceWith(e);
 	};
 }
-function fm() {
-	let e = L(), t = e.defaultView ?? window, n = t.matchMedia(Kf), r = [], i = /* @__PURE__ */ new Map(), a, o, s = 0, c = () => n.matches && e.body.classList.contains(nf), l = (e) => {
+function Em() {
+	let e = L(), t = e.defaultView ?? window, n = t.matchMedia(op), r = [], i = /* @__PURE__ */ new Map(), a, o, s = 0, c = () => n.matches && e.body.classList.contains(gf), l = (e) => {
 		if (!i.has(e)) return;
 		let t = i.get(e);
 		t !== void 0 && (t === null ? e.hasAttribute("size") && e.removeAttribute("size") : e.getAttribute("size") !== t && e.setAttribute("size", t));
@@ -8722,14 +8806,14 @@ function fm() {
 			d();
 			return;
 		}
-		let i = t.querySelector(`.${Ff}`);
-		i || (i = e.createElement("div"), i.className = Ff, t.append(i));
+		let i = t.querySelector(`.${Yf}`);
+		i || (i = e.createElement("div"), i.className = Yf, t.append(i));
 		let s = r ? e.querySelector(r.selector) : null;
 		if (!r || !s) d(), i.classList.add("is-empty");
 		else if (i.classList.remove("is-empty"), o !== r.selector || s.parentElement !== i) {
 			d();
 			let t = e.querySelector(r.block_selector), n = (s.previousElementSibling?.matches("h4") ? s.previousElementSibling : t?.querySelector("h4")) ?? null, c = [];
-			n && n.parentElement !== i && c.push(dm(n, i, r.title_marker)), s.parentElement !== i && c.push(dm(s, i, r.select_marker)), a = () => {
+			n && n.parentElement !== i && c.push(Tm(n, i, r.title_marker)), s.parentElement !== i && c.push(Tm(s, i, r.select_marker)), a = () => {
 				c.reverse().forEach((e) => e());
 			}, o = r.selector;
 		}
@@ -8750,7 +8834,7 @@ function fm() {
 			return;
 		}
 		let t = e.querySelector("#rm_api_block #main-API-selector-block"), n = e.querySelector("#rm_api_block > .flex-container.flexFlowColumn"), i = Array.from(e.querySelectorAll("#rm_api_block > .flex-container.alignitemscenter.spaceBetween.wide100p")).find((e) => e.textContent?.includes("自动连接到上次的服务器") || e.querySelector("#viewSecrets"));
-		n && i && i.parentElement !== n && (i.classList.add(If), r.push(dm(i, n, "th-modern-api-footer")));
+		n && i && i.parentElement !== n && (i.classList.add(Xf), r.push(Tm(i, n, "th-modern-api-footer")));
 		let a = c();
 		if (u("#rm_api_block #main_api", a), p(t, a), m(), t && t.querySelectorAll(".th-modern-api-hint-card").forEach((e) => e.remove()), t && a) {
 			let n = t.querySelector(".th-modern-api-main-title");
@@ -8792,45 +8876,45 @@ function fm() {
 		e.target instanceof t.HTMLSelectElement && e.target.matches("#rm_api_block #main_api, #rm_api_block #chat_completion_source, #rm_api_block #textgen_type") && v();
 	};
 	return e.addEventListener("input", T), e.addEventListener("change", T), n.addEventListener("change", C), { destroy: () => {
-		g(), b?.disconnect(), x?.disconnect(), w.disconnect(), e.removeEventListener("input", T), e.removeEventListener("change", T), n.removeEventListener("change", C), d(), r.reverse().forEach((e) => e()), e.querySelectorAll(`.${Ff}:empty`).forEach((e) => e.remove()), e.querySelectorAll(`.${If}`).forEach((e) => e.classList.remove(If)), e.querySelectorAll(".th-modern-api-main-title, .th-modern-api-hint-card").forEach((e) => e.remove()), i.forEach((e, t) => {
+		g(), b?.disconnect(), x?.disconnect(), w.disconnect(), e.removeEventListener("input", T), e.removeEventListener("change", T), n.removeEventListener("change", C), d(), r.reverse().forEach((e) => e()), e.querySelectorAll(`.${Yf}:empty`).forEach((e) => e.remove()), e.querySelectorAll(`.${Xf}`).forEach((e) => e.classList.remove(Xf)), e.querySelectorAll(".th-modern-api-main-title, .th-modern-api-hint-card").forEach((e) => e.remove()), i.forEach((e, t) => {
 			e === null ? t.removeAttribute("size") : t.setAttribute("size", e);
 		});
 	} };
 }
-function pm(e, t, n) {
+function Dm(e, t, n) {
 	if (!t || !n || !e.desktopDockedDrawer) return !1;
 	let r = L(), i = R();
-	return i.matchMedia(Kf).matches ? Math.min(i.innerWidth, r.documentElement.clientWidth || i.innerWidth) >= dp(e.leftSidebarWidth, qf, Jf, 360) + dp(e.overlayPanelWidth, Yf, 2 ** 53 - 1, 960) + Zf + 28 : !1;
+	return i.matchMedia(op).matches ? Math.min(i.innerWidth, r.documentElement.clientWidth || i.innerWidth) >= Tp(e.leftSidebarWidth, sp, cp, 360) + Tp(e.overlayPanelWidth, lp, 2 ** 53 - 1, 960) + dp + 28 : !1;
 }
-function mm(e, t, n) {
-	let r = L(), i = R(), a = $(r.body), o = t && n && i.matchMedia(Gf).matches, s = pm(e, t, n);
-	a.toggleClass(tf, t).toggleClass(nf, n).toggleClass(af, s).toggleClass(of, t && n && e.mainChatMaxWidth === 0).toggleClass(sf, t && e.reduceMotion).toggleClass(cf, t && e.reduceAdvancedEffects).toggleClass(gf, t && e.quickReplyCollapsed).toggleClass(uf, o).removeClass(rf), (!o || a.hasClass(lf)) && a.removeClass(df), t && n || Zp(), gp("--th-modern-left-width", `${dp(e.leftSidebarWidth, qf, Jf, 360)}px`), gp("--th-modern-overlay-width", `${dp(e.overlayPanelWidth, Yf, 2 ** 53 - 1, 960)}px`), gp("--th-modern-main-min-width", `${dp(e.mainChatMaxWidth, 0, 2 ** 53 - 1, 960)}px`), gp("--th-modern-input-bottom-gap", `${dp(e.inputBottomGap, 0, 120, 15)}px`);
+function Om(e, t, n) {
+	let r = L(), i = R(), a = $(r.body), o = t && n && i.matchMedia(ap).matches, s = Dm(e, t, n), c = t && e.floatingChatInput;
+	a.toggleClass(hf, t).toggleClass(gf, n).toggleClass(vf, s).toggleClass(yf, t && n && e.mainChatMaxWidth === 0).toggleClass(bf, c).toggleClass(xf, t && e.reduceMotion).toggleClass(Sf, t && e.reduceAdvancedEffects).toggleClass(Af, t && e.quickReplyCollapsed).toggleClass(wf, o).removeClass(_f), (!o || a.hasClass(Cf)) && a.removeClass(Tf), t && n || dm(), Ap("--th-modern-left-width", `${Tp(e.leftSidebarWidth, sp, cp, 360)}px`), Ap("--th-modern-overlay-width", `${Tp(e.overlayPanelWidth, lp, 2 ** 53 - 1, 960)}px`), Ap("--th-modern-main-min-width", `${Tp(e.mainChatMaxWidth, 0, 2 ** 53 - 1, 960)}px`), Ap("--th-modern-input-bottom-gap", `${Tp(e.inputBottomGap, 0, 120, 15)}px`), Ap("--th-modern-input-side-gap", `${Tp(e.inputSideGap, 0, 80, 16)}px`);
 }
-function hm() {
-	$(L().body).removeClass(`${tf} ${nf} ${rf} ${af} ${of} ${sf} ${cf} ${gf} ${lf} ${uf} ${df} ${ff} ${pf} ${mf} ${hf}`), Z("--th-modern-left-width"), Z("--th-modern-overlay-width"), Z("--th-modern-main-min-width"), Z("--th-modern-input-bottom-gap"), Z(ep), Z(tp), Z(np), Z(rp), Z($f);
+function km() {
+	$(L().body).removeClass(`${hf} ${gf} ${_f} ${vf} ${yf} ${bf} ${xf} ${Sf} ${Af} ${Cf} ${wf} ${Tf} ${Ef} ${Df} ${Of} ${kf}`), Z("--th-modern-left-width"), Z("--th-modern-overlay-width"), Z("--th-modern-main-min-width"), Z("--th-modern-input-bottom-gap"), Z("--th-modern-input-side-gap"), Z(mp), Z(hp), Z(gp), Z(_p), Z(pp);
 }
-function gm(e) {
+function Am(e) {
 	if (e) try {
 		e();
 	} catch (e) {
 		console.error(`[${Ul}] 清理运行时资源失败。`, e);
 	}
 }
-function _m(e) {
-	for (; e.length > 0;) gm(e.pop());
+function jm(e) {
+	for (; e.length > 0;) Am(e.pop());
 }
-function vm() {
+function Mm() {
 	let e = [];
 	try {
-		return e.push(yp().destroy), { destroy: _.once(() => _m(e)) };
+		return e.push(Np().destroy), { destroy: _.once(() => jm(e)) };
 	} catch (t) {
-		throw _m(e), t;
+		throw jm(e), t;
 	}
 }
-function ym() {
+function Nm() {
 	return window.eventSource ?? window.SillyTavern?.getContext?.()?.eventSource;
 }
-var bm = {
+var Pm = {
 	APP_READY: "app_ready",
 	CHAT_CHANGED: "chat_id_changed",
 	CHAT_CREATED: "chat_created",
@@ -8839,19 +8923,19 @@ var bm = {
 	MESSAGE_RECEIVED: "message_received",
 	CHARACTER_PAGE_LOADED: "character_page_loaded"
 };
-function xm(e, t) {
-	let n = ym();
+function Fm(e, t) {
+	let n = Nm();
 	return n && typeof n.on == "function" ? (n.on(e, t), { stop: () => {
 		typeof n.removeListener == "function" ? n.removeListener(e, t) : typeof n.off == "function" && n.off(e, t);
 	} }) : { stop: () => {} };
 }
-function Sm(t) {
-	let n = [hm], r;
+function Im(t) {
+	let n = [km], r;
 	try {
-		let i = zp(() => r?.refresh());
-		n.push(i.destroy), r = Hp(i.$list), n.push(r.destroy), n.push(tm().destroy), n.push(fc(t).destroy), n.push(lm().destroy), n.push(rm(t).destroy), n.push(om().destroy), n.push(sm(t).destroy), n.push(cm(t).destroy), n.push(um(t).destroy), n.push(fm().destroy), n.push($d(t).destroy), n.push(Ws(t).destroy);
+		let i = $p(() => r?.refresh());
+		n.push(i.destroy), r = nm(i.$list), n.push(r.destroy), n.push(hm().destroy), n.push(fc(t).destroy), n.push(Cm().destroy), n.push(_m(t).destroy), n.push(bm().destroy), n.push(xm(t).destroy), n.push(Sm(t).destroy), n.push(wm(t).destroy), n.push(Em().destroy), n.push(pf(t).destroy), n.push(Ws(t).destroy);
 		let a = Zn(() => [e(t.settings), t.should_use_two_column], ([e, t]) => {
-			mm(e, !0, t);
+			Om(e, !0, t);
 		}, {
 			immediate: !0,
 			deep: !0,
@@ -8861,57 +8945,57 @@ function Sm(t) {
 		let o = _.debounce(() => r?.refresh(), 500);
 		n.push(o.cancel);
 		let s = [
-			xm(bm.APP_READY, o),
-			xm(bm.CHAT_CHANGED, o),
-			xm(bm.CHAT_CREATED, o),
-			xm(bm.CHAT_DELETED, o),
-			xm(bm.MESSAGE_SENT, o),
-			xm(bm.MESSAGE_RECEIVED, o),
-			xm(bm.CHARACTER_PAGE_LOADED, o)
+			Fm(Pm.APP_READY, o),
+			Fm(Pm.CHAT_CHANGED, o),
+			Fm(Pm.CHAT_CREATED, o),
+			Fm(Pm.CHAT_DELETED, o),
+			Fm(Pm.MESSAGE_SENT, o),
+			Fm(Pm.MESSAGE_RECEIVED, o),
+			Fm(Pm.CHARACTER_PAGE_LOADED, o)
 		];
-		return n.push(() => s.forEach((e) => e.stop())), o(), { destroy: _.once(() => _m(n)) };
+		return n.push(() => s.forEach((e) => e.stop())), o(), { destroy: _.once(() => jm(n)) };
 	} catch (e) {
-		throw _m(n), e;
+		throw jm(n), e;
 	}
 }
-function Cm() {
-	let e = R(), t = _.get(e, Vf);
+function Lm() {
+	let e = R(), t = _.get(e, tp);
 	if (t && typeof t.get == "function" && typeof t.set == "function") return t;
 	let n = /* @__PURE__ */ new Map();
-	return _.set(e, Vf, n), n;
+	return _.set(e, tp, n), n;
 }
-function wm() {
-	let e = R(), t = window, n = _.get(e, Bf);
-	typeof n == "function" && (n(), _.unset(e, Bf));
-	let r = "modern-ui", i = Cm();
+function Rm() {
+	let e = R(), t = window, n = _.get(e, ep);
+	typeof n == "function" && (n(), _.unset(e, ep));
+	let r = "modern-ui", i = Lm();
 	i.get(r)?.({ unregisterUnique: !1 });
 	let a = Xo() ?? ps();
 	Yo(a);
 	let o = Zl(), s, c, l, u, d;
 	try {
-		s = Du(a).destroy, u = Zn(() => [o.should_enable, o.is_active], () => {
-			o.should_enable ? (c ??= vm(), o.is_active ? l ??= Sm(o) : (l?.destroy(), l = void 0)) : (l?.destroy(), l = void 0, c?.destroy(), c = void 0);
+		s = Bu(a).destroy, u = Zn(() => [o.should_enable, o.is_active], () => {
+			o.should_enable ? (c ??= Mm(), o.is_active ? l ??= Im(o) : (l?.destroy(), l = void 0)) : (l?.destroy(), l = void 0, c?.destroy(), c = void 0);
 		}, {
 			immediate: !0,
 			flush: "sync"
 		});
 		let e = () => d?.();
 		return d = _.once((n = {}) => {
-			t.removeEventListener("pagehide", e), gm(u), u = void 0, gm(l?.destroy), l = void 0, gm(c?.destroy), c = void 0, gm(s), s = void 0, i.get(r) === d && i.delete(r), o.destroy({ unregisterUnique: n.unregisterUnique });
+			t.removeEventListener("pagehide", e), Am(u), u = void 0, Am(l?.destroy), l = void 0, Am(c?.destroy), c = void 0, Am(s), s = void 0, i.get(r) === d && i.delete(r), o.destroy({ unregisterUnique: n.unregisterUnique });
 		}), i.set(r, d), t.addEventListener("pagehide", e), { dispose: () => d?.() };
 	} catch (e) {
-		throw gm(u), gm(l?.destroy), gm(c?.destroy), gm(s), o.destroy(), e;
+		throw Am(u), Am(l?.destroy), Am(c?.destroy), Am(s), o.destroy(), e;
 	}
 }
-async function Tm() {
-	return await new Promise((e) => $(e)), wm();
+async function zm() {
+	return await new Promise((e) => $(e)), Rm();
 }
 $(() => {
 	try {
-		Tm();
+		zm();
 	} catch (e) {
 		console.error(`[${Ul}] 自动初始化失败:`, e);
 	}
 });
-var Em = { activate: Tm };
-export { cp as PLUGIN_ID, lp as PLUGIN_VERSION, Tm as activate, Em as default };
+var Bm = { activate: zm };
+export { Sp as PLUGIN_ID, Cp as PLUGIN_VERSION, zm as activate, Bm as default };

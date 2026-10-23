@@ -25,12 +25,14 @@ type Store = ReturnType<typeof useModernLayoutStore>;
 
 type ExtensionEntry = {
   column: HTMLElement;
+  sourceHost: HTMLElement;
   content: HTMLElement | null;
   drawer: HTMLElement | null;
   header: HTMLElement | null;
   host: HTMLElement;
   key: string;
   title: string;
+  badge: string | null;
 };
 
 function normalizeText(value: string | null | undefined): string {
@@ -56,20 +58,55 @@ function findDirectBranch(host: HTMLElement, descendant: HTMLElement): HTMLEleme
   return branch;
 }
 
-function getEntryTitle(host: HTMLElement, drawer: HTMLElement | null): string {
+function getEntryTitle(host: HTMLElement, drawer: HTMLElement | null): { title: string; badge: string | null } {
   const header = drawer?.querySelector<HTMLElement>(
     ':scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle',
   );
-  const titleSpan = header?.querySelector<HTMLElement>('b > span:first-child, strong > span:first-child');
-  const emphasizedTitle = titleSpan ?? header?.querySelector<HTMLElement>('b, strong, h3, h4');
-  const fallbackHeading = host.querySelector<HTMLElement>('h3, h4, .standoutHeader');
-  const title = normalizeText(emphasizedTitle?.textContent ?? header?.textContent ?? fallbackHeading?.textContent);
+  const heading =
+    header?.querySelector<HTMLElement>('b, strong, h3, h4') ??
+    header ??
+    host.querySelector<HTMLElement>('h3, h4, .standoutHeader');
 
-  if (title) {
-    return title;
+  if (!heading) {
+    const fallback = normalizeText(host.id.replace(/_container$/i, '').replaceAll('_', ' ')) || '未命名扩展';
+    return { title: fallback, badge: null };
   }
 
-  return normalizeText(host.id.replace(/_container$/i, '').replaceAll('_', ' ')) || '未命名扩展';
+  const clone = heading.cloneNode(true) as HTMLElement;
+
+  // 1. 移除无关操作性元素（链接、重置按钮、图标、抽屉指示箭头等）
+  clone.querySelectorAll('a, button, .notes-link, i, svg, .inline-drawer-icon').forEach(el => el.remove());
+
+  // 2. 识别并提取独立角标（例如 JS-Slash-Runner 的 "New!" 更新提示标签）
+  let badge: string | null = null;
+  const badgeElement = Array.from(clone.querySelectorAll<HTMLElement>('span, small, em')).find(el => {
+    const text = normalizeText(el.textContent);
+    const isBadgeClass =
+      el.classList.contains('text-red-500') ||
+      el.classList.contains('badge') ||
+      el.classList.contains('th-text-xs');
+    const isBadgeText = /^new!?$/i.test(text);
+    return (isBadgeClass || isBadgeText) && text.length > 0;
+  });
+
+  if (badgeElement) {
+    badge = normalizeText(badgeElement.textContent) || null;
+    badgeElement.remove();
+  }
+
+  let title = normalizeText(clone.textContent);
+
+  // 若移除角标后内容为空但有角标，则回退为角标文字
+  if (!title && badge) {
+    title = badge;
+    badge = null;
+  }
+
+  if (!title) {
+    title = normalizeText(host.id.replace(/_container$/i, '').replaceAll('_', ' ')) || '未命名扩展';
+  }
+
+  return { title, badge };
 }
 
 export function mountExtensionSettings(store: Store): { destroy: () => void } {
@@ -131,7 +168,7 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       drawer: HTMLElement | null,
       rawKeyOverride?: string,
     ) => {
-      const title = getEntryTitle(host, drawer);
+      const { title, badge } = getEntryTitle(host, drawer);
       const scriptId =
         host.getAttribute('script_id') ?? drawer?.getAttribute('script_id') ?? sourceHost.getAttribute('script_id');
       const rawKey =
@@ -152,7 +189,7 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
         ) ?? null;
       const content = drawer?.querySelector<HTMLElement>(':scope > .inline-drawer-content') ?? null;
 
-      nextEntries.push({ column, content, drawer, header, host, key, title });
+      nextEntries.push({ column, sourceHost, content, drawer, header, host, key, title, badge });
     };
 
     columns.forEach(column => {
@@ -248,12 +285,20 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       button.type = 'button';
       button.className = NAV_ITEM_CLASS;
       button.dataset.extensionKey = entry.key;
-      button.title = entry.title;
+      button.title = entry.badge ? `${entry.title} (${entry.badge})` : entry.title;
 
       const label = hostDocument.createElement('span');
       label.className = 'th-modern-extension-nav-label';
       label.textContent = entry.title;
       button.append(label);
+
+      if (entry.badge) {
+        const badgeSpan = hostDocument.createElement('span');
+        badgeSpan.className = 'th-modern-extension-nav-badge';
+        badgeSpan.textContent = entry.badge;
+        button.append(badgeSpan);
+      }
+
       fragment.append(button);
     });
 
@@ -268,7 +313,14 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
         entry.host.classList.remove(HOST_HIDDEN_CLASS, HOST_ACTIVE_CLASS);
         entry.drawer?.classList.remove(DRAWER_ACTIVE_CLASS);
       });
-      columns.forEach(column => column.classList.remove(COLUMN_ACTIVE_CLASS));
+      columns.forEach(column => {
+        column.classList.remove(COLUMN_ACTIVE_CLASS);
+        Array.from(column.children).forEach(child => {
+          if (child instanceof hostWindow.HTMLElement && child !== navigation) {
+            child.classList.remove(HOST_HIDDEN_CLASS, HOST_ACTIVE_CLASS);
+          }
+        });
+      });
       updateNavigationState();
       return;
     }
@@ -291,16 +343,17 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     columns.forEach(column => {
       const isColActive = selectedEntry?.column === column;
       column.classList.toggle(COLUMN_ACTIVE_CLASS, isColActive);
-      if (isColActive && selectedEntry) {
-        Array.from(column.children).forEach(child => {
-          if (child instanceof hostWindow.HTMLElement && child !== navigation) {
-            const isEntryHost = child === selectedEntry.host || child.contains(selectedEntry.host);
-            if (!isEntryHost && !child.classList.contains(HOST_HIDDEN_CLASS)) {
-              child.classList.add(HOST_HIDDEN_CLASS);
-            }
-          }
-        });
-      }
+      Array.from(column.children).forEach(child => {
+        if (child instanceof hostWindow.HTMLElement && child !== navigation) {
+          const isSelectedChild =
+            isColActive && selectedEntry
+              ? child === selectedEntry.sourceHost ||
+                child === selectedEntry.host ||
+                child.contains(selectedEntry.host)
+              : false;
+          child.classList.toggle(HOST_HIDDEN_CLASS, !isSelectedChild);
+        }
+      });
     });
     updateNavigationState();
   }
@@ -371,7 +424,7 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       writeSelectedKey(selectedKey);
     }
 
-    const nextSignature = entries.map(entry => `${entry.key}\u0000${entry.title}`).join('\u0001');
+    const nextSignature = entries.map(entry => `${entry.key}\u0000${entry.title}\u0000${entry.badge ?? ''}`).join('\u0001');
     if (nextSignature !== renderedSignature) {
       renderedSignature = nextSignature;
       renderNavigation();

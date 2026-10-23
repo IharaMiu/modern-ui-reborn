@@ -95,33 +95,83 @@
 
       <hr />
 
-      <!-- 输入框悬浮留白 -->
-      <h4>输入框悬浮留白</h4>
-      <div class="flex-container alignitemscenter m-t-0_5">
-        <div class="range-block-range flex1">
-          <input
-            v-model.number="store.settings.inputBottomGap"
-            type="range"
-            class="range_slider"
-            :min="INPUT_BOTTOM_GAP_MIN"
-            :max="INPUT_BOTTOM_GAP_MAX"
-            step="1"
-          />
+      <!-- 输入框设置 -->
+      <h4>输入框设置</h4>
+      <label class="checkbox_label" for="th_modern_floating_input">
+        <input id="th_modern_floating_input" v-model="store.settings.floatingChatInput" type="checkbox" />
+        <span>悬浮输入框</span>
+      </label>
+      <small class="notes">开启时输入框以毛玻璃胶囊形态悬浮于聊天区上方；关闭时与原版 SillyTavern 一样固定置底铺满。</small>
+
+      <div :class="{ 'is-disabled': !store.settings.floatingChatInput }">
+        <div class="flex-container justifySpaceBetween alignitemscenter m-t-0_5">
+          <span>底部留白边距</span>
+          <div class="flex-container alignitemscenter">
+            <span class="notes m-r-0_5">{{ store.settings.inputBottomGap }} px</span>
+          </div>
         </div>
-        <div class="range-block-counter m-l-0_5">
-          <input
-            :value="store.settings.inputBottomGap"
-            class="text_pole width60px text-center"
-            type="number"
-            :min="INPUT_BOTTOM_GAP_MIN"
-            :max="INPUT_BOTTOM_GAP_MAX"
-            step="1"
-            @change="commitNumericSetting($event, 'inputBottomGap', INPUT_BOTTOM_GAP_MIN, INPUT_BOTTOM_GAP_MAX)"
-            @blur="commitNumericSetting($event, 'inputBottomGap', INPUT_BOTTOM_GAP_MIN, INPUT_BOTTOM_GAP_MAX)"
-          />
+        <div class="flex-container alignitemscenter m-t-0_5">
+          <div class="range-block-range flex1">
+            <input
+              v-model.number="store.settings.inputBottomGap"
+              type="range"
+              class="range_slider"
+              :min="INPUT_BOTTOM_GAP_MIN"
+              :max="INPUT_BOTTOM_GAP_MAX"
+              step="1"
+              :disabled="!store.settings.floatingChatInput"
+            />
+          </div>
+          <div class="range-block-counter m-l-0_5">
+            <input
+              :value="store.settings.inputBottomGap"
+              class="text_pole width60px text-center"
+              type="number"
+              :min="INPUT_BOTTOM_GAP_MIN"
+              :max="INPUT_BOTTOM_GAP_MAX"
+              step="1"
+              :disabled="!store.settings.floatingChatInput"
+              @change="commitNumericSetting($event, 'inputBottomGap', INPUT_BOTTOM_GAP_MIN, INPUT_BOTTOM_GAP_MAX)"
+              @blur="commitNumericSetting($event, 'inputBottomGap', INPUT_BOTTOM_GAP_MIN, INPUT_BOTTOM_GAP_MAX)"
+            />
+          </div>
         </div>
+        <small class="notes">调整悬浮输入框与窗口底边的间距（{{ store.settings.inputBottomGap }} px）。</small>
+
+        <div class="flex-container justifySpaceBetween alignitemscenter m-t-0_5">
+          <span>两侧留白边距</span>
+          <div class="flex-container alignitemscenter">
+            <span class="notes m-r-0_5">{{ store.settings.inputSideGap }} px</span>
+          </div>
+        </div>
+        <div class="flex-container alignitemscenter m-t-0_5">
+          <div class="range-block-range flex1">
+            <input
+              v-model.number="store.settings.inputSideGap"
+              type="range"
+              class="range_slider"
+              :min="INPUT_SIDE_GAP_MIN"
+              :max="INPUT_SIDE_GAP_MAX"
+              step="1"
+              :disabled="!store.settings.floatingChatInput"
+            />
+          </div>
+          <div class="range-block-counter m-l-0_5">
+            <input
+              :value="store.settings.inputSideGap"
+              class="text_pole width60px text-center"
+              type="number"
+              :min="INPUT_SIDE_GAP_MIN"
+              :max="INPUT_SIDE_GAP_MAX"
+              step="1"
+              :disabled="!store.settings.floatingChatInput"
+              @change="commitNumericSetting($event, 'inputSideGap', INPUT_SIDE_GAP_MIN, INPUT_SIDE_GAP_MAX)"
+              @blur="commitNumericSetting($event, 'inputSideGap', INPUT_SIDE_GAP_MIN, INPUT_SIDE_GAP_MAX)"
+            />
+          </div>
+        </div>
+        <small class="notes">调整悬浮输入框左右两侧的留白边距（{{ store.settings.inputSideGap }} px）。</small>
       </div>
-      <small class="notes">调整底部悬浮输入框与窗口底边的间距（{{ store.settings.inputBottomGap }} px），避免遮挡内容。</small>
 
       <hr />
 
@@ -190,11 +240,23 @@
 </template>
 
 <script setup lang="ts">
-import { INPUT_BOTTOM_GAP_MAX, INPUT_BOTTOM_GAP_MIN, SCRIPT_NAME, useModernLayoutStore } from '../store';
+import {
+  INPUT_BOTTOM_GAP_MAX,
+  INPUT_BOTTOM_GAP_MIN,
+  INPUT_SIDE_GAP_MAX,
+  INPUT_SIDE_GAP_MIN,
+  SCRIPT_NAME,
+  useModernLayoutStore,
+} from '../store';
 
 const store = useModernLayoutStore();
 
-type NumericSettingKey = 'leftSidebarWidth' | 'overlayPanelWidth' | 'mainChatMaxWidth' | 'inputBottomGap';
+type NumericSettingKey =
+  | 'leftSidebarWidth'
+  | 'overlayPanelWidth'
+  | 'mainChatMaxWidth'
+  | 'inputBottomGap'
+  | 'inputSideGap';
 
 function commitNumericSetting(event: Event, key: NumericSettingKey, min: number, max = Number.POSITIVE_INFINITY) {
   const input = event.currentTarget as HTMLInputElement;
