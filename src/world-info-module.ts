@@ -446,6 +446,9 @@ function appendMirrorControl(
 
     mirror.classList.add('th-modern-wi-shortcut-control');
     mirror.setAttribute('aria-label', label);
+    if (source.name) {
+        mirror.setAttribute('name', source.name);
+    }
 
     if (isSelect) {
         const selectMirror = mirror as HTMLSelectElement;
@@ -665,8 +668,32 @@ function bindConditionalFields(entry: HTMLElement, editor: HTMLElement): void {
 }
 
 function getEntryTitle(entry: HTMLElement, source: ParentNode = entry): string {
-    const comment = source.querySelector<HTMLTextAreaElement>('textarea[name="comment"]')?.value.trim();
-    return comment || `UID ${getEntryUid(entry) ?? ''}`.trim();
+    const fromSource = source.querySelector<HTMLTextAreaElement>('textarea[name="comment"]')?.value.trim();
+    if (fromSource) {
+        entry.dataset.thModernTitle = fromSource;
+        return fromSource;
+    }
+
+    const fromEntry = entry !== source ? entry.querySelector<HTMLTextAreaElement>('textarea[name="comment"]')?.value.trim() : undefined;
+    if (fromEntry) {
+        entry.dataset.thModernTitle = fromEntry;
+        return fromEntry;
+    }
+
+    const isSelected = entry.classList.contains(SELECTED_ENTRY_CLASS);
+    const fromActiveEditor = isSelected
+        ? entry.ownerDocument.querySelector<HTMLTextAreaElement>('.th-modern-wi-native-editor textarea[name="comment"]')?.value.trim()
+        : undefined;
+    if (fromActiveEditor) {
+        entry.dataset.thModernTitle = fromActiveEditor;
+        return fromActiveEditor;
+    }
+
+    if (entry.dataset.thModernTitle) {
+        return entry.dataset.thModernTitle;
+    }
+
+    return `UID ${getEntryUid(entry) ?? ''}`.trim();
 }
 
 function isDepthPosition(position: HTMLSelectElement | null): boolean {
@@ -683,11 +710,25 @@ function isDepthPosition(position: HTMLSelectElement | null): boolean {
         || positionText.includes('深度');
 }
 
-function getEntryPosition(source: ParentNode): string {
-    const position = source.querySelector<HTMLSelectElement>('select[name="position"]');
+function getEntryPosition(entry: HTMLElement, source: ParentNode = entry): string {
+    const isSelected = entry.classList.contains(SELECTED_ENTRY_CLASS);
+    const editor = isSelected ? entry.ownerDocument.querySelector<HTMLElement>('.th-modern-wi-native-editor') : null;
+
+    const position = source.querySelector<HTMLSelectElement>('select[name="position"]')
+        ?? (entry !== source ? entry.querySelector<HTMLSelectElement>('select[name="position"]') : null)
+        ?? editor?.querySelector<HTMLSelectElement>('select[name="position"]');
+
+    const depthInput = source.querySelector<HTMLInputElement>('input[name="depth"]')
+        ?? (entry !== source ? entry.querySelector<HTMLInputElement>('input[name="depth"]') : null)
+        ?? editor?.querySelector<HTMLInputElement>('input[name="depth"]');
+
     const positionText = position?.selectedOptions[0]?.textContent?.trim() || '';
-    const depth = source.querySelector<HTMLInputElement>('input[name="depth"]')?.value.trim();
-    return isDepthPosition(position) && depth ? `${positionText} ${depth}` : positionText;
+    const depth = depthInput?.value.trim();
+    const result = isDepthPosition(position) && depth ? `${positionText} ${depth}` : positionText;
+    if (result) {
+        entry.dataset.thModernPosition = result;
+    }
+    return result || entry.dataset.thModernPosition || '';
 }
 
 function updateEntrySummary(entry: HTMLElement, source: ParentNode = entry): void {
@@ -696,8 +737,25 @@ function updateEntrySummary(entry: HTMLElement, source: ParentNode = entry): voi
         return;
     }
 
-    const order = source.querySelector<HTMLInputElement>('input[name="order"]')?.value;
-    const state = source.querySelector<HTMLSelectElement>('select[name="entryStateSelector"]')?.value;
+    const isSelected = entry.classList.contains(SELECTED_ENTRY_CLASS);
+    const editor = isSelected ? entry.ownerDocument.querySelector<HTMLElement>('.th-modern-wi-native-editor') : null;
+
+    const orderInput = source.querySelector<HTMLInputElement>('input[name="order"]')
+        ?? (entry !== source ? entry.querySelector<HTMLInputElement>('input[name="order"]') : null)
+        ?? editor?.querySelector<HTMLInputElement>('input[name="order"]');
+    const order = orderInput?.value ?? entry.dataset.thModernOrder;
+    if (orderInput?.value) {
+        entry.dataset.thModernOrder = orderInput.value;
+    }
+
+    const stateInput = source.querySelector<HTMLSelectElement>('select[name="entryStateSelector"]')
+        ?? (entry !== source ? entry.querySelector<HTMLSelectElement>('select[name="entryStateSelector"]') : null)
+        ?? editor?.querySelector<HTMLSelectElement>('select[name="entryStateSelector"]');
+    const state = stateInput?.value ?? entry.dataset.thModernEntryState;
+    if (stateInput?.value) {
+        entry.dataset.thModernEntryState = stateInput.value;
+    }
+
     const title = summary.querySelector<HTMLElement>('.th-modern-wi-row-title');
     const meta = summary.querySelector<HTMLElement>('.th-modern-wi-row-meta');
     const stats = summary.querySelector<HTMLElement>('.th-modern-wi-row-stats');
@@ -705,7 +763,7 @@ function updateEntrySummary(entry: HTMLElement, source: ParentNode = entry): voi
         title.textContent = getEntryTitle(entry, source);
     }
     if (meta) {
-        meta.textContent = getEntryPosition(source);
+        meta.textContent = getEntryPosition(entry, source);
     }
     if (stats) {
         stats.textContent = order ? `#${order}` : '';
@@ -1044,7 +1102,10 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         const frame = this.window.requestAnimationFrame(() => {
             this.pendingSummaryUpdates.delete(entry);
             if (this.mounted && entry.isConnected) {
-                updateEntrySummary(entry);
+                const source = (this.selectedEntry === entry && this.editorPane && this.editorPane.childElementCount > 0)
+                    ? this.editorPane
+                    : entry;
+                updateEntrySummary(entry, source);
             }
         });
         this.pendingSummaryUpdates.set(entry, frame);

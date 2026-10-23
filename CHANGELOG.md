@@ -4,6 +4,16 @@
 
 ---
 
+## [v0.1.3.1] - 2026-10-24
+
+### 🐞 世界书首选条目标题误显 UID 修复 (World Info Selected Entry Title Fix)
+- **修复初次打开或选中条目时误显 UID 与元信息丢失问题**：解决宽屏桌面模式下自动激活首项后，因原生表单控件被提取并搬移至右侧编辑区，导致左侧列表摘要巡检找不到标题输入框而错误退化显示为 `UID xxx` 的 Bug。
+- **跨面板多级控件回溯解析**：`getEntryTitle`、`getEntryPosition` 与 `updateEntrySummary` 增加跨层级回溯链，未在当前容器命中时自动透传至右侧活跃编辑区（`.th-modern-wi-native-editor`）提取实时输入框值。
+- **响应式属性镜像缓存**：在条目节点上建立 `data-th-modern-title`、`data-th-modern-order` 与 `data-th-modern-position` 属性缓存机制，保障节点跨容器搬移与异步微任务巡检期间数据永不丢失。
+- **快捷镜像控件标准属性对齐**：为主要设置面板中的镜像快捷控件完整挂载标准 `name` 属性（如 `order`、`position`），保障双向事件监听与摘要联动。
+
+---
+
 ## [v0.1.3] - 2026-10-24
 
 ### 🛠️ 世界书面板排版错位自愈与生命周期加固 (World Info Layout Self-Healing & Lifecycle Hardening)

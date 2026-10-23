@@ -7281,7 +7281,7 @@ function qd(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s) return;
 	let c = s.tagName.toLowerCase() === "select", l = !c && s.type === "checkbox", u = c ? Y(e, "select") : Y(e, "input");
-	if (u.classList.add("th-modern-wi-shortcut-control"), u.setAttribute("aria-label", i), c) {
+	if (u.classList.add("th-modern-wi-shortcut-control"), u.setAttribute("aria-label", i), s.name && u.setAttribute("name", s.name), c) {
 		let t = u, n = s;
 		for (let r of Array.from(n.options)) {
 			let n = e.createElement("option");
@@ -7365,21 +7365,30 @@ function ef(e, t) {
 	n();
 }
 function tf(e, t = e) {
-	return t.querySelector("textarea[name=\"comment\"]")?.value.trim() || `UID ${Td(e) ?? ""}`.trim();
+	let n = t.querySelector("textarea[name=\"comment\"]")?.value.trim();
+	if (n) return e.dataset.thModernTitle = n, n;
+	let r = e === t ? void 0 : e.querySelector("textarea[name=\"comment\"]")?.value.trim();
+	if (r) return e.dataset.thModernTitle = r, r;
+	let i = e.classList.contains(ud) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor textarea[name=\"comment\"]")?.value.trim() : void 0;
+	return i ? (e.dataset.thModernTitle = i, i) : e.dataset.thModernTitle ? e.dataset.thModernTitle : `UID ${Td(e) ?? ""}`.trim();
 }
 function nf(e) {
 	let t = e?.selectedOptions[0], n = e?.value, r = t?.dataset.role, i = t?.textContent?.trim().toLowerCase() ?? "";
 	return n === "4" || r === "0" || r === "1" || r === "2" || i.includes("@d") || i.includes("depth") || i.includes("深度");
 }
-function rf(e) {
-	let t = e.querySelector("select[name=\"position\"]"), n = t?.selectedOptions[0]?.textContent?.trim() || "", r = e.querySelector("input[name=\"depth\"]")?.value.trim();
-	return nf(t) && r ? `${n} ${r}` : n;
+function rf(e, t = e) {
+	let n = e.classList.contains(ud) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, r = t.querySelector("select[name=\"position\"]") ?? (e === t ? null : e.querySelector("select[name=\"position\"]")) ?? n?.querySelector("select[name=\"position\"]"), i = t.querySelector("input[name=\"depth\"]") ?? (e === t ? null : e.querySelector("input[name=\"depth\"]")) ?? n?.querySelector("input[name=\"depth\"]"), a = r?.selectedOptions[0]?.textContent?.trim() || "", o = i?.value.trim(), s = nf(r) && o ? `${a} ${o}` : a;
+	return s && (e.dataset.thModernPosition = s), s || e.dataset.thModernPosition || "";
 }
 function af(e, t = e) {
 	let n = e.querySelector(".th-modern-wi-row-summary");
 	if (!n) return;
-	let r = t.querySelector("input[name=\"order\"]")?.value, i = t.querySelector("select[name=\"entryStateSelector\"]")?.value, a = n.querySelector(".th-modern-wi-row-title"), o = n.querySelector(".th-modern-wi-row-meta"), s = n.querySelector(".th-modern-wi-row-stats");
-	a && (a.textContent = tf(e, t)), o && (o.textContent = rf(t)), s && (s.textContent = r ? `#${r}` : ""), i && (e.dataset.thModernEntryState = i);
+	let r = e.classList.contains(ud) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, i = t.querySelector("input[name=\"order\"]") ?? (e === t ? null : e.querySelector("input[name=\"order\"]")) ?? r?.querySelector("input[name=\"order\"]"), a = i?.value ?? e.dataset.thModernOrder;
+	i?.value && (e.dataset.thModernOrder = i.value);
+	let o = t.querySelector("select[name=\"entryStateSelector\"]") ?? (e === t ? null : e.querySelector("select[name=\"entryStateSelector\"]")) ?? r?.querySelector("select[name=\"entryStateSelector\"]"), s = o?.value ?? e.dataset.thModernEntryState;
+	o?.value && (e.dataset.thModernEntryState = o.value);
+	let c = n.querySelector(".th-modern-wi-row-title"), l = n.querySelector(".th-modern-wi-row-meta"), u = n.querySelector(".th-modern-wi-row-stats");
+	c && (c.textContent = tf(e, t)), l && (l.textContent = rf(e, t)), u && (u.textContent = a ? `#${a}` : ""), s && (e.dataset.thModernEntryState = s);
 }
 function of(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-header");
@@ -7535,7 +7544,7 @@ var ff = class {
 	scheduleSummaryUpdate = (e) => {
 		if (!this.mounted || this.pendingSummaryUpdates.has(e)) return;
 		let t = this.window.requestAnimationFrame(() => {
-			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && af(e);
+			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && af(e, this.selectedEntry === e && this.editorPane && this.editorPane.childElementCount > 0 ? this.editorPane : e);
 		});
 		this.pendingSummaryUpdates.set(e, t);
 	};
