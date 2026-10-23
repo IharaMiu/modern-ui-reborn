@@ -3364,7 +3364,7 @@ function fc(e) {
 		}), t;
 	}
 	function T(e) {
-		return e.content ? e.content.style.display ? e.content.style.display !== "none" : n.getComputedStyle(e.content).display !== "none" : !0;
+		return !e.content || e.drawer?.classList.contains("open") || e.content.classList.contains("open") || e.header?.querySelector(".inline-drawer-icon")?.classList.contains("up") ? !0 : e.content.style.display ? e.content.style.display !== "none" : !1;
 	}
 	function ee() {
 		o?.querySelectorAll(`.${Zs}`).forEach((e) => {

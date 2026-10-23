@@ -214,11 +214,19 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       return true;
     }
 
+    if (entry.drawer?.classList.contains('open') || entry.content.classList.contains('open')) {
+      return true;
+    }
+
+    if (entry.header?.querySelector('.inline-drawer-icon')?.classList.contains('up')) {
+      return true;
+    }
+
     if (entry.content.style.display) {
       return entry.content.style.display !== 'none';
     }
 
-    return hostWindow.getComputedStyle(entry.content).display !== 'none';
+    return false;
   }
 
   function updateNavigationState(): void {
