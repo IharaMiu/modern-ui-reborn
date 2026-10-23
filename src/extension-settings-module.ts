@@ -60,7 +60,8 @@ function getEntryTitle(host: HTMLElement, drawer: HTMLElement | null): string {
   const header = drawer?.querySelector<HTMLElement>(
     ':scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle',
   );
-  const emphasizedTitle = header?.querySelector<HTMLElement>('b, strong, h3, h4');
+  const titleSpan = header?.querySelector<HTMLElement>('b > span:first-child, strong > span:first-child');
+  const emphasizedTitle = titleSpan ?? header?.querySelector<HTMLElement>('b, strong, h3, h4');
   const fallbackHeading = host.querySelector<HTMLElement>('h3, h4, .standoutHeader');
   const title = normalizeText(emphasizedTitle?.textContent ?? header?.textContent ?? fallbackHeading?.textContent);
 
@@ -157,11 +158,6 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     columns.forEach(column => {
       Array.from(column.children).forEach(node => {
         if (!(node instanceof hostWindow.HTMLElement) || node === navigation) {
-          return;
-        }
-
-        // 跳过酒馆原生为 modern-ui-reborn 自动生成的空占位容器，避免在列表底部产生重复的“现代化界面”
-        if (node.id === 'modern-ui-reborn_container') {
           return;
         }
 
@@ -285,7 +281,18 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     });
 
     columns.forEach(column => {
-      column.classList.toggle(COLUMN_ACTIVE_CLASS, selectedEntry?.column === column);
+      const isColActive = selectedEntry?.column === column;
+      column.classList.toggle(COLUMN_ACTIVE_CLASS, isColActive);
+      if (isColActive && selectedEntry) {
+        Array.from(column.children).forEach(child => {
+          if (child instanceof hostWindow.HTMLElement && child !== navigation) {
+            const isEntryHost = child === selectedEntry.host || child.contains(selectedEntry.host);
+            if (!isEntryHost && !child.classList.contains(HOST_HIDDEN_CLASS)) {
+              child.classList.add(HOST_HIDDEN_CLASS);
+            }
+          }
+        });
+      }
     });
     updateNavigationState();
   }

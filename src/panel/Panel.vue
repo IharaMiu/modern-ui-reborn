@@ -158,7 +158,7 @@
         <input id="th_modern_ext_settings" v-model="store.settings.modernExtensionSettings" type="checkbox" />
         <span>现代扩展设置抽屉</span>
       </label>
-      <small class="notes">重排酒馆扩展设置抽屉内各个插件的卡片布局（如使用菜单精简器等插件，建议保持关闭以维持原生组件兼容）</small>
+      <small class="notes">将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展</small>
 
       <hr />
 

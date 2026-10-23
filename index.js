@@ -3310,7 +3310,7 @@ function uc(e, t) {
 	return n;
 }
 function dc(e, t) {
-	let n = t?.querySelector(":scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle"), r = n?.querySelector("b, strong, h3, h4"), i = e.querySelector("h3, h4, .standoutHeader");
+	let n = t?.querySelector(":scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle"), r = n?.querySelector("b > span:first-child, strong > span:first-child") ?? n?.querySelector("b, strong, h3, h4"), i = e.querySelector("h3, h4, .standoutHeader");
 	return cc(r?.textContent ?? n?.textContent ?? i?.textContent) || cc(e.id.replace(/_container$/i, "").replaceAll("_", " ")) || "未命名扩展";
 }
 function fc(e) {
@@ -3346,7 +3346,7 @@ function fc(e) {
 		};
 		return c.forEach((e) => {
 			Array.from(e.children).forEach((t) => {
-				if (!(t instanceof n.HTMLElement) || t === a || t.id === "modern-ui-reborn_container" || t.classList.contains("mc3-hidden") || t.classList.contains("displayNone") || t.hidden || t.style.display === "none" && !t.classList.contains(tc)) return;
+				if (!(t instanceof n.HTMLElement) || t === a || t.classList.contains("mc3-hidden") || t.classList.contains("displayNone") || t.hidden || t.style.display === "none" && !t.classList.contains(tc)) return;
 				let i = lc(t).filter((e) => !e.classList.contains("mc3-hidden") && !e.classList.contains("displayNone") && !e.hidden && e.style.display !== "none"), o = t.childElementCount > 0 && cc(t.textContent).length > 0;
 				if (i.length === 0 && !o) return;
 				if (i.length <= 1) {
@@ -3394,7 +3394,10 @@ function fc(e) {
 			let n = t === e;
 			t.host.classList.toggle(tc, !n), t.host.classList.toggle(nc, n), t.drawer?.classList.toggle(ic, n), t.content && (t.content.classList.toggle("open", n), n && t.content.style.display === "none" && t.content.style.removeProperty("display"));
 		}), c.forEach((t) => {
-			t.classList.toggle(ec, e?.column === t);
+			let r = e?.column === t;
+			t.classList.toggle(ec, r), r && e && Array.from(t.children).forEach((t) => {
+				t instanceof n.HTMLElement && t !== a && !(t === e.host || t.contains(e.host)) && !t.classList.contains(tc) && t.classList.add(tc);
+			});
 		}), ee();
 	}
 	function re() {
@@ -6259,7 +6262,7 @@ var Ul = "现代化界面", Wl = "modern_ui", Gl = 340, Kl = Hl({
 	modernWorldInfoEditor: Vl().default(!0).catch(!0),
 	modernWorldSelect: Vl().default(!0).catch(!0),
 	modernCharacterManagement: Vl().default(!0).catch(!0),
-	modernExtensionSettings: Vl().default(!1).catch(!1)
+	modernExtensionSettings: Vl().default(!0).catch(!0)
 }).default({});
 function ql() {
 	return window.SillyTavern?.getContext?.() || {};
@@ -6471,7 +6474,7 @@ var Zl = Ds(Ul, () => {
 				"onUpdate:modelValue": i[15] ||= (e) => N(t).settings.modernExtensionSettings = e,
 				type: "checkbox"
 			}, null, 512), [[Fo, N(t).settings.modernExtensionSettings]]), i[32] ||= I("span", null, "现代扩展设置抽屉", -1)]),
-			i[49] ||= I("small", { class: "notes" }, "重排酒馆扩展设置抽屉内各个插件的卡片布局（如使用菜单精简器等插件，建议保持关闭以维持原生组件兼容）", -1),
+			i[49] ||= I("small", { class: "notes" }, "将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展", -1),
 			i[50] ||= I("hr", null, null, -1),
 			i[51] ||= I("h4", null, "视觉与性能", -1),
 			I("label", Cu, [Un(I("input", {
@@ -6494,7 +6497,7 @@ var Zl = Ds(Ul, () => {
 			}, [...i[35] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1), I("span", null, "恢复默认设置", -1)]])])
 		])])) : ma("", !0);
 	}
-}), [["__scopeId", "data-v-30ed1f0b"]]), Eu = "th-modern-panel-root";
+}), [["__scopeId", "data-v-510a6e80"]]), Eu = "th-modern-panel-root";
 function Du(e) {
 	$(`.${Eu}`).remove();
 	let t = Go(Tu).use(e), n = document.getElementById("modern-ui-reborn_container"), r = !1;

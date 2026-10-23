@@ -177,6 +177,15 @@ body.th-modern-enabled.th-modern-extension-settings
   display: none !important;
 }
 
+/* 桌面端：在激活的列中，非激活宿主与不包含激活宿主的容器一律隐藏，杜绝多余面板错位常驻 */
+body.th-modern-enabled.th-modern-extension-settings
+  #rm_extensions_block:not(.th-modern-extension-mobile-accordion)
+  .th-modern-extension-layout
+  > .th-modern-extension-column.is-active
+  > :not(:has(.th-modern-extension-host-active)):not(.th-modern-extension-host-active) {
+  display: none !important;
+}
+
 body.th-modern-enabled.th-modern-extension-settings .th-modern-extension-host-active:not(.extension_container) {
   width: 100%;
   min-width: 0;
