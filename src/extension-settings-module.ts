@@ -165,18 +165,35 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
           return;
         }
 
+        // 跳过被菜单精简器等扩展/脚本隐藏的容器
+        if (
+          node.classList.contains('mc3-hidden') ||
+          node.classList.contains('displayNone') ||
+          node.hidden ||
+          (node.style.display === 'none' && !node.classList.contains(HOST_HIDDEN_CLASS))
+        ) {
+          return;
+        }
+
         const drawers = findTopLevelDrawers(node);
+        const visibleDrawers = drawers.filter(
+          d =>
+            !d.classList.contains('mc3-hidden') &&
+            !d.classList.contains('displayNone') &&
+            !d.hidden &&
+            d.style.display !== 'none',
+        );
         const hasFallbackContent = node.childElementCount > 0 && normalizeText(node.textContent).length > 0;
-        if (drawers.length === 0 && !hasFallbackContent) {
+        if (visibleDrawers.length === 0 && !hasFallbackContent) {
           return;
         }
 
-        if (drawers.length <= 1) {
-          appendEntry(column, node, node, drawers[0] ?? null);
+        if (visibleDrawers.length <= 1) {
+          appendEntry(column, node, node, visibleDrawers[0] ?? null);
           return;
         }
 
-        const branches = drawers.map(drawer => findDirectBranch(node, drawer));
+        const branches = visibleDrawers.map(drawer => findDirectBranch(node, drawer));
         const branchCounts = new Map<HTMLElement, number>();
         branches.forEach(branch => branchCounts.set(branch, (branchCounts.get(branch) ?? 0) + 1));
         const sourceRawKey = node.id
@@ -185,7 +202,7 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
             ? `script:${node.getAttribute('script_id')}`
             : undefined;
 
-        drawers.forEach((drawer, index) => {
+        visibleDrawers.forEach((drawer, index) => {
           const branch = branches[index];
           const entryHost = branchCounts.get(branch) === 1 ? branch : drawer;
           appendEntry(column, node, entryHost, drawer, index === 0 ? sourceRawKey : undefined);
@@ -369,16 +386,28 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     }
 
     columns.forEach(column => {
-      structureObserver?.observe(column, { childList: true });
+      structureObserver?.observe(column, {
+        childList: true,
+        attributes: true,
+        attributeFilter: ['class', 'style', 'hidden'],
+      });
       Array.from(column.children).forEach(host => {
         if (!(host instanceof hostWindow.HTMLElement)) {
           return;
         }
 
-        structureObserver?.observe(host, { childList: true });
+        structureObserver?.observe(host, {
+          childList: true,
+          attributes: true,
+          attributeFilter: ['class', 'style', 'hidden'],
+        });
         Array.from(host.children).forEach(wrapper => {
           if (wrapper instanceof hostWindow.HTMLElement) {
-            structureObserver?.observe(wrapper, { childList: true });
+            structureObserver?.observe(wrapper, {
+              childList: true,
+              attributes: true,
+              attributeFilter: ['class', 'style', 'hidden'],
+            });
           }
         });
       });

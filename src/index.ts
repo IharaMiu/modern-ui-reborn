@@ -2199,6 +2199,21 @@ function mountSidebarNavSizer(): { destroy: () => void } {
     const padding_height = parseCssPixelValue(holder_style.paddingTop, 0) + parseCssPixelValue(holder_style.paddingBottom, 0);
     const content_height = Array.from(holder.querySelectorAll<HTMLElement>(':scope > .drawer > .drawer-toggle')).reduce(
       (height, toggle) => {
+        const drawer = toggle.closest<HTMLElement>('.drawer');
+        if (
+          drawer?.classList.contains('mc3-hidden') ||
+          drawer?.classList.contains('displayNone') ||
+          drawer?.hidden ||
+          toggle.classList.contains('mc3-hidden') ||
+          toggle.classList.contains('displayNone') ||
+          toggle.hidden
+        ) {
+          return height;
+        }
+        const drawer_style = drawer ? host_window.getComputedStyle(drawer) : null;
+        if (drawer_style && (drawer_style.display === 'none' || drawer_style.visibility === 'hidden')) {
+          return height;
+        }
         const toggle_style = host_window.getComputedStyle(toggle);
         if (toggle_style.display === 'none' || toggle_style.visibility === 'hidden') {
           return height;
@@ -2242,7 +2257,12 @@ function mountSidebarNavSizer(): { destroy: () => void } {
           }
         })
       : undefined;
-  holder_observer?.observe(holder!, { childList: true, subtree: true });
+  holder_observer?.observe(holder!, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['class', 'style', 'hidden'],
+  });
   observeDrawerToggles();
   let is_two_column_active =
     host_document.body.classList.contains(BODY_CLASS_ENABLED) &&

@@ -230,7 +230,7 @@ body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28), 0 0 10px color-mix(in srgb, var(--SmartThemeQuoteColor) 15%, transparent) !important;
 }
 
-body.th-modern-enabled .inline-drawer:not(.th-modern-extension-drawer) > .inline-drawer-content {
+body.th-modern-enabled .inline-drawer > .inline-drawer-content {
   box-sizing: border-box;
   border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 45%, transparent);
   border-radius: var(--th-modern-radius-sm, 8px);
@@ -3714,3 +3714,39 @@ body.th-modern-enabled :is(
   background: var(--SmartThemeQuoteColor);
   box-shadow: 0 0 6px color-mix(in srgb, var(--SmartThemeQuoteColor) 45%, transparent);
 }
+
+/* ==========================================================================
+   元素精简与隐藏插件深度兼容 (如酒馆菜单精简器 mc3-hidden 等)
+   确保任何隐藏指令均以最高特异性生效，杜绝样式层叠冲突导致元素无法隐藏
+   ========================================================================== */
+html body.th-modern-enabled :is(.mc3-hidden, [hidden], .displayNone, .mc3-user-drawer-collapsed, .mc3-qr-content-collapsed),
+html body.th-modern-enabled :is(.mc3-hidden, [hidden], .displayNone, .mc3-user-drawer-collapsed, .mc3-qr-content-collapsed) *,
+body.th-modern-enabled :is(.mc3-hidden, [hidden], .displayNone, .mc3-user-drawer-collapsed, .mc3-qr-content-collapsed),
+body.th-modern-enabled :is(.mc3-hidden, [hidden], .displayNone, .mc3-user-drawer-collapsed, .mc3-qr-content-collapsed) * {
+  display: none !important;
+}
+
+/* 顶部导航栏被隐藏时彻底收缩折叠，杜绝留白或占用侧边栏高度 */
+html body.th-modern-enabled #top-settings-holder > .drawer.mc3-hidden,
+html body.th-modern-enabled #top-settings-holder > .drawer[hidden],
+html body.th-modern-enabled #top-settings-holder > .drawer.displayNone,
+body.th-modern-enabled #top-settings-holder > .drawer.mc3-hidden,
+body.th-modern-enabled #top-settings-holder > .drawer[hidden],
+body.th-modern-enabled #top-settings-holder > .drawer.displayNone {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+html body.th-modern-enabled #top-settings-holder > .drawer.mc3-hidden *,
+body.th-modern-enabled #top-settings-holder > .drawer.mc3-hidden * {
+  display: none !important;
+}
+

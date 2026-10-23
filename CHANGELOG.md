@@ -4,6 +4,21 @@
 
 ---
 
+## [v0.1.1] - 2026-10-23
+
+### 🧩 酒馆原生组件全面替换 (Native UI Components)
+- **设置面板原生化重构**：将设置面板内的所有自定义卡片、开关、滑动条全面替换为 SillyTavern 原生标准组件（`.inline-drawer`、`.checkbox_label`、`.range_slider`、`.text_pole`、`.menu_button` 等），无需任何多余的第三方样式适配，100% 融入酒馆原生主题体系。
+- **原生 jQuery 交互驱动**：移除了 Vue 内部的自定义 `@click` 阻断与 CSS 过渡，抽屉展开/折叠完全交还给酒馆原生的 jQuery `slideToggle(200)` 事件驱动机制，手感与原生设置完全一致。
+- **扩展容器规范化**：优先直接挂载至酒馆生成的标准 `#modern-ui-reborn_container` 容器，消除冗余外层 DOM 节点。
+
+### 🛡️ 隐藏指令与 DOM 精简插件深度兼容 (DOM Cleaner Compatibility)
+- **最高特异性隐藏隔离**：针对「酒馆菜单精简器 (Fvck-the-useless-DOMs / `menu-cleaner.js`)」等插件注入的 `.mc3-hidden`、`[hidden]`、`.displayNone` 等隐藏指令，新增标签与选择器复合的置底高特异性规则，确保即使遇到强行设置 `display: flex/grid !important` 的样式也能绝对生效隐藏。
+- **顶栏尺寸动态剔除**：当顶栏 `#top-settings-holder` 中的抽屉按钮被隐藏时，强制重置宽高与边距为 0，防止侧边栏导航高度测量出现异常留白。
+- **DOM 变动与属性监听响应**：扩展设置模块的 `structureObserver` 增加对 `class`、`style`、`hidden` 的动态监听与过滤，当菜单精简器动态隐藏或显现扩展时能够实时响应。
+- **扩展列表默认原生**：将 `modernExtensionSettings` 设置默认值调整为 `false`，默认保持原生扩展列表结构，杜绝破坏其他扩展对原生 DOM 的操作。
+
+---
+
 ## [v0.1.0] - 2026-10-23
 
 ### 🌟 首次正式发布 (Initial Release)

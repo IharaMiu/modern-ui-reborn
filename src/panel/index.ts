@@ -5,16 +5,31 @@ import Panel from './Panel.vue';
 const PANEL_ROOT_CLASS = 'th-modern-panel-root';
 
 export function initPanel(pinia: Pinia) {
-  $(`#extensions_settings > .${PANEL_ROOT_CLASS}`).remove();
+  $(`.${PANEL_ROOT_CLASS}`).remove();
 
   const app = createApp(Panel).use(pinia);
-  const $app = $('<div>').addClass(PANEL_ROOT_CLASS).appendTo('#extensions_settings');
-  app.mount($app[0]);
+  let target = document.getElementById('modern-ui-reborn_container');
+  let created = false;
+  if (!target) {
+    target = $('<div>')
+      .attr('id', 'modern-ui-reborn_container')
+      .addClass(PANEL_ROOT_CLASS)
+      .appendTo('#extensions_settings')[0];
+    created = true;
+  } else {
+    target.classList.add(PANEL_ROOT_CLASS);
+    $(target).empty();
+  }
+  app.mount(target);
 
   return {
     destroy: () => {
       app.unmount();
-      $app.remove();
+      if (created) {
+        $(target).remove();
+      } else {
+        $(target).empty().removeClass(PANEL_ROOT_CLASS);
+      }
     },
   };
 }

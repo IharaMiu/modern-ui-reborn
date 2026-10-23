@@ -361,7 +361,7 @@ body.th-modern-enabled.th-modern-extension-settings
   #rm_extensions_block.th-modern-extension-mobile-accordion
   .th-modern-extension-layout
   > .th-modern-extension-column
-  > .th-modern-extension-host-hidden {
+  > .th-modern-extension-host-hidden:not(.mc3-hidden):not(.displayNone):not([hidden]) {
   display: revert !important;
 }
 
@@ -580,7 +580,7 @@ body.th-modern-enabled.th-modern-extension-settings
   body.th-modern-enabled.th-modern-extension-settings
     .th-modern-extension-layout
     > .th-modern-extension-column
-    > .th-modern-extension-host-hidden {
+    > .th-modern-extension-host-hidden:not(.mc3-hidden):not(.displayNone):not([hidden]) {
     display: revert !important;
   }
 
