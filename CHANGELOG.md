@@ -4,6 +4,17 @@
 
 ---
 
+## [v0.1.6] - 2026-10-25
+
+### 📐 侧边栏导航与最近会话高度弹性自适应 (Sidebar Height & Dynamic Adaptation)
+- **动态弹性高度计算优化**：彻底重构 `mountSidebarNavSizer` 测量调度逻辑。解除之前硬编码的 `288px` 底部最近聊天留白限制，将基础保留高度调整为更合理的 `44px`，避免小屏幕或扩展抽屉图标较多时导航抽屉区被过度压缩。
+- **精准按需排版**：内容计算高度优化为 `target_height = content_height > 0 ? content_height : nav_min_height`，根据实际可见抽屉项精准贴合分配高度，杜绝底部多余空白。
+- **初始预设上限扩容**：将左侧导航初始预设最大高度 `--th-modern-left-nav-height` 从 `360px` 调整至 `380px`，最近聊天容器设置 `min-height: 0` 配合弹性伸缩，实现侧边栏上下两段的平滑空间分配。
+- **样式靶向注入加固**：`getHostStyleTargets()` 完善为安全兼容注入 `documentElement` 与 `body`，确保高优先级 CSS 变量能够在特定复杂 DOM 结构与主题下稳定覆盖生效。
+- **Body 类名变动全量响应**：简化 `body_observer` 监听调度，当主题、排版或折叠状态类名变动时，实时自动调度重新计算侧边栏高度，杜绝偶发高度更新脱节。
+
+---
+
 ## [v0.1.5] - 2026-10-24
 
 ### 🚀 架构纯净与完全离线化 (Pure Offline & Zero CDN Dependency)

@@ -7935,12 +7935,13 @@ function hf(e) {
 	}
 }
 // src/index.ts
-var gf = "th-modern-enabled", _f = "th-modern-two-column", vf = "th-modern-three-column", yf = "th-modern-docked-drawer", bf = "th-modern-main-fill", xf = "th-modern-floating-input", Sf = "th-modern-reduce-motion", Cf = "th-modern-reduce-advanced-effects", wf = "th-modern-sidebar-collapsed", Tf = "th-modern-auto-collapse", Ef = "th-modern-sidebar-temp-expanded", Df = "th-modern-resizing", Of = "th-modern-drawer-fullscreen", kf = "th-modern-drawer-open", Af = "th-modern-drawer-switching", jf = "th-modern-quick-replies-collapsed", Mf = "th-modern-sidebar", Nf = "th-modern-sidebar-resize-handle", Pf = "th-modern-overlay-resize-handle", Ff = "th-modern-quick-reply-toggle", If = "th-modern-topbar-label", Lf = "th-modern-drawer-titlebar", Rf = "th-modern-drawer-title", zf = "th-modern-drawer-actions", Bf = "th-modern-drawer-close", Vf = "th-modern-drawer-fullscreen-toggle", Hf = "th-modern-drawer-fullscreen-content", Uf = "th-modern-drawer-active", Wf = "thModernFullscreenPinned", Gf = "thModernFullscreenWasPinned", Kf = "thModernDockedPinned", qf = "thModernDockedWasPinned", Jf = "th-modern-api-source-group", Yf = "th-modern-api-footer", Xf = "th-reset", Zf = "th-modern-failsafe-shortcut", Qf = "SillyTavern", $f = "TavernHelper.modernLayout.dispose", ep = "TavernHelper.modernLayout.runtimes", tp = "TavernHelper.modernLayout.sidebarCollapsed", np = "TavernHelper.modernLayout.recentCollapsed", rp = 15, ip = "(min-width: 900px) and (max-width: 1199.98px)", ap = "(min-width: 900px)", op = 320, sp = 460, cp = 720, lp = 24, up = 480, dp = 1e3, fp = "--th-modern-left-nav-height", pp = "--th-modern-input-height", mp = "--th-modern-input-stack-offset", hp = "--th-modern-quick-reply-max-height", gp = "--th-modern-quick-reply-reserve-height", _p = 66, vp = 240, yp = 288, bp = 12, xp = "modern-ui", Sp = "1.0.0", Cp = !1;
+var gf = "th-modern-enabled", _f = "th-modern-two-column", vf = "th-modern-three-column", yf = "th-modern-docked-drawer", bf = "th-modern-main-fill", xf = "th-modern-floating-input", Sf = "th-modern-reduce-motion", Cf = "th-modern-reduce-advanced-effects", wf = "th-modern-sidebar-collapsed", Tf = "th-modern-auto-collapse", Ef = "th-modern-sidebar-temp-expanded", Df = "th-modern-resizing", Of = "th-modern-drawer-fullscreen", kf = "th-modern-drawer-open", Af = "th-modern-drawer-switching", jf = "th-modern-quick-replies-collapsed", Mf = "th-modern-sidebar", Nf = "th-modern-sidebar-resize-handle", Pf = "th-modern-overlay-resize-handle", Ff = "th-modern-quick-reply-toggle", If = "th-modern-topbar-label", Lf = "th-modern-drawer-titlebar", Rf = "th-modern-drawer-title", zf = "th-modern-drawer-actions", Bf = "th-modern-drawer-close", Vf = "th-modern-drawer-fullscreen-toggle", Hf = "th-modern-drawer-fullscreen-content", Uf = "th-modern-drawer-active", Wf = "thModernFullscreenPinned", Gf = "thModernFullscreenWasPinned", Kf = "thModernDockedPinned", qf = "thModernDockedWasPinned", Jf = "th-modern-api-source-group", Yf = "th-modern-api-footer", Xf = "th-reset", Zf = "th-modern-failsafe-shortcut", Qf = "SillyTavern", $f = "TavernHelper.modernLayout.dispose", ep = "TavernHelper.modernLayout.runtimes", tp = "TavernHelper.modernLayout.sidebarCollapsed", np = "TavernHelper.modernLayout.recentCollapsed", rp = 15, ip = "(min-width: 900px) and (max-width: 1199.98px)", ap = "(min-width: 900px)", op = 320, sp = 460, cp = 720, lp = 24, up = 480, dp = 1e3, fp = "--th-modern-left-nav-height", pp = "--th-modern-input-height", mp = "--th-modern-input-stack-offset", hp = "--th-modern-quick-reply-max-height", gp = "--th-modern-quick-reply-reserve-height", _p = 66, vp = 240, yp = 44, bp = 12, xp = "modern-ui", Sp = "1.0.0", Cp = !1;
 function wp(e, t, n, r) {
 	return typeof e != "number" || !Number.isFinite(e) ? r : Math.min(Math.max(e, t), n);
 }
 function Tp() {
-	return [L().documentElement];
+	let e = L();
+	return e.body ? [e.documentElement, e.body] : [e.documentElement];
 }
 function Ep() {
 	return R().localStorage;
@@ -8746,7 +8747,7 @@ function xm() {
 			Z(fp);
 			return;
 		}
-		let a = t.getComputedStyle(i), o = Ap(a.getPropertyValue("--th-modern-left-nav-top"), _p), s = Ap(a.getPropertyValue("--th-modern-left-nav-min-height"), vp), c = Ap(a.getPropertyValue("--th-modern-recent-min-height"), yp), l = Math.max(s, t.innerHeight - o - c - bp), u = t.getComputedStyle(n), d = Ap(u.paddingTop, 0) + Ap(u.paddingBottom, 0) + Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).map((e) => {
+		let a = t.getComputedStyle(i), o = Ap(a.getPropertyValue("--th-modern-left-nav-top"), _p), s = Ap(a.getPropertyValue("--th-modern-left-nav-min-height"), vp), c = Ap(a.getPropertyValue("--th-modern-recent-min-height"), yp), l = Math.min(c, 44), u = Math.max(s, t.innerHeight - o - l - bp), d = t.getComputedStyle(n), f = Ap(d.paddingTop, 0) + Ap(d.paddingBottom, 0) + Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).map((e) => {
 			let n = e.closest(".drawer");
 			if (n?.classList.contains("mc3-hidden") || n?.classList.contains("displayNone") || n?.hidden || e.classList.contains("mc3-hidden") || e.classList.contains("displayNone") || e.hidden) return 0;
 			let r = n ? t.getComputedStyle(n) : null;
@@ -8754,7 +8755,7 @@ function xm() {
 			let i = t.getComputedStyle(e);
 			return i.display === "none" || i.visibility === "hidden" ? 0 : e.getBoundingClientRect().height + Ap(i.marginTop, 0) + Ap(i.marginBottom, 0);
 		}).reduce((e, t) => e + t, 0);
-		kp(fp, `${Math.ceil(Math.min(Math.max(d, s), l))}px`);
+		kp(fp, `${Math.ceil(Math.min(f > 0 ? f : s, u))}px`);
 	}, a = () => {
 		r === 0 && (r = t.requestAnimationFrame(i));
 	}, o = n instanceof t.HTMLElement ? new t.ResizeObserver(a) : void 0, s = () => {
@@ -8772,15 +8773,14 @@ function xm() {
 			"hidden"
 		]
 	}), s();
-	let l = e.body.classList.contains(gf) && e.body.classList.contains(_f), u = new t.MutationObserver(() => {
-		let t = e.body.classList.contains(gf) && e.body.classList.contains(_f);
-		t !== l && (l = t, a());
+	let l = new t.MutationObserver(() => {
+		a();
 	});
-	return u.observe(e.body, {
+	return l.observe(e.body, {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), t.addEventListener("resize", a), a(), { destroy: () => {
-		r !== 0 && t.cancelAnimationFrame(r), c?.disconnect(), o?.disconnect(), u.disconnect(), t.removeEventListener("resize", a), Z(fp);
+		r !== 0 && t.cancelAnimationFrame(r), c?.disconnect(), o?.disconnect(), l.disconnect(), t.removeEventListener("resize", a), Z(fp);
 	} };
 }
 function Sm(e) {

@@ -84,7 +84,7 @@ const QUICK_REPLY_MAX_HEIGHT_VARIABLE = '--th-modern-quick-reply-max-height';
 const QUICK_REPLY_RESERVE_HEIGHT_VARIABLE = '--th-modern-quick-reply-reserve-height';
 const LEFT_NAV_TOP_FALLBACK = 66;
 const LEFT_NAV_MIN_HEIGHT_FALLBACK = 240;
-const LEFT_NAV_RECENT_MIN_HEIGHT_FALLBACK = 288;
+const LEFT_NAV_RECENT_MIN_HEIGHT_FALLBACK = 44;
 const LEFT_NAV_BOTTOM_GAP = 12;
 
 export const PLUGIN_ID = 'modern-ui';
@@ -128,7 +128,9 @@ function clamp(value: number | undefined, min: number, max: number, fallback: nu
 
 function getHostStyleTargets(): HTMLElement[] {
   const host_document = getHostDocument();
-  return [host_document.documentElement];
+  return host_document.body
+    ? [host_document.documentElement, host_document.body]
+    : [host_document.documentElement];
 }
 
 function getHostStorage(): Storage | undefined {
@@ -2108,9 +2110,10 @@ function mountSidebarNavSizer(): { destroy: () => void } {
       body_style.getPropertyValue('--th-modern-recent-min-height'),
       LEFT_NAV_RECENT_MIN_HEIGHT_FALLBACK,
     );
+    const min_recent_reserve = Math.min(recent_min_height, 44);
     const max_height = Math.max(
       nav_min_height,
-      host_window.innerHeight - nav_top - recent_min_height - LEFT_NAV_BOTTOM_GAP,
+      host_window.innerHeight - nav_top - min_recent_reserve - LEFT_NAV_BOTTOM_GAP,
     );
     const holder_style = host_window.getComputedStyle(holder);
     const padding_height =
@@ -2148,7 +2151,8 @@ function mountSidebarNavSizer(): { destroy: () => void } {
 
     // 2. 纯计算，不再读取任何 DOM 样式
     const content_height = padding_height + toggle_heights.reduce((sum, h) => sum + h, 0);
-    const next_height = Math.ceil(Math.min(Math.max(content_height, nav_min_height), max_height));
+    const target_height = content_height > 0 ? content_height : nav_min_height;
+    const next_height = Math.ceil(Math.min(target_height, max_height));
 
     // 3. 统一单次写入
     setHostCssVariable(LEFT_NAV_HEIGHT_VARIABLE, `${next_height}px`);
@@ -2192,17 +2196,8 @@ function mountSidebarNavSizer(): { destroy: () => void } {
     attributeFilter: ['class', 'style', 'hidden'],
   });
   observeDrawerToggles();
-  let is_two_column_active =
-    host_document.body.classList.contains(BODY_CLASS_ENABLED) &&
-    host_document.body.classList.contains(BODY_CLASS_TWO_COLUMN);
   const body_observer = new host_window.MutationObserver(() => {
-    const next_is_two_column_active =
-      host_document.body.classList.contains(BODY_CLASS_ENABLED) &&
-      host_document.body.classList.contains(BODY_CLASS_TWO_COLUMN);
-    if (next_is_two_column_active !== is_two_column_active) {
-      is_two_column_active = next_is_two_column_active;
-      schedule();
-    }
+    schedule();
   });
   body_observer.observe(host_document.body, { attributes: true, attributeFilter: ['class'] });
   host_window.addEventListener('resize', schedule);
