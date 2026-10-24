@@ -683,6 +683,8 @@ body.th-modern-enabled.th-modern-extension-settings
     box-sizing: border-box !important;
     min-height: unset !important;
     height: auto !important;
+    width: auto !important;
+    white-space: nowrap !important;
     padding: 3px 8px !important;
     border-radius: var(--th-modern-radius-xs, 6px) !important;
     border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 42%, transparent) !important;

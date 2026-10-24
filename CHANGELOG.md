@@ -4,6 +4,37 @@
 
 ---
 
+## [v0.1.5] - 2026-10-24
+
+### 🚀 架构纯净与完全离线化 (Pure Offline & Zero CDN Dependency)
+- **全面移除外部 CDN 图标字体依赖**：彻底移除 Bootstrap Icons 外部 CDN `<link>` 注入逻辑（`mountIconStylesheet`），全量接入 SillyTavern 内置的原生 Font Awesome 6 图标系统（如折叠、展开、刷新、全屏、关闭等）。
+- **零网络请求自包含运行**：消除了国内网络环境或完全离线使用时因 CDN 阻塞导致的图标缺失或加载卡顿，保障离线运行 100% 稳定可靠。
+
+### 🛡️ 原生弹窗接入与冗余手写弹窗清除 (Native Failsafe Popup)
+- **Failsafe 原生化接入**：移除手写的 Failsafe 模态弹窗系统（包含自建遮罩、焦点陷阱、Tab 循环等近百行代码），直接接入酒馆标准 `SillyTavern.callGenericPopup` 异步弹窗，完美复用酒馆自身 SmartTheme 主题样式、圆角与毛玻璃质感。
+- **清除模态框冗余样式**：同步移除 `.th-modern-failsafe-overlay`、`.th-modern-failsafe-dialog` 等样式定义，显著降低样式表开销。
+
+### 🎨 CSS 结构重构与性能减负 (CSS Modernization & Layering)
+- **输入框公共基础层抽取**：将原本分散在移动端/桌面端、浮动/固定模式下高度重复的 `#send_textarea`、`#send_form` 等样式统一抽取至全局基类，各个断点上下文仅保留边距与高度差异规则，减少百余行重复规则。
+- **选择器精简与合并**：利用 `:is()` 伪类合并侧边栏手动折叠与自动折叠的重复 CSS 规则，提升样式匹配效率。
+- **移除冗余合成层**：清理 `.inline-drawer-content` 上无收益且开销高昂的 `backdrop-filter: blur(12px)` 重复合成，降低 GPU 图层渲染负担。
+- **拖拽手柄交互提纯**：去除拖拽调整手柄生硬的背景色填充，仅保留柔和边框光晕与微光指示。
+
+### ⚡ DOM 测量流水线优化与防抖 (Layout Thrashing Elimination)
+- **消除强制同步回流**：彻底重构 `syncLeftNavHeight` 测量逻辑，由原先在循环中读写交错改为「集中批量读取尺寸 → 纯内存纯计算求和 → 单次统一写入 CSS 变量」，杜绝重排抖动（Layout Thrashing）。
+- **CSS 变量注入靶向精简**：`setHostCssVariable` 优化为仅靶向写入 `:root`（`documentElement`），利用原生 CSS 变量向下继承机制，热路径 DOM 写入次数直接减半。
+
+### 🧩 扩展设置模块与生命周期加固 (Extension Settings & Store Hardening)
+- **Observer 粗粒度合并**：`extension-settings-module` 的 `structureObserver` 由原本逐层递归注册的数十个微观监听，重构为直接在统一 `layout` 父节点挂载深度监听，极大降低内存占用与事件监听开销。
+- **面板自愈挂载**：`initPanel` 引入异步自愈监听机制，在 `#extensions_settings` 容器未立即可用时自动通过轻量 observer 监听并在就绪后立即挂载，彻底解决偶发挂载丢失问题。
+- **状态保存防覆盖保护**：`persistSettings` 增加已有扩展字段浅拷贝保留逻辑，确保保存现代化界面设置时绝不误冲其他模块存入的数据。
+- **重置按钮排版对齐**：为面板底部恢复默认按钮挂载标准 `menu_button_icon reset-button` 样式（`white-space: nowrap` 与 `gap: 6px`），手感与酒馆原生操作规范完全对齐。
+
+### 🧪 单元测试体系建立 (Unit Testing)
+- **引入原生 Node.js 测试套件**：新增 `test/store.test.ts`，在 `package.json` 中配置 `npm test`，全方位覆盖配置初始化、边界值校验与回退、历史字段迁移（`desktopThreeColumn` 等）以及多键持久化保护。
+
+---
+
 ## [v0.1.4] - 2026-10-24
 
 ### 📑 提示词管理器标准网格对齐与排版重构 (Prompt Manager Grid Alignment)

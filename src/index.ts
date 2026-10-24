@@ -42,8 +42,6 @@ const BODY_CLASS_DRAWER_FULLSCREEN = 'th-modern-drawer-fullscreen';
 const BODY_CLASS_DRAWER_OPEN = 'th-modern-drawer-open';
 const BODY_CLASS_DRAWER_SWITCHING = 'th-modern-drawer-switching';
 const BODY_CLASS_QUICK_REPLIES_COLLAPSED = 'th-modern-quick-replies-collapsed';
-const ICON_STYLESHEET_ID = 'th-modern-bootstrap-icons';
-const ICON_STYLESHEET_HREF = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css';
 const SIDEBAR_ID = 'th-modern-sidebar';
 const SIDEBAR_RESIZE_HANDLE_ID = 'th-modern-sidebar-resize-handle';
 const OVERLAY_RESIZE_HANDLE_ID = 'th-modern-overlay-resize-handle';
@@ -130,7 +128,7 @@ function clamp(value: number | undefined, min: number, max: number, fallback: nu
 
 function getHostStyleTargets(): HTMLElement[] {
   const host_document = getHostDocument();
-  return [host_document.documentElement, host_document.body];
+  return [host_document.documentElement];
 }
 
 function getHostStorage(): Storage | undefined {
@@ -181,24 +179,6 @@ function setCssVariableForTargets(targets: HTMLElement[], name: string, value: s
       element.style.setProperty(name, value);
     }
   });
-}
-
-function mountIconStylesheet(): { destroy: () => void } {
-  const host_document = getHostDocument();
-  if (host_document.getElementById(ICON_STYLESHEET_ID)) {
-    return { destroy: () => {} };
-  }
-
-  const link = host_document.createElement('link');
-  link.id = ICON_STYLESHEET_ID;
-  link.rel = 'stylesheet';
-  link.href = ICON_STYLESHEET_HREF;
-  link.dataset.thModernOwned = 'true';
-  host_document.head.append(link);
-
-  return {
-    destroy: () => link.remove(),
-  };
 }
 
 function getContext(): any {
@@ -782,7 +762,7 @@ function mountSidebar(on_refresh: () => void): { $list: JQuery<HTMLElement>; des
   });
   const $sidebar_collapse_button = $('<button>')
     .attr({ type: 'button', title: '折叠侧边栏', 'aria-pressed': 'false' })
-    .addClass('th-modern-icon-button th-modern-sidebar-toggle bi bi-chevron-left')
+    .addClass('th-modern-icon-button th-modern-sidebar-toggle fa-solid fa-chevron-left')
     .appendTo($brand);
 
   const $recent = $('<section>').addClass('th-modern-recent-section');
@@ -794,7 +774,7 @@ function mountSidebar(on_refresh: () => void): { $list: JQuery<HTMLElement>; des
     .addClass('th-modern-section-title th-modern-recent-toggle');
   const $collapse_icon = $('<span>')
     .attr('aria-hidden', 'true')
-    .addClass('th-modern-icon-button th-modern-recent-collapse bi bi-chevron-up')
+    .addClass('th-modern-icon-button th-modern-recent-collapse fa-solid fa-chevron-up')
     .appendTo($recent_toggle);
   $('<span>').addClass('th-modern-section-label').text('最近聊天').appendTo($recent_toggle);
 
@@ -814,8 +794,8 @@ function mountSidebar(on_refresh: () => void): { $list: JQuery<HTMLElement>; des
     const auto_collapsed = body.classList.contains(BODY_CLASS_AUTO_COLLAPSE) && !body.classList.contains(BODY_CLASS_TEMP_EXPANDED);
     const collapsed = manually_collapsed || auto_collapsed;
     $sidebar_collapse_button
-      .toggleClass('bi-chevron-left', !collapsed)
-      .toggleClass('bi-chevron-right', collapsed)
+      .toggleClass('fa-chevron-left', !collapsed)
+      .toggleClass('fa-chevron-right', collapsed)
       .attr({
         title: collapsed ? '展开侧边栏' : '折叠侧边栏',
         'aria-pressed': String(collapsed),
@@ -827,8 +807,8 @@ function mountSidebar(on_refresh: () => void): { $list: JQuery<HTMLElement>; des
     $recent.toggleClass('is-collapsed', collapsed);
     $recent_toggle.attr({ title, 'aria-expanded': String(!collapsed) });
     $collapse_icon
-      .toggleClass('bi-chevron-up', !collapsed)
-      .toggleClass('bi-chevron-down', collapsed);
+      .toggleClass('fa-chevron-up', !collapsed)
+      .toggleClass('fa-chevron-down', collapsed);
     if (persist) {
       writeStoredBoolean(RECENT_COLLAPSED_STORAGE_KEY, collapsed);
     }
@@ -855,7 +835,7 @@ function mountSidebar(on_refresh: () => void): { $list: JQuery<HTMLElement>; des
   });
   const $refresh_button = $('<button>')
     .attr({ type: 'button', title: '刷新最近聊天' })
-    .addClass('th-modern-icon-button bi bi-arrow-clockwise')
+    .addClass('th-modern-icon-button fa-solid fa-rotate-right')
     .on('click', event => {
       event.preventDefault();
       on_refresh();
@@ -1007,8 +987,8 @@ function syncDrawerFullscreenButtons() {
     const is_fullscreen = is_drawer_fullscreen_mode && Boolean(active_content && $(button).closest('.drawer-content')[0] === active_content);
     $(button)
       .toggleClass('is-fullscreen', is_fullscreen)
-      .toggleClass('bi-arrows-fullscreen', !is_fullscreen)
-      .toggleClass('bi-fullscreen-exit', is_fullscreen)
+      .toggleClass('fa-expand', !is_fullscreen)
+      .toggleClass('fa-compress', is_fullscreen)
       .attr({
         title: is_fullscreen ? '恢复面板宽度' : '全屏显示面板',
         'aria-label': is_fullscreen ? '恢复面板宽度' : '全屏显示面板',
@@ -1348,11 +1328,11 @@ function mountDrawerEnhancements(): { destroy: () => void } {
 
       $('<button>')
         .attr({ type: 'button', title: '全屏显示面板', 'aria-label': '全屏显示面板' })
-        .addClass(`${DRAWER_FULLSCREEN_CLASS} bi bi-arrows-fullscreen`)
+        .addClass(`${DRAWER_FULLSCREEN_CLASS} fa-solid fa-expand`)
         .appendTo($actions);
       $('<button>')
         .attr({ type: 'button', title: '关闭面板' })
-        .addClass(`${DRAWER_CLOSE_CLASS} bi bi-x-lg`)
+        .addClass(`${DRAWER_CLOSE_CLASS} fa-solid fa-xmark`)
         .appendTo($actions);
       $content.prepend($titlebar);
     });
@@ -1518,94 +1498,33 @@ function mountDrawerEnhancements(): { destroy: () => void } {
   };
 }
 
-function showFailsafeRestoreConfirm(
+async function showFailsafeRestoreConfirm(
   store: ReturnType<typeof useModernLayoutStore>,
-  onClose: () => void,
-): () => void {
-  const host_document = getHostDocument();
-  const previous_focus = host_document.activeElement as HTMLElement | null;
-  $('.th-modern-failsafe-overlay', host_document).remove();
+): Promise<void> {
+  const host_window = getHostWindow() as any;
+  const st = host_window.SillyTavern;
+  const POPUP_TYPE = st?.POPUP_TYPE;
+  const POPUP_RESULT = st?.POPUP_RESULT;
 
-  const $overlay = $('<div>').addClass('th-modern-failsafe-overlay');
-  const title_id = 'th-modern-failsafe-title';
-  const description_id = 'th-modern-failsafe-description';
-  const $dialog = $('<div>')
-    .attr({
-      role: 'dialog',
-      'aria-modal': 'true',
-      'aria-labelledby': title_id,
-      'aria-describedby': description_id,
-    })
-    .addClass('th-modern-failsafe-dialog')
-    .appendTo($overlay);
-  $('<strong>').attr('id', title_id).text('关闭现代化界面？').appendTo($dialog);
-  $('<p>')
-    .attr('id', description_id)
-    .text(`将立即还原 ${getHostProductName(host_document)} 原始布局，并保持关闭状态。之后可以在酒馆助手设置里重新启用。`)
-    .appendTo($dialog);
-  const $actions = $('<div>').addClass('th-modern-failsafe-actions').appendTo($dialog);
-  let closed = false;
-
-  const close = () => {
-    if (closed) {
-      return;
-    }
-    closed = true;
-    $overlay.off('keydown', onDialogKeyDown);
-    $overlay.remove();
-    onClose();
-    if (previous_focus?.isConnected && typeof previous_focus.focus === 'function') {
-      previous_focus.focus();
-    }
-  };
-
-  const $cancel = $('<button>')
-    .attr('type', 'button')
-    .addClass('menu_button')
-    .text('取消')
-    .on('click', close)
-    .appendTo($actions);
-  const $confirm = $('<button>')
-    .attr('type', 'button')
-    .addClass('menu_button th-modern-failsafe-confirm')
-    .text('关闭并还原')
-    .on('click', () => {
+  if (typeof st?.callGenericPopup !== 'function') {
+    if (host_window.confirm('将立即还原原始布局，确认继续？')) {
       store.disableModernLayout();
       toastr.warning('已关闭现代化界面。', SCRIPT_NAME);
-      close();
-    })
-    .appendTo($actions);
-
-  function onDialogKeyDown(event: JQuery.KeyDownEvent) {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      close();
-      return;
     }
-    if (event.key !== 'Tab') {
-      return;
-    }
-
-    const first = $cancel[0];
-    const last = $confirm[0];
-    if (event.shiftKey && host_document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && host_document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
+    return;
   }
 
-  $overlay.on('click', event => {
-    if (event.target === $overlay[0]) {
-      close();
-    }
-  });
-  $overlay.on('keydown', onDialogKeyDown);
-  $(host_document.body).append($overlay);
-  $cancel[0].focus();
-  return close;
+  const result = await st.callGenericPopup(
+    `将立即还原 ${getHostProductName(getHostDocument())} 原始布局，并保持关闭状态。之后可在酒馆助手设置里重新启用。`,
+    POPUP_TYPE?.CONFIRM ?? 'confirm',
+    undefined,
+    { okButton: '关闭并还原', cancelButton: '取消' },
+  );
+
+  if (result === true || result === (POPUP_RESULT?.AFFIRMATIVE ?? 1)) {
+    store.disableModernLayout();
+    toastr.warning('已关闭现代化界面。', SCRIPT_NAME);
+  }
 }
 
 function mountFailsafeRestore(store: ReturnType<typeof useModernLayoutStore>): { destroy: () => void } {
@@ -1613,17 +1532,17 @@ function mountFailsafeRestore(store: ReturnType<typeof useModernLayoutStore>): {
   const host_window = getHostWindow();
   let typed_buffer = '';
   let is_prompt_open = false;
-  let close_prompt: (() => void) | undefined;
 
-  const openConfirm = () => {
+  const openConfirm = async () => {
     if (is_prompt_open || !store.is_active) {
       return;
     }
     is_prompt_open = true;
-    close_prompt = showFailsafeRestoreConfirm(store, () => {
+    try {
+      await showFailsafeRestoreConfirm(store);
+    } finally {
       is_prompt_open = false;
-      close_prompt = undefined;
-    });
+    }
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
@@ -1695,7 +1614,6 @@ function mountFailsafeRestore(store: ReturnType<typeof useModernLayoutStore>): {
   return {
     destroy: () => {
       welcome_observer.disconnect();
-      close_prompt?.();
       host_document.removeEventListener('keydown', onKeyDown, true);
       host_document.removeEventListener('click', onFailsafeShortcutClick, true);
       host_document.querySelectorAll(`.${FAILSAFE_SHORTCUT_CLASS}`).forEach(button => button.remove());
@@ -1890,7 +1808,7 @@ function mountQuickReplyController(store: ReturnType<typeof useModernLayoutStore
   const toggle = host_document.createElement('button');
   toggle.id = QUICK_REPLY_TOGGLE_ID;
   toggle.type = 'button';
-  toggle.className = 'menu_button bi';
+  toggle.className = 'menu_button fa-solid';
   toggle.setAttribute('aria-controls', 'qr--bar');
   toggle.hidden = true;
 
@@ -2007,8 +1925,8 @@ function mountQuickReplyController(store: ReturnType<typeof useModernLayoutStore
     const collapsed = host_document.body.classList.contains(BODY_CLASS_QUICK_REPLIES_COLLAPSED);
     const has_content = hasVisibleQuickReplyContent(valid_bar);
     toggle.hidden = !has_content;
-    toggle.classList.toggle('bi-chevron-down', has_content && !collapsed);
-    toggle.classList.toggle('bi-chevron-up', has_content && collapsed);
+    toggle.classList.toggle('fa-chevron-down', has_content && !collapsed);
+    toggle.classList.toggle('fa-chevron-up', has_content && collapsed);
     toggle.setAttribute('aria-expanded', String(has_content && !collapsed));
     toggle.setAttribute('aria-label', collapsed ? '展开快速回复栏' : '收起快速回复栏');
     toggle.title = collapsed ? '展开快速回复栏' : '收起快速回复栏';
@@ -2166,12 +2084,6 @@ function mountSidebarNavSizer(): { destroy: () => void } {
   const holder = host_document.getElementById('top-settings-holder');
   let frame = 0;
 
-  const measureOuterHeight = (element: HTMLElement) => {
-    const rect = element.getBoundingClientRect();
-    const style = host_window.getComputedStyle(element);
-    return rect.height + parseCssPixelValue(style.marginTop, 0) + parseCssPixelValue(style.marginBottom, 0);
-  };
-
   const update = () => {
     frame = 0;
     if (!(holder instanceof host_window.HTMLElement)) {
@@ -2185,6 +2097,7 @@ function mountSidebarNavSizer(): { destroy: () => void } {
       return;
     }
 
+    // 1. 批量读取上下文样式与几何信息，避免读写交错导致强制回流（Forced Reflow）
     const body_style = host_window.getComputedStyle(body);
     const nav_top = parseCssPixelValue(body_style.getPropertyValue('--th-modern-left-nav-top'), LEFT_NAV_TOP_FALLBACK);
     const nav_min_height = parseCssPixelValue(
@@ -2200,33 +2113,44 @@ function mountSidebarNavSizer(): { destroy: () => void } {
       host_window.innerHeight - nav_top - recent_min_height - LEFT_NAV_BOTTOM_GAP,
     );
     const holder_style = host_window.getComputedStyle(holder);
-    const padding_height = parseCssPixelValue(holder_style.paddingTop, 0) + parseCssPixelValue(holder_style.paddingBottom, 0);
-    const content_height = Array.from(holder.querySelectorAll<HTMLElement>(':scope > .drawer > .drawer-toggle')).reduce(
-      (height, toggle) => {
-        const drawer = toggle.closest<HTMLElement>('.drawer');
-        if (
-          drawer?.classList.contains('mc3-hidden') ||
-          drawer?.classList.contains('displayNone') ||
-          drawer?.hidden ||
-          toggle.classList.contains('mc3-hidden') ||
-          toggle.classList.contains('displayNone') ||
-          toggle.hidden
-        ) {
-          return height;
-        }
-        const drawer_style = drawer ? host_window.getComputedStyle(drawer) : null;
-        if (drawer_style && (drawer_style.display === 'none' || drawer_style.visibility === 'hidden')) {
-          return height;
-        }
-        const toggle_style = host_window.getComputedStyle(toggle);
-        if (toggle_style.display === 'none' || toggle_style.visibility === 'hidden') {
-          return height;
-        }
-        return height + measureOuterHeight(toggle);
-      },
-      padding_height,
-    );
+    const padding_height =
+      parseCssPixelValue(holder_style.paddingTop, 0) + parseCssPixelValue(holder_style.paddingBottom, 0);
+
+    // 批量收集并读取每个可见 toggle 的尺寸
+    const toggles = Array.from(holder.querySelectorAll<HTMLElement>(':scope > .drawer > .drawer-toggle'));
+    const toggle_heights = toggles.map(toggle => {
+      const drawer = toggle.closest<HTMLElement>('.drawer');
+      if (
+        drawer?.classList.contains('mc3-hidden') ||
+        drawer?.classList.contains('displayNone') ||
+        drawer?.hidden ||
+        toggle.classList.contains('mc3-hidden') ||
+        toggle.classList.contains('displayNone') ||
+        toggle.hidden
+      ) {
+        return 0;
+      }
+      const drawer_style = drawer ? host_window.getComputedStyle(drawer) : null;
+      if (drawer_style && (drawer_style.display === 'none' || drawer_style.visibility === 'hidden')) {
+        return 0;
+      }
+      const toggle_style = host_window.getComputedStyle(toggle);
+      if (toggle_style.display === 'none' || toggle_style.visibility === 'hidden') {
+        return 0;
+      }
+      const rect = toggle.getBoundingClientRect();
+      return (
+        rect.height +
+        parseCssPixelValue(toggle_style.marginTop, 0) +
+        parseCssPixelValue(toggle_style.marginBottom, 0)
+      );
+    });
+
+    // 2. 纯计算，不再读取任何 DOM 样式
+    const content_height = padding_height + toggle_heights.reduce((sum, h) => sum + h, 0);
     const next_height = Math.ceil(Math.min(Math.max(content_height, nav_min_height), max_height));
+
+    // 3. 统一单次写入
     setHostCssVariable(LEFT_NAV_HEIGHT_VARIABLE, `${next_height}px`);
   };
 
@@ -2861,17 +2785,6 @@ function runCleanupStack(cleanups: Array<() => void>) {
   }
 }
 
-function mountPreferredResources(): { destroy: () => void } {
-  const cleanups: Array<() => void> = [];
-  try {
-    cleanups.push(mountIconStylesheet().destroy);
-    return { destroy: _.once(() => runCleanupStack(cleanups)) };
-  } catch (error) {
-    runCleanupStack(cleanups);
-    throw error;
-  }
-}
-
 function getEventSource() {
   return (window as any).eventSource ?? (window as any).SillyTavern?.getContext?.()?.eventSource;
 }
@@ -2987,7 +2900,6 @@ function initializeModernLayout(): { dispose: () => void } {
   setActivePinia(pinia);
   const store = useModernLayoutStore();
   let destroy_panel: (() => void) | undefined;
-  let preferred_resources: ReturnType<typeof mountPreferredResources> | undefined;
   let active_runtime: ReturnType<typeof mountActiveRuntime> | undefined;
   let stop_runtime_watch: (() => void) | undefined;
   let destroy_all: RuntimeDisposer | undefined;
@@ -2998,12 +2910,9 @@ function initializeModernLayout(): { dispose: () => void } {
       if (!store.should_enable) {
         active_runtime?.destroy();
         active_runtime = undefined;
-        preferred_resources?.destroy();
-        preferred_resources = undefined;
         return;
       }
 
-      preferred_resources ??= mountPreferredResources();
       if (store.is_active) {
         active_runtime ??= mountActiveRuntime(store);
       } else {
@@ -3023,8 +2932,6 @@ function initializeModernLayout(): { dispose: () => void } {
       stop_runtime_watch = undefined;
       runCleanup(active_runtime?.destroy);
       active_runtime = undefined;
-      runCleanup(preferred_resources?.destroy);
-      preferred_resources = undefined;
       runCleanup(destroy_panel);
       destroy_panel = undefined;
       if (runtime_registry.get(script_id) === destroy_all) {
@@ -3039,7 +2946,6 @@ function initializeModernLayout(): { dispose: () => void } {
   } catch (error) {
     runCleanup(stop_runtime_watch);
     runCleanup(active_runtime?.destroy);
-    runCleanup(preferred_resources?.destroy);
     runCleanup(destroy_panel);
     store.destroy();
     throw error;

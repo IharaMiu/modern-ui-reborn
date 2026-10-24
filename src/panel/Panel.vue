@@ -230,7 +230,7 @@
 
       <!-- 底部重置按钮 -->
       <div class="flex-container justifyEnd m-t-1">
-        <div class="menu_button" title="重置现代化界面设置" @click="resetSettings">
+        <div class="menu_button menu_button_icon reset-button" title="重置现代化界面设置" @click="resetSettings">
           <i class="fa-solid fa-rotate-left"></i>
           <span>恢复默认设置</span>
         </div>
@@ -308,5 +308,13 @@ async function resetSettings() {
 }
 .text-center {
   text-align: center;
+}
+.reset-button {
+  width: auto !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
 }
 </style>

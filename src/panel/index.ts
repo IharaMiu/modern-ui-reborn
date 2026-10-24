@@ -7,27 +7,52 @@ const PANEL_ROOT_CLASS = 'th-modern-panel-root';
 export function initPanel(pinia: Pinia) {
   $(`.${PANEL_ROOT_CLASS}`).remove();
 
-  const app = createApp(Panel).use(pinia);
+  let unmounted = false;
+  let panelApp: ReturnType<typeof createApp> | undefined;
   let target = document.getElementById('modern-ui-reborn_container');
   let created = false;
-  if (!target) {
-    target = $('<div>')
-      .attr('id', 'modern-ui-reborn_container')
-      .addClass(PANEL_ROOT_CLASS)
-      .appendTo('#extensions_settings')[0];
-    created = true;
-  } else {
-    target.classList.add(PANEL_ROOT_CLASS);
-    $(target).empty();
+
+  const mount = () => {
+    if (unmounted || panelApp) return;
+    const parent = document.getElementById('extensions_settings');
+    if (!parent) return;
+
+    panelApp = createApp(Panel).use(pinia);
+    if (!target) {
+      target = $('<div>')
+        .attr('id', 'modern-ui-reborn_container')
+        .addClass(PANEL_ROOT_CLASS)
+        .appendTo(parent)[0];
+      created = true;
+    } else {
+      target.classList.add(PANEL_ROOT_CLASS);
+      $(target).empty();
+    }
+    panelApp.mount(target);
+  };
+
+  mount();
+
+  let observer: MutationObserver | undefined;
+  if (!panelApp) {
+    observer = new MutationObserver(() => {
+      if (document.getElementById('extensions_settings')) {
+        observer?.disconnect();
+        observer = undefined;
+        mount();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   }
-  app.mount(target);
 
   return {
     destroy: () => {
-      app.unmount();
-      if (created) {
+      unmounted = true;
+      observer?.disconnect();
+      panelApp?.unmount();
+      if (created && target) {
         $(target).remove();
-      } else {
+      } else if (target) {
         $(target).empty().removeClass(PANEL_ROOT_CLASS);
       }
     },

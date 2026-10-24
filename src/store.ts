@@ -62,20 +62,25 @@ export const ModernLayoutSettings = z
   })
   .default({});
 
+function getWindowObject(): any {
+  return typeof window !== 'undefined' ? window : globalThis;
+}
+
 function getSillyTavernContext() {
-  return (window as any).SillyTavern?.getContext?.() || {};
+  return getWindowObject().SillyTavern?.getContext?.() || {};
 }
 
 function getExtensionSettings(): Record<string, any> {
+  const win = getWindowObject();
   const context = getSillyTavernContext();
-  if (!(window as any).extension_settings && context.extensionSettings) {
-    (window as any).extension_settings = context.extensionSettings;
+  if (!win.extension_settings && context.extensionSettings) {
+    win.extension_settings = context.extensionSettings;
   }
-  (window as any).extension_settings = (window as any).extension_settings || {};
-  return (window as any).extension_settings;
+  win.extension_settings = win.extension_settings || {};
+  return win.extension_settings;
 }
 
-function readSettings(): ModernLayoutSettings {
+export function readSettings(): ModernLayoutSettings {
   const ext_settings = getExtensionSettings();
   let raw_settings = ext_settings[EXTENSION_SETTINGS_KEY];
 
@@ -100,23 +105,29 @@ function readSettings(): ModernLayoutSettings {
   return ModernLayoutSettings.parse({});
 }
 
-function persistSettings(settingsToSave: ModernLayoutSettings) {
+export function persistSettings(settingsToSave: ModernLayoutSettings) {
   const ext_settings = getExtensionSettings();
-  ext_settings[EXTENSION_SETTINGS_KEY] = klona(settingsToSave);
+  const current = ext_settings[EXTENSION_SETTINGS_KEY];
+  ext_settings[EXTENSION_SETTINGS_KEY] = {
+    ...(typeof current === 'object' && current !== null ? current : {}),
+    ...klona(settingsToSave),
+  };
 
+  const win = getWindowObject();
   const context = getSillyTavernContext();
-  if (typeof (window as any).saveSettingsDebounced === 'function') {
-    (window as any).saveSettingsDebounced();
+  if (typeof win.saveSettingsDebounced === 'function') {
+    win.saveSettingsDebounced();
   } else if (typeof context.saveSettingsDebounced === 'function') {
     context.saveSettingsDebounced();
   }
 }
 
 export const useModernLayoutStore = defineStore(SCRIPT_NAME, () => {
+  const win = getWindowObject();
   const settings = ref(readSettings());
   const should_enable = ref(true);
 
-  const es = (window as any).eventSource ?? (window as any).SillyTavern?.getContext?.()?.eventSource;
+  const es = win.eventSource ?? win.SillyTavern?.getContext?.()?.eventSource;
   const onSettingsLoaded = () => {
     settings.value = readSettings();
   };

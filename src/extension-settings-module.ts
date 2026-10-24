@@ -453,33 +453,15 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       return;
     }
 
-    columns.forEach(column => {
-      structureObserver?.observe(column, {
+    if (layout) {
+      structureObserver.observe(layout, {
         childList: true,
+        subtree: true,
         attributes: true,
         attributeFilter: ['class', 'style', 'hidden'],
       });
-      Array.from(column.children).forEach(host => {
-        if (!(host instanceof hostWindow.HTMLElement)) {
-          return;
-        }
+    }
 
-        structureObserver?.observe(host, {
-          childList: true,
-          attributes: true,
-          attributeFilter: ['class', 'style', 'hidden'],
-        });
-        Array.from(host.children).forEach(wrapper => {
-          if (wrapper instanceof hostWindow.HTMLElement) {
-            structureObserver?.observe(wrapper, {
-              childList: true,
-              attributes: true,
-              attributeFilter: ['class', 'style', 'hidden'],
-            });
-          }
-        });
-      });
-    });
     entries.forEach(entry => {
       if (entry.header) {
         structureObserver?.observe(entry.header, {
