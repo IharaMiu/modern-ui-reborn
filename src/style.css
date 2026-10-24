@@ -1846,17 +1846,20 @@ body.th-modern-enabled .th-modern-drawer-fullscreen-toggle.bi::before {
     color: inherit;
   }
 
-  body.th-modern-enabled.th-modern-two-column:not(.th-modern-docked-drawer) #top-settings-holder > .drawer > .drawer-content {
+  body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-content {
     position: fixed !important;
-    inset: 0 0 0 var(--th-modern-left-visual-width) !important;
+    inset: 0 auto 0 var(--th-modern-left-visual-width) !important;
     top: 0 !important;
-    right: 0 !important;
+    right: auto !important;
     bottom: 0 !important;
     left: var(--th-modern-left-visual-width) !important;
     z-index: var(--th-modern-overlay-z);
     display: none !important;
-    width: auto !important;
-    max-width: none !important;
+    width: min(
+      var(--th-modern-overlay-width, var(--th-modern-overlay-width-fallback)),
+      var(--th-modern-overlay-soft-max-width)
+    ) !important;
+    max-width: var(--th-modern-overlay-soft-max-width) !important;
     height: 100dvh !important;
     max-height: 100dvh !important;
     min-height: 100dvh !important;
@@ -1878,43 +1881,13 @@ body.th-modern-enabled .th-modern-drawer-fullscreen-toggle.bi::before {
     will-change: clip-path, opacity;
     animation: none !important;
     background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%) !important;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.35) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35) !important;
+    border-right: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.15)) 35%, transparent) !important;
   }
 
   body.th-modern-enabled.th-modern-two-column.th-modern-docked-drawer #top-settings-holder > .drawer > .drawer-content {
-    position: fixed !important;
-    inset: 0 auto 0 var(--th-modern-left-visual-width) !important;
-    top: 0 !important;
-    right: auto !important;
-    bottom: 0 !important;
-    left: var(--th-modern-left-visual-width) !important;
-    z-index: var(--th-modern-overlay-z);
-    display: none !important;
-    width: min(
-      var(--th-modern-overlay-width, var(--th-modern-overlay-width-fallback)),
-      var(--th-modern-overlay-soft-max-width)
-    ) !important;
-    max-width: var(--th-modern-overlay-soft-max-width) !important;
-    height: 100dvh !important;
-    max-height: 100dvh !important;
-    min-height: 100dvh !important;
-    margin: 0;
     padding: 5px;
-    clip-path: inset(0 100% 0 0);
-    opacity: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    pointer-events: none;
-    transform: none;
-    transform-origin: left center;
-    transition:
-      opacity var(--th-modern-motion-duration) ease,
-      clip-path var(--th-modern-motion-duration) cubic-bezier(0.2, 0.8, 0.2, 1),
-      display var(--th-modern-motion-duration) allow-discrete !important;
-    transition-behavior: allow-discrete;
-    will-change: clip-path, opacity;
-    animation: none !important;
+    box-shadow: none !important;
   }
 
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-content.openDrawer {
@@ -3382,51 +3355,140 @@ body.th-modern-enabled select[id*='append_prompt'] {
   box-sizing: border-box !important;
 }
 
-body.th-modern-enabled [id*='prompt_manager_list'] > li,
-body.th-modern-enabled [class*='prompt_manager_list'] > li,
-body.th-modern-enabled li[class*='prompt_manager_prompt'] {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
+/* 隐藏的提示词保持隐藏 */
+body.th-modern-enabled [id*='prompt_manager_list'] > li[class*='invisible'],
+body.th-modern-enabled [class*='prompt_manager_list'] > li[class*='invisible'],
+body.th-modern-enabled li[class*='prompt_manager_prompt'][class*='invisible'] {
+  display: none !important;
 }
 
+/* 提示词列表项与表头恢复原生标准的 3 列网格对齐，紧凑右侧操作按钮区与 Token 计数 */
+body.th-modern-enabled [id*='prompt_manager_list'] > li:not([class*='invisible']),
+body.th-modern-enabled [class*='prompt_manager_list'] > li:not([class*='invisible']),
+body.th-modern-enabled li[class*='prompt_manager_prompt']:not([class*='invisible']),
 body.th-modern-enabled [class*='prompt_manager_list_head'],
 body.th-modern-enabled li[class*='prompt_manager_list_head'] {
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: space-between !important;
-  align-items: center !important;
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
-  white-space: nowrap !important;
-  padding: 4px 6px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 80px 45px !important;
+  align-items: center !important;
 }
 
-body.th-modern-enabled [class*='prompt_manager_list_head'] > span,
-body.th-modern-enabled li[class*='prompt_manager_list_head'] > span {
+/* 分隔线横跨整行 */
+body.th-modern-enabled [class*='prompt_manager_list_separator'] hr,
+body.th-modern-enabled li[class*='prompt_manager_list_separator'] hr {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+
+/* 拖拽手柄保持绝对定位，不占用网格列 */
+body.th-modern-enabled li[class*='prompt_manager_prompt'] .drag-handle {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 5px !important;
+  z-index: 2 !important;
+}
+
+body.th-modern-enabled li[class*='prompt_manager_prompt'] .drag-handle:not(.ui-sortable-handle) {
+  display: none !important;
+}
+
+body.th-modern-enabled li[class*='prompt_manager_prompt']:has(.drag-handle.ui-sortable-handle) {
+  position: relative !important;
+  padding-left: 20px !important;
+}
+
+/* 表头文字网格对齐 */
+body.th-modern-enabled [class*='prompt_manager_list_head'],
+body.th-modern-enabled li[class*='prompt_manager_list_head'] {
+  padding: 4px 6px !important;
   white-space: nowrap !important;
-  display: inline-block !important;
-  width: auto !important;
-  max-width: none !important;
-  min-width: fit-content !important;
-  line-height: normal !important;
 }
 
 body.th-modern-enabled [class*='prompt_manager_list_head'] > span:first-child,
 body.th-modern-enabled li[class*='prompt_manager_list_head'] > span:first-child {
-  flex: 0 0 auto !important;
+  grid-column: 1 !important;
+  text-align: left !important;
   white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body.th-modern-enabled [class*='prompt_manager_list_head'] > span:nth-child(2),
+body.th-modern-enabled li[class*='prompt_manager_list_head'] > span:nth-child(2) {
+  grid-column: 2 !important;
+  width: 80px !important;
 }
 
 body.th-modern-enabled [class*='prompt_manager_list_head'] > span:last-child,
 body.th-modern-enabled li[class*='prompt_manager_list_head'] > span:last-child {
-  flex: 0 0 auto !important;
-  margin-left: auto !important;
+  grid-column: 3 !important;
+  text-align: right !important;
   white-space: nowrap !important;
+  margin-left: 0 !important;
+}
+
+/* 提示词名称列自适应拉伸并防溢出 */
+body.th-modern-enabled li[class*='prompt_manager_prompt'] > [class*='prompt_manager_prompt_name'] {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* 操作按钮列固定 80px 宽度，图标紧凑均匀排列 */
+body.th-modern-enabled li[class*='prompt_manager_prompt'] > span:has(.prompt_manager_prompt_controls),
+body.th-modern-enabled li[class*='prompt_manager_prompt'] > span:not([class]) {
+  grid-column: 2 !important;
+  width: 80px !important;
+  max-width: 80px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+}
+
+body.th-modern-enabled li[class*='prompt_manager_prompt'] .prompt_manager_prompt_controls {
+  width: 80px !important;
+  max-width: 80px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  font-size: calc(var(--mainFontSize, 14px) * 1.15) !important;
+}
+
+body.th-modern-enabled li[class*='prompt_manager_prompt'] .prompt_manager_prompt_controls span {
+  display: flex !important;
+  width: 18px !important;
+  height: 18px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex: 0 0 18px !important;
+}
+
+/* 词符/Token 计数列右对齐，紧贴操作按钮区域 */
+body.th-modern-enabled li[class*='prompt_manager_prompt'] > .prompt_manager_prompt_tokens,
+body.th-modern-enabled li[class*='prompt_manager_prompt'] > [class*='prompt_manager_prompt_tokens'] {
+  grid-column: 3 !important;
+  width: 45px !important;
+  max-width: 45px !important;
+  text-align: right !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 3px !important;
+  white-space: nowrap !important;
+  font-size: calc(var(--mainFontSize, 14px) * 0.9) !important;
 }
 
 body.th-modern-enabled #th-modern-sidebar-resize-handle,
@@ -3439,9 +3501,14 @@ body.th-modern-enabled #th-modern-overlay-resize-handle {
 
 body.th-modern-enabled #th-modern-sidebar-resize-handle:hover,
 body.th-modern-enabled #th-modern-overlay-resize-handle:hover,
-body.th-modern-enabled.th-modern-resizing #th-modern-sidebar-resize-handle {
+body.th-modern-enabled.th-modern-resizing #th-modern-sidebar-resize-handle,
+body.th-modern-enabled.th-modern-resizing #th-modern-overlay-resize-handle {
   background: color-mix(in srgb, var(--SmartThemeQuoteColor, #4a9eff) 65%, transparent) !important;
   box-shadow: 0 0 10px color-mix(in srgb, var(--SmartThemeQuoteColor, #4a9eff) 50%, transparent);
+}
+
+body.th-modern-enabled.th-modern-resizing #top-settings-holder > .drawer > .drawer-content {
+  transition: none !important;
 }
 
 

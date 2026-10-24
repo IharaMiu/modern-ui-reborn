@@ -2312,7 +2312,13 @@ function mountResizeHandles(store: ReturnType<typeof useModernLayoutStore>): { d
 
     const body = host_document.body;
     const sidebar = host_document.getElementById(SIDEBAR_ID);
-    const open_drawer = host_document.querySelector<HTMLElement>('#top-settings-holder > .drawer > .drawer-content.openDrawer');
+    const open_drawer =
+      host_document.querySelector<HTMLElement>(
+        '#top-settings-holder .drawer > .drawer-content.openDrawer.th-modern-drawer-active, #top-settings-holder .drawer-content.openDrawer.th-modern-drawer-active',
+      ) ??
+      host_document.querySelector<HTMLElement>(
+        '#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer',
+      );
     const is_docked_drawer = body.classList.contains(BODY_CLASS_DOCKED_DRAWER);
     if (
       kind === 'sidebar' &&

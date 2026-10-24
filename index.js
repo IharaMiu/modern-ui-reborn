@@ -8811,7 +8811,7 @@ function Cm() {
 function wm(e) {
 	let t = L(), n = t.defaultView ?? window, r = $("<div>").attr("id", Pf).appendTo("body"), i = $("<div>").attr("id", Ff).appendTo("body"), a, o = (r, i) => {
 		if (r.button !== 0) return;
-		let o = t.body, s = t.getElementById(Nf), c = t.querySelector("#top-settings-holder > .drawer > .drawer-content.openDrawer"), l = o.classList.contains(vf);
+		let o = t.body, s = t.getElementById(Nf), c = t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer.th-modern-drawer-active, #top-settings-holder .drawer-content.openDrawer.th-modern-drawer-active") ?? t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"), l = o.classList.contains(vf);
 		if (i === "sidebar" && (!s || c && !l || o.classList.contains(Cf) || o.classList.contains(wf)) || i === "overlay" && !c) return;
 		a?.(), r.preventDefault();
 		let u = r.target;
