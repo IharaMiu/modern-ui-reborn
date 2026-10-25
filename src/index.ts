@@ -1,7 +1,8 @@
-import { klona } from 'klona';
+﻿import { klona } from 'klona';
 import { createPinia, getActivePinia, setActivePinia } from 'pinia';
 import { watch } from 'vue';
 import { mountCharacterManagement } from './character-management-module';
+import { mountPresetEditor } from './preset-module';
 import { mountExtensionSettings } from './extension-settings-module';
 import { getHostDocument, getHostWindow } from './host-context';
 import { initPanel } from './panel';
@@ -25,6 +26,7 @@ import './world-info.css';
 import './mobile-world-select.css';
 import './character-management.css';
 import './extension-settings.css';
+import './preset.css';
 
 const BODY_CLASS_ENABLED = 'th-modern-enabled';
 const BODY_CLASS_TWO_COLUMN = 'th-modern-two-column';
@@ -2845,6 +2847,7 @@ function mountActiveRuntime(store: ReturnType<typeof useModernLayoutStore>): { d
     cleanups.push(mountApiPanelEnhancements().destroy);
     cleanups.push(mountWorldInfoEditor(store).destroy);
     cleanups.push(mountCharacterManagement(store).destroy);
+    cleanups.push(mountPresetEditor(store).destroy);
 
     const stop_state_watch = watch(
       () => [klona(store.settings), store.should_use_two_column] as const,

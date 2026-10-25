@@ -16,6 +16,7 @@ test('ModernLayoutSettings parses defaults cleanly', () => {
   assert.equal(parsed.leftSidebarWidth, DEFAULT_LEFT_SIDEBAR_WIDTH);
   assert.equal(parsed.inputBottomGap, DEFAULT_INPUT_BOTTOM_GAP);
   assert.equal(parsed.singleLineChatInput, false);
+  assert.equal(parsed.modernPresetEditor, true);
 });
 
 test('ModernLayoutSettings handles singleLineChatInput option correctly', () => {

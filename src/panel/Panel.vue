@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div v-if="store.should_enable" class="inline-drawer">
     <div class="inline-drawer-toggle inline-drawer-header">
       <b>
@@ -209,6 +209,12 @@
         <span>现代角色管理界面</span>
       </label>
       <small class="notes">美化角色卡片列表、头部操作栏与角色编辑抽屉</small>
+
+      <label class="checkbox_label" for="th_modern_preset_editor">
+        <input id="th_modern_preset_editor" v-model="store.settings.modernPresetEditor" type="checkbox" />
+        <span>现代化预设编辑器</span>
+      </label>
+      <small class="notes">优化预设提示词顺序列表、支持多选拖拽、分组折叠与单选互斥</small>
 
       <label class="checkbox_label" for="th_modern_ext_settings">
         <input id="th_modern_ext_settings" v-model="store.settings.modernExtensionSettings" type="checkbox" />

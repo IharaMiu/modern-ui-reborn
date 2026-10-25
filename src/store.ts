@@ -1,4 +1,4 @@
-import { klona } from 'klona';
+﻿import { klona } from 'klona';
 import { defineStore } from 'pinia';
 import { computed, ref, watchEffect } from 'vue';
 import { z } from 'zod';
@@ -59,6 +59,7 @@ export const ModernLayoutSettings = z
     modernWorldInfoEditor: z.boolean().default(true).catch(true),
     modernWorldSelect: z.boolean().default(true).catch(true),
     modernCharacterManagement: z.boolean().default(true).catch(true),
+    modernPresetEditor: z.boolean().default(true).catch(true),
     modernExtensionSettings: z.boolean().default(true).catch(true),
   })
   .default({});

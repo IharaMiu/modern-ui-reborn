@@ -1,4 +1,4 @@
-  body.th-modern-enabled.th-modern-two-column #qr--bar > #qr--popoutTrigger {
+﻿  body.th-modern-enabled.th-modern-two-column #qr--bar > #qr--popoutTrigger {
     display: none !important;
   }
 @charset "UTF-8";
@@ -3221,6 +3221,26 @@ body.th-modern-enabled #rm_api_block [id*='bind_preset'] > .fa-solid {
   text-align: center !important;
 }
 
+/* 原生预设条目弹窗关闭时瞬间隐藏，彻底杜绝 removeClass('openDrawer') 后 200ms slideUp 空白外框残留 */
+body.th-modern-enabled #completion_prompt_manager_popup:not(.openDrawer),
+body.th-modern-enabled #instruct_prompt_manager_popup:not(.openDrawer) {
+  display: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+body.th-modern-enabled #completion_prompt_manager_popup input[type='checkbox'],
+body.th-modern-enabled #instruct_prompt_manager_popup input[type='checkbox'] {
+  width: 1rem !important;
+  min-width: 1rem !important;
+  max-width: 1rem !important;
+  height: 1rem !important;
+  min-height: 1rem !important;
+  max-height: 1rem !important;
+  flex: 0 0 1rem !important;
+  box-sizing: border-box !important;
+}
+
 /* AI 响应配置中提示词列表随菜单宽度自适应拉伸撑满 */
 body.th-modern-enabled #ai-config-button .drawer-content > * {
   max-width: 100% !important;
@@ -3229,14 +3249,12 @@ body.th-modern-enabled #ai-config-button .drawer-content > * {
 
 body.th-modern-enabled #completion_prompt_manager,
 body.th-modern-enabled #instruct_prompt_manager,
-body.th-modern-enabled [id*='completion_prompt_manager'],
-body.th-modern-enabled [id*='instruct_prompt_manager'],
-body.th-modern-enabled [id*='prompt_manager'],
-body.th-modern-enabled [class*='prompt_manager'],
-body.th-modern-enabled .range-block:has([id*='prompt_manager']),
-body.th-modern-enabled .range-block:has([class*='prompt_manager']),
-body.th-modern-enabled [id*='prompt_manager_list'],
-body.th-modern-enabled [class*='prompt_manager_list'],
+body.th-modern-enabled .completion_prompt_manager,
+body.th-modern-enabled .instruct_prompt_manager,
+body.th-modern-enabled .range-block:has(#completion_prompt_manager),
+body.th-modern-enabled .range-block:has(#instruct_prompt_manager),
+body.th-modern-enabled #completion_prompt_manager_list,
+body.th-modern-enabled #instruct_prompt_manager_list,
 body.th-modern-enabled .prompt_manager_list {
   width: 100% !important;
   max-width: 100% !important;
