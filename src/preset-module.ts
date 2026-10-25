@@ -413,6 +413,23 @@ export class PresetEditor {
     this.boundHostEvents = [];
   }
 
+  private isChatCompletionApi(): boolean {
+    const mainApiSelect = this.document.getElementById('main_api') as HTMLSelectElement | null;
+    if (mainApiSelect?.value) {
+      return mainApiSelect.value === 'openai';
+    }
+    const win = this.window as any;
+    if (win.main_api) {
+      return win.main_api === 'openai';
+    }
+    const settings = this.document.getElementById('openai_settings');
+    const presets = this.document.getElementById('openai_api-presets');
+    if (settings || presets) {
+      return true;
+    }
+    return false;
+  }
+
   private sync(): void {
     if (!this.store.is_active || !this.store.settings.modernPresetEditor) {
       this.observe(undefined, undefined, undefined);
@@ -432,8 +449,8 @@ export class PresetEditor {
 
     const presetsBlock = this.document.getElementById('respective-presets-block');
     const pm = this.promptManager;
-    const isOpenAi = !!settings && settings.style.display !== 'none';
-    if (!isOpenAi) {
+    const isChatCompletion = this.isChatCompletionApi();
+    if (!isChatCompletion) {
       this.teardown();
       return;
     }

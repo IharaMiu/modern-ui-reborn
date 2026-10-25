@@ -4,6 +4,14 @@
 
 ---
 
+## [v0.2.0-alpha.2] - 2026-10-26
+
+### 🛡️ API 探测与编辑器挂载韧性优化 (API Detection & Mount Resilience)
+- **多维 Chat Completion 接口判定**：彻底重构 OpenAI / Chat Completion 接口检测逻辑（`isChatCompletionApi`），解除原先强依赖 `#openai_settings` 行内 `style.display !== 'none'` 的脆弱判断。
+- **多重回退与自愈防脱挂**：通过依次检测 `#main_api` 下拉选框值、全局 `window.main_api` 变量以及预设容器 DOM 存在性，彻底解决在部分主题样式覆盖、异步初始化或抽屉切换时预设编辑器被误判卸载（teardown）的问题。
+
+---
+
 ## [v0.2.0-alpha.1] - 2026-10-26
 
 ### ⚡ 预设编辑器性能调优与节点归位加固 (Performance & Teardown Hardening)

@@ -3668,6 +3668,14 @@ var Bc = class {
 			this.boundHostEvents = [];
 		}
 	}
+	isChatCompletionApi() {
+		let e = this.document.getElementById("main_api");
+		if (e?.value) return e.value === "openai";
+		let t = this.window;
+		if (t.main_api) return t.main_api === "openai";
+		let n = this.document.getElementById("openai_settings"), r = this.document.getElementById("openai_api-presets");
+		return !!(n || r);
+	}
 	sync() {
 		if (!this.store.is_active || !this.store.settings.modernPresetEditor) {
 			this.observe(void 0, void 0, void 0), this.teardown();
@@ -3680,7 +3688,7 @@ var Bc = class {
 		let e = this.document.getElementById("left-nav-panel") ?? void 0, t = this.document.getElementById("openai_settings") ?? void 0, n = this.document.getElementById("completion_prompt_manager") ?? void 0;
 		this.observe(e, t, n);
 		let r = this.document.getElementById("respective-presets-block"), i = this.promptManager;
-		if (!(t && t.style.display !== "none")) {
+		if (!this.isChatCompletionApi()) {
 			this.teardown();
 			return;
 		}
