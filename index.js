@@ -3533,8 +3533,8 @@ function Fc(e, t) {
 		node: e
 	};
 }
-function Ic(e) {
-	e && (e.marker.isConnected && e.marker.replaceWith(e.node), e.marker.remove());
+function Ic(e, t) {
+	e && (e.marker.isConnected ? e.marker.replaceWith(e.node) : !e.node.isConnected && t && t(e.node), e.marker.remove());
 }
 function Lc(e, t) {
 	return e?.name?.trim() || t;
@@ -3585,6 +3585,7 @@ var Bc = class {
 	isSwitchingPreset = !1;
 	presetSwitchTimer = 0;
 	observer;
+	observedPanel;
 	observedSettings;
 	observedContainer;
 	tab;
@@ -3630,7 +3631,7 @@ var Bc = class {
 		});
 	};
 	destroy() {
-		this.scheduledSync &&= (this.window.cancelAnimationFrame(this.scheduledSync), 0), this.unbindHostEventListeners(), this.observer.disconnect(), this.observedSettings = void 0, this.observedContainer = void 0, this.teardown();
+		this.scheduledSync &&= (this.window.cancelAnimationFrame(this.scheduledSync), 0), this.unbindHostEventListeners(), this.observer.disconnect(), this.observedPanel = void 0, this.observedSettings = void 0, this.observedContainer = void 0, this.teardown();
 	}
 	get promptManager() {
 		return this.host?.getPromptManager() ?? null;
@@ -3669,17 +3670,23 @@ var Bc = class {
 	}
 	sync() {
 		if (!this.store.is_active || !this.store.settings.modernPresetEditor) {
-			this.observe(void 0, void 0), this.teardown();
+			this.observe(void 0, void 0, void 0), this.teardown();
 			return;
 		}
 		if (!this.host) {
 			this.ensureHost();
 			return;
 		}
-		let e = this.document.getElementById("openai_settings") ?? void 0, t = this.document.getElementById("completion_prompt_manager") ?? void 0;
-		this.observe(e, t);
-		let n = this.document.getElementById("left-nav-panel"), r = this.document.getElementById("respective-presets-block"), i = this.promptManager, a = !!e && e.style.display !== "none";
-		!n || !r || !e || !t || !i || !a ? this.teardown() : (this.panel = n, n.classList.add(lc), this.ensurePanelPin(n), this.ensureToolbar(r), this.ensurePromptShell(t), this.applyTab(), this.renderList(), this.ensureDirtyPolling());
+		let e = this.document.getElementById("left-nav-panel") ?? void 0, t = this.document.getElementById("openai_settings") ?? void 0, n = this.document.getElementById("completion_prompt_manager") ?? void 0;
+		this.observe(e, t, n);
+		let r = this.document.getElementById("respective-presets-block"), i = this.promptManager;
+		if (!(t && t.style.display !== "none")) {
+			this.teardown();
+			return;
+		}
+		if (!e || !r || !t || !n || !i) return;
+		let a = e.classList.contains("openDrawer");
+		this.panel = e, e.classList.add(lc), this.ensurePanelPin(e), this.ensureToolbar(r), this.ensurePromptShell(n), this.applyTab(), a ? (this.renderList(), this.ensureDirtyPolling()) : this.stopDirtyPolling();
 	}
 	ensureHost() {
 		this.hostLoading || (this.hostLoading = !0, (this.options.loadHost ?? zc)().then((e) => {
@@ -3690,18 +3697,27 @@ var Bc = class {
 			this.hostLoading = !1;
 		}));
 	}
-	observe(e, t) {
-		(e !== this.observedSettings || t !== this.observedContainer) && (this.observer.disconnect(), this.observedSettings = e, this.observedContainer = t, e && this.observer.observe(e, {
+	observe(e, t, n) {
+		(e !== this.observedPanel || t !== this.observedSettings || n !== this.observedContainer) && (this.observer.disconnect(), this.observedPanel = e, this.observedSettings = t, this.observedContainer = n, e && this.observer.observe(e, {
+			attributes: !0,
+			attributeFilter: ["class"]
+		}), t && this.observer.observe(t, {
 			attributes: !0,
 			attributeFilter: ["style"]
-		}), t && this.observer.observe(t, {
+		}), n && this.observer.observe(n, {
 			childList: !0,
 			subtree: !0,
 			characterData: !0
 		}));
 	}
 	teardown() {
-		this.flushEditorApply(), this.stopDrag?.(), this.stopDrag = void 0, this.window.clearTimeout(this.dirtyTimer), this.window.clearInterval(this.dirtyInterval), this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = 0, this.isSwitchingPreset = !1, this.dirtyTimer = 0, this.dirtyInterval = 0, this.resizeObserver?.disconnect(), this.resizeObserver = void 0, this.cancelLongPress(), Ic(this.editAreaMove), this.editAreaMove = void 0, Ic(this.inspectMove), this.inspectMove = void 0, this.previewSource = void 0, Ic(this.presetsMove), this.presetsMove = void 0, Ic(this.pinMove), this.pinMove = void 0, this.toolbar?.remove(), this.toolbar = void 0, this.tabButtons.clear(), this.shell?.remove(), this.shell = void 0, this.list = void 0, this.editingId = null, this.editingPrompt = null, this.promptSection?.classList.remove(dc), this.promptSection = void 0, this.panel?.classList.remove(lc), this.panel?.removeAttribute(uc), this.panel = void 0;
+		this.flushEditorApply(), this.stopDrag?.(), this.stopDrag = void 0, this.stopDirtyPolling(), this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = 0, this.isSwitchingPreset = !1, this.dirtyTimer = 0, this.dirtyInterval = 0, this.resizeObserver?.disconnect(), this.resizeObserver = void 0, this.cancelLongPress(), Ic(this.editAreaMove), this.editAreaMove = void 0, Ic(this.inspectMove), this.inspectMove = void 0, this.previewSource = void 0, Ic(this.presetsMove, (e) => {
+			let t = this.document.getElementById("ai_response_configuration");
+			t && t.prepend(e);
+		}), this.presetsMove = void 0, Ic(this.pinMove, (e) => {
+			let t = this.document.getElementById("lm_button_panel_pin_div_parent") ?? this.document.getElementById("left-nav-panel");
+			t && t.prepend(e);
+		}), this.pinMove = void 0, this.toolbar?.remove(), this.toolbar = void 0, this.tabButtons.clear(), this.shell?.remove(), this.shell = void 0, this.list = void 0, this.editingId = null, this.editingPrompt = null, this.promptSection?.classList.remove(dc), this.promptSection = void 0, this.panel?.classList.remove(lc), this.panel?.removeAttribute(uc), this.panel = void 0;
 	}
 	ensurePanelPin(e) {
 		let t = this.document.getElementById("lm_button_panel_pin_div"), n = e.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
@@ -3715,7 +3731,10 @@ var Bc = class {
 	}
 	ensureToolbar(e) {
 		if (this.toolbar?.isConnected && e.parentElement === this.toolbar) return;
-		Ic(this.presetsMove), this.toolbar?.remove();
+		Ic(this.presetsMove, (e) => {
+			let t = this.document.getElementById("ai_response_configuration");
+			t && t.prepend(e);
+		}), this.toolbar?.remove();
 		let t = R(this.document, "div", "th-modern-preset-toolbar");
 		e.before(t), this.presetsMove = Fc(e, t);
 		let n = R(this.document, "div", "th-modern-preset-tabs"), r = R(this.document, "div", "th-modern-preset-tablist");
@@ -3780,6 +3799,9 @@ var Bc = class {
 		if (this.customCheckDirty) return this.customCheckDirty();
 		let e = this.takeSnapshot();
 		return !e || !this.lastCleanSnapshot ? null : e !== this.lastCleanSnapshot;
+	}
+	stopDirtyPolling() {
+		this.dirtyInterval &&= (this.window.clearInterval(this.dirtyInterval), 0), this.dirtyTimer &&= (this.window.clearTimeout(this.dirtyTimer), 0);
 	}
 	ensureDirtyPolling() {
 		this.dirtyInterval || (this.dirtyInterval = this.window.setInterval(() => {
@@ -4563,9 +4585,14 @@ function Vc(e, t = {}) {
 	};
 	r.addEventListener("input", i, !0), r.addEventListener("change", i, !0);
 	let a = Qn(() => [e.is_active, e.settings.modernPresetEditor], () => n.scheduleSync(), { immediate: !0 });
-	return { destroy() {
-		a(), r.removeEventListener("input", i, !0), r.removeEventListener("change", i, !0), n.destroy();
-	} };
+	return {
+		scheduleSync() {
+			n.scheduleSync();
+		},
+		destroy() {
+			a(), r.removeEventListener("input", i, !0), r.removeEventListener("change", i, !0), n.destroy();
+		}
+	};
 }
 // src/extension-settings-module.ts
 var Hc = "th-modern-extension-settings", Uc = "th-modern-extension-panel", Wc = "th-modern-extension-layout", Gc = "th-modern-extension-nav", Kc = "th-modern-extension-nav-list", qc = "th-modern-extension-nav-count", Jc = "th-modern-extension-nav-item", Yc = "is-active", Xc = "th-modern-extension-column", Zc = "is-active", Qc = "th-modern-extension-host-hidden", $c = "th-modern-extension-host-active", el = "th-modern-extension-drawer", tl = "th-modern-extension-drawer-active", nl = "th-modern-extension-mobile-accordion", rl = 440, il = "TavernHelper.modernLayout.selectedExtensionSettings";
@@ -9693,52 +9720,52 @@ function fh(e) {
 	let n = t.closest(".drawer").find(".drawer-icon").first();
 	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), ih();
 }
-function ph() {
-	let e = I(), t = e.defaultView ?? window, n = /* @__PURE__ */ new Map(), r = 0, i, a = 0, o, s = (t, n) => {
-		n?.classList.contains("openDrawer") ? o = n : o?.isConnected && o.classList.contains("openDrawer") || (o = t[t.length - 1]);
-		let r = t.length > 1;
-		e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(Up, r && e === o));
-	}, c = () => {
-		a !== 0 && (t.clearTimeout(a), a = 0), i = void 0, e.body.classList.remove(Ap);
-	}, l = (n) => {
-		i = n, e.body.classList.add(Ap), a !== 0 && t.clearTimeout(a), a = t.setTimeout(() => {
-			a = 0, i = void 0, e.body.classList.remove(Ap), ih();
+function ph(e) {
+	let t = I(), n = t.defaultView ?? window, r = /* @__PURE__ */ new Map(), i = 0, a, o = 0, s, c = (e, n) => {
+		n?.classList.contains("openDrawer") ? s = n : s?.isConnected && s.classList.contains("openDrawer") || (s = e[e.length - 1]);
+		let r = e.length > 1;
+		t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(Up, r && e === s));
+	}, l = () => {
+		o !== 0 && (n.clearTimeout(o), o = 0), a = void 0, t.body.classList.remove(Ap);
+	}, u = (e) => {
+		a = e, t.body.classList.add(Ap), o !== 0 && n.clearTimeout(o), o = n.setTimeout(() => {
+			o = 0, a = void 0, t.body.classList.remove(Ap), ih();
 		}, dm);
-	}, u = () => {
-		r === 0 && (r = t.requestAnimationFrame(() => {
-			r = 0, d();
-		}));
 	}, d = () => {
-		let t = nh(), n = Array.from(e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
-		if (s(n), sh(n), ih(n), i && (!i.isConnected || i.classList.contains("openDrawer")) && c(), !t) {
-			if (e.body.classList.contains(Op) && e.body.classList.remove(Op), Cm && n[0]) {
+		i === 0 && (i = n.requestAnimationFrame(() => {
+			i = 0, f();
+		}));
+	}, f = () => {
+		let e = nh(), n = Array.from(t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
+		if (c(n), sh(n), ih(n), a && (!a.isConnected || a.classList.contains("openDrawer")) && l(), !e) {
+			if (t.body.classList.contains(Op) && t.body.classList.remove(Op), Cm && n[0]) {
 				uh(n[0]);
 				return;
 			}
 			rh();
 			return;
 		}
-		if (!t.isConnected || !t.classList.contains("openDrawer")) {
+		if (!e.isConnected || !e.classList.contains("openDrawer")) {
 			ch(), Cm && n[0] ? uh(n[0]) : rh();
 			return;
 		}
-		let r = n.find((e) => e !== t);
-		r && (ch(), fh(t), Cm ? uh(r) : rh());
-	}, f = () => {
+		let r = n.find((t) => t !== e);
+		r && (ch(), fh(e), Cm ? uh(r) : rh());
+	}, p = () => {
 		$("#top-settings-holder .drawer-toggle").each((e, t) => {
-			let r = $(t), i = th(r);
+			let n = $(t), i = th(n);
 			if (i) {
-				let e = t, a = n.get(e);
-				a ? a.written = i : n.set(e, {
+				let e = t, a = r.get(e);
+				a ? a.written = i : r.set(e, {
 					title: e.getAttribute("title"),
 					ariaLabel: e.getAttribute("aria-label"),
 					written: i
-				}), r.attr({
+				}), n.attr({
 					title: i,
 					"aria-label": i
 				});
 			}
-			r.children(`.${Ip}`).length > 0 || i && $("<span>").addClass(Ip).text(i).appendTo(r);
+			n.children(`.${Ip}`).length > 0 || i && $("<span>").addClass(Ip).text(i).appendTo(n);
 		});
 		let e = ".notes-link, .help_button, .help-button, a:has(.note-link-span), a[href*=\"docs.sillytavern.app\"], .note-link-span, [title*=\"帮助\"], [title*=\"Help\"]", t = (t) => {
 			let n = t.find(e).not(`.${Lp} *`);
@@ -9772,61 +9799,61 @@ function ph() {
 				type: "button",
 				title: "关闭面板"
 			}).addClass(`${Bp} fa-solid fa-xmark`).appendTo(d), i.prepend(u);
-		}), rh(), d();
-	}, p = (n) => {
-		let r = n.target instanceof t.Element ? n.target : null, i = r?.closest("#top-settings-holder > .drawer > .drawer-toggle, #top-settings-holder .drawer-toggle"), a = r?.closest(".drawer-opener");
+		}), rh(), f();
+	}, m = (e) => {
+		let r = e.target instanceof n.Element ? e.target : null, i = r?.closest("#top-settings-holder > .drawer > .drawer-toggle, #top-settings-holder .drawer-toggle"), a = r?.closest(".drawer-opener");
 		if (i || a) {
-			let t = i?.closest(".drawer") ?? i?.parentElement ?? (a?.dataset.target ? e.getElementById(a.dataset.target) : null), n = t?.querySelector(":scope > .drawer-content") ?? t?.querySelector(".drawer-content"), r = !!n?.classList.contains("openDrawer");
-			if (e.body.classList.contains(vp)) {
-				let t = Array.from(e.querySelectorAll("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"));
-				n && !r && t.length > 0 && l(n), t.forEach((e) => {
+			let e = i?.closest(".drawer") ?? i?.parentElement ?? (a?.dataset.target ? t.getElementById(a.dataset.target) : null), n = e?.querySelector(":scope > .drawer-content") ?? e?.querySelector(".drawer-content"), r = !!n?.classList.contains("openDrawer");
+			if (t.body.classList.contains(vp)) {
+				let e = Array.from(t.querySelectorAll("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"));
+				n && !r && e.length > 0 && u(n), e.forEach((e) => {
 					e !== n && oh(e);
 				});
 			}
 		}
 		let o = r?.closest(`.${Vp}, .${Bp}`);
 		if (!o) {
-			i && u();
+			i && d();
 			return;
 		}
 		let s = o.closest("#top-settings-holder > .drawer > .drawer-content");
-		s && (n.preventDefault(), n.stopPropagation(), o.classList.contains(Vp) ? dh(s, nh() !== s) : (fh(s), u()));
-	}, m = e.getElementById("top-settings-holder"), h = m instanceof t.HTMLElement ? new t.MutationObserver((n) => {
-		let r = n.find((e) => e.target instanceof t.HTMLElement && !(e.oldValue?.split(/\s+/).includes("openDrawer") ?? !1) && e.target.classList.contains("openDrawer"))?.target;
-		if (r instanceof t.HTMLElement) {
-			let t = Array.from(e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
-			s(t, r), f();
+		s && (e.preventDefault(), e.stopPropagation(), o.classList.contains(Vp) ? dh(s, nh() !== s) : (fh(s), d()));
+	}, h = t.getElementById("top-settings-holder"), g = h instanceof n.HTMLElement ? new n.MutationObserver((r) => {
+		let i = r.find((e) => e.target instanceof n.HTMLElement && !(e.oldValue?.split(/\s+/).includes("openDrawer") ?? !1) && e.target.classList.contains("openDrawer"))?.target;
+		if (i instanceof n.HTMLElement) {
+			let n = Array.from(t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
+			c(n, i), p(), e?.(i.id);
 		}
-		u();
-	}) : void 0, g = () => {
-		h?.disconnect(), m?.querySelectorAll(":scope > .drawer > .drawer-content").forEach((e) => h?.observe(e, {
+		d();
+	}) : void 0, v = () => {
+		g?.disconnect(), h?.querySelectorAll(":scope > .drawer > .drawer-content").forEach((e) => g?.observe(e, {
 			attributes: !0,
 			attributeFilter: ["class"],
 			attributeOldValue: !0
 		}));
-	}, v = () => {
-		f(), g();
+	}, y = () => {
+		p(), v();
 	};
-	v();
-	let y = m instanceof t.HTMLElement ? new t.MutationObserver((e) => {
-		e.some((e) => e.type === "childList" && (e.target === m || e.target instanceof t.Element && e.target.matches("#top-settings-holder > .drawer"))) && v();
+	y();
+	let b = h instanceof n.HTMLElement ? new n.MutationObserver((e) => {
+		e.some((e) => e.type === "childList" && (e.target === h || e.target instanceof n.Element && e.target.matches("#top-settings-holder > .drawer"))) && y();
 	}) : void 0;
-	y?.observe(m, {
+	b?.observe(h, {
 		childList: !0,
 		subtree: !0
 	});
-	let b = new t.MutationObserver(() => {
-		u();
+	let x = new n.MutationObserver(() => {
+		d();
 	});
-	return b.observe(e.body, {
+	return x.observe(t.body, {
 		attributes: !0,
 		attributeFilter: ["class"]
-	}), e.addEventListener("click", p, !0), { destroy: () => {
-		r !== 0 && t.cancelAnimationFrame(r), c(), y?.disconnect(), h?.disconnect(), b.disconnect(), e.removeEventListener("click", p, !0), lh(), e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
+	}), t.addEventListener("click", m, !0), { destroy: () => {
+		i !== 0 && n.cancelAnimationFrame(i), l(), b?.disconnect(), g?.disconnect(), x.disconnect(), t.removeEventListener("click", m, !0), lh(), t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
 			oh(e), e.classList.remove(Up);
-		}), o = void 0, $(`.${Ip}`).remove(), $(`.${Lp}`).remove(), n.forEach((e, t) => {
+		}), s = void 0, $(`.${Ip}`).remove(), $(`.${Lp}`).remove(), r.forEach((e, t) => {
 			t.getAttribute("title") === e.written && (e.title === null ? t.removeAttribute("title") : t.setAttribute("title", e.title)), t.getAttribute("aria-label") === e.written && (e.ariaLabel === null ? t.removeAttribute("aria-label") : t.setAttribute("aria-label", e.ariaLabel));
-		}), n.clear();
+		}), r.clear();
 	} };
 }
 async function mh(e) {
@@ -10289,27 +10316,31 @@ function Ph(t) {
 	let n = [Oh], r;
 	try {
 		let i = Zm(() => r?.refresh());
-		n.push(i.destroy), r = eh(i.$list), n.push(r.destroy), n.push(ph().destroy), n.push(ll(t).destroy), n.push(xh().destroy), n.push(hh(t).destroy), n.push(vh().destroy), n.push(yh(t).destroy), n.push(bh(t).destroy), n.push(Sh(t).destroy), n.push(wh().destroy), n.push(pp(t).destroy), n.push(Gs(t).destroy), n.push(Vc(t).destroy);
-		let a = Qn(() => [e(t.settings), t.should_use_two_column], ([e, t]) => {
+		n.push(i.destroy), r = eh(i.$list), n.push(r.destroy);
+		let a = Vc(t);
+		n.push(a.destroy), n.push(ph((e) => {
+			e === "left-nav-panel" && a.scheduleSync();
+		}).destroy), n.push(ll(t).destroy), n.push(xh().destroy), n.push(hh(t).destroy), n.push(vh().destroy), n.push(yh(t).destroy), n.push(bh(t).destroy), n.push(Sh(t).destroy), n.push(wh().destroy), n.push(pp(t).destroy), n.push(Gs(t).destroy);
+		let o = Qn(() => [e(t.settings), t.should_use_two_column], ([e, t]) => {
 			Dh(e, !0, t);
 		}, {
 			immediate: !0,
 			deep: !0,
 			flush: "sync"
 		});
-		n.push(a);
-		let o = _.debounce(() => r?.refresh(), 500);
-		n.push(o.cancel);
-		let s = [
-			Nh(Mh.APP_READY, o),
-			Nh(Mh.CHAT_CHANGED, o),
-			Nh(Mh.CHAT_CREATED, o),
-			Nh(Mh.CHAT_DELETED, o),
-			Nh(Mh.MESSAGE_SENT, o),
-			Nh(Mh.MESSAGE_RECEIVED, o),
-			Nh(Mh.CHARACTER_PAGE_LOADED, o)
+		n.push(o);
+		let s = _.debounce(() => r?.refresh(), 500);
+		n.push(s.cancel);
+		let c = [
+			Nh(Mh.APP_READY, s),
+			Nh(Mh.CHAT_CHANGED, s),
+			Nh(Mh.CHAT_CREATED, s),
+			Nh(Mh.CHAT_DELETED, s),
+			Nh(Mh.MESSAGE_SENT, s),
+			Nh(Mh.MESSAGE_RECEIVED, s),
+			Nh(Mh.CHARACTER_PAGE_LOADED, s)
 		];
-		return n.push(() => s.forEach((e) => e.stop())), o(), { destroy: _.once(() => Ah(n)) };
+		return n.push(() => c.forEach((e) => e.stop())), s(), { destroy: _.once(() => Ah(n)) };
 	} catch (e) {
 		throw Ah(n), e;
 	}

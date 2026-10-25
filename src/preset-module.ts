@@ -200,10 +200,12 @@ function moveNode(node: HTMLElement, target: HTMLElement): MovedNode {
   return { marker, node };
 }
 
-function restoreMovedNode(move: MovedNode | undefined): void {
+function restoreMovedNode(move: MovedNode | undefined, fallback?: (node: HTMLElement) => void): void {
   if (!move) return;
   if (move.marker.isConnected) {
     move.marker.replaceWith(move.node);
+  } else if (!move.node.isConnected && fallback) {
+    fallback(move.node);
   }
   move.marker.remove();
 }
@@ -264,6 +266,7 @@ export class PresetEditor {
   private isSwitchingPreset = false;
   private presetSwitchTimer = 0;
   private readonly observer: MutationObserver;
+  private observedPanel?: HTMLElement;
   private observedSettings?: HTMLElement;
   private observedContainer?: HTMLElement;
 
@@ -330,6 +333,7 @@ export class PresetEditor {
     }
     this.unbindHostEventListeners();
     this.observer.disconnect();
+    this.observedPanel = undefined;
     this.observedSettings = undefined;
     this.observedContainer = undefined;
     this.teardown();
@@ -411,7 +415,7 @@ export class PresetEditor {
 
   private sync(): void {
     if (!this.store.is_active || !this.store.settings.modernPresetEditor) {
-      this.observe(undefined, undefined);
+      this.observe(undefined, undefined, undefined);
       this.teardown();
       return;
     }
@@ -421,18 +425,24 @@ export class PresetEditor {
       return;
     }
 
+    const panel = this.document.getElementById('left-nav-panel') ?? undefined;
     const settings = this.document.getElementById('openai_settings') ?? undefined;
     const container = this.document.getElementById('completion_prompt_manager') ?? undefined;
-    this.observe(settings, container);
+    this.observe(panel, settings, container);
 
-    const panel = this.document.getElementById('left-nav-panel');
     const presetsBlock = this.document.getElementById('respective-presets-block');
     const pm = this.promptManager;
     const isOpenAi = !!settings && settings.style.display !== 'none';
-    if (!panel || !presetsBlock || !settings || !container || !pm || !isOpenAi) {
+    if (!isOpenAi) {
       this.teardown();
       return;
     }
+
+    if (!panel || !presetsBlock || !settings || !container || !pm) {
+      return;
+    }
+
+    const isPanelOpen = panel.classList.contains('openDrawer');
 
     this.panel = panel;
     panel.classList.add(PANEL_CLASS);
@@ -440,8 +450,13 @@ export class PresetEditor {
     this.ensureToolbar(presetsBlock);
     this.ensurePromptShell(container);
     this.applyTab();
-    this.renderList();
-    this.ensureDirtyPolling();
+
+    if (isPanelOpen) {
+      this.renderList();
+      this.ensureDirtyPolling();
+    } else {
+      this.stopDirtyPolling();
+    }
   }
 
   private ensureHost(): void {
@@ -461,11 +476,25 @@ export class PresetEditor {
       });
   }
 
-  private observe(settings: HTMLElement | undefined, container: HTMLElement | undefined): void {
-    if (settings === this.observedSettings && container === this.observedContainer) return;
+  private observe(
+    panel: HTMLElement | undefined,
+    settings: HTMLElement | undefined,
+    container: HTMLElement | undefined,
+  ): void {
+    if (
+      panel === this.observedPanel &&
+      settings === this.observedSettings &&
+      container === this.observedContainer
+    ) {
+      return;
+    }
     this.observer.disconnect();
+    this.observedPanel = panel;
     this.observedSettings = settings;
     this.observedContainer = container;
+    if (panel) {
+      this.observer.observe(panel, { attributes: true, attributeFilter: ['class'] });
+    }
     if (settings) {
       this.observer.observe(settings, { attributes: true, attributeFilter: ['style'] });
     }
@@ -479,8 +508,7 @@ export class PresetEditor {
     this.flushEditorApply();
     this.stopDrag?.();
     this.stopDrag = undefined;
-    this.window.clearTimeout(this.dirtyTimer);
-    this.window.clearInterval(this.dirtyInterval);
+    this.stopDirtyPolling();
     if (this.presetSwitchTimer) this.window.clearTimeout(this.presetSwitchTimer);
     this.presetSwitchTimer = 0;
     this.isSwitchingPreset = false;
@@ -495,9 +523,15 @@ export class PresetEditor {
     restoreMovedNode(this.inspectMove);
     this.inspectMove = undefined;
     this.previewSource = undefined;
-    restoreMovedNode(this.presetsMove);
+    restoreMovedNode(this.presetsMove, node => {
+      const container = this.document.getElementById('ai_response_configuration');
+      if (container) container.prepend(node);
+    });
     this.presetsMove = undefined;
-    restoreMovedNode(this.pinMove);
+    restoreMovedNode(this.pinMove, node => {
+      const parent = this.document.getElementById('lm_button_panel_pin_div_parent') ?? this.document.getElementById('left-nav-panel');
+      if (parent) parent.prepend(node);
+    });
     this.pinMove = undefined;
     this.toolbar?.remove();
     this.toolbar = undefined;
@@ -534,7 +568,10 @@ export class PresetEditor {
   private ensureToolbar(presetsBlock: HTMLElement): void {
     if (this.toolbar?.isConnected && presetsBlock.parentElement === this.toolbar) return;
 
-    restoreMovedNode(this.presetsMove);
+    restoreMovedNode(this.presetsMove, node => {
+      const container = this.document.getElementById('ai_response_configuration');
+      if (container) container.prepend(node);
+    });
     this.toolbar?.remove();
     const toolbar = makeElement(this.document, 'div', 'th-modern-preset-toolbar');
     presetsBlock.before(toolbar);
@@ -645,6 +682,17 @@ export class PresetEditor {
     const current = this.takeSnapshot();
     if (!current || !this.lastCleanSnapshot) return null;
     return current !== this.lastCleanSnapshot;
+  }
+
+  private stopDirtyPolling(): void {
+    if (this.dirtyInterval) {
+      this.window.clearInterval(this.dirtyInterval);
+      this.dirtyInterval = 0;
+    }
+    if (this.dirtyTimer) {
+      this.window.clearTimeout(this.dirtyTimer);
+      this.dirtyTimer = 0;
+    }
   }
 
   private ensureDirtyPolling(): void {
@@ -2130,6 +2178,9 @@ export function mountPresetEditor(store: Store, options: PresetEditorOptions = {
   );
 
   return {
+    scheduleSync() {
+      editor.scheduleSync();
+    },
     destroy() {
       stopWatch();
       hostDocument.removeEventListener('input', handleInput, true);

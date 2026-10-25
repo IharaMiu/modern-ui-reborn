@@ -4,6 +4,17 @@
 
 ---
 
+## [v0.2.0-alpha.1] - 2026-10-26
+
+### ⚡ 预设编辑器性能调优与节点归位加固 (Performance & Teardown Hardening)
+- **惰性渲染与按需脏轮询 (Lazy Rendering & On-demand Polling)**：
+  - 监听 `left-nav-panel`（AI响应配置）抽屉开闭状态，抽屉未展开时自动挂起脏状态轮询与列表渲染，避免后台持续快照比对带来的性能开销。
+  - 联动酒馆抽屉交互事件，在用户展开抽屉时自动唤醒即时渲染与恢复轮询，保障操作流畅无感。
+- **DOM 节点回退归位保护 (Defensive Teardown Fallback)**：
+  - 增强 `restoreMovedNode` 还原机制，若标记锚点因宿主重绘丢失，自动启用安全回退逻辑将预设选择块（`#respective-presets-block`）与图钉按钮归位至宿主容器，彻底杜绝原生节点失踪。
+
+---
+
 ## [v0.2.0-alpha] - 2026-10-26
 
 ### 🎨 现代化预设编辑器全新上线 (Modern Preset Editor)

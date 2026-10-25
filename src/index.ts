@@ -1143,7 +1143,7 @@ function closeDrawerContent(content: Element) {
   syncDrawerOpenState();
 }
 
-function mountDrawerEnhancements(): { destroy: () => void } {
+function mountDrawerEnhancements(onDrawerOpen?: (drawerId: string) => void): { destroy: () => void } {
   const host_document = getHostDocument();
   const host_window = host_document.defaultView ?? window;
   const original_toggle_attributes = new Map<HTMLElement, { title: string | null; ariaLabel: string | null; written: string }>();
@@ -1419,6 +1419,7 @@ function mountDrawerEnhancements(): { destroy: () => void } {
             );
             syncActiveDrawer(open_contents, newly_opened);
             enhanceDrawers();
+            onDrawerOpen?.(newly_opened.id);
           }
           scheduleReconcileDrawerFullscreen();
         })
@@ -2836,7 +2837,13 @@ function mountActiveRuntime(store: ReturnType<typeof useModernLayoutStore>): { d
     cleanups.push(sidebar.destroy);
     recent_chats = mountRecentChats(sidebar.$list);
     cleanups.push(recent_chats.destroy);
-    cleanups.push(mountDrawerEnhancements().destroy);
+    const preset_editor = mountPresetEditor(store);
+    cleanups.push(preset_editor.destroy);
+    cleanups.push(mountDrawerEnhancements(drawerId => {
+      if (drawerId === 'left-nav-panel') {
+        preset_editor.scheduleSync();
+      }
+    }).destroy);
     cleanups.push(mountExtensionSettings(store).destroy);
     cleanups.push(mountSidebarNavSizer().destroy);
     cleanups.push(mountFailsafeRestore(store).destroy);
@@ -2847,7 +2854,6 @@ function mountActiveRuntime(store: ReturnType<typeof useModernLayoutStore>): { d
     cleanups.push(mountApiPanelEnhancements().destroy);
     cleanups.push(mountWorldInfoEditor(store).destroy);
     cleanups.push(mountCharacterManagement(store).destroy);
-    cleanups.push(mountPresetEditor(store).destroy);
 
     const stop_state_watch = watch(
       () => [klona(store.settings), store.should_use_two_column] as const,
