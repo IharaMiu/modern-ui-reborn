@@ -6263,6 +6263,7 @@ var Ul = "现代化界面", Wl = "modern_ui", Gl = 340, Kl = Hl({
 	overlayPanelWidth: Bl().min(720).default(960).catch(960),
 	mainChatMaxWidth: Bl().min(0).default(960).catch(960),
 	floatingChatInput: Vl().default(!0).catch(!0),
+	singleLineChatInput: Vl().default(!1).catch(!1),
 	inputBottomGap: Bl().min(0).max(120).default(15).catch(15),
 	inputSideGap: Bl().min(0).max(80).default(16).catch(16),
 	quickReplyCollapsed: Vl().default(!1).catch(!1),
@@ -6340,40 +6341,43 @@ var Ql = Ds(Ul, () => {
 }, iu = ["disabled"], au = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, ou = { class: "flex-container alignitemscenter" }, su = ["value"], cu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, lu = { class: "flex-container alignitemscenter" }, uu = ["value"], du = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, fu = { class: "flex-container alignitemscenter" }, pu = ["value"], mu = {
 	class: "checkbox_label",
 	for: "th_modern_floating_input"
-}, hu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, gu = { class: "flex-container alignitemscenter" }, _u = { class: "notes m-r-0_5" }, vu = { class: "flex-container alignitemscenter m-t-0_5" }, yu = { class: "range-block-range flex1" }, bu = [
+}, hu = {
+	class: "checkbox_label m-t-0_5",
+	for: "th_modern_single_line_input"
+}, gu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, _u = { class: "flex-container alignitemscenter" }, vu = { class: "notes m-r-0_5" }, yu = { class: "flex-container alignitemscenter m-t-0_5" }, bu = { class: "range-block-range flex1" }, xu = [
 	"min",
 	"max",
 	"disabled"
-], xu = { class: "range-block-counter m-l-0_5" }, Su = [
+], Su = { class: "range-block-counter m-l-0_5" }, Cu = [
 	"value",
 	"min",
 	"max",
 	"disabled"
-], Cu = { class: "notes" }, wu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, Tu = { class: "flex-container alignitemscenter" }, Eu = { class: "notes m-r-0_5" }, Du = { class: "flex-container alignitemscenter m-t-0_5" }, Ou = { class: "range-block-range flex1" }, ku = [
+], wu = { class: "notes" }, Tu = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, Eu = { class: "flex-container alignitemscenter" }, Du = { class: "notes m-r-0_5" }, Ou = { class: "flex-container alignitemscenter m-t-0_5" }, ku = { class: "range-block-range flex1" }, Au = [
 	"min",
 	"max",
 	"disabled"
-], Au = { class: "range-block-counter m-l-0_5" }, ju = [
+], ju = { class: "range-block-counter m-l-0_5" }, Mu = [
 	"value",
 	"min",
 	"max",
 	"disabled"
-], Mu = { class: "notes" }, Nu = {
+], Nu = { class: "notes" }, Pu = {
 	class: "checkbox_label",
 	for: "th_modern_wi_editor"
-}, Pu = ["disabled"], Fu = {
+}, Fu = ["disabled"], Iu = {
 	class: "checkbox_label",
 	for: "th_modern_cm"
-}, Iu = {
-	class: "checkbox_label",
-	for: "th_modern_ext_settings"
 }, Lu = {
 	class: "checkbox_label",
-	for: "th_modern_reduce_motion"
+	for: "th_modern_ext_settings"
 }, Ru = {
 	class: "checkbox_label",
+	for: "th_modern_reduce_motion"
+}, zu = {
+	class: "checkbox_label",
 	for: "th_modern_reduce_effects"
-}, zu = /*#__PURE__*/ ((e, t) => {
+}, Bu = /*#__PURE__*/ ((e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
@@ -6398,21 +6402,21 @@ var Ql = Ds(Ul, () => {
 			class: "notes-link",
 			title: "恢复默认设置",
 			onClick: Vo(r, ["stop"])
-		}, [...i[22] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1)]])]), i[23] ||= I("div", { class: "inline-drawer-icon fa-solid fa-circle-chevron-down down" }, null, -1)]), I("div", tu, [
+		}, [...i[23] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1)]])]), i[24] ||= I("div", { class: "inline-drawer-icon fa-solid fa-circle-chevron-down down" }, null, -1)]), I("div", tu, [
 			I("label", nu, [Un(I("input", {
 				id: "th_modern_enabled",
 				"onUpdate:modelValue": i[0] ||= (e) => N(t).settings.enabled = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.enabled]]), i[24] ||= I("span", null, "启用现代化界面", -1)]),
-			i[43] ||= I("small", { class: "notes" }, "全面应用毛玻璃、常驻侧边栏与现代布局排版", -1),
-			i[44] ||= I("hr", null, null, -1),
-			i[45] ||= I("h4", null, "分栏与排版", -1),
+			}, null, 512), [[Fo, N(t).settings.enabled]]), i[25] ||= I("span", null, "启用现代化界面", -1)]),
+			i[45] ||= I("small", { class: "notes" }, "全面应用毛玻璃、常驻侧边栏与现代布局排版", -1),
+			i[46] ||= I("hr", null, null, -1),
+			i[47] ||= I("h4", null, "分栏与排版", -1),
 			I("label", ru, [Un(I("input", {
 				id: "th_modern_two_column",
 				"onUpdate:modelValue": i[1] ||= (e) => N(t).settings.desktopTwoColumn = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.desktopTwoColumn]]), i[25] ||= I("span", null, "宽屏两栏与滑出面板", -1)]),
-			i[46] ||= I("small", { class: "notes" }, "屏幕 ≥900px 时将左侧抽屉转为常驻侧边栏", -1),
+			}, null, 512), [[Fo, N(t).settings.desktopTwoColumn]]), i[26] ||= I("span", null, "宽屏两栏与滑出面板", -1)]),
+			i[48] ||= I("small", { class: "notes" }, "屏幕 ≥900px 时将左侧抽屉转为常驻侧边栏", -1),
 			I("label", {
 				class: ve(["checkbox_label", { "is-disabled": !N(t).settings.desktopTwoColumn }]),
 				for: "th_modern_docked_drawer"
@@ -6421,9 +6425,9 @@ var Ql = Ds(Ul, () => {
 				"onUpdate:modelValue": i[2] ||= (e) => N(t).settings.desktopDockedDrawer = e,
 				type: "checkbox",
 				disabled: !N(t).settings.desktopTwoColumn
-			}, null, 8, iu), [[Fo, N(t).settings.desktopDockedDrawer]]), i[26] ||= I("span", null, "固定三栏排版", -1)], 2),
-			i[47] ||= I("small", { class: "notes" }, "空间足够时固定右侧设置抽屉；窄屏自动降级为滑出面板", -1),
-			I("div", au, [i[28] ||= I("span", null, "左侧栏宽度", -1), I("div", ou, [I("input", {
+			}, null, 8, iu), [[Fo, N(t).settings.desktopDockedDrawer]]), i[27] ||= I("span", null, "固定三栏排版", -1)], 2),
+			i[49] ||= I("small", { class: "notes" }, "空间足够时固定右侧设置抽屉；窄屏自动降级为滑出面板", -1),
+			I("div", au, [i[29] ||= I("span", null, "左侧栏宽度", -1), I("div", ou, [I("input", {
 				value: N(t).settings.leftSidebarWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
@@ -6432,8 +6436,8 @@ var Ql = Ds(Ul, () => {
 				step: "4",
 				onChange: i[3] ||= (e) => n(e, "leftSidebarWidth", 320, 460),
 				onBlur: i[4] ||= (e) => n(e, "leftSidebarWidth", 320, 460)
-			}, null, 40, su), i[27] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
-			I("div", cu, [i[30] ||= I("span", null, "滑出面板偏好宽度", -1), I("div", lu, [I("input", {
+			}, null, 40, su), i[28] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
+			I("div", cu, [i[31] ||= I("span", null, "滑出面板偏好宽度", -1), I("div", lu, [I("input", {
 				value: N(t).settings.overlayPanelWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
@@ -6441,8 +6445,8 @@ var Ql = Ds(Ul, () => {
 				step: "20",
 				onChange: i[5] ||= (e) => n(e, "overlayPanelWidth", 720),
 				onBlur: i[6] ||= (e) => n(e, "overlayPanelWidth", 720)
-			}, null, 40, uu), i[29] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
-			I("div", du, [i[32] ||= I("span", null, "主聊天最小宽度", -1), I("div", fu, [I("input", {
+			}, null, 40, uu), i[30] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
+			I("div", du, [i[33] ||= I("span", null, "主聊天最小宽度", -1), I("div", fu, [I("input", {
 				value: N(t).settings.mainChatMaxWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
@@ -6450,32 +6454,38 @@ var Ql = Ds(Ul, () => {
 				step: "20",
 				onChange: i[7] ||= (e) => n(e, "mainChatMaxWidth", 0),
 				onBlur: i[8] ||= (e) => n(e, "mainChatMaxWidth", 0)
-			}, null, 40, pu), i[31] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
-			i[48] ||= I("small", { class: "notes" }, "0 表示跟随酒馆宽度比例始终铺满可用空间。", -1),
-			i[49] ||= I("hr", null, null, -1),
-			i[50] ||= I("h4", null, "输入框设置", -1),
+			}, null, 40, pu), i[32] ||= I("span", { class: "m-l-0_5" }, "px", -1)])]),
+			i[50] ||= I("small", { class: "notes" }, "0 表示跟随酒馆宽度比例始终铺满可用空间。", -1),
+			i[51] ||= I("hr", null, null, -1),
+			i[52] ||= I("h4", null, "输入框设置", -1),
 			I("label", mu, [Un(I("input", {
 				id: "th_modern_floating_input",
 				"onUpdate:modelValue": i[9] ||= (e) => N(t).settings.floatingChatInput = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.floatingChatInput]]), i[33] ||= I("span", null, "悬浮输入框", -1)]),
-			i[51] ||= I("small", { class: "notes" }, "开启时输入框以毛玻璃胶囊形态悬浮于聊天区上方；关闭时与原版 SillyTavern 一样固定置底铺满。", -1),
+			}, null, 512), [[Fo, N(t).settings.floatingChatInput]]), i[34] ||= I("span", null, "悬浮输入框", -1)]),
+			i[53] ||= I("small", { class: "notes" }, "开启时输入框以毛玻璃胶囊形态悬浮于聊天区上方；关闭时与原版 SillyTavern 一样固定置底铺满。", -1),
+			I("label", hu, [Un(I("input", {
+				id: "th_modern_single_line_input",
+				"onUpdate:modelValue": i[10] ||= (e) => N(t).settings.singleLineChatInput = e,
+				type: "checkbox"
+			}, null, 512), [[Fo, N(t).settings.singleLineChatInput]]), i[35] ||= I("span", null, "单行输入框", -1)]),
+			i[54] ||= I("small", { class: "notes" }, "开启后输入框采用紧凑单行排版（发送与操作按钮置于输入框两侧）；关闭时保持双行排版（上方输入文本、下方操作按钮）。", -1),
 			I("div", { class: ve({ "is-disabled": !N(t).settings.floatingChatInput }) }, [
-				I("div", hu, [i[34] ||= I("span", null, "底部留白边距", -1), I("div", gu, [I("span", _u, Oe(N(t).settings.inputBottomGap) + " px", 1)])]),
-				I("div", vu, [I("div", yu, [Un(I("input", {
-					"onUpdate:modelValue": i[10] ||= (e) => N(t).settings.inputBottomGap = e,
+				I("div", gu, [i[36] ||= I("span", null, "底部留白边距", -1), I("div", _u, [I("span", vu, Oe(N(t).settings.inputBottomGap) + " px", 1)])]),
+				I("div", yu, [I("div", bu, [Un(I("input", {
+					"onUpdate:modelValue": i[11] ||= (e) => N(t).settings.inputBottomGap = e,
 					type: "range",
 					class: "range_slider",
 					min: N(0),
 					max: N(120),
 					step: "1",
 					disabled: !N(t).settings.floatingChatInput
-				}, null, 8, bu), [[
+				}, null, 8, xu), [[
 					Po,
 					N(t).settings.inputBottomGap,
 					void 0,
 					{ number: !0 }
-				]])]), I("div", xu, [I("input", {
+				]])]), I("div", Su, [I("input", {
 					value: N(t).settings.inputBottomGap,
 					class: "text_pole width60px text-center",
 					type: "number",
@@ -6483,25 +6493,25 @@ var Ql = Ds(Ul, () => {
 					max: N(120),
 					step: "1",
 					disabled: !N(t).settings.floatingChatInput,
-					onChange: i[11] ||= (e) => n(e, "inputBottomGap", N(0), N(120)),
-					onBlur: i[12] ||= (e) => n(e, "inputBottomGap", N(0), N(120))
-				}, null, 40, Su)])]),
-				I("small", Cu, "调整悬浮输入框与窗口底边的间距（" + Oe(N(t).settings.inputBottomGap) + " px）。", 1),
-				I("div", wu, [i[35] ||= I("span", null, "两侧留白边距", -1), I("div", Tu, [I("span", Eu, Oe(N(t).settings.inputSideGap) + " px", 1)])]),
-				I("div", Du, [I("div", Ou, [Un(I("input", {
-					"onUpdate:modelValue": i[13] ||= (e) => N(t).settings.inputSideGap = e,
+					onChange: i[12] ||= (e) => n(e, "inputBottomGap", N(0), N(120)),
+					onBlur: i[13] ||= (e) => n(e, "inputBottomGap", N(0), N(120))
+				}, null, 40, Cu)])]),
+				I("small", wu, "调整悬浮输入框与窗口底边的间距（" + Oe(N(t).settings.inputBottomGap) + " px）。", 1),
+				I("div", Tu, [i[37] ||= I("span", null, "两侧留白边距", -1), I("div", Eu, [I("span", Du, Oe(N(t).settings.inputSideGap) + " px", 1)])]),
+				I("div", Ou, [I("div", ku, [Un(I("input", {
+					"onUpdate:modelValue": i[14] ||= (e) => N(t).settings.inputSideGap = e,
 					type: "range",
 					class: "range_slider",
 					min: N(0),
 					max: N(80),
 					step: "1",
 					disabled: !N(t).settings.floatingChatInput
-				}, null, 8, ku), [[
+				}, null, 8, Au), [[
 					Po,
 					N(t).settings.inputSideGap,
 					void 0,
 					{ number: !0 }
-				]])]), I("div", Au, [I("input", {
+				]])]), I("div", ju, [I("input", {
 					value: N(t).settings.inputSideGap,
 					class: "text_pole width60px text-center",
 					type: "number",
@@ -6509,70 +6519,70 @@ var Ql = Ds(Ul, () => {
 					max: N(80),
 					step: "1",
 					disabled: !N(t).settings.floatingChatInput,
-					onChange: i[14] ||= (e) => n(e, "inputSideGap", N(0), N(80)),
-					onBlur: i[15] ||= (e) => n(e, "inputSideGap", N(0), N(80))
-				}, null, 40, ju)])]),
-				I("small", Mu, "调整悬浮输入框左右两侧的留白边距（" + Oe(N(t).settings.inputSideGap) + " px）。", 1)
+					onChange: i[15] ||= (e) => n(e, "inputSideGap", N(0), N(80)),
+					onBlur: i[16] ||= (e) => n(e, "inputSideGap", N(0), N(80))
+				}, null, 40, Mu)])]),
+				I("small", Nu, "调整悬浮输入框左右两侧的留白边距（" + Oe(N(t).settings.inputSideGap) + " px）。", 1)
 			], 2),
-			i[52] ||= I("hr", null, null, -1),
-			i[53] ||= I("h4", null, "增强子模块", -1),
-			I("label", Nu, [Un(I("input", {
+			i[55] ||= I("hr", null, null, -1),
+			i[56] ||= I("h4", null, "增强子模块", -1),
+			I("label", Pu, [Un(I("input", {
 				id: "th_modern_wi_editor",
-				"onUpdate:modelValue": i[16] ||= (e) => N(t).settings.modernWorldInfoEditor = e,
+				"onUpdate:modelValue": i[17] ||= (e) => N(t).settings.modernWorldInfoEditor = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.modernWorldInfoEditor]]), i[36] ||= I("span", null, "现代世界书管理", -1)]),
-			i[54] ||= I("small", { class: "notes" }, "优化世界书条目卡片瀑布流与条目编辑网格", -1),
+			}, null, 512), [[Fo, N(t).settings.modernWorldInfoEditor]]), i[38] ||= I("span", null, "现代世界书管理", -1)]),
+			i[57] ||= I("small", { class: "notes" }, "优化世界书条目卡片瀑布流与条目编辑网格", -1),
 			I("label", {
 				class: ve(["checkbox_label", { "is-disabled": !N(t).settings.modernWorldInfoEditor }]),
 				for: "th_modern_wi_select"
 			}, [Un(I("input", {
 				id: "th_modern_wi_select",
-				"onUpdate:modelValue": i[17] ||= (e) => N(t).settings.modernWorldSelect = e,
+				"onUpdate:modelValue": i[18] ||= (e) => N(t).settings.modernWorldSelect = e,
 				type: "checkbox",
 				disabled: !N(t).settings.modernWorldInfoEditor
-			}, null, 8, Pu), [[Fo, N(t).settings.modernWorldSelect]]), i[37] ||= I("span", null, "现代世界书选择器", -1)], 2),
-			i[55] ||= I("small", { class: "notes" }, "多端卡片式世界书下拉选择面板与收藏置顶", -1),
-			I("label", Fu, [Un(I("input", {
-				id: "th_modern_cm",
-				"onUpdate:modelValue": i[18] ||= (e) => N(t).settings.modernCharacterManagement = e,
-				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.modernCharacterManagement]]), i[38] ||= I("span", null, "现代角色管理界面", -1)]),
-			i[56] ||= I("small", { class: "notes" }, "美化角色卡片列表、头部操作栏与角色编辑抽屉", -1),
+			}, null, 8, Fu), [[Fo, N(t).settings.modernWorldSelect]]), i[39] ||= I("span", null, "现代世界书选择器", -1)], 2),
+			i[58] ||= I("small", { class: "notes" }, "多端卡片式世界书下拉选择面板与收藏置顶", -1),
 			I("label", Iu, [Un(I("input", {
-				id: "th_modern_ext_settings",
-				"onUpdate:modelValue": i[19] ||= (e) => N(t).settings.modernExtensionSettings = e,
+				id: "th_modern_cm",
+				"onUpdate:modelValue": i[19] ||= (e) => N(t).settings.modernCharacterManagement = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.modernExtensionSettings]]), i[39] ||= I("span", null, "现代扩展设置抽屉", -1)]),
-			i[57] ||= I("small", { class: "notes" }, "将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展", -1),
-			i[58] ||= I("hr", null, null, -1),
-			i[59] ||= I("h4", null, "视觉与性能", -1),
+			}, null, 512), [[Fo, N(t).settings.modernCharacterManagement]]), i[40] ||= I("span", null, "现代角色管理界面", -1)]),
+			i[59] ||= I("small", { class: "notes" }, "美化角色卡片列表、头部操作栏与角色编辑抽屉", -1),
 			I("label", Lu, [Un(I("input", {
-				id: "th_modern_reduce_motion",
-				"onUpdate:modelValue": i[20] ||= (e) => N(t).settings.reduceMotion = e,
+				id: "th_modern_ext_settings",
+				"onUpdate:modelValue": i[20] ||= (e) => N(t).settings.modernExtensionSettings = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.reduceMotion]]), i[40] ||= I("span", null, "减弱动态效果", -1)]),
-			i[60] ||= I("small", { class: "notes" }, "最小化过渡与缩放动画，降低能耗并提升响应", -1),
+			}, null, 512), [[Fo, N(t).settings.modernExtensionSettings]]), i[41] ||= I("span", null, "现代扩展设置抽屉", -1)]),
+			i[60] ||= I("small", { class: "notes" }, "将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展", -1),
+			i[61] ||= I("hr", null, null, -1),
+			i[62] ||= I("h4", null, "视觉与性能", -1),
 			I("label", Ru, [Un(I("input", {
-				id: "th_modern_reduce_effects",
-				"onUpdate:modelValue": i[21] ||= (e) => N(t).settings.reduceAdvancedEffects = e,
+				id: "th_modern_reduce_motion",
+				"onUpdate:modelValue": i[21] ||= (e) => N(t).settings.reduceMotion = e,
 				type: "checkbox"
-			}, null, 512), [[Fo, N(t).settings.reduceAdvancedEffects]]), i[41] ||= I("span", null, "精简高级特效", -1)]),
-			i[61] ||= I("small", { class: "notes" }, "关闭深度阴影与高强度发光滤镜", -1),
-			i[62] ||= I("hr", null, null, -1),
+			}, null, 512), [[Fo, N(t).settings.reduceMotion]]), i[42] ||= I("span", null, "减弱动态效果", -1)]),
+			i[63] ||= I("small", { class: "notes" }, "最小化过渡与缩放动画，降低能耗并提升响应", -1),
+			I("label", zu, [Un(I("input", {
+				id: "th_modern_reduce_effects",
+				"onUpdate:modelValue": i[22] ||= (e) => N(t).settings.reduceAdvancedEffects = e,
+				type: "checkbox"
+			}, null, 512), [[Fo, N(t).settings.reduceAdvancedEffects]]), i[43] ||= I("span", null, "精简高级特效", -1)]),
+			i[64] ||= I("small", { class: "notes" }, "关闭深度阴影与高强度发光滤镜", -1),
+			i[65] ||= I("hr", null, null, -1),
 			I("div", { class: "flex-container justifyEnd m-t-1" }, [I("div", {
 				class: "menu_button menu_button_icon reset-button",
 				title: "重置现代化界面设置",
 				onClick: r
-			}, [...i[42] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1), I("span", null, "恢复默认设置", -1)]])])
+			}, [...i[44] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1), I("span", null, "恢复默认设置", -1)]])])
 		])])) : ma("", !0);
 	}
-}), [["__scopeId", "data-v-1c3b922e"]]), Bu = "th-modern-panel-root";
-function Vu(e) {
-	$(`.${Bu}`).remove();
+}), [["__scopeId", "data-v-1d1e82c4"]]), Vu = "th-modern-panel-root";
+function Hu(e) {
+	$(`.${Vu}`).remove();
 	let t = !1, n, r = document.getElementById("modern-ui-reborn_container"), i = !1, a = () => {
 		if (t || n) return;
 		let a = document.getElementById("extensions_settings");
-		a && (n = Go(zu).use(e), r ? (r.classList.add(Bu), $(r).empty()) : (r = $("<div>").attr("id", "modern-ui-reborn_container").addClass(Bu).appendTo(a)[0], i = !0), n.mount(r));
+		a && (n = Go(Bu).use(e), r ? (r.classList.add(Vu), $(r).empty()) : (r = $("<div>").attr("id", "modern-ui-reborn_container").addClass(Vu).appendTo(a)[0], i = !0), n.mount(r));
 	};
 	a();
 	let o;
@@ -6582,11 +6592,11 @@ function Vu(e) {
 		childList: !0,
 		subtree: !0
 	})), { destroy: () => {
-		t = !0, o?.disconnect(), n?.unmount(), i && r ? $(r).remove() : r && $(r).empty().removeClass(Bu);
+		t = !0, o?.disconnect(), n?.unmount(), i && r ? $(r).remove() : r && $(r).empty().removeClass(Vu);
 	} };
 }
 // src/mobile-world-select-module.ts
-var Hu = "(min-width: 1200px)", Uu = "(max-width: 560px)", Wu = "th-modern-mobile-world-source", Gu = "th-modern-mobile-world-source-native", Ku = "th-modern-mobile-world-select2-source", qu = "th-modern-mobile-world-control", Ju = "th-modern-mobile-world-picker", Yu = "th-modern-world-select-custom", Xu = "th_modern_world_book_favorites", Zu = 3e4, Qu = 90, $u = [
+var Uu = "(min-width: 1200px)", Wu = "(max-width: 560px)", Gu = "th-modern-mobile-world-source", Ku = "th-modern-mobile-world-source-native", qu = "th-modern-mobile-world-select2-source", Ju = "th-modern-mobile-world-control", Yu = "th-modern-mobile-world-picker", Xu = "th-modern-world-select-custom", Zu = "th_modern_world_book_favorites", Qu = 3e4, $u = 90, ed = [
 	{
 		key: "global",
 		selector: "#world_info",
@@ -6622,7 +6632,7 @@ var Hu = "(min-width: 1200px)", Uu = "(max-width: 560px)", Wu = "th-modern-mobil
 		placeholder: "未绑定人设世界书",
 		multiple: !1
 	}
-], ed = {
+], td = {
 	all: "全部",
 	enabled: "已启用",
 	favorites: "收藏"
@@ -6631,21 +6641,21 @@ function J(e, t, n) {
 	let r = e.createElement(t);
 	return n && (r.className = n), r;
 }
-function td(e, t) {
+function nd(e, t) {
 	let n = J(e, "i", t);
 	return n.setAttribute("aria-hidden", "true"), n;
 }
-function nd(e) {
+function rd(e) {
 	return e.normalize("NFKC").toLocaleLowerCase().trim();
 }
-function rd(e) {
+function id(e) {
 	return Array.isArray(e) ? Array.from(new Set(e.filter((e) => typeof e == "string").map((e) => e.trim()).filter(Boolean))) : [];
 }
-function id(e) {
+function ad(e) {
 	let t = e;
 	return t ? typeof t.closest == "function" ? t : t.nodeType === 3 ? t.parentElement ?? null : null : null;
 }
-var ad = class {
+var od = class {
 	document;
 	window;
 	options;
@@ -6675,7 +6685,7 @@ var ad = class {
 		}), this.document.addEventListener("click", this.captureRenameIntent, !0), this.favorites = this.readFavorites(), this.mountControllers(), this.applyEnabledState();
 	}
 	destroy() {
-		this.panelObserver.disconnect(), this.documentObserver.disconnect(), this.controllerRefreshFrame &&= (this.window.cancelAnimationFrame(this.controllerRefreshFrame), 0), this.document.removeEventListener("click", this.captureRenameIntent, !0), this.clearRenameIntent(), this.closePicker(), this.unmountControllers(), this.document.querySelector("#WorldInfo")?.classList.remove(Yu);
+		this.panelObserver.disconnect(), this.documentObserver.disconnect(), this.controllerRefreshFrame &&= (this.window.cancelAnimationFrame(this.controllerRefreshFrame), 0), this.document.removeEventListener("click", this.captureRenameIntent, !0), this.clearRenameIntent(), this.closePicker(), this.unmountControllers(), this.document.querySelector("#WorldInfo")?.classList.remove(Xu);
 	}
 	setEnabled(e) {
 		this.enabled === e || (this.enabled = e, this.closePicker()), this.applyEnabledState();
@@ -6684,7 +6694,7 @@ var ad = class {
 		this.setEnabled(e), this.options.onEnabledChange(e);
 	}
 	openPicker(e) {
-		this.enabled && (this.closePicker(), this.refreshFavoritesAndCleanInvalid(), this.picker = new sd(this, e, () => {
+		this.enabled && (this.closePicker(), this.refreshFavoritesAndCleanInvalid(), this.picker = new cd(this, e, () => {
 			this.picker = void 0;
 		}), this.picker.mount());
 	}
@@ -6716,7 +6726,7 @@ var ad = class {
 		return t ? this.favorites.add(e) : this.favorites.delete(e), this.writeFavorites(), t;
 	}
 	applyEnabledState() {
-		this.document.querySelector("#WorldInfo")?.classList.toggle(Yu, this.enabled);
+		this.document.querySelector("#WorldInfo")?.classList.toggle(Xu, this.enabled);
 		for (let e of this.controllers) e.setNativeMode(!this.enabled);
 	}
 	mountControllers() {
@@ -6724,9 +6734,9 @@ var ad = class {
 			let t = this.controllers[e];
 			t.source.isConnected ? t.syncSelect2Container() : (this.isPickerFor(t) && this.closePicker(), t.destroy(), this.controllers.splice(e, 1));
 		}
-		for (let e of $u) for (let t of this.document.querySelectorAll(e.selector)) {
+		for (let e of ed) for (let t of this.document.querySelectorAll(e.selector)) {
 			if (t.closest(".template_element") || this.controllers.some((e) => e.source === t)) continue;
-			let n = new od(this, t, e);
+			let n = new sd(this, t, e);
 			n.mount(), n.setNativeMode(!this.enabled), this.controllers.push(n);
 		}
 	}
@@ -6739,9 +6749,9 @@ var ad = class {
 	readFavorites() {
 		try {
 			let e = window.extension_settings?.modern_ui;
-			if (e && e[Xu]) return new Set(rd(e[Xu]));
-			let t = localStorage.getItem(Xu);
-			return new Set(rd(t ? JSON.parse(t) : []));
+			if (e && e[Zu]) return new Set(id(e[Zu]));
+			let t = localStorage.getItem(Zu);
+			return new Set(id(t ? JSON.parse(t) : []));
 		} catch (e) {
 			return console.warn("[现代化界面] 读取世界书收藏失败。", e), /* @__PURE__ */ new Set();
 		}
@@ -6749,7 +6759,7 @@ var ad = class {
 	writeFavorites() {
 		try {
 			let e = [...this.favorites];
-			localStorage.setItem(Xu, JSON.stringify(e)), window.extension_settings?.modern_ui && (window.extension_settings.modern_ui[Xu] = e, typeof window.saveSettingsDebounced == "function" && window.saveSettingsDebounced()), this.variableWriteErrorNotified = !1;
+			localStorage.setItem(Zu, JSON.stringify(e)), window.extension_settings?.modern_ui && (window.extension_settings.modern_ui[Zu] = e, typeof window.saveSettingsDebounced == "function" && window.saveSettingsDebounced()), this.variableWriteErrorNotified = !1;
 		} catch (e) {
 			console.error("[现代化界面] 写入世界书收藏失败。", e), this.variableWriteErrorNotified ||= (toastr.error("世界书收藏保存失败，请稍后重试", "现代化界面"), !0);
 		}
@@ -6773,11 +6783,11 @@ var ad = class {
 		this.pendingRename &&= (this.window.clearTimeout(this.pendingRename.timeout), void 0);
 	}
 	captureRenameIntent = (e) => {
-		if (!id(e.target)?.closest("#world_popup_name_button")) return;
+		if (!ad(e.target)?.closest("#world_popup_name_button")) return;
 		let t = this.document.querySelector("#world_editor_select")?.selectedOptions[0]?.label.trim() ?? "";
 		if (!t) return;
 		this.clearRenameIntent();
-		let n = this.window.setTimeout(() => this.clearRenameIntent(), Zu);
+		let n = this.window.setTimeout(() => this.clearRenameIntent(), Qu);
 		this.pendingRename = {
 			oldName: t,
 			timeout: n
@@ -6788,7 +6798,7 @@ var ad = class {
 			this.controllerRefreshFrame = 0, this.mountControllers();
 		});
 	};
-}, od = class {
+}, sd = class {
 	config;
 	document;
 	source;
@@ -6813,17 +6823,17 @@ var ad = class {
 	}
 	mount() {
 		if (this.wrapper) return;
-		this.source.classList.add(Wu), this.surface = this.source.closest("#WorldInfo, .character_world, .persona_world") ?? this.source.parentElement ?? void 0, this.select2Container = this.findSelect2Container(), this.select2Container?.classList.add(Ku);
-		let e = J(this.document, "div", qu);
+		this.source.classList.add(Gu), this.surface = this.source.closest("#WorldInfo, .character_world, .persona_world") ?? this.source.parentElement ?? void 0, this.select2Container = this.findSelect2Container(), this.select2Container?.classList.add(qu);
+		let e = J(this.document, "div", Ju);
 		e.dataset.source = this.source.id || this.config.key;
 		let t = J(this.document, "button", "menu_button th-modern-mobile-world-trigger");
-		t.type = "button", t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-expanded", "false"), t.append(td(this.document, this.config.multiple ? "fa-solid fa-layer-group" : "fa-solid fa-book-open"));
+		t.type = "button", t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-expanded", "false"), t.append(nd(this.document, this.config.multiple ? "fa-solid fa-layer-group" : "fa-solid fa-book-open"));
 		let n = J(this.document, "span", "th-modern-mobile-world-trigger-text"), r = J(this.document, "span", "th-modern-mobile-world-trigger-primary"), i = J(this.document, "span", "th-modern-mobile-world-trigger-secondary");
 		n.append(r, i);
 		let a = J(this.document, "span", "th-modern-mobile-world-trigger-count");
-		t.append(n, a, td(this.document, "fa-solid fa-chevron-down th-modern-mobile-world-trigger-chevron"));
+		t.append(n, a, nd(this.document, "fa-solid fa-chevron-down th-modern-mobile-world-trigger-chevron"));
 		let o = J(this.document, "button", "menu_button menu_button_icon th-modern-mobile-world-native-return");
-		o.type = "button", o.title = "使用现代世界书选择器", o.append(td(this.document, "fa-solid fa-list-check"), J(this.document, "span")), o.lastElementChild.textContent = "现代选择", t.addEventListener("click", this.openPicker), o.addEventListener("click", this.returnToCustomMode), e.append(t, o), (this.select2Container ?? this.source).insertAdjacentElement("afterend", e), this.wrapper = e, this.trigger = t, this.primaryText = r, this.secondaryText = i, this.countBadge = a, this.nativeReturn = o, typeof this.window.$ == "function" ? (this.$source = this.window.$(this.source), this.$source.on(`change${this.namespace}`, this.onSourceChange)) : (this.nativeChangeHandler = this.onSourceChange, this.source.addEventListener("change", this.nativeChangeHandler)), this.observer = new this.window.MutationObserver(this.scheduleSync), this.observer.observe(this.source, {
+		o.type = "button", o.title = "使用现代世界书选择器", o.append(nd(this.document, "fa-solid fa-list-check"), J(this.document, "span")), o.lastElementChild.textContent = "现代选择", t.addEventListener("click", this.openPicker), o.addEventListener("click", this.returnToCustomMode), e.append(t, o), (this.select2Container ?? this.source).insertAdjacentElement("afterend", e), this.wrapper = e, this.trigger = t, this.primaryText = r, this.secondaryText = i, this.countBadge = a, this.nativeReturn = o, typeof this.window.$ == "function" ? (this.$source = this.window.$(this.source), this.$source.on(`change${this.namespace}`, this.onSourceChange)) : (this.nativeChangeHandler = this.onSourceChange, this.source.addEventListener("change", this.nativeChangeHandler)), this.observer = new this.window.MutationObserver(this.scheduleSync), this.observer.observe(this.source, {
 			attributes: !0,
 			attributeFilter: ["disabled"],
 			childList: !0,
@@ -6831,7 +6841,7 @@ var ad = class {
 		}), this.syncTrigger();
 	}
 	destroy() {
-		this.syncFrame &&= (this.window.cancelAnimationFrame(this.syncFrame), 0), this.observer?.disconnect(), this.observer = void 0, this.$source?.off(`change${this.namespace}`, this.onSourceChange), this.$source = void 0, this.nativeChangeHandler &&= (this.source.removeEventListener("change", this.nativeChangeHandler), void 0), this.trigger?.removeEventListener("click", this.openPicker), this.nativeReturn?.removeEventListener("click", this.returnToCustomMode), this.wrapper?.remove(), this.wrapper = void 0, this.trigger = void 0, this.primaryText = void 0, this.secondaryText = void 0, this.countBadge = void 0, this.nativeReturn = void 0, this.source.classList.remove(Wu, Gu), this.select2Container?.classList.remove(Ku), this.select2Container = void 0, this.surface = void 0, this.nativeMode = !1;
+		this.syncFrame &&= (this.window.cancelAnimationFrame(this.syncFrame), 0), this.observer?.disconnect(), this.observer = void 0, this.$source?.off(`change${this.namespace}`, this.onSourceChange), this.$source = void 0, this.nativeChangeHandler &&= (this.source.removeEventListener("change", this.nativeChangeHandler), void 0), this.trigger?.removeEventListener("click", this.openPicker), this.nativeReturn?.removeEventListener("click", this.returnToCustomMode), this.wrapper?.remove(), this.wrapper = void 0, this.trigger = void 0, this.primaryText = void 0, this.secondaryText = void 0, this.countBadge = void 0, this.nativeReturn = void 0, this.source.classList.remove(Gu, Ku), this.select2Container?.classList.remove(qu), this.select2Container = void 0, this.surface = void 0, this.nativeMode = !1;
 	}
 	getOptions() {
 		let e = Array.from(this.source.options).map((e, t) => {
@@ -6840,7 +6850,7 @@ var ad = class {
 				disabled: e.disabled,
 				favoriteKey: e.value ? n : "",
 				label: n,
-				searchText: nd(n),
+				searchText: rd(n),
 				selected: e.selected,
 				sourceIndex: t,
 				value: e.value
@@ -6869,11 +6879,11 @@ var ad = class {
 		t ? this.triggerSourceChange() : this.syncTrigger();
 	}
 	setNativeMode(e) {
-		this.nativeMode = e, this.surface?.classList.toggle(Yu, !e), this.source.classList.toggle(Gu, e), this.wrapper?.classList.toggle("is-native", e), this.syncTrigger();
+		this.nativeMode = e, this.surface?.classList.toggle(Xu, !e), this.source.classList.toggle(Ku, e), this.wrapper?.classList.toggle("is-native", e), this.syncTrigger();
 	}
 	syncSelect2Container() {
 		let e = this.findSelect2Container();
-		e !== this.select2Container && (this.select2Container?.classList.remove(Ku), this.select2Container = e, this.select2Container?.classList.add(Ku), this.wrapper && (this.select2Container ?? this.source).insertAdjacentElement("afterend", this.wrapper));
+		e !== this.select2Container && (this.select2Container?.classList.remove(qu), this.select2Container = e, this.select2Container?.classList.add(qu), this.wrapper && (this.select2Container ?? this.source).insertAdjacentElement("afterend", this.wrapper));
 	}
 	syncTrigger() {
 		if (!this.trigger || !this.primaryText || !this.secondaryText || !this.countBadge) return;
@@ -6906,7 +6916,7 @@ var ad = class {
 			this.syncFrame = 0, this.manager.notifySourceChanged(this);
 		});
 	};
-}, sd = class {
+}, cd = class {
 	manager;
 	controller;
 	document;
@@ -6942,30 +6952,30 @@ var ad = class {
 	}
 	mount() {
 		this.previousFocus = this.document.activeElement, this.options = this.controller.getOptions(), this.selectedValues = this.controller.getSelectedValues(), this.enabledSnapshot = new Set(this.selectedValues), this.favoriteSnapshot = this.manager.getFavorites();
-		let e = J(this.document, "dialog", Ju), t = `th-modern-mobile-world-picker-title-${this.controller.source.id}`;
+		let e = J(this.document, "dialog", Yu), t = `th-modern-mobile-world-picker-title-${this.controller.source.id}`;
 		e.setAttribute("role", "dialog"), e.setAttribute("aria-labelledby", t), e.tabIndex = -1;
 		let n = J(this.document, "section", "th-modern-mobile-world-picker-sheet"), r = J(this.document, "span", "th-modern-mobile-world-picker-handle");
 		r.setAttribute("aria-hidden", "true");
 		let i = J(this.document, "header", "th-modern-mobile-world-picker-header"), a = J(this.document, "div", "th-modern-mobile-world-picker-heading"), o = J(this.document, "strong");
 		o.id = t, o.textContent = this.controller.config.title, a.append(o);
 		let s = J(this.document, "div", "th-modern-mobile-world-picker-header-actions"), c = J(this.document, "button", "menu_button th-modern-mobile-world-picker-native");
-		c.type = "button", c.append(td(this.document, "fa-solid fa-arrow-rotate-left"), this.document.createTextNode("原生界面")), c.addEventListener("click", this.useNativeMode);
+		c.type = "button", c.append(nd(this.document, "fa-solid fa-arrow-rotate-left"), this.document.createTextNode("原生界面")), c.addEventListener("click", this.useNativeMode);
 		let l = J(this.document, "button", "menu_button th-modern-mobile-world-picker-close");
-		l.type = "button", l.title = "关闭世界书选择", l.setAttribute("aria-label", "关闭世界书选择"), l.append(td(this.document, "fa-solid fa-xmark")), l.addEventListener("click", this.close), s.append(c, l), i.append(a, s);
+		l.type = "button", l.title = "关闭世界书选择", l.setAttribute("aria-label", "关闭世界书选择"), l.append(nd(this.document, "fa-solid fa-xmark")), l.addEventListener("click", this.close), s.append(c, l), i.append(a, s);
 		let u = J(this.document, "nav", "th-modern-mobile-world-picker-tabs");
 		u.setAttribute("role", "tablist"), u.setAttribute("aria-label", "世界书筛选"), u.addEventListener("click", this.onTabClick);
 		let d = J(this.document, "label", "th-modern-mobile-world-picker-search");
-		d.append(td(this.document, "fa-solid fa-magnifying-glass"));
+		d.append(nd(this.document, "fa-solid fa-magnifying-glass"));
 		let f = J(this.document, "input");
 		f.type = "search", f.placeholder = "搜索世界书名称…", f.autocomplete = "off", f.spellcheck = !1, f.setAttribute("enterkeyhint", "search"), f.addEventListener("input", this.onSearchInput), f.addEventListener("keydown", this.onSearchKeyDown);
 		let p = J(this.document, "button", "th-modern-mobile-world-picker-search-clear");
-		p.type = "button", p.title = "清空搜索", p.setAttribute("aria-label", "清空搜索"), p.append(td(this.document, "fa-solid fa-circle-xmark")), p.addEventListener("click", this.clearSearch), d.append(f, p);
+		p.type = "button", p.title = "清空搜索", p.setAttribute("aria-label", "清空搜索"), p.append(nd(this.document, "fa-solid fa-circle-xmark")), p.addEventListener("click", this.clearSearch), d.append(f, p);
 		let m = J(this.document, "div", "th-modern-mobile-world-picker-status");
 		m.setAttribute("aria-live", "polite");
 		let h = J(this.document, "div", "th-modern-mobile-world-picker-viewport");
 		h.tabIndex = 0, h.setAttribute("role", "listbox"), this.controller.config.multiple && h.setAttribute("aria-multiselectable", "true");
 		let g = J(this.document, "div", "th-modern-mobile-world-picker-rows"), v = J(this.document, "div", "th-modern-mobile-world-picker-empty"), y = this.document.createTextNode("没有找到匹配的世界书");
-		v.append(td(this.document, "fa-regular fa-folder-open"), y), h.append(g, v), n.append(r, i, u, d, m, h), e.append(n), e.addEventListener("touchstart", this.stopDrawerAutoClose, { passive: !0 }), e.addEventListener("mousedown", this.stopDrawerAutoClose), e.addEventListener("click", this.onOverlayClick), e.addEventListener("keydown", this.onKeyDown), this.window.addEventListener("resize", this.syncLayout, { passive: !0 }), this.overlay = e, this.sheet = n, this.tabs = u, this.searchInput = f, this.clearSearchButton = p, this.resultStatus = m, this.viewport = h, this.rows = g, this.emptyState = v, this.emptyStateText = y, this.renderTabs(), this.filterOptions(), this.document.body.append(e), e.showModal(), this.syncLayout(), this.controller.syncTrigger(), this.window.requestAnimationFrame(() => {
+		v.append(nd(this.document, "fa-regular fa-folder-open"), y), h.append(g, v), n.append(r, i, u, d, m, h), e.append(n), e.addEventListener("touchstart", this.stopDrawerAutoClose, { passive: !0 }), e.addEventListener("mousedown", this.stopDrawerAutoClose), e.addEventListener("click", this.onOverlayClick), e.addEventListener("keydown", this.onKeyDown), this.window.addEventListener("resize", this.syncLayout, { passive: !0 }), this.overlay = e, this.sheet = n, this.tabs = u, this.searchInput = f, this.clearSearchButton = p, this.resultStatus = m, this.viewport = h, this.rows = g, this.emptyState = v, this.emptyStateText = y, this.renderTabs(), this.filterOptions(), this.document.body.append(e), e.showModal(), this.syncLayout(), this.controller.syncTrigger(), this.window.requestAnimationFrame(() => {
 			this.layout === "wide" ? this.searchInput?.focus({ preventScroll: !0 }) : e.focus({ preventScroll: !0 });
 		});
 	}
@@ -6991,12 +7001,12 @@ var ad = class {
 			let n = J(this.document, "button", "th-modern-mobile-world-picker-tab");
 			n.type = "button", n.dataset.tab = t, n.setAttribute("role", "tab"), n.setAttribute("aria-selected", String(this.activeTab === t)), n.classList.toggle("is-active", this.activeTab === t);
 			let r = t === "all" ? this.options.length : t === "enabled" ? this.selectedValues.size : this.manager.getFavorites().size;
-			n.append(this.document.createTextNode(ed[t]), J(this.document, "span")), n.lastElementChild.textContent = String(r), e.append(n);
+			n.append(this.document.createTextNode(td[t]), J(this.document, "span")), n.lastElementChild.textContent = String(r), e.append(n);
 		}
 		this.tabs.replaceChildren(e);
 	}
 	filterOptions() {
-		let e = nd(this.query), t = this.options;
+		let e = rd(this.query), t = this.options;
 		this.activeTab === "enabled" ? t = t.filter((e) => this.enabledSnapshot.has(e.value)) : this.activeTab === "favorites" && (t = t.filter((e) => this.favoriteSnapshot.has(e.favoriteKey))), this.filteredOptions = e ? t.filter((t) => t.searchText.includes(e)) : [...t], this.viewport && (this.viewport.scrollTop = 0), this.updateStatus(t.length), this.renderRows();
 	}
 	renderRows() {
@@ -7020,14 +7030,14 @@ var ad = class {
 			let n = J(this.document, "button", "th-modern-mobile-world-picker-row-select");
 			n.type = "button", n.addEventListener("click", this.onRowClick);
 			let r = J(this.document, "span", this.controller.config.multiple ? "th-modern-mobile-world-picker-checkbox" : "th-modern-mobile-world-picker-radio");
-			r.append(td(this.document, this.controller.config.multiple ? "fa-solid fa-check" : "fa-solid fa-circle"));
+			r.append(nd(this.document, this.controller.config.multiple ? "fa-solid fa-check" : "fa-solid fa-circle"));
 			let i = J(this.document, "span", "th-modern-mobile-world-picker-row-label"), a = this.document.createTextNode("");
 			i.append(a);
-			let o = td(this.document, "fa-solid fa-check th-modern-mobile-world-picker-row-check");
+			let o = nd(this.document, "fa-solid fa-check th-modern-mobile-world-picker-row-check");
 			o.hidden = !0, n.append(r, i, o);
 			let s = J(this.document, "button", "th-modern-mobile-world-picker-favorite");
 			s.type = "button", s.addEventListener("click", this.onRowClick);
-			let c = td(this.document, "fa-solid fa-star"), l = td(this.document, "fa-regular fa-star");
+			let c = nd(this.document, "fa-solid fa-star"), l = nd(this.document, "fa-regular fa-star");
 			c.hidden = !0, s.append(c, l), e.append(n, s), t.append(e), this.rowPool.push({
 				favoriteButton: s,
 				favoriteOffIcon: l,
@@ -7052,7 +7062,7 @@ var ad = class {
 		this.clearSearchButton && (this.clearSearchButton.hidden = this.query.length === 0), this.emptyStateText && (this.emptyStateText.data = this.query ? "没有找到匹配的世界书" : this.activeTab === "favorites" ? "还没有收藏世界书" : this.activeTab === "enabled" ? "当前没有已启用的世界书" : "没有可选择的世界书");
 	}
 	getLayout() {
-		return this.window.matchMedia(Hu).matches ? "wide" : this.window.matchMedia(Uu).matches ? "phone" : "narrow";
+		return this.window.matchMedia(Uu).matches ? "wide" : this.window.matchMedia(Wu).matches ? "phone" : "narrow";
 	}
 	positionWideSheet() {
 		if (!this.sheet) return;
@@ -7073,13 +7083,13 @@ var ad = class {
 		this.layout = this.getLayout(), this.overlay && this.sheet && (this.overlay.dataset.layout = this.layout, this.overlay.setAttribute("aria-modal", String(this.layout !== "wide")), this.sheet.removeAttribute("style"), this.layout === "wide" && this.positionWideSheet());
 	};
 	onTabClick = (e) => {
-		let t = (id(e.target)?.closest(".th-modern-mobile-world-picker-tab"))?.dataset.tab;
+		let t = (ad(e.target)?.closest(".th-modern-mobile-world-picker-tab"))?.dataset.tab;
 		t && t !== this.activeTab && this.getAvailableTabs().includes(t) && (this.activeTab = t, this.manager.rememberTab(this.controller, t), this.renderTabs(), this.filterOptions());
 	};
 	onSearchInput = () => {
 		this.searchTimer && this.window.clearTimeout(this.searchTimer), this.searchTimer = this.window.setTimeout(() => {
 			this.searchTimer = 0, this.query = this.searchInput?.value ?? "", this.filterOptions();
-		}, Qu);
+		}, $u);
 	};
 	onSearchKeyDown = (e) => {
 		e.key === "ArrowDown" && (e.preventDefault(), this.focusFilteredIndex(0));
@@ -7088,7 +7098,7 @@ var ad = class {
 		this.searchInput && (this.searchInput.value = "", this.query = "", this.filterOptions(), this.searchInput.focus({ preventScroll: !0 }));
 	};
 	onRowClick = (e) => {
-		let t = id(e.target), n = t?.closest(".th-modern-mobile-world-picker-row");
+		let t = ad(e.target), n = t?.closest(".th-modern-mobile-world-picker-row");
 		if (!n) return;
 		let r = Number(n.dataset.sourceIndex), i = this.options.find((e) => e.sourceIndex === r);
 		if (!i) return;
@@ -7116,21 +7126,21 @@ var ad = class {
 			e.preventDefault(), this.close();
 			return;
 		}
-		let t = id(e.target)?.closest(".th-modern-mobile-world-picker-row");
+		let t = ad(e.target)?.closest(".th-modern-mobile-world-picker-row");
 		if (!t || e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
 		let n = Number(t.dataset.sourceIndex), r = this.filteredOptions.findIndex((e) => e.sourceIndex === n);
 		r < 0 || (e.preventDefault(), this.focusFilteredIndex(r + (e.key === "ArrowDown" ? 1 : -1)));
 	};
 };
-function cd(e) {
-	let t = new ad(e);
+function ld(e) {
+	let t = new od(e);
 	return t.mount(), {
 		destroy: () => t.destroy(),
 		setEnabled: (e) => t.setEnabled(e)
 	};
 }
 // src/world-info-module.ts
-var ld = "th-modern-wi-enabled", ud = "th-modern-wi-native", dd = "th-modern-wi-selected", fd = "th-modern-wi-row-checked", pd = "th-modern-wi-multiselect", md = "th-modern-wi-narrow", hd = "th-modern-wi-detail-open", gd = "th-modern-wi-mobile-detail-open", _d = "th-modern-wi-native-editor-loading", vd = "thModernTabsReady", yd = "thModernSummaryReady", bd = "2026-07-18-compact-v2", xd = "thModernConditionalReady", Sd = "thModernShortcutSyncReady", Cd = "2026-07-08-tabs-v4", wd = /* @__PURE__ */ new Map(), Td = [
+var ud = "th-modern-wi-enabled", dd = "th-modern-wi-native", fd = "th-modern-wi-selected", pd = "th-modern-wi-row-checked", md = "th-modern-wi-multiselect", hd = "th-modern-wi-narrow", gd = "th-modern-wi-detail-open", _d = "th-modern-wi-mobile-detail-open", vd = "th-modern-wi-native-editor-loading", yd = "thModernTabsReady", bd = "thModernSummaryReady", xd = "2026-07-18-compact-v2", Sd = "thModernConditionalReady", Cd = "thModernShortcutSyncReady", wd = "2026-07-08-tabs-v4", Td = /* @__PURE__ */ new Map(), Ed = [
 	["th-modern-wi-position-field", "select[name=\"position\"]"],
 	["th-modern-wi-depth-field", "input[name=\"depth\"]"],
 	["th-modern-wi-outlet-field", "input[name=\"outletName\"]"],
@@ -7138,50 +7148,50 @@ var ld = "th-modern-wi-enabled", ud = "th-modern-wi-native", dd = "th-modern-wi-
 	["th-modern-wi-no-recursion-field", "input[name=\"excludeRecursion\"]"],
 	["th-modern-wi-prevent-recursion-field", "input[name=\"preventRecursion\"]"]
 ];
-function Ed(e) {
+function Dd(e) {
 	let t = e.getAttribute("uid") ?? e.dataset.uid, n = Number(t);
 	return Number.isFinite(n) ? n : void 0;
 }
-function Dd(e) {
+function Od(e) {
 	let t = e.querySelector("#world_editor_select");
 	return !t || t.value === "" ? "" : t.selectedOptions[0]?.textContent?.trim() ?? "";
 }
-function Od(e) {
+function kd(e) {
 	return typeof e == "object" && !!e && !Array.isArray(e);
 }
-function kd(e) {
-	return Od(e) && typeof e.message == "string" ? e.message : String(e);
+function Ad(e) {
+	return kd(e) && typeof e.message == "string" ? e.message : String(e);
 }
-function Ad(e, t, n) {
+function jd(e, t, n) {
 	let r = n.structuredClone(e);
-	if (!Od(r) || !Od(r.entries)) throw Error("世界书数据缺少 entries 对象");
+	if (!kd(r) || !kd(r.entries)) throw Error("世界书数据缺少 entries 对象");
 	let i = 0;
 	for (let [e, n] of Object.entries(r.entries)) {
-		let a = Number(Od(n) && n.uid !== void 0 ? n.uid : e);
+		let a = Number(kd(n) && n.uid !== void 0 ? n.uid : e);
 		Number.isFinite(a) && t.has(a) && (delete r.entries[e], i += 1);
 	}
 	if (i !== t.size) throw Error(`仅找到 ${i}/${t.size} 个待删除条目`);
-	return Od(r.originalData) && Array.isArray(r.originalData.entries) && (r.originalData.entries = r.originalData.entries.filter((e) => {
-		let n = Number(Od(e) ? e.uid ?? e.id : void 0);
+	return kd(r.originalData) && Array.isArray(r.originalData.entries) && (r.originalData.entries = r.originalData.entries.filter((e) => {
+		let n = Number(kd(e) ? e.uid ?? e.id : void 0);
 		return !Number.isFinite(n) || !t.has(n);
 	})), r;
 }
-function jd(e) {
+function Md(e) {
 	let t = e;
 	return t ? typeof t.closest == "function" ? t : t.nodeType === 3 ? t.parentElement ?? null : null : null;
 }
-function Md(e) {
-	return jd(e)?.closest(".world_entry") ?? null;
-}
 function Nd(e) {
-	let t = jd(e);
-	return t ? !!t.closest(".th-modern-wi-tab,.th-modern-wi-editor-surface,.th-modern-wi-editor-actions,.th-modern-wi-toolbar,.drag-handle,.inline-drawer-toggle,.move_entry_button,.duplicate_entry_button,.delete_entry_button,input,select,textarea,button,a,label,.menu_button,.select2,.select2-container") : !1;
+	return Md(e)?.closest(".world_entry") ?? null;
 }
 function Pd(e) {
-	let t = jd(e);
-	return !t || !t.closest("#world_popup_entries_list") || Nd(t) ? null : Md(t);
+	let t = Md(e);
+	return t ? !!t.closest(".th-modern-wi-tab,.th-modern-wi-editor-surface,.th-modern-wi-editor-actions,.th-modern-wi-toolbar,.drag-handle,.inline-drawer-toggle,.move_entry_button,.duplicate_entry_button,.delete_entry_button,input,select,textarea,button,a,label,.menu_button,.select2,.select2-container") : !1;
 }
-function Fd(e, t, n, r) {
+function Fd(e) {
+	let t = Md(e);
+	return !t || !t.closest("#world_popup_entries_list") || Pd(t) ? null : Nd(t);
+}
+function Id(e, t, n, r) {
 	if (e.parentNode === t) {
 		r && e.nextSibling !== r && t.insertBefore(e, r);
 		return;
@@ -7198,7 +7208,7 @@ function Fd(e, t, n, r) {
 		node: e
 	});
 }
-function Id(e) {
+function Ld(e) {
 	for (let t of [...e].reverse()) {
 		let e = t.marker.parentNode;
 		e && (e.insertBefore(t.node, t.marker), t.marker.remove());
@@ -7209,71 +7219,71 @@ function Y(e, t, n, r) {
 	let i = e.createElement(t);
 	return n && (i.className = n), r !== void 0 && (i.textContent = r), i;
 }
-function Ld(e, t, n, r) {
+function Rd(e, t, n, r) {
 	let i = Y(e, "button", t);
 	return i.type = "button", i.title = n, i.setAttribute("aria-label", n), i.innerHTML = `<i class="${r}" aria-hidden="true"></i>`, i;
 }
-function Rd(e, t, n, r = !1) {
+function zd(e, t, n, r = !1) {
 	let i = Y(e, "label", `th-modern-wi-field${r ? " th-modern-wi-field-wide" : ""}`);
 	i.classList.add("th-modern-wi-labeled-field");
 	let a = Y(e, "span", "th-modern-wi-field-label", n);
 	return i.append(a, t), i;
 }
-function zd(e, t, n, r = "") {
+function Bd(e, t, n, r = "") {
 	t.append(Y(e, "div", `th-modern-wi-section-title${r ? ` ${r}` : ""}`, n));
 }
-function Bd(e) {
+function Vd(e) {
 	return e ? e.closest(".world_entry_form_control,.range-block,.checkbox_label,label.checkbox,label,.flex-container") ?? e.parentElement : null;
 }
 function X(e, t, n, r, i, a = !1, o = "") {
-	let s = n.querySelector(r), c = Bd(s);
+	let s = n.querySelector(r), c = Vd(s);
 	if (c && !c.closest(".th-modern-wi-panel")) {
 		if (i && c === s) {
-			let n = Rd(e, c, i, a);
+			let n = zd(e, c, i, a);
 			o && n.classList.add(o), t.append(n);
 		} else c.classList.add("th-modern-wi-native-field"), i && (c.classList.add("th-modern-wi-labeled-field"), c.querySelector(":scope > .th-modern-wi-field-label") || c.prepend(Y(e, "span", "th-modern-wi-field-label", i))), a && c.classList.add("th-modern-wi-native-field-wide"), o && c.classList.add(o), t.append(c);
 	}
 }
-function Vd(e, t, n, r, i = !1, a = "", o = "") {
+function Hd(e, t, n, r, i = !1, a = "", o = "") {
 	let s = t.querySelector(n)?.closest(r);
 	s && !s.closest(".th-modern-wi-panel") && (s.classList.add("th-modern-wi-native-field"), o && (s.classList.add("th-modern-wi-labeled-field"), s.querySelector(":scope > .th-modern-wi-field-label") || s.prepend(Y(L(), "span", "th-modern-wi-field-label", o))), i && s.classList.add("th-modern-wi-native-field-wide"), a && s.classList.add(a), e.append(s));
 }
-function Hd(e, t, n, r, i, a = !1, o = "") {
+function Ud(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s || s.closest(".th-modern-wi-panel")) return;
-	let c = Rd(e, s, i, a);
+	let c = zd(e, s, i, a);
 	o && c.classList.add(o), t.append(c);
 }
-function Ud(e) {
+function Wd(e) {
 	let t = e.ownerDocument.defaultView?.Event ?? Event;
 	e.dispatchEvent(new t("input", { bubbles: !0 })), e.dispatchEvent(new t("change", { bubbles: !0 }));
 }
-function Wd(e, t) {
+function Gd(e, t) {
 	let n = e.tagName.toLowerCase(), r = t.tagName.toLowerCase();
 	n === "input" && r === "input" && e.type === "checkbox" ? t.checked = e.checked : n === "select" && r === "select" ? t.selectedIndex = e.selectedIndex : t.value = e.value;
 }
-function Gd(e, t, n) {
+function Kd(e, t, n) {
 	let r = [...Array.from(t.querySelectorAll(n)), ...Array.from(e.querySelectorAll(n))];
 	return r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? null;
 }
-function Kd(e) {
-	return Td.find(([t]) => e.classList.contains(t))?.[1];
+function qd(e) {
+	return Ed.find(([t]) => e.classList.contains(t))?.[1];
 }
-function qd(e, t) {
+function Jd(e, t) {
 	for (let n of t.querySelectorAll(".th-modern-wi-shortcut-field")) {
-		let r = Kd(n);
+		let r = qd(n);
 		if (!r) continue;
-		let i = n.querySelector("input, select"), a = Gd(e, t, r);
-		if (!i || !a || i === a || i.dataset[Sd] === "true") continue;
+		let i = n.querySelector("input, select"), a = Kd(e, t, r);
+		if (!i || !a || i === a || i.dataset[Cd] === "true") continue;
 		let o = () => {
-			Wd(i, a), Ud(a);
+			Gd(i, a), Wd(a);
 		}, s = () => {
-			Wd(a, i), i.disabled = a.disabled;
+			Gd(a, i), i.disabled = a.disabled;
 		};
-		i.addEventListener("input", o), i.addEventListener("change", o), a.addEventListener("input", s), a.addEventListener("change", s), i.dataset[Sd] = "true", s();
+		i.addEventListener("input", o), i.addEventListener("change", o), a.addEventListener("input", s), a.addEventListener("change", s), i.dataset[Cd] = "true", s();
 	}
 }
-function Jd(e, t, n, r, i, a = !1, o = "") {
+function Yd(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s) return;
 	let c = s.tagName.toLowerCase() === "select", l = !c && s.type === "checkbox", u = c ? Y(e, "select") : Y(e, "input");
@@ -7291,25 +7301,25 @@ function Jd(e, t, n, r, i, a = !1, o = "") {
 	}
 	u.disabled = s.disabled;
 	let d = () => {
-		l ? s.checked = u.checked : c ? s.selectedIndex = u.selectedIndex : s.value = u.value, Ud(s);
+		l ? s.checked = u.checked : c ? s.selectedIndex = u.selectedIndex : s.value = u.value, Wd(s);
 	}, f = () => {
 		l ? u.checked = s.checked : c ? u.selectedIndex = s.selectedIndex : u.value = s.value, u.disabled = s.disabled;
 	};
-	u.addEventListener("input", d), u.addEventListener("change", d), s.addEventListener("input", f), s.addEventListener("change", f), u.dataset[Sd] = "true";
-	let p = Rd(e, u, i, a);
+	u.addEventListener("input", d), u.addEventListener("change", d), s.addEventListener("input", f), s.addEventListener("change", f), u.dataset[Cd] = "true";
+	let p = zd(e, u, i, a);
 	p.classList.add("th-modern-wi-shortcut-field"), o && p.classList.add(o), t.append(p);
 }
-function Yd(e, t, n, r, i = !1, a = "") {
+function Xd(e, t, n, r, i = !1, a = "") {
 	let o = Y(e, "div", "th-modern-wi-shared-slot");
 	o.dataset.sharedName = r;
-	let s = Rd(e, o, n, i);
+	let s = zd(e, o, n, i);
 	return s.classList.add("th-modern-wi-shared-field", a), t.append(s), o;
 }
-function Xd(e, t, n, r) {
-	let i = Bd(e.querySelector(t));
+function Zd(e, t, n, r) {
+	let i = Vd(e.querySelector(t));
 	i && !i.closest(".th-modern-wi-panel") && (i.classList.add("th-modern-wi-shared-control"), i.dataset.sharedName = n, r[0]?.append(i));
 }
-function Zd(e, t) {
+function Qd(e, t) {
 	let n = [
 		t,
 		t.closest(".inline-drawer-content.inline-drawer-outlet"),
@@ -7318,20 +7328,20 @@ function Zd(e, t) {
 	];
 	return n.filter((e, t) => !!e && n.indexOf(e) === t);
 }
-function Qd(e, t, n, r) {
-	let i = Zd(e, t);
+function $d(e, t, n, r) {
+	let i = Qd(e, t);
 	for (let e of i) {
 		let t = e.querySelector(`.th-modern-wi-shared-control[data-shared-name="${r}"]`);
 		if (t) return t;
 	}
 	for (let e of i) {
-		let t = Bd(e.querySelector(n));
+		let t = Vd(e.querySelector(n));
 		if (t) return t.classList.add("th-modern-wi-shared-control"), t.dataset.sharedName = r, t;
 	}
 	return null;
 }
-function $d(e, t, n) {
-	let r = new Set(t.querySelectorAll(".th-modern-wi-shared-control[data-shared-name]")), i = Qd(e, t, ".keyprimary", "primary-key");
+function ef(e, t, n) {
+	let r = new Set(t.querySelectorAll(".th-modern-wi-shared-control[data-shared-name]")), i = $d(e, t, ".keyprimary", "primary-key");
 	i && r.add(i);
 	for (let e of r) {
 		let r = e.dataset.sharedName;
@@ -7340,8 +7350,8 @@ function $d(e, t, n) {
 		i && e.parentElement !== i && i.append(e);
 	}
 }
-function ef(e, t) {
-	let n = t.querySelector(".th-modern-wi-panel:not([hidden])")?.querySelector(".th-modern-wi-position-field select"), r = Array.from(t.querySelectorAll(".th-modern-wi-position-field select, select[name=\"position\"]")), i = n ?? r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? e.querySelector("select[name=\"position\"]"), a = t.querySelector("input[name=\"delay_until_recursion\"]") ?? e.querySelector("input[name=\"delay_until_recursion\"]"), o = i?.value, s = i?.selectedOptions[0]?.textContent?.trim().toLowerCase() ?? "", c = rf(i) ? "depth" : o === "7" || s.includes("outlet") || s.includes("锚点") ? "outlet" : "normal", l = !!a?.checked;
+function tf(e, t) {
+	let n = t.querySelector(".th-modern-wi-panel:not([hidden])")?.querySelector(".th-modern-wi-position-field select"), r = Array.from(t.querySelectorAll(".th-modern-wi-position-field select, select[name=\"position\"]")), i = n ?? r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? e.querySelector("select[name=\"position\"]"), a = t.querySelector("input[name=\"delay_until_recursion\"]") ?? e.querySelector("input[name=\"delay_until_recursion\"]"), o = i?.value, s = i?.selectedOptions[0]?.textContent?.trim().toLowerCase() ?? "", c = af(i) ? "depth" : o === "7" || s.includes("outlet") || s.includes("锚点") ? "outlet" : "normal", l = !!a?.checked;
 	t.dataset.thModernPositionKind = c, t.dataset.thModernRecursionDelay = l ? "true" : "false";
 	for (let e of t.querySelectorAll(".th-modern-wi-depth-field")) {
 		e.hidden = c !== "depth";
@@ -7350,69 +7360,69 @@ function ef(e, t) {
 	for (let e of t.querySelectorAll(".th-modern-wi-outlet-field")) e.hidden = c !== "outlet";
 	for (let e of t.querySelectorAll(".th-modern-wi-recursion-level-field")) e.hidden = !l;
 }
-function tf(e, t) {
-	let n = () => ef(e, t);
-	if (t.dataset[xd] !== "true") {
+function nf(e, t) {
+	let n = () => tf(e, t);
+	if (t.dataset[Sd] !== "true") {
 		let e = (e) => {
-			jd(e.target)?.closest(".th-modern-wi-position-field, select[name=\"position\"], .th-modern-wi-delay-recursion-field, input[name=\"delay_until_recursion\"]") && n();
+			Md(e.target)?.closest(".th-modern-wi-position-field, select[name=\"position\"], .th-modern-wi-delay-recursion-field, input[name=\"delay_until_recursion\"]") && n();
 		};
-		t.addEventListener("input", e), t.addEventListener("change", e), t.dataset[xd] = "true";
+		t.addEventListener("input", e), t.addEventListener("change", e), t.dataset[Sd] = "true";
 	}
 	n();
 }
-function nf(e, t = e) {
+function rf(e, t = e) {
 	let n = t.querySelector("textarea[name=\"comment\"]")?.value.trim();
 	if (n) return e.dataset.thModernTitle = n, n;
 	let r = e === t ? void 0 : e.querySelector("textarea[name=\"comment\"]")?.value.trim();
 	if (r) return e.dataset.thModernTitle = r, r;
-	let i = e.classList.contains(dd) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor textarea[name=\"comment\"]")?.value.trim() : void 0;
-	return i ? (e.dataset.thModernTitle = i, i) : e.dataset.thModernTitle ? e.dataset.thModernTitle : `UID ${Ed(e) ?? ""}`.trim();
+	let i = e.classList.contains(fd) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor textarea[name=\"comment\"]")?.value.trim() : void 0;
+	return i ? (e.dataset.thModernTitle = i, i) : e.dataset.thModernTitle ? e.dataset.thModernTitle : `UID ${Dd(e) ?? ""}`.trim();
 }
-function rf(e) {
+function af(e) {
 	let t = e?.selectedOptions[0], n = e?.value, r = t?.dataset.role, i = t?.textContent?.trim().toLowerCase() ?? "";
 	return n === "4" || r === "0" || r === "1" || r === "2" || i.includes("@d") || i.includes("depth") || i.includes("深度");
 }
-function af(e, t = e) {
-	let n = e.classList.contains(dd) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, r = t.querySelector("select[name=\"position\"]") ?? (e === t ? null : e.querySelector("select[name=\"position\"]")) ?? n?.querySelector("select[name=\"position\"]"), i = t.querySelector("input[name=\"depth\"]") ?? (e === t ? null : e.querySelector("input[name=\"depth\"]")) ?? n?.querySelector("input[name=\"depth\"]"), a = r?.selectedOptions[0]?.textContent?.trim() || "", o = i?.value.trim(), s = rf(r) && o ? `${a} ${o}` : a;
+function of(e, t = e) {
+	let n = e.classList.contains(fd) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, r = t.querySelector("select[name=\"position\"]") ?? (e === t ? null : e.querySelector("select[name=\"position\"]")) ?? n?.querySelector("select[name=\"position\"]"), i = t.querySelector("input[name=\"depth\"]") ?? (e === t ? null : e.querySelector("input[name=\"depth\"]")) ?? n?.querySelector("input[name=\"depth\"]"), a = r?.selectedOptions[0]?.textContent?.trim() || "", o = i?.value.trim(), s = af(r) && o ? `${a} ${o}` : a;
 	return s && (e.dataset.thModernPosition = s), s || e.dataset.thModernPosition || "";
 }
-function of(e, t = e) {
+function sf(e, t = e) {
 	let n = e.querySelector(".th-modern-wi-row-summary");
 	if (!n) return;
-	let r = e.classList.contains(dd) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, i = t.querySelector("input[name=\"order\"]") ?? (e === t ? null : e.querySelector("input[name=\"order\"]")) ?? r?.querySelector("input[name=\"order\"]"), a = i?.value ?? e.dataset.thModernOrder;
+	let r = e.classList.contains(fd) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, i = t.querySelector("input[name=\"order\"]") ?? (e === t ? null : e.querySelector("input[name=\"order\"]")) ?? r?.querySelector("input[name=\"order\"]"), a = i?.value ?? e.dataset.thModernOrder;
 	i?.value && (e.dataset.thModernOrder = i.value);
 	let o = t.querySelector("select[name=\"entryStateSelector\"]") ?? (e === t ? null : e.querySelector("select[name=\"entryStateSelector\"]")) ?? r?.querySelector("select[name=\"entryStateSelector\"]"), s = o?.value ?? e.dataset.thModernEntryState;
 	o?.value && (e.dataset.thModernEntryState = o.value);
 	let c = n.querySelector(".th-modern-wi-row-title"), l = n.querySelector(".th-modern-wi-row-meta"), u = n.querySelector(".th-modern-wi-row-stats");
-	c && (c.textContent = nf(e, t)), l && (l.textContent = af(e, t)), u && (u.textContent = a ? `#${a}` : ""), s && (e.dataset.thModernEntryState = s);
+	c && (c.textContent = rf(e, t)), l && (l.textContent = of(e, t)), u && (u.textContent = a ? `#${a}` : ""), s && (e.dataset.thModernEntryState = s);
 }
-function sf(e, t, n) {
+function cf(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-header");
 	if (!r) return;
 	let i = r.querySelector(".th-modern-wi-row-summary");
-	i || (i = Y(e, "div", "th-modern-wi-row-summary"), i.tabIndex = 0, i.setAttribute("role", "button"), i.setAttribute("aria-label", "打开世界书条目"), r.append(i)), i.dataset.layoutVersion !== bd && (i.innerHTML = "<span class=\"th-modern-wi-row-leading\" aria-hidden=\"true\"><span class=\"th-modern-wi-select-dot\"></span><span class=\"th-modern-wi-entry-state-icon\"></span></span><span class=\"th-modern-wi-row-text\"><span class=\"th-modern-wi-row-primary\"><strong class=\"th-modern-wi-row-title\"></strong><span class=\"th-modern-wi-row-stats\"></span></span><small class=\"th-modern-wi-row-meta\"></small></span>", i.dataset.layoutVersion = bd), t.dataset[yd] !== "true" && (t.dataset[yd] = "true", t.addEventListener("input", () => n(t)), t.addEventListener("change", () => n(t))), of(t);
+	i || (i = Y(e, "div", "th-modern-wi-row-summary"), i.tabIndex = 0, i.setAttribute("role", "button"), i.setAttribute("aria-label", "打开世界书条目"), r.append(i)), i.dataset.layoutVersion !== xd && (i.innerHTML = "<span class=\"th-modern-wi-row-leading\" aria-hidden=\"true\"><span class=\"th-modern-wi-select-dot\"></span><span class=\"th-modern-wi-entry-state-icon\"></span></span><span class=\"th-modern-wi-row-text\"><span class=\"th-modern-wi-row-primary\"><strong class=\"th-modern-wi-row-title\"></strong><span class=\"th-modern-wi-row-stats\"></span></span><small class=\"th-modern-wi-row-meta\"></small></span>", i.dataset.layoutVersion = xd), t.dataset[bd] !== "true" && (t.dataset[bd] = "true", t.addEventListener("input", () => n(t)), t.addEventListener("change", () => n(t))), sf(t);
 }
-function cf(e, t, n = e) {
+function lf(e, t, n = e) {
 	e.dataset.thModernActiveTab = t;
 	for (let e of n.querySelectorAll(".th-modern-wi-tab")) {
 		let n = e.dataset.panel === t;
 		e.classList.toggle("active", n), e.setAttribute("aria-selected", String(n));
 	}
 	for (let e of n.querySelectorAll(".th-modern-wi-panel")) e.hidden = e.dataset.panel !== t;
-	$d(e, n, t), ef(e, n), n.querySelector(".th-modern-wi-panels")?.scrollTo({
+	ef(e, n, t), tf(e, n), n.querySelector(".th-modern-wi-panels")?.scrollTo({
 		top: 0,
 		left: 0
 	});
 }
-function lf(e) {
-	let t = Ed(e);
+function uf(e) {
+	let t = Dd(e);
 	if (t !== void 0) {
-		let e = wd.get(t);
-		if (e) return wd.delete(t), e;
+		let e = Td.get(t);
+		if (e) return Td.delete(t), e;
 	}
 	return e.dataset.thModernActiveTab || "main";
 }
-function uf(e) {
+function df(e) {
 	let t = e.querySelector("select[name=\"entryStateSelector\"]");
 	if (!t) return;
 	let n = {
@@ -7425,22 +7435,22 @@ function uf(e) {
 		t && (e.textContent = t);
 	}
 }
-function df(e, t) {
+function ff(e, t) {
 	t.dataset.thModernSwitchCaptureReady !== "true" && (t.addEventListener("click", (t) => {
-		let n = jd(t.target);
+		let n = Md(t.target);
 		if (!n?.closest(".switch_input_type_icon")) return;
-		let r = Ed(e);
+		let r = Dd(e);
 		if (r !== void 0) {
 			let t = n.closest(".th-modern-wi-panel")?.dataset.panel || e.dataset.thModernActiveTab || "keywords";
-			wd.set(r, t);
+			Td.set(r, t);
 		}
 	}, !0), t.dataset.thModernSwitchCaptureReady = "true"), t.onclick = (n) => {
 		if (n.defaultPrevented) return;
-		let r = jd(n.target), i = r?.closest(".th-modern-wi-tab");
+		let r = Md(n.target), i = r?.closest(".th-modern-wi-tab");
 		if (i && t.contains(i)) {
 			let r = i.dataset.panel;
 			if (!r) return;
-			n.preventDefault(), cf(e, r, t);
+			n.preventDefault(), lf(e, r, t);
 			return;
 		}
 		let a = r?.closest(".th-modern-wi-action");
@@ -7453,18 +7463,18 @@ function df(e, t) {
 		o && (n.preventDefault(), e.querySelector(o)?.click());
 	};
 }
-function ff(e, t, n) {
+function pf(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet"), i = t.querySelector(".world_entry_edit");
 	if (!r || !i) return !1;
-	if (t.dataset[vd] === "true") {
+	if (t.dataset[yd] === "true") {
 		let e = r.querySelector(":scope > .th-modern-wi-editor-surface");
-		if (e) return e.dataset.thModernLayoutVersion = Cd, uf(t), df(t, e), qd(t, e), tf(t, e), cf(t, lf(t), e), !0;
-		delete t.dataset[vd];
+		if (e) return e.dataset.thModernLayoutVersion = wd, df(t), ff(t, e), Jd(t, e), nf(t, e), lf(t, uf(t), e), !0;
+		delete t.dataset[yd];
 	}
-	t.dataset[vd] = "true", sf(e, t, n), uf(t);
+	t.dataset[yd] = "true", cf(e, t, n), df(t);
 	let a = Y(e, "div", "th-modern-wi-editor-surface");
-	a.dataset.thModernLayoutVersion = Cd;
-	let o = Y(e, "div", "th-modern-wi-editor-top"), s = Y(e, "div", "th-modern-wi-enable-dock"), c = Y(e, "div", "th-modern-wi-editor-actions"), l = Ld(e, "menu_button th-modern-wi-action", "移动/复制到其他世界书", "fa-solid fa-arrow-right-arrow-left"), u = Ld(e, "menu_button th-modern-wi-action", "复制条目", "fa-regular fa-copy"), d = Ld(e, "menu_button th-modern-wi-action danger", "删除条目", "fa-regular fa-trash-can");
+	a.dataset.thModernLayoutVersion = wd;
+	let o = Y(e, "div", "th-modern-wi-editor-top"), s = Y(e, "div", "th-modern-wi-enable-dock"), c = Y(e, "div", "th-modern-wi-editor-actions"), l = Rd(e, "menu_button th-modern-wi-action", "移动/复制到其他世界书", "fa-solid fa-arrow-right-arrow-left"), u = Rd(e, "menu_button th-modern-wi-action", "复制条目", "fa-regular fa-copy"), d = Rd(e, "menu_button th-modern-wi-action danger", "删除条目", "fa-regular fa-trash-can");
 	l.dataset.action = "move", u.dataset.action = "duplicate", d.dataset.action = "delete", c.append(l, u, d);
 	let f = Y(e, "div", "th-modern-wi-tabs"), p = Y(e, "div", "th-modern-wi-panels"), m = [
 		["main", "主要"],
@@ -7475,25 +7485,25 @@ function ff(e, t, n) {
 	for (let [n, r] of m) {
 		let i = Y(e, "button", "th-modern-wi-tab", r);
 		i.type = "button", i.dataset.panel = n, i.addEventListener("click", (e) => {
-			e.preventDefault(), cf(t, n, a);
+			e.preventDefault(), lf(t, n, a);
 		}), f.append(i);
 		let o = Y(e, "div", "th-modern-wi-panel");
 		o.classList.add(`th-modern-wi-panel-${n}`), o.dataset.panel = n, p.append(o), h.set(n, o);
 	}
 	let g = Y(e, "div", "th-modern-wi-content-panel");
-	o.append(s, f, c), a.append(o, p, g), r.prepend(a), df(t, a), Hd(e, s, t, ".killSwitch", "启用", !1, "th-modern-wi-enable-field");
+	o.append(s, f, c), a.append(o, p, g), r.prepend(a), ff(t, a), Ud(e, s, t, ".killSwitch", "启用", !1, "th-modern-wi-enable-field");
 	let v = h.get("main");
-	Hd(e, v, t, "textarea[name=\"comment\"]", "条目标题/备注", !0, "th-modern-wi-title-field"), Hd(e, v, t, "select[name=\"entryStateSelector\"]", "条目状态", !1, "th-modern-wi-state-field"), Jd(e, v, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Jd(e, v, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), Jd(e, v, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Jd(e, v, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Jd(e, v, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field");
-	let y = Yd(e, v, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
-	Jd(e, v, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field");
-	let b = h.get("keywords"), x = Yd(e, b, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
-	X(e, b, t, "select[name=\"entryLogicType\"]", "逻辑", !1, "th-modern-wi-logic-field"), X(e, b, t, ".keysecondary", "可选过滤器", !0, "th-modern-wi-secondary-key-field"), X(e, b, t, "select[name=\"caseSensitive\"]", "区分大小写", !1, "th-modern-wi-case-field"), X(e, b, t, "select[name=\"matchWholeWords\"]", "全词匹配", !1, "th-modern-wi-whole-field"), X(e, b, t, "select[name=\"useGroupScoring\"]", "组评分", !1, "th-modern-wi-group-scoring-field"), X(e, b, t, "input[name=\"scanDepth\"]", "扫描深度", !1, "th-modern-wi-scan-field"), X(e, b, t, "input[name=\"automationId\"]", "自动化 ID", !1, "th-modern-wi-automation-field"), Xd(t, ".keyprimary", "primary-key", [y, x]);
+	Ud(e, v, t, "textarea[name=\"comment\"]", "条目标题/备注", !0, "th-modern-wi-title-field"), Ud(e, v, t, "select[name=\"entryStateSelector\"]", "条目状态", !1, "th-modern-wi-state-field"), Yd(e, v, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Yd(e, v, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), Yd(e, v, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Yd(e, v, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Yd(e, v, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field");
+	let y = Xd(e, v, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
+	Yd(e, v, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field");
+	let b = h.get("keywords"), x = Xd(e, b, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
+	X(e, b, t, "select[name=\"entryLogicType\"]", "逻辑", !1, "th-modern-wi-logic-field"), X(e, b, t, ".keysecondary", "可选过滤器", !0, "th-modern-wi-secondary-key-field"), X(e, b, t, "select[name=\"caseSensitive\"]", "区分大小写", !1, "th-modern-wi-case-field"), X(e, b, t, "select[name=\"matchWholeWords\"]", "全词匹配", !1, "th-modern-wi-whole-field"), X(e, b, t, "select[name=\"useGroupScoring\"]", "组评分", !1, "th-modern-wi-group-scoring-field"), X(e, b, t, "input[name=\"scanDepth\"]", "扫描深度", !1, "th-modern-wi-scan-field"), X(e, b, t, "input[name=\"automationId\"]", "自动化 ID", !1, "th-modern-wi-automation-field"), Zd(t, ".keyprimary", "primary-key", [y, x]);
 	let S = h.get("insert");
-	Hd(e, S, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Hd(e, S, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), X(e, S, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Hd(e, S, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Hd(e, S, t, "input[name=\"probability\"]", "触发概率", !1, "th-modern-wi-probability-field"), X(e, S, t, "input[name=\"useProbability\"]", "使用概率", !1, "th-modern-wi-use-probability-field"), X(e, S, t, "input[name=\"group\"]", "包含组", !0, "th-modern-wi-group-field"), X(e, S, t, "input[name=\"groupWeight\"]", "分组权重", !1, "th-modern-wi-group-weight-field"), X(e, S, t, "input[name=\"sticky\"]", "黏附", !1, "th-modern-wi-sticky-field"), X(e, S, t, "input[name=\"cooldown\"]", "冷却", !1, "th-modern-wi-cooldown-field"), X(e, S, t, "input[name=\"delay\"]", "延迟", !1, "th-modern-wi-delay-field"), Vd(S, t, "select[name=\"characterFilter\"]", ".flex4", !0, "th-modern-wi-character-filter-field", "绑定到角色或标签"), Vd(S, t, "select[name=\"triggers\"]", ".flex4", !0, "th-modern-wi-generation-trigger-field", "筛选生成触发器"), X(e, S, t, "input[name=\"delayUntilRecursionLevel\"]", "递归等级", !1, "th-modern-wi-recursion-level-field"), X(e, S, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field"), X(e, S, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field"), X(e, S, t, "input[name=\"delay_until_recursion\"]", "延迟到递归", !1, "th-modern-wi-delay-recursion-field"), X(e, S, t, "input[name=\"ignoreBudget\"]", "无视回复限额", !1, "th-modern-wi-budget-field");
+	Ud(e, S, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Ud(e, S, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), X(e, S, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Ud(e, S, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Ud(e, S, t, "input[name=\"probability\"]", "触发概率", !1, "th-modern-wi-probability-field"), X(e, S, t, "input[name=\"useProbability\"]", "使用概率", !1, "th-modern-wi-use-probability-field"), X(e, S, t, "input[name=\"group\"]", "包含组", !0, "th-modern-wi-group-field"), X(e, S, t, "input[name=\"groupWeight\"]", "分组权重", !1, "th-modern-wi-group-weight-field"), X(e, S, t, "input[name=\"sticky\"]", "黏附", !1, "th-modern-wi-sticky-field"), X(e, S, t, "input[name=\"cooldown\"]", "冷却", !1, "th-modern-wi-cooldown-field"), X(e, S, t, "input[name=\"delay\"]", "延迟", !1, "th-modern-wi-delay-field"), Hd(S, t, "select[name=\"characterFilter\"]", ".flex4", !0, "th-modern-wi-character-filter-field", "绑定到角色或标签"), Hd(S, t, "select[name=\"triggers\"]", ".flex4", !0, "th-modern-wi-generation-trigger-field", "筛选生成触发器"), X(e, S, t, "input[name=\"delayUntilRecursionLevel\"]", "递归等级", !1, "th-modern-wi-recursion-level-field"), X(e, S, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field"), X(e, S, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field"), X(e, S, t, "input[name=\"delay_until_recursion\"]", "延迟到递归", !1, "th-modern-wi-delay-recursion-field"), X(e, S, t, "input[name=\"ignoreBudget\"]", "无视回复限额", !1, "th-modern-wi-budget-field");
 	let C = h.get("trigger");
-	return zd(e, C, "额外匹配来源", "th-modern-wi-match-source-title"), X(e, C, t, "input[name=\"matchCharacterDescription\"]", "角色描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterPersonality\"]", "角色性格", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchScenario\"]", "情景", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchPersonaDescription\"]", "用户设定描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterDepthPrompt\"]", "角色备注", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCreatorNotes\"]", "创作者的注释", !1, "th-modern-wi-match-source-field"), X(e, g, t, "textarea[name=\"content\"]", "正文", !0), qd(t, a), tf(t, a), cf(t, lf(t), a), !0;
+	return Bd(e, C, "额外匹配来源", "th-modern-wi-match-source-title"), X(e, C, t, "input[name=\"matchCharacterDescription\"]", "角色描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterPersonality\"]", "角色性格", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchScenario\"]", "情景", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchPersonaDescription\"]", "用户设定描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterDepthPrompt\"]", "角色备注", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCreatorNotes\"]", "创作者的注释", !1, "th-modern-wi-match-source-field"), X(e, g, t, "textarea[name=\"content\"]", "正文", !0), Jd(t, a), nf(t, a), lf(t, uf(t), a), !0;
 }
-var pf = class {
+var mf = class {
 	document;
 	window;
 	moved = [];
@@ -7540,7 +7550,7 @@ var pf = class {
 	scheduleSummaryUpdate = (e) => {
 		if (!this.mounted || this.pendingSummaryUpdates.has(e)) return;
 		let t = this.window.requestAnimationFrame(() => {
-			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && of(e, this.selectedEntry === e && this.editorPane && this.editorPane.childElementCount > 0 ? this.editorPane : e);
+			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && sf(e, this.selectedEntry === e && this.editorPane && this.editorPane.childElementCount > 0 ? this.editorPane : e);
 		});
 		this.pendingSummaryUpdates.set(e, t);
 	};
@@ -7550,16 +7560,16 @@ var pf = class {
 			return;
 		}
 		let e = this.findWorldInfo(), t = this.findWorldPopup(), n = this.findEntriesList();
-		e && t && n && (this.mounted = !0, this.selectedWorldName = Dd(this.document), e.classList.add(ud), this.ensureLayout(t), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
+		e && t && n && (this.mounted = !0, this.selectedWorldName = Od(this.document), e.classList.add(dd), this.ensureLayout(t), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
 	}
 	isMounted() {
 		return this.mounted;
 	}
 	destroy() {
 		let e = this.mounted;
-		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(ud, pd, gd), this.observer?.disconnect(), this.observer = void 0, this.popupObserver?.disconnect(), this.popupObserver = void 0, this.observedPopup = void 0, this.pendingReconcileFrame &&= (this.window.cancelAnimationFrame(this.pendingReconcileFrame), 0), this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), wd.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
-		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(dd, fd, _d);
-		return this.observedList = void 0, Id(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
+		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(dd, md, _d), this.observer?.disconnect(), this.observer = void 0, this.popupObserver?.disconnect(), this.popupObserver = void 0, this.observedPopup = void 0, this.pendingReconcileFrame &&= (this.window.cancelAnimationFrame(this.pendingReconcileFrame), 0), this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), Td.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
+		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(fd, pd, vd);
+		return this.observedList = void 0, Ld(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
 	}
 	bindResponsiveMode() {
 		this.narrowQuery = this.window.matchMedia("(max-width: 899.98px)"), this.narrowQueryHandler = () => this.syncResponsiveMode(), this.narrowQuery.addEventListener("change", this.narrowQueryHandler), this.syncResponsiveMode();
@@ -7569,7 +7579,7 @@ var pf = class {
 	}
 	syncResponsiveMode() {
 		let e = this.isNarrowMode(), t = e && this.mobileDetailOpen && !!this.selectedEntry;
-		this.shell?.classList.toggle(md, e), this.findWorldInfo()?.classList.toggle(gd, t), e ? this.shell?.classList.toggle(hd, t) : (this.mobileDetailOpen = !1, this.shell?.classList.remove(hd), this.selectFirstEntry());
+		this.shell?.classList.toggle(hd, e), this.findWorldInfo()?.classList.toggle(_d, t), e ? this.shell?.classList.toggle(gd, t) : (this.mobileDetailOpen = !1, this.shell?.classList.remove(gd), this.selectFirstEntry());
 	}
 	openMobileDetail() {
 		if (!this.isNarrowMode()) return;
@@ -7600,12 +7610,12 @@ var pf = class {
 		return this.document.querySelector("#world_popup_entries_list");
 	}
 	ensureToolbarButtons(e, t) {
-		if (this.multiButton && this.multiButton.isConnected || (this.multiButton = Ld(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.multiButton.addEventListener("click", () => this.toggleMultiSelect())), this.deleteSelectedButton && this.deleteSelectedButton.isConnected || (this.deleteSelectedButton = Ld(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = this.selectedUids.size === 0, this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries())), !this.moreMenu || !this.moreMenu.isConnected) {
+		if (this.multiButton && this.multiButton.isConnected || (this.multiButton = Rd(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.multiButton.addEventListener("click", () => this.toggleMultiSelect())), this.deleteSelectedButton && this.deleteSelectedButton.isConnected || (this.deleteSelectedButton = Rd(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = this.selectedUids.size === 0, this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries())), !this.moreMenu || !this.moreMenu.isConnected) {
 			let e = Y(this.document, "details", "th-modern-wi-more-menu"), t = Y(this.document, "summary", "menu_button th-modern-wi-more-toggle");
 			t.title = "更多条目操作", t.setAttribute("aria-label", "更多条目操作"), t.innerHTML = "<i class=\"fa-solid fa-ellipsis\" aria-hidden=\"true\"></i>";
 			let n = Y(this.document, "div", "th-modern-wi-more-popover");
 			e.append(t, n), e.addEventListener("click", (t) => {
-				jd(t.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (e.open = !1);
+				Md(t.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (e.open = !1);
 			}), this.moreMenu = e;
 		}
 		let n = this.moreMenu.querySelector(".th-modern-wi-more-popover");
@@ -7616,7 +7626,7 @@ var pf = class {
 			"#world_apply_current_sorting"
 		]) {
 			let i = t.querySelector(r) ?? e.querySelector(r);
-			i && i.parentElement !== n && Fd(i, n, this.moved);
+			i && i.parentElement !== n && Id(i, n, this.moved);
 		}
 		this.multiButton.parentElement !== e && e.append(this.multiButton), this.deleteSelectedButton.parentElement !== e && e.append(this.deleteSelectedButton), this.moreMenu.parentElement !== e && e.append(this.moreMenu);
 	}
@@ -7649,17 +7659,17 @@ var pf = class {
 			for (let e of u) this.shell.append(e);
 			n = !0;
 		}
-		(s.firstElementChild !== l || s.lastElementChild !== c) && (s.append(l, c), n = !0), r && r.parentElement !== l && (Fd(r, l, this.moved), n = !0);
+		(s.firstElementChild !== l || s.lastElementChild !== c) && (s.append(l, c), n = !0), r && r.parentElement !== l && (Id(r, l, this.moved), n = !0);
 		let f = t.querySelector("#world_create_button")?.closest(".flex-container");
-		f && f.parentElement !== a && (Fd(f, a, this.moved), n = !0);
+		f && f.parentElement !== a && (Id(f, a, this.moved), n = !0);
 		let p = t.querySelector("#world_info_search")?.closest(".flex-container");
-		p && p.parentElement !== o && (Fd(p, o, this.moved), n = !0), this.ensureToolbarButtons(o, t);
+		p && p.parentElement !== o && (Id(p, o, this.moved), n = !0), this.ensureToolbarButtons(o, t);
 		let m = this.findWorldInfo()?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
 		if (m) {
 			let e = m.firstElementChild;
 			for (let t of ["#WI_panel_pin_div", "#WorldInfoheader + .flex-container .notes-link"]) {
 				let n = this.findWorldInfo()?.querySelector(t);
-				n && n.parentElement !== m && Fd(n, m, this.moved, e);
+				n && n.parentElement !== m && Id(n, m, this.moved, e);
 			}
 		}
 		return this.isNarrowMode() || this.multiSelect || c.childElementCount || (this.selectedEntry && this.selectedEntry.isConnected ? this.ensureEntryEditor(this.selectedEntry) : this.selectFirstEntry()), this.syncResponsiveMode(), this.observePopup(), n;
@@ -7687,10 +7697,10 @@ var pf = class {
 	}
 	bindEvents() {
 		this.documentClickHandler = (e) => {
-			let t = jd(e.target);
-			this.moreMenu?.open && t && !this.moreMenu.contains(t) && (this.moreMenu.open = !1), Pd(e.target) && this.onEntryClick(e);
+			let t = Md(e.target);
+			this.moreMenu?.open && t && !this.moreMenu.contains(t) && (this.moreMenu.open = !1), Fd(e.target) && this.onEntryClick(e);
 		}, this.documentKeyDownHandler = (e) => this.onEntryKeyDown(e), this.documentChangeHandler = (e) => {
-			jd(e.target)?.matches("#world_editor_select") && this.syncSelectedWorld();
+			Md(e.target)?.matches("#world_editor_select") && this.syncSelectedWorld();
 		}, this.document.addEventListener("click", this.documentClickHandler, !0), this.document.addEventListener("keydown", this.documentKeyDownHandler, !0), this.document.addEventListener("change", this.documentChangeHandler, !0);
 		let e = this.document.querySelector("#world_editor_select");
 		if (e) {
@@ -7715,9 +7725,9 @@ var pf = class {
 		this.observeCurrentList();
 		let e = this.findEntriesList();
 		if (e) {
-			for (let t of e.querySelectorAll(":scope > .world_entry")) if (sf(this.document, t, this.scheduleSummaryUpdate), this.multiSelect || this.selectedUids.size > 0) {
-				let e = Ed(t);
-				t.classList.toggle(fd, e !== void 0 && this.selectedUids.has(e));
+			for (let t of e.querySelectorAll(":scope > .world_entry")) if (cf(this.document, t, this.scheduleSummaryUpdate), this.multiSelect || this.selectedUids.size > 0) {
+				let e = Dd(t);
+				t.classList.toggle(pd, e !== void 0 && this.selectedUids.has(e));
 			}
 		}
 	}
@@ -7725,23 +7735,23 @@ var pf = class {
 		this.selectedEntry?.isConnected || (this.clearSelection(), this.mobileDetailOpen = !1, this.syncResponsiveMode(), this.isNarrowMode() || this.selectFirstEntry());
 	}
 	syncSelectedWorld() {
-		let e = Dd(this.document);
+		let e = Od(this.document);
 		if (e !== this.selectedWorldName) {
-			this.selectedWorldName = e, this.worldRevision += 1, this.clearSelection(), this.cancelPendingSummaryUpdates(), this.selectedUids.clear(), wd.clear();
-			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(fd);
+			this.selectedWorldName = e, this.worldRevision += 1, this.clearSelection(), this.cancelPendingSummaryUpdates(), this.selectedUids.clear(), Td.clear();
+			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(pd);
 			this.updateDeleteSelectedButton();
 		}
 	}
 	onEntryKeyDown(e) {
 		if (this.deleteBusy || e.repeat || e.key !== "Enter" && e.key !== " ") return;
-		let t = jd(e.target)?.closest(".th-modern-wi-row-summary"), n = t ? Pd(t) : null;
+		let t = Md(e.target)?.closest(".th-modern-wi-row-summary"), n = t ? Fd(t) : null;
 		n && (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.multiSelect ? this.toggleEntrySelected(n) : this.selectEntry(n));
 	}
 	onEntryClick(e) {
 		if (this.deleteBusy) return;
-		let t = Pd(e.target);
+		let t = Fd(e.target);
 		if (!t) return;
-		let n = jd(e.target);
+		let n = Md(e.target);
 		this.nativeEditorToggleEntry === t && n?.closest(".inline-drawer-toggle") || (this.multiSelect ? (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.toggleEntrySelected(t)) : (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.selectEntry(t)));
 	}
 	selectFirstEntry() {
@@ -7750,14 +7760,14 @@ var pf = class {
 		e && this.selectEntry(e);
 	}
 	clearSelection() {
-		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(_d), this.detachEntryEditor(), this.selectedEntry?.classList.remove(dd), this.selectedEntry = void 0;
+		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(vd), this.detachEntryEditor(), this.selectedEntry?.classList.remove(fd), this.selectedEntry = void 0;
 	}
 	selectEntry(e) {
-		this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(dd), this.ensureEntryEditor(e), this.openMobileDetail());
+		this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(fd), this.ensureEntryEditor(e), this.openMobileDetail());
 	}
 	ensureEntryEditor(e) {
-		if (e.classList.contains(_d)) return;
-		if (this.cancelPendingEditorRetry(), sf(this.document, e, this.scheduleSummaryUpdate), ff(this.document, e, this.scheduleSummaryUpdate)) {
+		if (e.classList.contains(vd)) return;
+		if (this.cancelPendingEditorRetry(), cf(this.document, e, this.scheduleSummaryUpdate), pf(this.document, e, this.scheduleSummaryUpdate)) {
 			this.attachEntryEditor(e);
 			return;
 		}
@@ -7769,10 +7779,10 @@ var pf = class {
 			} finally {
 				this.nativeEditorToggleEntry = void 0;
 			}
-			e.classList.add(_d);
+			e.classList.add(vd);
 		}
 		let r = 0, i = this.editorRetryRevision, a = () => {
-			this.mounted && this.selectedEntry === e && i === this.editorRetryRevision && (r += 1, ff(this.document, e, this.scheduleSummaryUpdate) ? (e.classList.remove(_d), this.attachEntryEditor(e)) : r > 20 ? e.classList.remove(_d) : this.pendingEditorRetry = this.window.setTimeout(() => {
+			this.mounted && this.selectedEntry === e && i === this.editorRetryRevision && (r += 1, pf(this.document, e, this.scheduleSummaryUpdate) ? (e.classList.remove(vd), this.attachEntryEditor(e)) : r > 20 ? e.classList.remove(vd) : this.pendingEditorRetry = this.window.setTimeout(() => {
 				this.pendingEditorRetry = 0, a();
 			}, 50));
 		};
@@ -7793,34 +7803,34 @@ var pf = class {
 	detachEntryEditor() {
 		let e = this.selectedEntry;
 		for (let e of this.editorMoved) e.node.nodeType === 1 && e.node.classList.remove("th-modern-wi-active-editor-content");
-		Id(this.editorMoved), e && of(e), this.editorPane?.replaceChildren();
+		Ld(this.editorMoved), e && sf(e), this.editorPane?.replaceChildren();
 	}
 	attachEntryEditor(e) {
 		if (!this.editorPane || this.selectedEntry !== e) return;
 		let t = e.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet");
 		if (!t || t.closest(".th-modern-wi-native-editor")) return;
 		this.detachEntryEditor();
-		let n = Ld(this.document, "menu_button th-modern-wi-mobile-back", "返回世界书条目列表", "fa-solid fa-arrow-left");
+		let n = Rd(this.document, "menu_button th-modern-wi-mobile-back", "返回世界书条目列表", "fa-solid fa-arrow-left");
 		n.append(Y(this.document, "span", "", "返回条目列表")), n.addEventListener("click", (e) => {
 			e.preventDefault(), this.closeMobileDetail();
 		});
 		let r = Y(this.document, "div", `${e.className} th-modern-wi-editor-entry-host`);
 		for (let t of Array.from(e.attributes)) t.name !== "class" && r.setAttribute(t.name, t.value);
-		let i = Y(this.document, "form", "world_entry_form"), a = Y(this.document, "div", "inline-drawer"), o = () => of(e, r);
-		r.addEventListener("input", o), r.addEventListener("change", o), i.append(a), r.append(i), this.editorPane.replaceChildren(n, r), t.classList.add("th-modern-wi-active-editor-content"), Fd(t, a, this.editorMoved), of(e, r);
+		let i = Y(this.document, "form", "world_entry_form"), a = Y(this.document, "div", "inline-drawer"), o = () => sf(e, r);
+		r.addEventListener("input", o), r.addEventListener("change", o), i.append(a), r.append(i), this.editorPane.replaceChildren(n, r), t.classList.add("th-modern-wi-active-editor-content"), Id(t, a, this.editorMoved), sf(e, r);
 	}
 	toggleMultiSelect() {
 		if (!this.deleteBusy) {
-			if (this.multiSelect = !this.multiSelect, this.findWorldInfo()?.classList.toggle(pd, this.multiSelect), this.multiButton?.classList.toggle("active", this.multiSelect), !this.multiSelect) {
+			if (this.multiSelect = !this.multiSelect, this.findWorldInfo()?.classList.toggle(md, this.multiSelect), this.multiButton?.classList.toggle("active", this.multiSelect), !this.multiSelect) {
 				this.selectedUids.clear();
-				for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(fd);
+				for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(pd);
 			}
 			this.updateDeleteSelectedButton();
 		}
 	}
 	toggleEntrySelected(e) {
-		let t = Ed(e);
-		t !== void 0 && (this.selectedUids.has(t) ? (this.selectedUids.delete(t), e.classList.remove(fd)) : (this.selectedUids.add(t), e.classList.add(fd)), this.updateDeleteSelectedButton());
+		let t = Dd(e);
+		t !== void 0 && (this.selectedUids.has(t) ? (this.selectedUids.delete(t), e.classList.remove(pd)) : (this.selectedUids.add(t), e.classList.add(pd)), this.updateDeleteSelectedButton());
 	}
 	updateDeleteSelectedButton() {
 		if (!this.deleteSelectedButton) return;
@@ -7837,18 +7847,18 @@ var pf = class {
 		} else this.lockedWorldSelect &&= (this.lockedWorldSelect.element.disabled = this.lockedWorldSelect.wasDisabled, void 0);
 	}
 	isDeleteContextCurrent(e, t) {
-		return this.mounted && this.worldRevision === t && Dd(this.document) === e;
+		return this.mounted && this.worldRevision === t && Od(this.document) === e;
 	}
 	async deleteSelectedEntries() {
 		if (this.deleteBusy) return;
 		let e = Array.from(this.selectedUids);
 		if (!e.length) return;
-		let t = Dd(this.document);
+		let t = Od(this.document);
 		if (!t) {
 			toastr.error("无法确定当前正在编辑的世界书");
 			return;
 		}
-		let n = this.worldRevision, r = e.map((e) => this.document.querySelector(`.world_entry[uid="${e}"]`)).filter((e) => !!e).map((e) => nf(e)).slice(0, 5).join("、"), i = e.length > 5 ? ` 等 ${e.length} 项` : "", a = `确认删除 ${e.length} 个世界书条目？\n${r}${i}`;
+		let n = this.worldRevision, r = e.map((e) => this.document.querySelector(`.world_entry[uid="${e}"]`)).filter((e) => !!e).map((e) => rf(e)).slice(0, 5).join("、"), i = e.length > 5 ? ` 等 ${e.length} 项` : "", a = `确认删除 ${e.length} 个世界书条目？\n${r}${i}`;
 		if (!this.window.confirm(a) || !this.isDeleteContextCurrent(t, n)) return;
 		let o = new Set(e);
 		this.setDeleteBusy(!0);
@@ -7856,22 +7866,22 @@ var pf = class {
 		try {
 			if (s = await SillyTavern.loadWorldInfo(t), !this.isDeleteContextCurrent(t, n)) return;
 			if (!s) throw Error(`无法读取世界书“${t}”`);
-			let e = Ad(s, o, this.window);
+			let e = jd(s, o, this.window);
 			if (!this.isDeleteContextCurrent(t, n) || (c = !0, await SillyTavern.saveWorldInfo(t, e, !0), !this.isDeleteContextCurrent(t, n))) return;
 		} catch (e) {
 			if (c && s) try {
 				await SillyTavern.saveWorldInfo(t, s, !0);
 			} catch (e) {
-				console.error("[现代化界面] 恢复世界书缓存失败", e), toastr.error(`恢复世界书原数据失败：${kd(e)}`);
+				console.error("[现代化界面] 恢复世界书缓存失败", e), toastr.error(`恢复世界书原数据失败：${Ad(e)}`);
 			}
-			console.error("[现代化界面] 世界书批量删除失败", e), toastr.error(`删除世界书条目失败：${kd(e)}`);
+			console.error("[现代化界面] 世界书批量删除失败", e), toastr.error(`删除世界书条目失败：${Ad(e)}`);
 			return;
 		} finally {
 			this.setDeleteBusy(!1);
 		}
 		if (this.isDeleteContextCurrent(t, n)) {
 			this.clearSelection(), this.selectedUids.clear();
-			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(fd);
+			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(pd);
 			this.updateDeleteSelectedButton();
 			try {
 				await SillyTavern.reloadWorldInfoEditor(t, !0);
@@ -7881,12 +7891,12 @@ var pf = class {
 		}
 	}
 };
-function mf(e) {
+function hf(e) {
 	let t = L(), n = R(), r, i, a = null, o = 0, s = () => t.querySelector("#WorldInfo"), c = () => {
 		let e = r?.destroy() ?? !1;
 		return r = void 0, e;
 	}, l = (t, n) => {
-		t ? i ? i.setEnabled(n) : i = cd({
+		t ? i ? i.setEnabled(n) : i = ld({
 			enabled: n,
 			onEnabledChange: (t) => {
 				e.settings.modernWorldSelect = t;
@@ -7899,9 +7909,9 @@ function mf(e) {
 		let i = s();
 		m(i);
 		let a = i?.classList.contains("openDrawer") ?? !1;
-		i?.classList.toggle(ld, n && (a || !!r)), n && a ? (r ??= new pf(), r.mount(), r.ensureLayout()) : !n && c() && hf(t);
+		i?.classList.toggle(ud, n && (a || !!r)), n && a ? (r ??= new mf(), r.mount(), r.ensureLayout()) : !n && c() && gf(t);
 	}, d = (e) => {
-		jd(e.target)?.closest("#WIDrawerIcon, .drawer-toggle, [data-target=\"WorldInfo\"]") && (n.requestAnimationFrame(() => {
+		Md(e.target)?.closest("#WIDrawerIcon, .drawer-toggle, [data-target=\"WorldInfo\"]") && (n.requestAnimationFrame(() => {
 			r?.isMounted() && r.ensureLayout();
 		}), n.setTimeout(() => {
 			r?.isMounted() && r.ensureLayout();
@@ -7923,11 +7933,11 @@ function mf(e) {
 		e.settings.modernWorldSelect
 	], f, { immediate: !0 });
 	return { destroy() {
-		h(), p?.disconnect(), t.removeEventListener("click", d, !0), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(ld), i?.destroy(), i = void 0, c() && hf(t);
+		h(), p?.disconnect(), t.removeEventListener("click", d, !0), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(ud), i?.destroy(), i = void 0, c() && gf(t);
 	} };
 }
-function hf(e) {
-	let t = Dd(e);
+function gf(e) {
+	let t = Od(e);
 	if (t) try {
 		SillyTavern.reloadWorldInfoEditor(t, !0);
 	} catch (e) {
@@ -7935,46 +7945,46 @@ function hf(e) {
 	}
 }
 // src/index.ts
-var gf = "th-modern-enabled", _f = "th-modern-two-column", vf = "th-modern-three-column", yf = "th-modern-docked-drawer", bf = "th-modern-main-fill", xf = "th-modern-floating-input", Sf = "th-modern-reduce-motion", Cf = "th-modern-reduce-advanced-effects", wf = "th-modern-sidebar-collapsed", Tf = "th-modern-auto-collapse", Ef = "th-modern-sidebar-temp-expanded", Df = "th-modern-resizing", Of = "th-modern-drawer-fullscreen", kf = "th-modern-drawer-open", Af = "th-modern-drawer-switching", jf = "th-modern-quick-replies-collapsed", Mf = "th-modern-sidebar", Nf = "th-modern-sidebar-resize-handle", Pf = "th-modern-overlay-resize-handle", Ff = "th-modern-quick-reply-toggle", If = "th-modern-topbar-label", Lf = "th-modern-drawer-titlebar", Rf = "th-modern-drawer-title", zf = "th-modern-drawer-actions", Bf = "th-modern-drawer-close", Vf = "th-modern-drawer-fullscreen-toggle", Hf = "th-modern-drawer-fullscreen-content", Uf = "th-modern-drawer-active", Wf = "thModernFullscreenPinned", Gf = "thModernFullscreenWasPinned", Kf = "thModernDockedPinned", qf = "thModernDockedWasPinned", Jf = "th-modern-api-source-group", Yf = "th-modern-api-footer", Xf = "th-reset", Zf = "th-modern-failsafe-shortcut", Qf = "SillyTavern", $f = "TavernHelper.modernLayout.dispose", ep = "TavernHelper.modernLayout.runtimes", tp = "TavernHelper.modernLayout.sidebarCollapsed", np = "TavernHelper.modernLayout.recentCollapsed", rp = 15, ip = "(min-width: 900px) and (max-width: 1199.98px)", ap = "(min-width: 900px)", op = 320, sp = 460, cp = 720, lp = 24, up = 480, dp = 1e3, fp = "--th-modern-left-nav-height", pp = "--th-modern-input-height", mp = "--th-modern-input-stack-offset", hp = "--th-modern-quick-reply-max-height", gp = "--th-modern-quick-reply-reserve-height", _p = 66, vp = 240, yp = 44, bp = 12, xp = "modern-ui", Sp = "1.0.0", Cp = !1;
-function wp(e, t, n, r) {
+var _f = "th-modern-enabled", vf = "th-modern-two-column", yf = "th-modern-three-column", bf = "th-modern-docked-drawer", xf = "th-modern-main-fill", Sf = "th-modern-floating-input", Cf = "th-modern-single-line-input", wf = "th-modern-reduce-motion", Tf = "th-modern-reduce-advanced-effects", Ef = "th-modern-sidebar-collapsed", Df = "th-modern-auto-collapse", Of = "th-modern-sidebar-temp-expanded", kf = "th-modern-resizing", Af = "th-modern-drawer-fullscreen", jf = "th-modern-drawer-open", Mf = "th-modern-drawer-switching", Nf = "th-modern-quick-replies-collapsed", Pf = "th-modern-sidebar", Ff = "th-modern-sidebar-resize-handle", If = "th-modern-overlay-resize-handle", Lf = "th-modern-quick-reply-toggle", Rf = "th-modern-topbar-label", zf = "th-modern-drawer-titlebar", Bf = "th-modern-drawer-title", Vf = "th-modern-drawer-actions", Hf = "th-modern-drawer-close", Uf = "th-modern-drawer-fullscreen-toggle", Wf = "th-modern-drawer-fullscreen-content", Gf = "th-modern-drawer-active", Kf = "thModernFullscreenPinned", qf = "thModernFullscreenWasPinned", Jf = "thModernDockedPinned", Yf = "thModernDockedWasPinned", Xf = "th-modern-api-source-group", Zf = "th-modern-api-footer", Qf = "th-reset", $f = "th-modern-failsafe-shortcut", ep = "SillyTavern", tp = "TavernHelper.modernLayout.dispose", np = "TavernHelper.modernLayout.runtimes", rp = "TavernHelper.modernLayout.sidebarCollapsed", ip = "TavernHelper.modernLayout.recentCollapsed", ap = 15, op = "(min-width: 900px) and (max-width: 1199.98px)", sp = "(min-width: 900px)", cp = 320, lp = 460, up = 720, dp = 24, fp = 480, pp = 1e3, mp = "--th-modern-left-nav-height", hp = "--th-modern-input-height", gp = "--th-modern-input-stack-offset", _p = "--th-modern-quick-reply-max-height", vp = "--th-modern-quick-reply-reserve-height", yp = 66, bp = 240, xp = 44, Sp = 12, Cp = "modern-ui", wp = "1.0.0", Tp = !1;
+function Ep(e, t, n, r) {
 	return typeof e != "number" || !Number.isFinite(e) ? r : Math.min(Math.max(e, t), n);
 }
-function Tp() {
+function Dp() {
 	let e = L();
 	return e.body ? [e.documentElement, e.body] : [e.documentElement];
 }
-function Ep() {
+function Op() {
 	return R().localStorage;
 }
-function Dp(e) {
+function kp(e) {
 	try {
-		return Ep()?.getItem(e) === "true";
+		return Op()?.getItem(e) === "true";
 	} catch (e) {
 		return console.warn(`[${Ul}] 读取浏览器状态失败。`, e), !1;
 	}
 }
-function Op(e, t) {
+function Ap(e, t) {
 	try {
-		Ep()?.setItem(e, String(t));
+		Op()?.setItem(e, String(t));
 	} catch (e) {
 		console.warn(`[${Ul}] 保存浏览器状态失败。`, e);
 	}
 }
-function kp(e, t) {
-	Tp().forEach((n) => {
+function jp(e, t) {
+	Dp().forEach((n) => {
 		n.style.getPropertyValue(e) !== t && n.style.setProperty(e, t);
 	});
 }
 function Z(e) {
-	Tp().forEach((t) => {
+	Dp().forEach((t) => {
 		t.style.getPropertyValue(e) && t.style.removeProperty(e);
 	});
 }
-function Ap(e, t) {
+function Mp(e, t) {
 	let n = Number.parseFloat(e);
 	return Number.isFinite(n) ? n : t;
 }
-function jp(e, t, n) {
+function Np(e, t, n) {
 	e.forEach((e) => {
 		e.style.getPropertyValue(t) !== n && e.style.setProperty(t, n);
 	});
@@ -7986,9 +7996,9 @@ function Q() {
 	} catch {
 		n = void 0;
 	}
-	return n && typeof n == "object" || (n = t ?? e), Array.isArray(n.characters) || (n.characters = Fp()), Array.isArray(n.groups) || (n.groups = Ip()), n.characterId === void 0 && (n.characterId = e.this_chid ?? e.characterId), n.groupId === void 0 && (n.groupId = e.selected_group ?? e.groupId), typeof n.getCurrentChatId != "function" && (n.getCurrentChatId = () => e.getCurrentChatId?.() ?? e.selected_and_active_chat), n;
+	return n && typeof n == "object" || (n = t ?? e), Array.isArray(n.characters) || (n.characters = Lp()), Array.isArray(n.groups) || (n.groups = Rp()), n.characterId === void 0 && (n.characterId = e.this_chid ?? e.characterId), n.groupId === void 0 && (n.groupId = e.selected_group ?? e.groupId), typeof n.getCurrentChatId != "function" && (n.getCurrentChatId = () => e.getCurrentChatId?.() ?? e.selected_and_active_chat), n;
 }
-function Mp() {
+function Pp() {
 	let e, t = !1, n = async () => {
 		let e = R(), n = L().baseURI || e.location.href, r = new URL("script.js", n).href, i = new URL("scripts/group-chats.js", n).href, a = e.Function, [o, s] = await a("mainModuleUrl", "groupModuleUrl", "return Promise.all([import(mainModuleUrl), import(groupModuleUrl)]);")(r, i), c = o, l = s;
 		if (typeof c.selectCharacterById != "function" || typeof c.isGenerating != "function" || typeof c.isChatSaving != "boolean" || typeof c.setActiveCharacter != "function" || typeof c.setActiveGroup != "function" || typeof l.openGroupChat != "function" || typeof l.openGroupById != "function") throw Error("当前 SillyTavern 缺少最近聊天所需的导航能力。");
@@ -8016,10 +8026,10 @@ function Mp() {
 		}
 	};
 }
-function Np(e) {
+function Fp(e) {
 	return e instanceof DOMException && e.name === "AbortError";
 }
-function Pp() {
+function Ip() {
 	let e = window.SillyTavern?.getContext?.(), t = (window.SillyTavern?.accountStorage ?? e?.accountStorage ?? window.accountStorage ?? localStorage)?.getItem?.("pinnedChats");
 	if (typeof t != "string") return [];
 	try {
@@ -8029,21 +8039,21 @@ function Pp() {
 		return console.warn(`[${Ul}] 读取最近聊天置顶状态失败。`, e), [];
 	}
 }
-function Fp() {
+function Lp() {
 	let e = R?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n = t?.getContext?.();
 	return Array.isArray(n?.characters) ? n.characters : Array.isArray(e.characters) ? e.characters : Array.isArray(t?.characters) ? t.characters : Array.isArray(window.characters) ? window.characters : [];
 }
-function Ip() {
+function Rp() {
 	let e = R?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n = t?.getContext?.();
 	return Array.isArray(n?.groups) ? n.groups : Array.isArray(e.groups) ? e.groups : Array.isArray(t?.groups) ? t.groups : Array.isArray(window.groups) ? window.groups : [];
 }
-function Lp(e) {
-	if (e) return Fp().find((t) => t?.avatar === e);
-}
-function Rp(e) {
-	if (e) return Ip().find((t) => t?.id === e);
-}
 function zp(e) {
+	if (e) return Lp().find((t) => t?.avatar === e);
+}
+function Bp(e) {
+	if (e) return Rp().find((t) => t?.id === e);
+}
+function Vp(e) {
 	if (!e) return;
 	let t = window.SillyTavern?.getContext?.(), n = window.SillyTavern?.timestampToMoment ?? t?.timestampToMoment;
 	if (typeof n == "function") try {
@@ -8054,7 +8064,7 @@ function zp(e) {
 		return r(e);
 	} catch {}
 }
-function Bp(e, t) {
+function Hp(e, t) {
 	if (!t) return "img/groupchat.png";
 	let n = window.SillyTavern?.getContext?.(), r = window.SillyTavern?.getThumbnailUrl ?? n?.getThumbnailUrl ?? window.getThumbnailUrl;
 	if (typeof r == "function") try {
@@ -8062,10 +8072,10 @@ function Bp(e, t) {
 	} catch {}
 	return t.startsWith("http://") || t.startsWith("https://") || t.startsWith("/") ? t : `/characters/${encodeURIComponent(t)}`;
 }
-function Vp(e) {
-	let t = Lp(e.avatar), n = Rp(e.group);
+function Up(e) {
+	let t = zp(e.avatar), n = Bp(e.group);
 	if (!t && !n) return;
-	let r = e.chat_name ?? e.file_name.replace(/\.jsonl$/i, ""), i = zp(e.last_mes), a = "", o = "";
+	let r = e.chat_name ?? e.file_name.replace(/\.jsonl$/i, ""), i = Vp(e.last_mes), a = "", o = "";
 	if (i?.format) try {
 		a = i.format("l"), o = i.format("LL LT");
 	} catch {}
@@ -8077,7 +8087,7 @@ function Vp(e) {
 		...e,
 		chat_name: r,
 		char_name: t?.name ?? String(n?.name ?? ""),
-		char_thumbnail: t ? Bp("avatar", t.avatar) : "img/groupchat.png",
+		char_thumbnail: t ? Hp("avatar", t.avatar) : "img/groupchat.png",
 		date_short: a,
 		date_long: o,
 		is_group: !!n,
@@ -8090,35 +8100,35 @@ function Vp(e) {
 		last_mes: e.last_mes ?? ""
 	};
 }
-function Hp() {
+function Wp() {
 	let e = window.SillyTavern?.getContext?.();
 	return typeof window.SillyTavern?.getRequestHeaders == "function" ? window.SillyTavern.getRequestHeaders() : typeof e?.getRequestHeaders == "function" ? e.getRequestHeaders() : typeof window.getRequestHeaders == "function" ? window.getRequestHeaders() : {
 		"Content-Type": "application/json",
 		"X-CSRF-Token": window.token || ""
 	};
 }
-async function Up(e) {
+async function Gp(e) {
 	let t = await fetch("/api/chats/recent", {
 		method: "POST",
-		headers: Hp(),
+		headers: Wp(),
 		body: JSON.stringify({
-			max: rp,
-			pinned: Pp()
+			max: ap,
+			pinned: Ip()
 		}),
 		cache: "no-cache",
 		signal: e
 	});
 	if (!t.ok) throw Error(`HTTP ${t.status}`);
 	let n = await t.json();
-	return Array.isArray(n) ? n.map((e) => Vp(e)).filter((e) => e !== void 0).slice(0, rp) : [];
+	return Array.isArray(n) ? n.map((e) => Up(e)).filter((e) => e !== void 0).slice(0, ap) : [];
 }
-function Wp(e) {
+function Kp(e) {
 	return (e ?? "").replace(/\.jsonl$/i, "");
 }
-async function Gp(e, t) {
+async function qp(e, t) {
 	let n = await fetch("/api/characters/chats", {
 		method: "POST",
-		headers: Hp(),
+		headers: Wp(),
 		body: JSON.stringify({
 			avatar_url: e,
 			simple: !0
@@ -8130,22 +8140,22 @@ async function Gp(e, t) {
 	return !r || typeof r != "object" ? !1 : (Array.isArray(r) ? r : Object.values(r)).some((e) => {
 		if (!e || typeof e != "object") return !1;
 		let n = e, r = typeof n.file_id == "string" ? n.file_id : void 0, i = typeof n.file_name == "string" ? n.file_name : void 0;
-		return Wp(r ?? i) === t;
+		return Kp(r ?? i) === t;
 	});
 }
-function Kp(e) {
-	let t = Q(), n = Wp(e.chat_name ?? e.file_name);
-	if (!n || Wp(t.getCurrentChatId?.()) !== n) return !1;
+function Jp(e) {
+	let t = Q(), n = Kp(e.chat_name ?? e.file_name);
+	if (!n || Kp(t.getCurrentChatId?.()) !== n) return !1;
 	if (e.is_group && e.group) return String(t.groupId ?? "") === e.group;
 	if (!e.avatar || t.groupId) return !1;
-	let r = (Array.isArray(t.characters) ? t.characters : Fp()).findIndex((t) => t?.avatar === e.avatar);
+	let r = (Array.isArray(t.characters) ? t.characters : Lp()).findIndex((t) => t?.avatar === e.avatar);
 	return r !== -1 && String(t.characterId) === String(r);
 }
-function qp(e, t) {
+function Yp(e, t) {
 	let n = $("<button>").attr({
 		type: "button",
 		title: e.date_long ? `${e.char_name} - ${e.chat_name}\n${e.date_long}` : `${e.char_name} - ${e.chat_name}`
-	}).addClass("th-modern-recent-chat").toggleClass("is-current", Kp(e)).on("click", () => t(e)), r = $("<span>").addClass("th-modern-recent-avatar");
+	}).addClass("th-modern-recent-chat").toggleClass("is-current", Jp(e)).on("click", () => t(e)), r = $("<span>").addClass("th-modern-recent-avatar");
 	$("<img>").attr({
 		src: e.char_thumbnail || "img/ai4.png",
 		alt: e.char_name || "聊天头像"
@@ -8155,39 +8165,39 @@ function qp(e, t) {
 	let a = $("<span>").addClass("th-modern-recent-meta");
 	return $("<span>").text(e.date_short ?? "").appendTo(a), $("<span>").text(`${e.chat_items ?? 0} 条`).appendTo(a), n.append(r, i, a);
 }
-async function Jp(e, t, n) {
-	let r = Wp(e.chat_name ?? e.file_name);
+async function Xp(e, t, n) {
+	let r = Kp(e.chat_name ?? e.file_name);
 	if (!r) throw Error("最近聊天缺少聊天文件名。");
 	let i = R?.() ?? window, a = Q(), o = i.SillyTavern?.saveSettingsDebounced ?? a?.saveSettingsDebounced ?? i.saveSettingsDebounced, s = i.SillyTavern?.openGroupChat ?? a?.openGroupChat ?? i.openGroupChat, c = i.SillyTavern?.selectCharacterById ?? a?.selectCharacterById ?? i.selectCharacterById, l = i.SillyTavern?.openCharacterChat ?? a?.openCharacterChat ?? i.openCharacterChat;
 	if (e.is_group && e.group) {
-		if (!Rp(e.group)) throw Error("未找到对应群组。");
+		if (!Bp(e.group)) throw Error("未找到对应群组。");
 		if (String(Q().groupId ?? "") !== e.group) {
 			let r = await t.openGroupById(e.group);
 			if (n(), !r && String(Q().groupId ?? "") !== e.group) throw Error("群组切换被聊天保存或生成状态阻止。");
 		}
 		if (String(Q().groupId ?? "") !== e.group) throw Error("群组未能正确激活。");
-		if (t.setActiveGroup(e.group), o?.(), Wp(Q().getCurrentChatId?.()) !== r && (await s?.(e.group, r), n()), String(Q().groupId ?? "") !== e.group || Wp(Q().getCurrentChatId?.()) !== r) throw Error("群组聊天不存在或未能正确打开。");
+		if (t.setActiveGroup(e.group), o?.(), Kp(Q().getCurrentChatId?.()) !== r && (await s?.(e.group, r), n()), String(Q().groupId ?? "") !== e.group || Kp(Q().getCurrentChatId?.()) !== r) throw Error("群组聊天不存在或未能正确打开。");
 	} else if (e.avatar) {
 		let i = () => {
 			let e = Q().characters;
-			return Array.isArray(e) ? e : Fp();
+			return Array.isArray(e) ? e : Lp();
 		}, a = i().findIndex((t) => t?.avatar === e.avatar);
 		if (a === -1) throw Error("未找到对应角色。");
-		if (!await Gp(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
+		if (!await qp(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
 		if (n(), a = i().findIndex((t) => t?.avatar === e.avatar), a === -1) throw Error("角色已不存在。");
 		await c?.(a), n();
 		let s = i()[Number(Q().characterId)];
 		if (Q().groupId || s?.avatar !== e.avatar) throw Error("角色切换被聊天保存或生成状态阻止。");
-		if (t.setActiveCharacter(e.avatar), o?.(), Wp(Q().getCurrentChatId?.()) !== r) {
-			if (!await Gp(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
+		if (t.setActiveCharacter(e.avatar), o?.(), Kp(Q().getCurrentChatId?.()) !== r) {
+			if (!await qp(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
 			if (n(), Q().groupId || i()[Number(Q().characterId)]?.avatar !== e.avatar) throw Error("角色已不再处于激活状态。");
 			t.setActiveCharacter(e.avatar), await l?.(r), n();
 		}
 		let u = i()[Number(Q().characterId)];
-		if (Q().groupId || u?.avatar !== e.avatar || Wp(Q().getCurrentChatId?.()) !== r) throw Error("角色聊天未能正确打开。");
+		if (Q().groupId || u?.avatar !== e.avatar || Kp(Q().getCurrentChatId?.()) !== r) throw Error("角色聊天未能正确打开。");
 	} else throw Error("最近聊天缺少角色或群组标识。");
 }
-function Yp(e, t) {
+function Zp(e, t) {
 	let n = String(e ?? "").replace(/\s+/g, " ").trim();
 	if (n) {
 		if (t === "version") {
@@ -8198,20 +8208,20 @@ function Yp(e, t) {
 		if (!(!n || n.length > 64 || n.includes("://"))) return n;
 	}
 }
-function Xp(e = L()) {
+function Qp(e = L()) {
 	for (let t of [
 		".welcomeHeaderVersionDisplay",
 		"#version_display_welcome",
 		"#version_display"
 	]) {
-		let n = Yp(e.querySelector(t)?.textContent, "version");
+		let n = Zp(e.querySelector(t)?.textContent, "version");
 		if (n) return n;
 	}
-	return Yp(e.querySelector("meta[name=\"application-name\"]")?.content, "plain") || Yp(e.querySelector(".welcomePanel .welcomeHeaderLogo")?.alt, "logo") || (Yp(e.title, "plain") ?? Qf);
+	return Zp(e.querySelector("meta[name=\"application-name\"]")?.content, "plain") || Zp(e.querySelector(".welcomePanel .welcomeHeaderLogo")?.alt, "logo") || (Zp(e.title, "plain") ?? ep);
 }
-function Zp(e) {
-	let t = R(), n = L(), r = $("<div>").attr("id", Mf).addClass("th-modern-sidebar recentChat"), i = $("<div>").addClass("th-modern-sidebar-brand"), a = $("<span>").addClass("th-modern-brand-main").appendTo(i), o = $("<img>").addClass("th-modern-brand-logo welcomeHeaderLogo").attr("src", "img/logo.png").appendTo(a), s = $("<span>").addClass("th-modern-brand-name").appendTo(a), c = () => {
-		let e = Xp(n);
+function $p(e) {
+	let t = R(), n = L(), r = $("<div>").attr("id", Pf).addClass("th-modern-sidebar recentChat"), i = $("<div>").addClass("th-modern-sidebar-brand"), a = $("<span>").addClass("th-modern-brand-main").appendTo(i), o = $("<img>").addClass("th-modern-brand-logo welcomeHeaderLogo").attr("src", "img/logo.png").appendTo(a), s = $("<span>").addClass("th-modern-brand-name").appendTo(a), c = () => {
+		let e = Qp(n);
 		s.text(e), o.attr("alt", `${e} Logo`);
 	};
 	c();
@@ -8232,7 +8242,7 @@ function Zp(e) {
 		type: "button",
 		title: "折叠侧边栏",
 		"aria-pressed": "false"
-	}).addClass("th-modern-icon-button th-modern-sidebar-toggle fa-solid fa-chevron-left").appendTo(i), d = $("<section>").addClass("th-modern-recent-section"), f = `${Mf}-recent-list`, p = $("<div>").addClass("th-modern-section-header"), m = $("<span>").addClass("th-modern-section-actions"), h = $("<button>").attr({
+	}).addClass("th-modern-icon-button th-modern-sidebar-toggle fa-solid fa-chevron-left").appendTo(i), d = $("<section>").addClass("th-modern-recent-section"), f = `${Pf}-recent-list`, p = $("<div>").addClass("th-modern-section-header"), m = $("<span>").addClass("th-modern-section-actions"), h = $("<button>").attr({
 		type: "button",
 		title: "折叠最近聊天",
 		"aria-controls": f,
@@ -8240,9 +8250,9 @@ function Zp(e) {
 	}).addClass("th-modern-section-title th-modern-recent-toggle"), g = $("<span>").attr("aria-hidden", "true").addClass("th-modern-icon-button th-modern-recent-collapse fa-solid fa-chevron-up").appendTo(h);
 	$("<span>").addClass("th-modern-section-label").text("最近聊天").appendTo(h);
 	let v = (e, t = !0) => {
-		$(L().body).toggleClass(wf, e), $(L().body).removeClass(Ef), r.toggleClass("is-collapsed", e), y(), t && Op(tp, e);
+		$(L().body).toggleClass(Ef, e), $(L().body).removeClass(Of), r.toggleClass("is-collapsed", e), y(), t && Ap(rp, e);
 	}, y = () => {
-		let e = L().body, t = e.classList.contains(wf), n = e.classList.contains(Tf) && !e.classList.contains(Ef), r = t || n;
+		let e = L().body, t = e.classList.contains(Ef), n = e.classList.contains(Df) && !e.classList.contains(Of), r = t || n;
 		u.toggleClass("fa-chevron-left", !r).toggleClass("fa-chevron-right", r).attr({
 			title: r ? "展开侧边栏" : "折叠侧边栏",
 			"aria-pressed": String(r)
@@ -8252,14 +8262,14 @@ function Zp(e) {
 		d.toggleClass("is-collapsed", e), h.attr({
 			title: n,
 			"aria-expanded": String(!e)
-		}), g.toggleClass("fa-chevron-up", !e).toggleClass("fa-chevron-down", e), t && Op(np, e);
+		}), g.toggleClass("fa-chevron-up", !e).toggleClass("fa-chevron-down", e), t && Ap(ip, e);
 	}, x = () => {
 		b(!d.hasClass("is-collapsed"));
 	};
 	u.on("click", (e) => {
 		e.preventDefault(), e.stopPropagation();
 		let t = L().body;
-		t.classList.contains(Tf) && !t.classList.contains(wf) ? (t.classList.toggle(Ef), y()) : v(!t.classList.contains(wf));
+		t.classList.contains(Df) && !t.classList.contains(Ef) ? (t.classList.toggle(Of), y()) : v(!t.classList.contains(Ef));
 	}), h.on("click", (e) => {
 		e.preventDefault(), x();
 	});
@@ -8276,32 +8286,32 @@ function Zp(e) {
 	return w.observe(L().body, {
 		attributes: !0,
 		attributeFilter: ["class"]
-	}), v(Dp(tp), !1), b(Dp(np), !1), y(), {
+	}), v(kp(rp), !1), b(kp(ip), !1), y(), {
 		$list: C,
 		destroy: () => {
-			w.disconnect(), l.disconnect(), $(L().body).removeClass(wf), r.remove();
+			w.disconnect(), l.disconnect(), $(L().body).removeClass(Ef), r.remove();
 		}
 	};
 }
-function Qp(e) {
+function em(e) {
 	e.empty().append($("<div>").addClass("th-modern-recent-state").text("正在读取最近聊天..."));
 }
-function $p(e, t) {
+function tm(e, t) {
 	let n = t instanceof Error ? t.message : String(t);
 	e.empty().append($("<div>").addClass("th-modern-recent-state").text(`读取失败：${n}`));
 }
-function em(e) {
-	let t = Mp(), n, r = 0, i = 0, a = !1, o = !1, s = (t) => {
+function nm(e) {
+	let t = Pp(), n, r = 0, i = 0, a = !1, o = !1, s = (t) => {
 		a = t, e.toggleClass("is-navigating", t).attr("aria-busy", String(t)), e.find("button").prop("disabled", t);
 	}, c = (e) => {
-		if (o || a || Kp(e)) return;
+		if (o || a || Jp(e)) return;
 		let n = ++i, r = () => {
 			if (o || n !== i) throw new DOMException("导航已取消。", "AbortError");
 		};
 		s(!0), t.get().then(async (t) => {
-			r(), await Jp(e, t, r);
+			r(), await Xp(e, t, r);
 		}).catch((e) => {
-			if (Np(e)) return;
+			if (Fp(e)) return;
 			let t = e instanceof Error ? e.message : String(e);
 			toastr.error(`打开最近聊天失败：${t}`, Ul), console.error(`[${Ul}] 打开最近聊天失败。`, e);
 		}).finally(() => {
@@ -8313,12 +8323,12 @@ function em(e) {
 			if (o) return;
 			n?.abort(), n = new AbortController();
 			let t = ++r;
-			Qp(e), Up(n.signal).then((n) => {
+			em(e), Gp(n.signal).then((n) => {
 				o || t !== r || (e.empty(), n.length === 0 ? e.append($("<div>").addClass("th-modern-recent-state").text("暂无最近聊天")) : (n.forEach((t) => {
-					e.append(qp(t, c));
+					e.append(Yp(t, c));
 				}), a && s(!0)));
 			}).catch((n) => {
-				o || t !== r || Np(n) || $p(e, n);
+				o || t !== r || Fp(n) || tm(e, n);
 			});
 		},
 		destroy: () => {
@@ -8326,113 +8336,113 @@ function em(e) {
 		}
 	};
 }
-function tm(e) {
+function rm(e) {
 	let t = e.children(".drawer-icon").first();
 	return String(t.attr("title") || e.attr("title") || e.text()).trim();
 }
-function nm() {
-	return L().querySelector(`#top-settings-holder > .drawer > .drawer-content.${Hf}`) ?? void 0;
+function im() {
+	return L().querySelector(`#top-settings-holder > .drawer > .drawer-content.${Wf}`) ?? void 0;
 }
-function rm() {
-	let e = nm();
-	$(`.${Vf}`, L()).each((t, n) => {
-		let r = Cp && !!(e && $(n).closest(".drawer-content")[0] === e);
+function am() {
+	let e = im();
+	$(`.${Uf}`, L()).each((t, n) => {
+		let r = Tp && !!(e && $(n).closest(".drawer-content")[0] === e);
 		$(n).toggleClass("is-fullscreen", r).toggleClass("fa-expand", !r).toggleClass("fa-compress", r).attr({
 			title: r ? "恢复面板宽度" : "全屏显示面板",
 			"aria-label": r ? "恢复面板宽度" : "全屏显示面板"
 		});
 	});
 }
-function im(e) {
+function om(e) {
 	let t = L(), n = e === void 0 ? !!t.querySelector("#top-settings-holder > .drawer > .drawer-content.openDrawer") : e.length > 0;
-	t.body.classList.contains(kf) !== n && t.body.classList.toggle(kf, n);
+	t.body.classList.contains(jf) !== n && t.body.classList.toggle(jf, n);
 }
-function am(e) {
-	if (e.dataset[qf] === void 0) {
+function sm(e) {
+	if (e.dataset[Yf] === void 0) {
 		let t = e.classList.contains("pinnedOpen");
-		e.dataset[qf] = String(t), t || (e.dataset[Kf] = "true");
+		e.dataset[Yf] = String(t), t || (e.dataset[Jf] = "true");
 	}
 	e.classList.add("pinnedOpen");
 }
-function om(e) {
-	if (e.dataset[qf] === void 0) return;
-	let t = e.dataset[qf] === "true";
-	e.dataset[Kf] === "true" ? e.classList.remove("pinnedOpen") : t && e.classList.add("pinnedOpen"), delete e.dataset[Kf], delete e.dataset[qf];
+function cm(e) {
+	if (e.dataset[Yf] === void 0) return;
+	let t = e.dataset[Yf] === "true";
+	e.dataset[Jf] === "true" ? e.classList.remove("pinnedOpen") : t && e.classList.add("pinnedOpen"), delete e.dataset[Jf], delete e.dataset[Yf];
 }
-function sm(e) {
-	let t = L(), n = t.body.classList.contains(yf), r = new Set(e);
+function lm(e) {
+	let t = L(), n = t.body.classList.contains(bf), r = new Set(e);
 	t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
-		n && r.has(e) ? am(e) : e.classList.contains(Hf) || om(e);
+		n && r.has(e) ? sm(e) : e.classList.contains(Wf) || cm(e);
 	});
 }
-function cm() {
-	let e = nm();
+function um() {
+	let e = im();
 	if (e) {
-		let t = e.dataset[Gf] === "true", n = e.dataset[Gf] === void 0 || !t;
-		$(e).removeClass(Hf), n ? $(e).removeClass("pinnedOpen") : t && $(e).addClass("pinnedOpen"), delete e.dataset[Wf], delete e.dataset[Gf];
+		let t = e.dataset[qf] === "true", n = e.dataset[qf] === void 0 || !t;
+		$(e).removeClass(Wf), n ? $(e).removeClass("pinnedOpen") : t && $(e).addClass("pinnedOpen"), delete e.dataset[Kf], delete e.dataset[qf];
 	}
-	L().body.classList.remove(Of), im();
+	L().body.classList.remove(Af), om();
 }
-function lm() {
-	Cp = !1, cm(), rm();
-}
-function um(e) {
-	let t = nm();
-	if (t && t !== e && cm(), !(e instanceof (L().defaultView ?? window).HTMLElement)) return;
-	let n = L().body, r = $(e);
-	if (e.dataset[Gf] === void 0) {
-		let t = r.hasClass("pinnedOpen");
-		e.dataset[Gf] = String(t), t || (e.dataset[Wf] = "true");
-	}
-	r.addClass(`${Hf} pinnedOpen openDrawer`).removeClass("closedDrawer");
-	let i = r.closest(".drawer").find(".drawer-icon").first();
-	i.hasClass("closedIcon") && i.removeClass("closedIcon").addClass("openIcon"), n.classList.add(Of), im([e]), n.classList.contains(Tf) && !n.classList.contains(wf) && n.classList.add(Ef), rm();
-}
-function dm(e, t) {
-	Cp = t, t ? um(e) : lm();
+function dm() {
+	Tp = !1, um(), am();
 }
 function fm(e) {
-	nm() === e && cm();
+	let t = im();
+	if (t && t !== e && um(), !(e instanceof (L().defaultView ?? window).HTMLElement)) return;
+	let n = L().body, r = $(e);
+	if (e.dataset[qf] === void 0) {
+		let t = r.hasClass("pinnedOpen");
+		e.dataset[qf] = String(t), t || (e.dataset[Kf] = "true");
+	}
+	r.addClass(`${Wf} pinnedOpen openDrawer`).removeClass("closedDrawer");
+	let i = r.closest(".drawer").find(".drawer-icon").first();
+	i.hasClass("closedIcon") && i.removeClass("closedIcon").addClass("openIcon"), n.classList.add(Af), om([e]), n.classList.contains(Df) && !n.classList.contains(Ef) && n.classList.add(Of), am();
+}
+function pm(e, t) {
+	Tp = t, t ? fm(e) : dm();
+}
+function mm(e) {
+	im() === e && um();
 	let t = $(e);
 	if (!t.hasClass("openDrawer")) return;
-	om(e), t.removeClass("openDrawer pinnedOpen").addClass("closedDrawer");
+	cm(e), t.removeClass("openDrawer pinnedOpen").addClass("closedDrawer");
 	let n = t.closest(".drawer").find(".drawer-icon").first();
-	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), im();
+	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), om();
 }
-function pm() {
+function hm() {
 	let e = L(), t = e.defaultView ?? window, n = /* @__PURE__ */ new Map(), r = 0, i, a = 0, o, s = (t, n) => {
 		n?.classList.contains("openDrawer") ? o = n : o?.isConnected && o.classList.contains("openDrawer") || (o = t[t.length - 1]);
 		let r = t.length > 1;
-		e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(Uf, r && e === o));
+		e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(Gf, r && e === o));
 	}, c = () => {
-		a !== 0 && (t.clearTimeout(a), a = 0), i = void 0, e.body.classList.remove(Af);
+		a !== 0 && (t.clearTimeout(a), a = 0), i = void 0, e.body.classList.remove(Mf);
 	}, l = (n) => {
-		i = n, e.body.classList.add(Af), a !== 0 && t.clearTimeout(a), a = t.setTimeout(() => {
-			a = 0, i = void 0, e.body.classList.remove(Af), im();
-		}, dp);
+		i = n, e.body.classList.add(Mf), a !== 0 && t.clearTimeout(a), a = t.setTimeout(() => {
+			a = 0, i = void 0, e.body.classList.remove(Mf), om();
+		}, pp);
 	}, u = () => {
 		r === 0 && (r = t.requestAnimationFrame(() => {
 			r = 0, d();
 		}));
 	}, d = () => {
-		let t = nm(), n = Array.from(e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
-		if (s(n), sm(n), im(n), i && (!i.isConnected || i.classList.contains("openDrawer")) && c(), !t) {
-			if (e.body.classList.contains(Of) && e.body.classList.remove(Of), Cp && n[0]) {
-				um(n[0]);
+		let t = im(), n = Array.from(e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
+		if (s(n), lm(n), om(n), i && (!i.isConnected || i.classList.contains("openDrawer")) && c(), !t) {
+			if (e.body.classList.contains(Af) && e.body.classList.remove(Af), Tp && n[0]) {
+				fm(n[0]);
 				return;
 			}
-			rm();
+			am();
 			return;
 		}
 		if (!t.isConnected || !t.classList.contains("openDrawer")) {
-			cm(), Cp && n[0] ? um(n[0]) : rm();
+			um(), Tp && n[0] ? fm(n[0]) : am();
 			return;
 		}
 		let r = n.find((e) => e !== t);
-		r && (cm(), fm(t), Cp ? um(r) : rm());
+		r && (um(), mm(t), Tp ? fm(r) : am());
 	}, f = () => {
 		$("#top-settings-holder .drawer-toggle").each((e, t) => {
-			let r = $(t), i = tm(r);
+			let r = $(t), i = rm(r);
 			if (i) {
 				let e = t, a = n.get(e);
 				a ? a.written = i : n.set(e, {
@@ -8444,18 +8454,18 @@ function pm() {
 					"aria-label": i
 				});
 			}
-			r.children(`.${If}`).length > 0 || i && $("<span>").addClass(If).text(i).appendTo(r);
+			r.children(`.${Rf}`).length > 0 || i && $("<span>").addClass(Rf).text(i).appendTo(r);
 		});
 		let e = ".notes-link, .help_button, .help-button, a:has(.note-link-span), a[href*=\"docs.sillytavern.app\"], .note-link-span, [title*=\"帮助\"], [title*=\"Help\"]", t = (t) => {
-			let n = t.find(e).not(`.${Lf} *`);
+			let n = t.find(e).not(`.${zf} *`);
 			if (n.length === 0) return $();
 			let r = n.first(), i = r.closest("a, button, .notes-link, .help_button");
 			return i.length > 0 ? i : r;
 		};
 		$("#top-settings-holder .drawer-content").each((n, r) => {
-			let i = $(r), a = i.attr("id"), o = a !== "WorldInfo" && a !== "rm_extensions_block", s = i.children(`.${Lf}`), c = s.first();
+			let i = $(r), a = i.attr("id"), o = a !== "WorldInfo" && a !== "rm_extensions_block", s = i.children(`.${zf}`), c = s.first();
 			if (s.slice(1).remove(), c.length > 0) {
-				let n = c.find(`.${zf}`).first();
+				let n = c.find(`.${Vf}`).first();
 				if (!o) n.find(e).remove();
 				else if (!(n.find(e).length > 0)) {
 					let e = t(i);
@@ -8463,9 +8473,9 @@ function pm() {
 				}
 				return;
 			}
-			let l = tm(i.closest(".drawer").children(".drawer-toggle").first()), u = $("<div>").addClass(Lf);
-			$("<span>").addClass(Rf).text(l || "菜单").appendTo(u);
-			let d = $("<div>").addClass(zf).appendTo(u);
+			let l = rm(i.closest(".drawer").children(".drawer-toggle").first()), u = $("<div>").addClass(zf);
+			$("<span>").addClass(Bf).text(l || "菜单").appendTo(u);
+			let d = $("<div>").addClass(Vf).appendTo(u);
 			if (o) {
 				let e = t(i);
 				e.length > 0 && d.append(e);
@@ -8474,29 +8484,29 @@ function pm() {
 				type: "button",
 				title: "全屏显示面板",
 				"aria-label": "全屏显示面板"
-			}).addClass(`${Vf} fa-solid fa-expand`).appendTo(d), $("<button>").attr({
+			}).addClass(`${Uf} fa-solid fa-expand`).appendTo(d), $("<button>").attr({
 				type: "button",
 				title: "关闭面板"
-			}).addClass(`${Bf} fa-solid fa-xmark`).appendTo(d), i.prepend(u);
-		}), rm(), d();
+			}).addClass(`${Hf} fa-solid fa-xmark`).appendTo(d), i.prepend(u);
+		}), am(), d();
 	}, p = (n) => {
 		let r = n.target instanceof t.Element ? n.target : null, i = r?.closest("#top-settings-holder > .drawer > .drawer-toggle, #top-settings-holder .drawer-toggle"), a = r?.closest(".drawer-opener");
 		if (i || a) {
 			let t = i?.closest(".drawer") ?? i?.parentElement ?? (a?.dataset.target ? e.getElementById(a.dataset.target) : null), n = t?.querySelector(":scope > .drawer-content") ?? t?.querySelector(".drawer-content"), r = !!n?.classList.contains("openDrawer");
-			if (e.body.classList.contains(yf)) {
+			if (e.body.classList.contains(bf)) {
 				let t = Array.from(e.querySelectorAll("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"));
 				n && !r && t.length > 0 && l(n), t.forEach((e) => {
-					e !== n && om(e);
+					e !== n && cm(e);
 				});
 			}
 		}
-		let o = r?.closest(`.${Vf}, .${Bf}`);
+		let o = r?.closest(`.${Uf}, .${Hf}`);
 		if (!o) {
 			i && u();
 			return;
 		}
 		let s = o.closest("#top-settings-holder > .drawer > .drawer-content");
-		s && (n.preventDefault(), n.stopPropagation(), o.classList.contains(Vf) ? dm(s, nm() !== s) : (fm(s), u()));
+		s && (n.preventDefault(), n.stopPropagation(), o.classList.contains(Uf) ? pm(s, im() !== s) : (mm(s), u()));
 	}, m = e.getElementById("top-settings-holder"), h = m instanceof t.HTMLElement ? new t.MutationObserver((n) => {
 		let r = n.find((e) => e.target instanceof t.HTMLElement && !(e.oldValue?.split(/\s+/).includes("openDrawer") ?? !1) && e.target.classList.contains("openDrawer"))?.target;
 		if (r instanceof t.HTMLElement) {
@@ -8528,42 +8538,42 @@ function pm() {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), e.addEventListener("click", p, !0), { destroy: () => {
-		r !== 0 && t.cancelAnimationFrame(r), c(), y?.disconnect(), h?.disconnect(), b.disconnect(), e.removeEventListener("click", p, !0), lm(), e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
-			om(e), e.classList.remove(Uf);
-		}), o = void 0, $(`.${If}`).remove(), $(`.${Lf}`).remove(), n.forEach((e, t) => {
+		r !== 0 && t.cancelAnimationFrame(r), c(), y?.disconnect(), h?.disconnect(), b.disconnect(), e.removeEventListener("click", p, !0), dm(), e.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
+			cm(e), e.classList.remove(Gf);
+		}), o = void 0, $(`.${Rf}`).remove(), $(`.${zf}`).remove(), n.forEach((e, t) => {
 			t.getAttribute("title") === e.written && (e.title === null ? t.removeAttribute("title") : t.setAttribute("title", e.title)), t.getAttribute("aria-label") === e.written && (e.ariaLabel === null ? t.removeAttribute("aria-label") : t.setAttribute("aria-label", e.ariaLabel));
 		}), n.clear();
 	} };
 }
-async function mm(e) {
+async function gm(e) {
 	let t = R(), n = t.SillyTavern, r = n?.POPUP_TYPE, i = n?.POPUP_RESULT;
 	if (typeof n?.callGenericPopup != "function") {
 		t.confirm("将立即还原原始布局，确认继续？") && (e.disableModernLayout(), toastr.warning("已关闭现代化界面。", Ul));
 		return;
 	}
-	let a = await n.callGenericPopup(`将立即还原 ${Xp(L())} 原始布局，并保持关闭状态。之后可在酒馆助手设置里重新启用。`, r?.CONFIRM ?? "confirm", void 0, {
+	let a = await n.callGenericPopup(`将立即还原 ${Qp(L())} 原始布局，并保持关闭状态。之后可在酒馆助手设置里重新启用。`, r?.CONFIRM ?? "confirm", void 0, {
 		okButton: "关闭并还原",
 		cancelButton: "取消"
 	});
 	(a === !0 || a === (i?.AFFIRMATIVE ?? 1)) && (e.disableModernLayout(), toastr.warning("已关闭现代化界面。", Ul));
 }
-function hm(e) {
+function _m(e) {
 	let t = L(), n = R(), r = "", i = !1, a = async () => {
 		if (!i && e.is_active) {
 			i = !0;
 			try {
-				await mm(e);
+				await gm(e);
 			} finally {
 				i = !1;
 			}
 		}
 	}, o = (e) => {
-		e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || (r = `${r}${e.key.toLowerCase()}`.slice(-8), r === Xf && (r = "", a()));
+		e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || (r = `${r}${e.key.toLowerCase()}`.slice(-8), r === Qf && (r = "", a()));
 	}, s = (e) => {
 		let n = e.querySelector(".welcomeShortcuts");
-		if (!n || n.querySelector(`.${Zf}`)) return;
+		if (!n || n.querySelector(`.${$f}`)) return;
 		let r = t.createElement("button");
-		r.type = "button", r.className = `menu_button menu_button_icon ${Zf}`, r.title = "关闭现代化界面并还原原始布局", r.setAttribute("aria-label", "重置界面");
+		r.type = "button", r.className = `menu_button menu_button_icon ${$f}`, r.title = "关闭现代化界面并还原原始布局", r.setAttribute("aria-label", "重置界面");
 		let i = t.createElement("i");
 		i.className = "fa-solid fa-arrow-rotate-left", i.setAttribute("aria-hidden", "true");
 		let a = t.createElement("span");
@@ -8571,7 +8581,7 @@ function hm(e) {
 	}, c = (e) => {
 		e instanceof n.Element && e.matches(".welcomePanel") && s(e), e.querySelectorAll(".welcomePanel").forEach(s);
 	}, l = (e) => {
-		(e.target instanceof n.Element ? e.target : null)?.closest(`.${Zf}`) && (e.preventDefault(), e.stopPropagation(), a());
+		(e.target instanceof n.Element ? e.target : null)?.closest(`.${$f}`) && (e.preventDefault(), e.stopPropagation(), a());
 	};
 	c(t);
 	let u = new n.MutationObserver((e) => {
@@ -8585,10 +8595,10 @@ function hm(e) {
 		childList: !0,
 		subtree: !0
 	}), t.addEventListener("keydown", o, !0), t.addEventListener("click", l, !0), { destroy: () => {
-		u.disconnect(), t.removeEventListener("keydown", o, !0), t.removeEventListener("click", l, !0), t.querySelectorAll(`.${Zf}`).forEach((e) => e.remove());
+		u.disconnect(), t.removeEventListener("keydown", o, !0), t.removeEventListener("click", l, !0), t.querySelectorAll(`.${$f}`).forEach((e) => e.remove());
 	} };
 }
-function gm(e, t, n, r) {
+function vm(e, t, n, r) {
 	let i = r.get(e);
 	i ? i.applied[t] !== void 0 && e.style[t] !== i.applied[t] && (i.original[t] = e.style[t]) : (i = {
 		original: {
@@ -8600,31 +8610,31 @@ function gm(e, t, n, r) {
 		applied: {}
 	}, r.set(e, i)), e.style[t] !== n && (e.style[t] = n), i.applied[t] = n;
 }
-function _m(e, t) {
+function ym(e, t) {
 	let n = e.ownerDocument.defaultView ?? R(), r = n.getComputedStyle(e);
 	if (r.display === "none" || r.visibility === "hidden" || r.position !== "absolute" && r.position !== "fixed") return;
 	let i = e.getBoundingClientRect();
 	if (i.width < 8 || i.height < 8) return;
 	let a = Math.max(160, n.innerWidth - 16), o = Math.max(120, n.innerHeight - 16), s = `${a}px`, c = `${o}px`, l = Math.min(Math.max(i.left, 8), n.innerWidth - Math.min(i.width, a) - 8), u = Math.min(Math.max(i.top, 8), n.innerHeight - Math.min(i.height, o) - 8), d = Math.abs(l - i.left) > 1, f = Math.abs(u - i.top) > 1, p = (d || f) && r.position === "absolute" ? e.offsetParent : null, m = p?.getBoundingClientRect(), h, g;
 	if (d) {
-		let e = Ap(r.marginLeft, 0);
+		let e = Mp(r.marginLeft, 0);
 		h = `${r.position === "fixed" ? l : p && m ? l - m.left - p.clientLeft + p.scrollLeft - e : l + n.scrollX - e}px`;
 	}
 	if (f) {
-		let e = Ap(r.marginTop, 0);
+		let e = Mp(r.marginTop, 0);
 		g = `${r.position === "fixed" ? u : p && m ? u - m.top - p.clientTop + p.scrollTop - e : u + n.scrollY - e}px`;
 	}
-	gm(e, "maxWidth", s, t), gm(e, "maxHeight", c, t), h !== void 0 && gm(e, "left", h, t), g !== void 0 && gm(e, "top", g, t);
+	vm(e, "maxWidth", s, t), vm(e, "maxHeight", c, t), h !== void 0 && vm(e, "left", h, t), g !== void 0 && vm(e, "top", g, t);
 }
-function vm() {
+function bm() {
 	let e = L(), t = e.defaultView ?? window, n = ".select2-container--open, .select2-dropdown, .ui-autocomplete, .list-group, #export_format_popup, #rawPromptPopup", r = /* @__PURE__ */ new Map(), i = 0, a = () => {
 		i = 0, r.forEach((e, t) => {
 			t.isConnected || r.delete(t);
 		}), e.querySelectorAll(n).forEach((e) => {
-			_m(e, r);
+			ym(e, r);
 		});
 	}, o = () => {
-		e.body.classList.contains(Df) || i === 0 && (i = t.requestAnimationFrame(a));
+		e.body.classList.contains(kf) || i === 0 && (i = t.requestAnimationFrame(a));
 	}, s = (e) => e instanceof t.Element && (e.matches(n) || !!e.querySelector(n)), c = new t.MutationObserver((e) => {
 		e.some((e) => [...e.addedNodes].some(s)) && o();
 	});
@@ -8640,9 +8650,9 @@ function vm() {
 		}), r.clear();
 	} };
 }
-function ym(e) {
+function xm(e) {
 	let t = L(), n = t.defaultView ?? window, r = t.createElement("button");
-	r.id = Ff, r.type = "button", r.className = "menu_button fa-solid", r.setAttribute("aria-controls", "qr--bar"), r.hidden = !0;
+	r.id = Lf, r.type = "button", r.className = "menu_button fa-solid", r.setAttribute("aria-controls", "qr--bar"), r.hidden = !0;
 	let i = 0, a, o = new n.ResizeObserver(() => p()), s = new n.MutationObserver(p), c = () => {
 		a &&= (a.element.toggleAttribute("inert", a.inert), a.ariaHidden === null ? a.element.removeAttribute("aria-hidden") : a.element.setAttribute("aria-hidden", a.ariaHidden), void 0);
 	}, l = (e) => {
@@ -8682,20 +8692,20 @@ function ym(e) {
 				"style"
 			]
 		}), l(h), !p || !h) {
-			r.remove(), r.hidden = !0, Z(pp), Z(mp), Z(hp), Z(gp);
+			r.remove(), r.hidden = !0, Z(hp), Z(gp), Z(_p), Z(vp);
 			return;
 		}
 		r.parentElement !== p && p.append(r);
-		let g = t.body.classList.contains(jf), v = d(h);
+		let g = t.body.classList.contains(Nf), v = d(h);
 		r.hidden = !v, r.classList.toggle("fa-chevron-down", v && !g), r.classList.toggle("fa-chevron-up", v && g), r.setAttribute("aria-expanded", String(v && !g)), r.setAttribute("aria-label", g ? "展开快速回复栏" : "收起快速回复栏"), r.title = g ? "展开快速回复栏" : "收起快速回复栏", h.toggleAttribute("inert", g || a?.inert === !0), g ? h.setAttribute("aria-hidden", "true") : a?.ariaHidden === null ? h.removeAttribute("aria-hidden") : a && h.setAttribute("aria-hidden", a.ariaHidden);
 		let y = Math.ceil(m?.getBoundingClientRect().height ?? p.getBoundingClientRect().height);
-		kp(pp, `${Math.max(0, y)}px`);
+		jp(hp, `${Math.max(0, y)}px`);
 		let b = p.getBoundingClientRect();
-		kp(mp, `${Math.max(0, Math.ceil(b.bottom - u(p)))}px`);
+		jp(gp, `${Math.max(0, Math.ceil(b.bottom - u(p)))}px`);
 		let x = v ? Math.max(0, Math.ceil(h.scrollHeight)) : 0;
-		kp(hp, `${x}px`);
+		jp(_p, `${x}px`);
 		let S = r.hidden ? 0 : Math.ceil(r.getBoundingClientRect().height || 26), C = Math.ceil(h.getBoundingClientRect().height), w = g || !g && x > 1 && C <= 1 ? 0 : x;
-		kp(gp, `${v ? Math.max(S + 6, w + 10) : 0}px`);
+		jp(vp, `${v ? Math.max(S + 6, w + 10) : 0}px`);
 	};
 	function p() {
 		i === 0 && (i = n.requestAnimationFrame(f));
@@ -8716,46 +8726,46 @@ function ym(e) {
 		t.preventDefault(), t.stopPropagation(), e.settings.quickReplyCollapsed = !e.settings.quickReplyCollapsed;
 	};
 	return r.addEventListener("click", v), n.addEventListener("resize", p), p(), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), h.disconnect(), g.disconnect(), s.disconnect(), o.disconnect(), r.removeEventListener("click", v), r.remove(), c(), n.removeEventListener("resize", p), Z(pp), Z(mp), Z(hp), Z(gp);
+		i !== 0 && n.cancelAnimationFrame(i), h.disconnect(), g.disconnect(), s.disconnect(), o.disconnect(), r.removeEventListener("click", v), r.remove(), c(), n.removeEventListener("resize", p), Z(hp), Z(gp), Z(_p), Z(vp);
 	} };
 }
-function bm(e) {
-	let t = L(), n = t.defaultView ?? window, r = n.matchMedia(ip), i = 0, a = () => {
-		Em(e.settings, e.is_active, e.should_use_two_column);
+function Sm(e) {
+	let t = L(), n = t.defaultView ?? window, r = n.matchMedia(op), i = 0, a = () => {
+		km(e.settings, e.is_active, e.should_use_two_column);
 	}, o = () => {
 		i === 0 && (i = n.requestAnimationFrame(() => {
 			i = 0, a();
 		}));
 	}, s = (e) => {
 		let r = t.body;
-		if (!r.classList.contains(Tf) || r.classList.contains(wf)) return;
-		let i = !!(e.target instanceof n.Element ? e.target : null)?.closest(`#${Mf}, #top-settings-holder`);
-		r.classList.contains(Of) ? r.classList.add(Ef) : r.classList.contains(Ef) && !i && r.classList.remove(Ef);
+		if (!r.classList.contains(Df) || r.classList.contains(Ef)) return;
+		let i = !!(e.target instanceof n.Element ? e.target : null)?.closest(`#${Pf}, #top-settings-holder`);
+		r.classList.contains(Af) ? r.classList.add(Of) : r.classList.contains(Of) && !i && r.classList.remove(Of);
 	};
 	return r.addEventListener("change", o), n.addEventListener("resize", o), t.addEventListener("pointerdown", s, !0), a(), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), r.removeEventListener("change", o), n.removeEventListener("resize", o), t.removeEventListener("pointerdown", s, !0), t.body.classList.remove(Tf, Ef);
+		i !== 0 && n.cancelAnimationFrame(i), r.removeEventListener("change", o), n.removeEventListener("resize", o), t.removeEventListener("pointerdown", s, !0), t.body.classList.remove(Df, Of);
 	} };
 }
-function xm() {
+function Cm() {
 	let e = L(), t = e.defaultView ?? window, n = e.getElementById("top-settings-holder"), r = 0, i = () => {
 		if (r = 0, !(n instanceof t.HTMLElement)) {
-			Z(fp);
+			Z(mp);
 			return;
 		}
 		let i = e.body;
-		if (!i.classList.contains(gf) || !i.classList.contains(_f)) {
-			Z(fp);
+		if (!i.classList.contains(_f) || !i.classList.contains(vf)) {
+			Z(mp);
 			return;
 		}
-		let a = t.getComputedStyle(i), o = Ap(a.getPropertyValue("--th-modern-left-nav-top"), _p), s = Ap(a.getPropertyValue("--th-modern-left-nav-min-height"), vp), c = Ap(a.getPropertyValue("--th-modern-recent-min-height"), yp), l = Math.min(c, 44), u = Math.max(s, t.innerHeight - o - l - bp), d = t.getComputedStyle(n), f = Ap(d.paddingTop, 0) + Ap(d.paddingBottom, 0) + Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).map((e) => {
+		let a = t.getComputedStyle(i), o = Mp(a.getPropertyValue("--th-modern-left-nav-top"), yp), s = Mp(a.getPropertyValue("--th-modern-left-nav-min-height"), bp), c = Mp(a.getPropertyValue("--th-modern-recent-min-height"), xp), l = Math.min(c, 44), u = Math.max(s, t.innerHeight - o - l - Sp), d = t.getComputedStyle(n), f = Mp(d.paddingTop, 0) + Mp(d.paddingBottom, 0) + Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).map((e) => {
 			let n = e.closest(".drawer");
 			if (n?.classList.contains("mc3-hidden") || n?.classList.contains("displayNone") || n?.hidden || e.classList.contains("mc3-hidden") || e.classList.contains("displayNone") || e.hidden) return 0;
 			let r = n ? t.getComputedStyle(n) : null;
 			if (r && (r.display === "none" || r.visibility === "hidden")) return 0;
 			let i = t.getComputedStyle(e);
-			return i.display === "none" || i.visibility === "hidden" ? 0 : e.getBoundingClientRect().height + Ap(i.marginTop, 0) + Ap(i.marginBottom, 0);
+			return i.display === "none" || i.visibility === "hidden" ? 0 : e.getBoundingClientRect().height + Mp(i.marginTop, 0) + Mp(i.marginBottom, 0);
 		}).reduce((e, t) => e + t, 0);
-		kp(fp, `${Math.ceil(Math.min(f > 0 ? f : s, u))}px`);
+		jp(mp, `${Math.ceil(Math.min(f > 0 ? f : s, u))}px`);
 	}, a = () => {
 		r === 0 && (r = t.requestAnimationFrame(i));
 	}, o = n instanceof t.HTMLElement ? new t.ResizeObserver(a) : void 0, s = () => {
@@ -8780,36 +8790,36 @@ function xm() {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), t.addEventListener("resize", a), a(), { destroy: () => {
-		r !== 0 && t.cancelAnimationFrame(r), c?.disconnect(), o?.disconnect(), l.disconnect(), t.removeEventListener("resize", a), Z(fp);
+		r !== 0 && t.cancelAnimationFrame(r), c?.disconnect(), o?.disconnect(), l.disconnect(), t.removeEventListener("resize", a), Z(mp);
 	} };
 }
-function Sm(e) {
-	let t = L(), n = t.defaultView ?? window, r = $("<div>").attr("id", Nf).appendTo("body"), i = $("<div>").attr("id", Pf).appendTo("body"), a, o = (r, i) => {
+function wm(e) {
+	let t = L(), n = t.defaultView ?? window, r = $("<div>").attr("id", Ff).appendTo("body"), i = $("<div>").attr("id", If).appendTo("body"), a, o = (r, i) => {
 		if (r.button !== 0) return;
-		let o = t.body, s = t.getElementById(Mf), c = t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer.th-modern-drawer-active, #top-settings-holder .drawer-content.openDrawer.th-modern-drawer-active") ?? t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"), l = o.classList.contains(yf);
-		if (i === "sidebar" && (!s || c && !l || o.classList.contains(wf) || o.classList.contains(Tf)) || i === "overlay" && !c) return;
+		let o = t.body, s = t.getElementById(Pf), c = t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer.th-modern-drawer-active, #top-settings-holder .drawer-content.openDrawer.th-modern-drawer-active") ?? t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"), l = o.classList.contains(bf);
+		if (i === "sidebar" && (!s || c && !l || o.classList.contains(Ef) || o.classList.contains(Df)) || i === "overlay" && !c) return;
 		a?.(), r.preventDefault();
 		let u = r.target;
 		try {
 			u?.setPointerCapture?.(r.pointerId);
 		} catch {}
-		let d = r.clientX, f = i === "sidebar" ? s.getBoundingClientRect().width : c.getBoundingClientRect().width, p = c?.getBoundingClientRect().left ?? 0, m = i === "sidebar" ? "--th-modern-left-width" : "--th-modern-overlay-width", h = Tp(), g = Math.round(f), v = 0;
-		o.classList.add(Df);
+		let d = r.clientX, f = i === "sidebar" ? s.getBoundingClientRect().width : c.getBoundingClientRect().width, p = c?.getBoundingClientRect().left ?? 0, m = i === "sidebar" ? "--th-modern-left-width" : "--th-modern-overlay-width", h = Dp(), g = Math.round(f), v = 0;
+		o.classList.add(kf);
 		let y = () => {
-			v = 0, jp(h, m, `${g}px`);
+			v = 0, Np(h, m, `${g}px`);
 		}, b = (e) => {
 			e !== g && (g = e, v === 0 && (v = n.requestAnimationFrame(y)));
 		}, x = (e) => {
 			let t = e.clientX - d;
 			if (i === "sidebar") {
-				let e = c ? n.innerWidth - c.getBoundingClientRect().width - up - 28 : sp, r = l ? Math.min(sp, e) : sp;
-				b(Math.round(wp(f + t, op, r, 360)));
+				let e = c ? n.innerWidth - c.getBoundingClientRect().width - fp - 28 : lp, r = l ? Math.min(lp, e) : lp;
+				b(Math.round(Ep(f + t, cp, r, 360)));
 				return;
 			}
-			let r = l ? 508 : lp, a = Math.max(cp, n.innerWidth - p - r);
-			b(Math.round(wp(f + t, cp, a, 960)));
+			let r = l ? 508 : dp, a = Math.max(up, n.innerWidth - p - r);
+			b(Math.round(Ep(f + t, up, a, 960)));
 		}, S = () => {
-			v !== 0 && (n.cancelAnimationFrame(v), y()), i === "sidebar" && e.settings.leftSidebarWidth !== g && (e.settings.leftSidebarWidth = g), i === "overlay" && e.settings.overlayPanelWidth !== g && (e.settings.overlayPanelWidth = g), o.classList.remove(Df);
+			v !== 0 && (n.cancelAnimationFrame(v), y()), i === "sidebar" && e.settings.leftSidebarWidth !== g && (e.settings.leftSidebarWidth = g), i === "overlay" && e.settings.overlayPanelWidth !== g && (e.settings.overlayPanelWidth = g), o.classList.remove(kf);
 			try {
 				u?.hasPointerCapture?.(r.pointerId) && u.releasePointerCapture(r.pointerId);
 			} catch {}
@@ -8822,18 +8832,18 @@ function Sm(e) {
 	}), i.on("pointerdown", (e) => {
 		o(e.originalEvent, "overlay");
 	}), { destroy: () => {
-		a?.(), r.remove(), i.remove(), t.body.classList.remove(Df);
+		a?.(), r.remove(), i.remove(), t.body.classList.remove(kf);
 	} };
 }
-function Cm(e, t, n) {
+function Tm(e, t, n) {
 	if (e.parentElement === t) return () => {};
 	let r = e.ownerDocument.createComment(n);
 	return e.before(r), t.append(e), () => {
 		r.parentNode && r.replaceWith(e);
 	};
 }
-function wm() {
-	let e = L(), t = e.defaultView ?? window, n = t.matchMedia(ap), r = [], i = /* @__PURE__ */ new Map(), a, o, s = 0, c = () => n.matches && e.body.classList.contains(_f), l = (e) => {
+function Em() {
+	let e = L(), t = e.defaultView ?? window, n = t.matchMedia(sp), r = [], i = /* @__PURE__ */ new Map(), a, o, s = 0, c = () => n.matches && e.body.classList.contains(vf), l = (e) => {
 		if (!i.has(e)) return;
 		let t = i.get(e);
 		t !== void 0 && (t === null ? e.hasAttribute("size") && e.removeAttribute("size") : e.getAttribute("size") !== t && e.setAttribute("size", t));
@@ -8871,14 +8881,14 @@ function wm() {
 			d();
 			return;
 		}
-		let i = t.querySelector(`.${Jf}`);
-		i || (i = e.createElement("div"), i.className = Jf, t.append(i));
+		let i = t.querySelector(`.${Xf}`);
+		i || (i = e.createElement("div"), i.className = Xf, t.append(i));
 		let s = r ? e.querySelector(r.selector) : null;
 		if (!r || !s) d(), i.classList.add("is-empty");
 		else if (i.classList.remove("is-empty"), o !== r.selector || s.parentElement !== i) {
 			d();
 			let t = e.querySelector(r.block_selector), n = (s.previousElementSibling?.matches("h4") ? s.previousElementSibling : t?.querySelector("h4")) ?? null, c = [];
-			n && n.parentElement !== i && c.push(Cm(n, i, r.title_marker)), s.parentElement !== i && c.push(Cm(s, i, r.select_marker)), a = () => {
+			n && n.parentElement !== i && c.push(Tm(n, i, r.title_marker)), s.parentElement !== i && c.push(Tm(s, i, r.select_marker)), a = () => {
 				c.reverse().forEach((e) => e());
 			}, o = r.selector;
 		}
@@ -8899,7 +8909,7 @@ function wm() {
 			return;
 		}
 		let t = e.querySelector("#rm_api_block #main-API-selector-block"), n = e.querySelector("#rm_api_block > .flex-container.flexFlowColumn"), i = Array.from(e.querySelectorAll("#rm_api_block > .flex-container.alignitemscenter.spaceBetween.wide100p")).find((e) => e.textContent?.includes("自动连接到上次的服务器") || e.querySelector("#viewSecrets"));
-		n && i && i.parentElement !== n && (i.classList.add(Yf), r.push(Cm(i, n, "th-modern-api-footer")));
+		n && i && i.parentElement !== n && (i.classList.add(Zf), r.push(Tm(i, n, "th-modern-api-footer")));
 		let a = c();
 		if (u("#rm_api_block #main_api", a), p(t, a), m(), t && t.querySelectorAll(".th-modern-api-hint-card").forEach((e) => e.remove()), t && a) {
 			let n = t.querySelector(".th-modern-api-main-title");
@@ -8941,37 +8951,42 @@ function wm() {
 		e.target instanceof t.HTMLSelectElement && e.target.matches("#rm_api_block #main_api, #rm_api_block #chat_completion_source, #rm_api_block #textgen_type") && v();
 	};
 	return e.addEventListener("input", T), e.addEventListener("change", T), n.addEventListener("change", C), { destroy: () => {
-		g(), b?.disconnect(), x?.disconnect(), w.disconnect(), e.removeEventListener("input", T), e.removeEventListener("change", T), n.removeEventListener("change", C), d(), r.reverse().forEach((e) => e()), e.querySelectorAll(`.${Jf}:empty`).forEach((e) => e.remove()), e.querySelectorAll(`.${Yf}`).forEach((e) => e.classList.remove(Yf)), e.querySelectorAll(".th-modern-api-main-title, .th-modern-api-hint-card").forEach((e) => e.remove()), i.forEach((e, t) => {
+		g(), b?.disconnect(), x?.disconnect(), w.disconnect(), e.removeEventListener("input", T), e.removeEventListener("change", T), n.removeEventListener("change", C), d(), r.reverse().forEach((e) => e()), e.querySelectorAll(`.${Xf}:empty`).forEach((e) => e.remove()), e.querySelectorAll(`.${Zf}`).forEach((e) => e.classList.remove(Zf)), e.querySelectorAll(".th-modern-api-main-title, .th-modern-api-hint-card").forEach((e) => e.remove()), i.forEach((e, t) => {
 			e === null ? t.removeAttribute("size") : t.setAttribute("size", e);
 		});
 	} };
 }
-function Tm(e, t, n) {
+function Dm(e, t, n) {
 	if (!t || !n || !e.desktopDockedDrawer) return !1;
 	let r = L(), i = R();
-	return i.matchMedia(ap).matches ? Math.min(i.innerWidth, r.documentElement.clientWidth || i.innerWidth) >= wp(e.leftSidebarWidth, op, sp, 360) + wp(e.overlayPanelWidth, cp, 2 ** 53 - 1, 960) + up + 28 : !1;
+	return i.matchMedia(sp).matches ? Math.min(i.innerWidth, r.documentElement.clientWidth || i.innerWidth) >= Ep(e.leftSidebarWidth, cp, lp, 360) + Ep(e.overlayPanelWidth, up, 2 ** 53 - 1, 960) + fp + 28 : !1;
 }
-function Em(e, t, n) {
-	let r = L(), i = R(), a = $(r.body), o = t && n && i.matchMedia(ip).matches, s = Tm(e, t, n), c = t && e.floatingChatInput;
-	a.toggleClass(gf, t).toggleClass(_f, n).toggleClass(yf, s).toggleClass(bf, t && n && e.mainChatMaxWidth === 0).toggleClass(xf, c).toggleClass(Sf, t && e.reduceMotion).toggleClass(Cf, t && e.reduceAdvancedEffects).toggleClass(jf, t && e.quickReplyCollapsed).toggleClass(Tf, o).removeClass(vf), (!o || a.hasClass(wf)) && a.removeClass(Ef), t && n || lm(), kp("--th-modern-left-width", `${wp(e.leftSidebarWidth, op, sp, 360)}px`), kp("--th-modern-overlay-width", `${wp(e.overlayPanelWidth, cp, 2 ** 53 - 1, 960)}px`), kp("--th-modern-main-min-width", `${wp(e.mainChatMaxWidth, 0, 2 ** 53 - 1, 960)}px`), kp("--th-modern-input-bottom-gap", `${wp(e.inputBottomGap, 0, 120, 15)}px`), kp("--th-modern-input-side-gap", `${wp(e.inputSideGap, 0, 80, 16)}px`);
+var Om;
+function km(e, t, n) {
+	let r = L(), i = R(), a = $(r.body), o = t && n && i.matchMedia(op).matches, s = Dm(e, t, n), c = t && e.floatingChatInput, l = t && e.singleLineChatInput;
+	if (a.toggleClass(_f, t).toggleClass(vf, n).toggleClass(bf, s).toggleClass(xf, t && n && e.mainChatMaxWidth === 0).toggleClass(Sf, c).toggleClass(Cf, l).toggleClass(wf, t && e.reduceMotion).toggleClass(Tf, t && e.reduceAdvancedEffects).toggleClass(Nf, t && e.quickReplyCollapsed).toggleClass(Df, o).removeClass(yf), Om !== void 0 && Om !== l) {
+		let e = r.getElementById("send_textarea");
+		e instanceof i.HTMLTextAreaElement && (e.style.height = "", e.dispatchEvent(new i.Event("input", { bubbles: !0 })));
+	}
+	Om = l, (!o || a.hasClass(Ef)) && a.removeClass(Of), t && n || dm(), jp("--th-modern-left-width", `${Ep(e.leftSidebarWidth, cp, lp, 360)}px`), jp("--th-modern-overlay-width", `${Ep(e.overlayPanelWidth, up, 2 ** 53 - 1, 960)}px`), jp("--th-modern-main-min-width", `${Ep(e.mainChatMaxWidth, 0, 2 ** 53 - 1, 960)}px`), jp("--th-modern-input-bottom-gap", `${Ep(e.inputBottomGap, 0, 120, 15)}px`), jp("--th-modern-input-side-gap", `${Ep(e.inputSideGap, 0, 80, 16)}px`);
 }
-function Dm() {
-	$(L().body).removeClass(`${gf} ${_f} ${vf} ${yf} ${bf} ${xf} ${Sf} ${Cf} ${jf} ${wf} ${Tf} ${Ef} ${Df} ${Of} ${kf} ${Af}`), Z("--th-modern-left-width"), Z("--th-modern-overlay-width"), Z("--th-modern-main-min-width"), Z("--th-modern-input-bottom-gap"), Z("--th-modern-input-side-gap"), Z(pp), Z(mp), Z(hp), Z(gp), Z(fp);
+function Am() {
+	Om = void 0, $(L().body).removeClass(`${_f} ${vf} ${yf} ${bf} ${xf} ${Sf} ${Cf} ${wf} ${Tf} ${Nf} ${Ef} ${Df} ${Of} ${kf} ${Af} ${jf} ${Mf}`), Z("--th-modern-left-width"), Z("--th-modern-overlay-width"), Z("--th-modern-main-min-width"), Z("--th-modern-input-bottom-gap"), Z("--th-modern-input-side-gap"), Z(hp), Z(gp), Z(_p), Z(vp), Z(mp);
 }
-function Om(e) {
+function jm(e) {
 	if (e) try {
 		e();
 	} catch (e) {
 		console.error(`[${Ul}] 清理运行时资源失败。`, e);
 	}
 }
-function km(e) {
-	for (; e.length > 0;) Om(e.pop());
+function Mm(e) {
+	for (; e.length > 0;) jm(e.pop());
 }
-function Am() {
+function Nm() {
 	return window.eventSource ?? window.SillyTavern?.getContext?.()?.eventSource;
 }
-var jm = {
+var Pm = {
 	APP_READY: "app_ready",
 	CHAT_CHANGED: "chat_id_changed",
 	CHAT_CREATED: "chat_created",
@@ -8980,19 +8995,19 @@ var jm = {
 	MESSAGE_RECEIVED: "message_received",
 	CHARACTER_PAGE_LOADED: "character_page_loaded"
 };
-function Mm(e, t) {
-	let n = Am();
+function Fm(e, t) {
+	let n = Nm();
 	return n && typeof n.on == "function" ? (n.on(e, t), { stop: () => {
 		typeof n.removeListener == "function" ? n.removeListener(e, t) : typeof n.off == "function" && n.off(e, t);
 	} }) : { stop: () => {} };
 }
-function Nm(t) {
-	let n = [Dm], r;
+function Im(t) {
+	let n = [Am], r;
 	try {
-		let i = Zp(() => r?.refresh());
-		n.push(i.destroy), r = em(i.$list), n.push(r.destroy), n.push(pm().destroy), n.push(fc(t).destroy), n.push(xm().destroy), n.push(hm(t).destroy), n.push(vm().destroy), n.push(ym(t).destroy), n.push(bm(t).destroy), n.push(Sm(t).destroy), n.push(wm().destroy), n.push(mf(t).destroy), n.push(Ws(t).destroy);
+		let i = $p(() => r?.refresh());
+		n.push(i.destroy), r = nm(i.$list), n.push(r.destroy), n.push(hm().destroy), n.push(fc(t).destroy), n.push(Cm().destroy), n.push(_m(t).destroy), n.push(bm().destroy), n.push(xm(t).destroy), n.push(Sm(t).destroy), n.push(wm(t).destroy), n.push(Em().destroy), n.push(hf(t).destroy), n.push(Ws(t).destroy);
 		let a = Zn(() => [e(t.settings), t.should_use_two_column], ([e, t]) => {
-			Em(e, !0, t);
+			km(e, !0, t);
 		}, {
 			immediate: !0,
 			deep: !0,
@@ -9002,57 +9017,57 @@ function Nm(t) {
 		let o = _.debounce(() => r?.refresh(), 500);
 		n.push(o.cancel);
 		let s = [
-			Mm(jm.APP_READY, o),
-			Mm(jm.CHAT_CHANGED, o),
-			Mm(jm.CHAT_CREATED, o),
-			Mm(jm.CHAT_DELETED, o),
-			Mm(jm.MESSAGE_SENT, o),
-			Mm(jm.MESSAGE_RECEIVED, o),
-			Mm(jm.CHARACTER_PAGE_LOADED, o)
+			Fm(Pm.APP_READY, o),
+			Fm(Pm.CHAT_CHANGED, o),
+			Fm(Pm.CHAT_CREATED, o),
+			Fm(Pm.CHAT_DELETED, o),
+			Fm(Pm.MESSAGE_SENT, o),
+			Fm(Pm.MESSAGE_RECEIVED, o),
+			Fm(Pm.CHARACTER_PAGE_LOADED, o)
 		];
-		return n.push(() => s.forEach((e) => e.stop())), o(), { destroy: _.once(() => km(n)) };
+		return n.push(() => s.forEach((e) => e.stop())), o(), { destroy: _.once(() => Mm(n)) };
 	} catch (e) {
-		throw km(n), e;
+		throw Mm(n), e;
 	}
 }
-function Pm() {
-	let e = R(), t = _.get(e, ep);
+function Lm() {
+	let e = R(), t = _.get(e, np);
 	if (t && typeof t.get == "function" && typeof t.set == "function") return t;
 	let n = /* @__PURE__ */ new Map();
-	return _.set(e, ep, n), n;
+	return _.set(e, np, n), n;
 }
-function Fm() {
-	let e = R(), t = window, n = _.get(e, $f);
-	typeof n == "function" && (n(), _.unset(e, $f));
-	let r = "modern-ui", i = Pm();
+function Rm() {
+	let e = R(), t = window, n = _.get(e, tp);
+	typeof n == "function" && (n(), _.unset(e, tp));
+	let r = "modern-ui", i = Lm();
 	i.get(r)?.({ unregisterUnique: !1 });
 	let a = Xo() ?? ps();
 	Yo(a);
 	let o = Ql(), s, c, l, u;
 	try {
-		s = Vu(a).destroy, l = Zn(() => [o.should_enable, o.is_active], () => {
-			o.should_enable && o.is_active ? c ??= Nm(o) : (c?.destroy(), c = void 0);
+		s = Hu(a).destroy, l = Zn(() => [o.should_enable, o.is_active], () => {
+			o.should_enable && o.is_active ? c ??= Im(o) : (c?.destroy(), c = void 0);
 		}, {
 			immediate: !0,
 			flush: "sync"
 		});
 		let e = () => u?.();
 		return u = _.once((n = {}) => {
-			t.removeEventListener("pagehide", e), Om(l), l = void 0, Om(c?.destroy), c = void 0, Om(s), s = void 0, i.get(r) === u && i.delete(r), o.destroy({ unregisterUnique: n.unregisterUnique });
+			t.removeEventListener("pagehide", e), jm(l), l = void 0, jm(c?.destroy), c = void 0, jm(s), s = void 0, i.get(r) === u && i.delete(r), o.destroy({ unregisterUnique: n.unregisterUnique });
 		}), i.set(r, u), t.addEventListener("pagehide", e), { dispose: () => u?.() };
 	} catch (e) {
-		throw Om(l), Om(c?.destroy), Om(s), o.destroy(), e;
+		throw jm(l), jm(c?.destroy), jm(s), o.destroy(), e;
 	}
 }
-async function Im() {
-	return await new Promise((e) => $(e)), Fm();
+async function zm() {
+	return await new Promise((e) => $(e)), Rm();
 }
 $(() => {
 	try {
-		Im();
+		zm();
 	} catch (e) {
 		console.error(`[${Ul}] 自动初始化失败:`, e);
 	}
 });
-var Lm = { activate: Im };
-export { xp as PLUGIN_ID, Sp as PLUGIN_VERSION, Im as activate, Lm as default };
+var Bm = { activate: zm };
+export { Cp as PLUGIN_ID, wp as PLUGIN_VERSION, zm as activate, Bm as default };

@@ -40,6 +40,7 @@ export const ModernLayoutSettings = z
       .default(DEFAULT_MAIN_CHAT_MIN_WIDTH)
       .catch(DEFAULT_MAIN_CHAT_MIN_WIDTH),
     floatingChatInput: z.boolean().default(true).catch(true),
+    singleLineChatInput: z.boolean().default(false).catch(false),
     inputBottomGap: z
       .number()
       .min(INPUT_BOTTOM_GAP_MIN)

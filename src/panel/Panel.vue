@@ -103,6 +103,12 @@
       </label>
       <small class="notes">开启时输入框以毛玻璃胶囊形态悬浮于聊天区上方；关闭时与原版 SillyTavern 一样固定置底铺满。</small>
 
+      <label class="checkbox_label m-t-0_5" for="th_modern_single_line_input">
+        <input id="th_modern_single_line_input" v-model="store.settings.singleLineChatInput" type="checkbox" />
+        <span>单行输入框</span>
+      </label>
+      <small class="notes">开启后输入框采用紧凑单行排版（发送与操作按钮置于输入框两侧）；关闭时保持双行排版（上方输入文本、下方操作按钮）。</small>
+
       <div :class="{ 'is-disabled': !store.settings.floatingChatInput }">
         <div class="flex-container justifySpaceBetween alignitemscenter m-t-0_5">
           <span>底部留白边距</span>

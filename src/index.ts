@@ -32,6 +32,7 @@ const BODY_CLASS_LEGACY_THREE_COLUMN = 'th-modern-three-column';
 const BODY_CLASS_DOCKED_DRAWER = 'th-modern-docked-drawer';
 const BODY_CLASS_MAIN_FILL = 'th-modern-main-fill';
 const BODY_CLASS_FLOATING_INPUT = 'th-modern-floating-input';
+const BODY_CLASS_SINGLE_LINE_INPUT = 'th-modern-single-line-input';
 const BODY_CLASS_REDUCE_MOTION = 'th-modern-reduce-motion';
 const BODY_CLASS_REDUCE_ADVANCED_EFFECTS = 'th-modern-reduce-advanced-effects';
 const BODY_CLASS_SIDEBAR_COLLAPSED = 'th-modern-sidebar-collapsed';
@@ -2691,6 +2692,8 @@ function shouldUseDockedDrawer(
   return viewport_width >= left_width + panel_width + DOCKED_DRAWER_MIN_CHAT_WIDTH + MAIN_LAYOUT_GAP * 2;
 }
 
+let last_single_line_setting: boolean | undefined;
+
 function applyBodyState(settings: ModernLayoutSettings, is_active: boolean, should_use_two_column: boolean) {
   const host_document = getHostDocument();
   const host_window = getHostWindow();
@@ -2698,17 +2701,27 @@ function applyBodyState(settings: ModernLayoutSettings, is_active: boolean, shou
   const should_auto_collapse = is_active && should_use_two_column && host_window.matchMedia(COMPACT_TWO_COLUMN_QUERY).matches;
   const should_use_docked_drawer = shouldUseDockedDrawer(settings, is_active, should_use_two_column);
   const is_floating_input = is_active && settings.floatingChatInput;
+  const is_single_line_input = is_active && settings.singleLineChatInput;
   $body
     .toggleClass(BODY_CLASS_ENABLED, is_active)
     .toggleClass(BODY_CLASS_TWO_COLUMN, should_use_two_column)
     .toggleClass(BODY_CLASS_DOCKED_DRAWER, should_use_docked_drawer)
     .toggleClass(BODY_CLASS_MAIN_FILL, is_active && should_use_two_column && settings.mainChatMaxWidth === 0)
     .toggleClass(BODY_CLASS_FLOATING_INPUT, is_floating_input)
+    .toggleClass(BODY_CLASS_SINGLE_LINE_INPUT, is_single_line_input)
     .toggleClass(BODY_CLASS_REDUCE_MOTION, is_active && settings.reduceMotion)
     .toggleClass(BODY_CLASS_REDUCE_ADVANCED_EFFECTS, is_active && settings.reduceAdvancedEffects)
     .toggleClass(BODY_CLASS_QUICK_REPLIES_COLLAPSED, is_active && settings.quickReplyCollapsed)
     .toggleClass(BODY_CLASS_AUTO_COLLAPSE, should_auto_collapse)
     .removeClass(BODY_CLASS_LEGACY_THREE_COLUMN);
+  if (last_single_line_setting !== undefined && last_single_line_setting !== is_single_line_input) {
+    const textarea = host_document.getElementById('send_textarea');
+    if (textarea instanceof host_window.HTMLTextAreaElement) {
+      textarea.style.height = '';
+      textarea.dispatchEvent(new host_window.Event('input', { bubbles: true }));
+    }
+  }
+  last_single_line_setting = is_single_line_input;
   if (!should_auto_collapse || $body.hasClass(BODY_CLASS_SIDEBAR_COLLAPSED)) {
     $body.removeClass(BODY_CLASS_TEMP_EXPANDED);
   }
@@ -2748,8 +2761,9 @@ function applyBodyState(settings: ModernLayoutSettings, is_active: boolean, shou
 }
 
 function clearBodyState() {
+  last_single_line_setting = undefined;
   $(getHostDocument().body).removeClass(
-    `${BODY_CLASS_ENABLED} ${BODY_CLASS_TWO_COLUMN} ${BODY_CLASS_LEGACY_THREE_COLUMN} ${BODY_CLASS_DOCKED_DRAWER} ${BODY_CLASS_MAIN_FILL} ${BODY_CLASS_FLOATING_INPUT} ${BODY_CLASS_REDUCE_MOTION} ${BODY_CLASS_REDUCE_ADVANCED_EFFECTS} ${BODY_CLASS_QUICK_REPLIES_COLLAPSED} ${BODY_CLASS_SIDEBAR_COLLAPSED} ${BODY_CLASS_AUTO_COLLAPSE} ${BODY_CLASS_TEMP_EXPANDED} ${BODY_CLASS_RESIZING} ${BODY_CLASS_DRAWER_FULLSCREEN} ${BODY_CLASS_DRAWER_OPEN} ${BODY_CLASS_DRAWER_SWITCHING}`,
+    `${BODY_CLASS_ENABLED} ${BODY_CLASS_TWO_COLUMN} ${BODY_CLASS_LEGACY_THREE_COLUMN} ${BODY_CLASS_DOCKED_DRAWER} ${BODY_CLASS_MAIN_FILL} ${BODY_CLASS_FLOATING_INPUT} ${BODY_CLASS_SINGLE_LINE_INPUT} ${BODY_CLASS_REDUCE_MOTION} ${BODY_CLASS_REDUCE_ADVANCED_EFFECTS} ${BODY_CLASS_QUICK_REPLIES_COLLAPSED} ${BODY_CLASS_SIDEBAR_COLLAPSED} ${BODY_CLASS_AUTO_COLLAPSE} ${BODY_CLASS_TEMP_EXPANDED} ${BODY_CLASS_RESIZING} ${BODY_CLASS_DRAWER_FULLSCREEN} ${BODY_CLASS_DRAWER_OPEN} ${BODY_CLASS_DRAWER_SWITCHING}`,
   );
   removeHostCssVariable('--th-modern-left-width');
   removeHostCssVariable('--th-modern-overlay-width');

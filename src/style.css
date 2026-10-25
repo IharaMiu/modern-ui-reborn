@@ -591,6 +591,66 @@ body.th-modern-enabled #rightSendForm > #send_but:hover {
   background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 58%, transparent) !important;
 }
 
+/* 单行输入框模式 (Single-line Input Layout) */
+body.th-modern-enabled.th-modern-single-line-input #nonQRFormItems,
+body.th-modern-enabled.th-modern-single-line-input.th-modern-two-column #nonQRFormItems {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-end !important;
+  gap: 6px !important;
+  min-height: 48px !important;
+  padding: 5px 8px !important;
+  border-radius: 26px !important;
+}
+
+body.th-modern-enabled:not(.th-modern-floating-input).th-modern-single-line-input #send_form,
+body.th-modern-enabled:not(.th-modern-floating-input).th-modern-single-line-input.th-modern-two-column #send_form {
+  padding: 6px 16px max(8px, env(safe-area-inset-bottom, 0px)) 16px !important;
+}
+
+body.th-modern-enabled:not(.th-modern-floating-input).th-modern-single-line-input #nonQRFormItems,
+body.th-modern-enabled:not(.th-modern-floating-input).th-modern-single-line-input.th-modern-two-column #nonQRFormItems {
+  min-height: 46px !important;
+  padding: 4px 8px !important;
+  border-radius: 24px !important;
+}
+
+body.th-modern-enabled.th-modern-single-line-input #leftSendForm,
+body.th-modern-enabled.th-modern-single-line-input #rightSendForm,
+body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input) #leftSendForm,
+body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input) #rightSendForm {
+  position: static !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  gap: 4px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.th-modern-enabled.th-modern-single-line-input #leftSendForm,
+body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input) #leftSendForm {
+  margin-bottom: 3px !important;
+}
+
+body.th-modern-enabled.th-modern-single-line-input #send_textarea,
+body.th-modern-enabled.th-modern-single-line-input.th-modern-two-column #send_textarea,
+body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input) #send_textarea,
+body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input).th-modern-two-column #send_textarea {
+  display: block !important;
+  flex: 1 1 auto !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  min-height: 38px !important;
+  max-height: 34dvh !important;
+  padding: 8px 10px !important;
+  line-height: 1.45 !important;
+  margin: 0 !important;
+}
+
 body.th-modern-enabled #qr--bar {
   position: absolute;
   right: 0;
@@ -1222,6 +1282,39 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
     min-height: 64px !important;
     max-height: 28dvh !important;
     padding: 4px 10px 46px 10px !important;
+  }
+
+  body.th-modern-enabled.th-modern-single-line-input #nonQRFormItems,
+  body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input) #nonQRFormItems {
+    min-height: 44px !important;
+    padding: 4px 6px !important;
+    border-radius: 22px !important;
+    gap: 4px !important;
+  }
+
+  body.th-modern-enabled.th-modern-single-line-input #send_textarea,
+  body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input) #send_textarea {
+    min-height: 36px !important;
+    max-height: 28dvh !important;
+    padding: 7px 8px !important;
+  }
+
+  body.th-modern-enabled.th-modern-single-line-input #leftSendForm > div,
+  body.th-modern-enabled.th-modern-single-line-input #rightSendForm > div:not(.mes_stop),
+  body.th-modern-enabled.th-modern-single-line-input #send_form .mes_stop {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  body.th-modern-enabled.th-modern-single-line-input #rightSendForm > #send_but {
+    width: 36px !important;
+    height: 36px !important;
+    margin-left: 2px !important;
+  }
+
+  body.th-modern-enabled.th-modern-single-line-input #leftSendForm,
+  body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input) #leftSendForm {
+    margin-bottom: 3px !important;
   }
 
   body.th-modern-enabled #qr--bar {

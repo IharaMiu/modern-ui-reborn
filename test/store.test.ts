@@ -15,6 +15,15 @@ test('ModernLayoutSettings parses defaults cleanly', () => {
   assert.equal(parsed.desktopTwoColumn, true);
   assert.equal(parsed.leftSidebarWidth, DEFAULT_LEFT_SIDEBAR_WIDTH);
   assert.equal(parsed.inputBottomGap, DEFAULT_INPUT_BOTTOM_GAP);
+  assert.equal(parsed.singleLineChatInput, false);
+});
+
+test('ModernLayoutSettings handles singleLineChatInput option correctly', () => {
+  const parsed = ModernLayoutSettings.parse({ singleLineChatInput: true });
+  assert.equal(parsed.singleLineChatInput, true);
+
+  const fallback = ModernLayoutSettings.parse({ singleLineChatInput: 'invalid' as any });
+  assert.equal(fallback.singleLineChatInput, false);
 });
 
 test('ModernLayoutSettings clamps out-of-range values with catch defaults', () => {
