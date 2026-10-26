@@ -318,17 +318,21 @@ export class PresetEditor {
     this.bindHostEventListeners();
   }
 
-  readonly scheduleSync = (): void => {
-    if (this.scheduledSync) return;
-    this.scheduledSync = this.window.requestAnimationFrame(() => {
+  readonly scheduleSync = (delay = 120): void => {
+    if (this.isInternalCommitting) return;
+    if (this.scheduledSync) {
+      this.window.clearTimeout(this.scheduledSync);
       this.scheduledSync = 0;
-      this.sync();
-    });
+    }
+    this.scheduledSync = this.window.setTimeout(() => {
+      this.scheduledSync = 0;
+      if (!this.isInternalCommitting) this.sync();
+    }, delay);
   };
 
   destroy(): void {
     if (this.scheduledSync) {
-      this.window.cancelAnimationFrame(this.scheduledSync);
+      this.window.clearTimeout(this.scheduledSync);
       this.scheduledSync = 0;
     }
     this.unbindHostEventListeners();
@@ -700,12 +704,18 @@ export class PresetEditor {
     this.saveButton.type = 'button';
     this.saveButton.addEventListener('click', () => {
       this.flushEditorApply();
-      this.document.getElementById('update_oai_preset')?.click();
+      const saveBtn = this.document.getElementById('update_oai_preset') as HTMLElement | null;
+      if (saveBtn) {
+        saveBtn.click();
+        const $ = (this.window as any).$;
+        if ($) $(saveBtn).trigger('click');
+        (this.window as any).toastr?.info?.('正在保存预设...', '', { timeOut: 1200 });
+      }
       // 等待原生保存完成后刷新基线
       this.window.setTimeout(() => {
         this.resetCleanBaseline();
         this.scheduleDirtyCheck(200);
-      }, 1000);
+      }, 800);
     });
     status.append(this.dirtyBadge, this.saveButton);
     tabsRow.append(tabList, status);
@@ -782,7 +792,16 @@ export class PresetEditor {
         }))
         .sort((a, b) => a.id.localeCompare(b.id));
 
-      return JSON.stringify({ order: normalizedOrder, prompts, groups });
+      const win = this.window as any;
+      const context = win.SillyTavern?.getContext?.() ?? {};
+      const oaiSettings = context.chatCompletionSettings ?? win.oai_settings ?? {};
+      const sampleParams: Record<string, any> = {};
+      const paramKeys = ['temp', 'temperature', 'top_p', 'frequency_penalty', 'presence_penalty', 'max_tokens', 'openai_max_tokens', 'openai_max_context', 'model', 'streaming'];
+      for (const k of paramKeys) {
+        if (oaiSettings[k] !== undefined) sampleParams[k] = oaiSettings[k];
+      }
+
+      return JSON.stringify({ order: normalizedOrder, prompts, groups, sampleParams });
     } catch {
       return '';
     }
@@ -1575,14 +1594,24 @@ export class PresetEditor {
 
   /* ---------- 写回原生数据 ---------- */
 
-  private commit(): void {
+  private isInternalCommitting = false;
+
+  private commit(refreshList = true): void {
     const pm = this.promptManager;
     if (!pm) return;
-    Promise.resolve(pm.saveServiceSettings()).catch(error => console.error('[现代化界面] 保存提示词设置失败', error));
-    // 关键优化：传递 false 禁用耗时数十秒的 Token dry-run 计算与异步重绘竞态
-    pm.render(false);
-    this.renderList();
-    this.scheduleDirtyCheck();
+    this.isInternalCommitting = true;
+    try {
+      Promise.resolve(pm.saveServiceSettings()).catch(error => console.error('[现代化界面] 保存提示词设置失败', error));
+      pm.render(false);
+      if (refreshList) {
+        this.renderList();
+      }
+      this.scheduleDirtyCheck();
+    } finally {
+      this.window.setTimeout(() => {
+        this.isInternalCommitting = false;
+      }, 150);
+    }
   }
 
   private replaceOrder(order: PromptOrderEntry[]): void {
@@ -1612,7 +1641,7 @@ export class PresetEditor {
     const entry = this.getOrder().find(item => item.identifier === identifier);
     if (entry) {
       const nextEnabled = !entry.enabled;
-      // 0ms 实时视觉响应
+      // 0ms 实时视觉响应：列表行
       const row = this.list?.querySelector<HTMLElement>(`.th-modern-pm-row[data-id="${identifier}"]`);
       if (row) {
         row.classList.toggle('is-disabled', !nextEnabled);
@@ -1620,7 +1649,15 @@ export class PresetEditor {
         if (toggleBtn) {
           toggleBtn.setAttribute('aria-checked', String(nextEnabled));
           toggleBtn.title = nextEnabled ? '已启用，点击关闭' : '已关闭，点击启用';
+          toggleBtn.setAttribute('aria-label', toggleBtn.title);
         }
+      }
+      // 0ms 实时视觉响应：编辑器头部开关
+      const headerToggle = this.editorHeader?.querySelector<HTMLButtonElement>('.th-modern-pm-toggle');
+      if (headerToggle && this.editingId === identifier) {
+        headerToggle.setAttribute('aria-checked', String(nextEnabled));
+        headerToggle.title = nextEnabled ? '提示词条目状态：已启用（点击关闭）' : '提示词条目状态：已关闭（点击启用）';
+        headerToggle.setAttribute('aria-label', headerToggle.title);
       }
       this.setEnabled([identifier], nextEnabled);
     }
@@ -1756,19 +1793,49 @@ export class PresetEditor {
     if (!lastCopy) return;
     this.select(lastCopy);
     this.commit();
+    (this.window as any).toastr?.success?.(`已创建 ${sources.length} 个条目副本`);
+  }
+
+  private getSillyTavernPopupContext(): {
+    callGenericPopup?: (text: any, type: any, defaultValue?: any, options?: any) => Promise<any>;
+    POPUP_TYPE?: any;
+    POPUP_RESULT?: any;
+  } {
+    const win = this.window as any;
+    const context = win.SillyTavern?.getContext?.() ?? {};
+    const callGenericPopup =
+      context.callGenericPopup ??
+      win.callGenericPopup ??
+      win.Popup?.callGenericPopup ??
+      win.SillyTavern?.callGenericPopup;
+    const POPUP_TYPE =
+      context.POPUP_TYPE ??
+      win.POPUP_TYPE ??
+      win.SillyTavern?.POPUP_TYPE ??
+      { TEXT: 0, CONFIRM: 1, INPUT: 2, FORM: 3 };
+    const POPUP_RESULT =
+      context.POPUP_RESULT ??
+      win.POPUP_RESULT ??
+      win.SillyTavern?.POPUP_RESULT ??
+      { AFFIRMATIVE: 1, NEGATIVE: 0, CANCELLED: -1 };
+    return { callGenericPopup, POPUP_TYPE, POPUP_RESULT };
   }
 
   private async confirm(message: string): Promise<boolean> {
-    const SillyTavern = (this.window as any).SillyTavern;
-    const toastr = (this.window as any).toastr;
+    const { callGenericPopup, POPUP_TYPE, POPUP_RESULT } = this.getSillyTavernPopupContext();
     try {
-      if (SillyTavern?.callGenericPopup && SillyTavern?.POPUP_TYPE?.CONFIRM) {
-        return !!(await SillyTavern.callGenericPopup(message, SillyTavern.POPUP_TYPE.CONFIRM));
+      if (typeof callGenericPopup === 'function' && POPUP_TYPE?.CONFIRM !== undefined) {
+        const result = await callGenericPopup(message, POPUP_TYPE.CONFIRM);
+        return result === true || result === 1 || result === POPUP_RESULT?.AFFIRMATIVE;
       }
       return this.window.confirm(message);
     } catch (error) {
-      toastr?.error?.(`无法打开确认框：${getErrorMessage(error)}`);
-      return false;
+      console.warn('[现代化预设] 确认弹窗异常：', error);
+      try {
+        return this.window.confirm(message);
+      } catch {
+        return false;
+      }
     }
   }
 
@@ -1823,22 +1890,23 @@ export class PresetEditor {
     this.selected = new Set(this.activeId ? [this.activeId] : []);
     this.anchorId = this.activeId;
     this.commit();
+    (this.window as any).toastr?.success?.(`已删除条目`);
   }
 
   /* ---------- 分组 ---------- */
 
   private async askGroupName(defaultName = ''): Promise<string | null> {
-    const SillyTavern = (this.window as any).SillyTavern;
-    const toastr = (this.window as any).toastr;
+    const { callGenericPopup, POPUP_TYPE } = this.getSillyTavernPopupContext();
     try {
-      if (SillyTavern?.callGenericPopup && SillyTavern?.POPUP_TYPE?.INPUT) {
-        const result = await SillyTavern.callGenericPopup('分组名称', SillyTavern.POPUP_TYPE.INPUT, defaultName);
-        return typeof result === 'string' && result.trim() ? result.trim() : null;
+      if (typeof callGenericPopup === 'function' && POPUP_TYPE?.INPUT !== undefined) {
+        const result = await callGenericPopup('新建分组', POPUP_TYPE.INPUT, defaultName, { okButton: '创建', cancelButton: '取消' });
+        if (typeof result === 'string' && result.trim()) return result.trim();
+        return null;
       }
-      const promptResult = this.window.prompt('分组名称', defaultName);
+      const promptResult = this.window.prompt('请输入分组名称：', defaultName);
       return promptResult && promptResult.trim() ? promptResult.trim() : null;
     } catch (error) {
-      toastr?.error?.(`无法打开输入框：${getErrorMessage(error)}`);
+      console.warn('[现代化预设] 打开分组输入框失败：', error);
       return null;
     }
   }
@@ -1872,6 +1940,7 @@ export class PresetEditor {
     this.activeGroupId = group.id;
     this.selected.clear();
     this.commit();
+    (this.window as any).toastr?.success?.(`已创建分组「${name}」`);
   }
 
   private updateGroup(groupId: string, update: (group: PromptGroupData) => void): void {
@@ -2185,6 +2254,7 @@ export class PresetEditor {
         this.editAreaMove = moveNode(editArea, this.editorBody);
         editArea.addEventListener('input', this.handleEditorInput);
         editArea.addEventListener('change', this.handleEditorInput);
+        editArea.addEventListener('focusout', () => this.flushEditorApply());
         editArea.addEventListener('click', this.handleEditorClick);
       } else if (editArea.parentElement !== this.editorBody) {
         this.editorBody.append(editArea);
@@ -2287,6 +2357,7 @@ export class PresetEditor {
     if (prompt) {
       const views = makeElement(this.document, 'div', 'th-modern-pm-view-switch');
       views.setAttribute('role', 'group');
+      views.title = '切换编辑/查看视图';
       for (const [view, label] of [
         ['edit', '编辑'],
         ['preview', '查看'],
@@ -2298,9 +2369,10 @@ export class PresetEditor {
         button.title =
           view === 'edit'
             ? editable
-              ? '编辑条目'
-              : '占位条目的内容由酒馆生成，不能直接编辑'
-            : '查看最近一次实际发送的内容';
+              ? '编辑模式：修改此条目的内容与参数'
+              : '占位条目的内容由酒馆在生成时填入，不能直接编辑'
+            : '查看模式：查看最近一次实际发送的内容';
+        button.setAttribute('aria-label', button.title);
         button.addEventListener('click', () => this.setEditorView(view));
         views.append(button);
       }
@@ -2315,18 +2387,25 @@ export class PresetEditor {
       }
     }
     if (entry && prompt) {
-      const toggle = makeSwitch(this.document, entry.enabled, entry.enabled ? '已启用，点击关闭' : '已关闭，点击启用');
+      const toggle = makeSwitch(
+        this.document,
+        entry.enabled,
+        entry.enabled ? '条目状态：已启用（点击关闭）' : '条目状态：已关闭（点击启用）',
+      );
       toggle.disabled = !pm.isPromptToggleAllowed(prompt);
-      toggle.addEventListener('click', () => this.toggleEntry(identifier));
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleEntry(identifier);
+      });
       actions.append(toggle);
     }
     if (entry) {
-      const group = makeIconButton(this.document, '', '放入新分组', 'bi-folder-plus');
+      const group = makeIconButton(this.document, '', '将此条目放入新分组', 'bi-folder-plus');
       group.addEventListener('click', () => void this.createGroupFromSelection([identifier]));
       actions.append(group);
     }
     if (prompt && !prompt.marker) {
-      const copy = makeIconButton(this.document, '', '复制条目', 'bi-files');
+      const copy = makeIconButton(this.document, '', '复制此条目生成副本', 'bi-files');
       copy.addEventListener('click', () => this.copyEntries([identifier]));
       actions.append(copy);
     }
@@ -2335,7 +2414,7 @@ export class PresetEditor {
       const remove = makeIconButton(
         this.document,
         'is-danger',
-        deletable ? '删除条目' : '移出列表',
+        deletable ? '删除此条目' : '移出列表（内置条目不能删除）',
         deletable ? 'bi-trash3' : 'bi-box-arrow-right',
       );
       remove.addEventListener('click', () => void this.deleteEntries([identifier]));
@@ -2439,6 +2518,8 @@ export class PresetEditor {
 
   private readonly handleEditorInput = (): void => {
     if (this.suppressEditorEvents || !this.editingId) return;
+    this.dirty = true;
+    this.renderDirty();
     this.window.clearTimeout(this.applyTimer);
     this.applyTimer = this.window.setTimeout(() => this.applyEditor(), EDITOR_APPLY_DELAY);
   };
@@ -2465,11 +2546,25 @@ export class PresetEditor {
     const pm = this.promptManager;
     const identifier = this.editingId;
     const prompt = identifier ? this.getPrompt(identifier) : null;
-    if (!pm || !identifier || !prompt || prompt !== this.editingPrompt || !pm.isPromptEditAllowed(prompt)) return;
-    pm.updatePromptWithPromptEditForm(prompt);
+    if (!pm || !identifier || !prompt) return;
+
+    try {
+      if (pm.isPromptEditAllowed(prompt)) {
+        pm.updatePromptWithPromptEditForm(prompt);
+      } else {
+        const prefix = pm.configuration?.prefix ?? 'completion_';
+        const promptField = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_prompt`) as HTMLTextAreaElement | null;
+        if (promptField && !promptField.disabled && prompt.content !== promptField.value) {
+          prompt.content = promptField.value;
+        }
+      }
+    } catch (err) {
+      console.warn('[现代化预设] 保存表单到条目异常：', err);
+    }
+
     if (QUICK_EDIT_PROMPTS.includes(identifier)) pm.updateQuickEdit?.(identifier, prompt);
     this.resetTokenCount(identifier);
-    this.commit();
+    this.commit(false);
   }
 
   private focusEditorName(): void {
