@@ -3534,7 +3534,7 @@ function Fc(e, t) {
 	};
 }
 function Ic(e, t) {
-	e && (e.marker.isConnected ? e.marker.replaceWith(e.node) : !e.node.isConnected && t && t(e.node), e.marker.remove());
+	e && (e.marker.isConnected ? e.marker.replaceWith(e.node) : t && t(e.node), e.marker.remove());
 }
 function Lc(e, t) {
 	return e?.name?.trim() || t;
@@ -3640,21 +3640,29 @@ var Bc = class {
 		let e = this.window.eventSource;
 		if (!e || typeof e.on != "function") return;
 		let t = () => {
-			this.resetCleanBaseline(), this.isSwitchingPreset = !0, this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = this.window.setTimeout(() => {
-				this.isSwitchingPreset = !1, this.presetSwitchTimer = 0;
-			}, 150), this.shell?.isConnected ? (this.renderList(), this.scheduleDirtyCheck(400)) : this.scheduleSync();
+			this.isSwitchingPreset = !0, this.activeId = null, this.activeGroupId = null, this.anchorId = null, this.selected.clear(), this.editingId = null, this.editingPrompt = null, this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = this.window.setTimeout(() => {
+				this.isSwitchingPreset = !1, this.presetSwitchTimer = 0, this.shell?.classList.remove("is-loading-preset");
+			}, 1500), this.shell && this.shell.classList.add("is-loading-preset");
 		}, n = () => {
-			this.resetCleanBaseline(), this.shell?.isConnected ? (this.editingPrompt = null, this.renderList(), this.scheduleDirtyCheck(400)) : this.scheduleSync();
+			this.isSwitchingPreset = !1, this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = 0, this.shell && this.shell.classList.remove("is-loading-preset"), this.activeId = null, this.activeGroupId = null, this.anchorId = null, this.selected.clear(), this.editingId = null, this.editingPrompt = null;
+			try {
+				this.resetCleanBaseline(), this.shell?.isConnected ? (this.renderList(), this.scheduleDirtyCheck(400)) : this.scheduleSync();
+			} catch (e) {
+				console.error("[现代化预设] 预设切换刷新异常：", e);
+			}
 		}, r = () => {
+			this.resetCleanBaseline(), this.shell?.isConnected ? (this.editingPrompt = null, this.renderList(), this.scheduleDirtyCheck(400)) : this.scheduleSync();
+		}, i = () => {
 			this.resetCleanBaseline(), this.shell?.isConnected ? (this.renderList(), this.scheduleDirtyCheck(400)) : this.scheduleSync();
-		}, i = [
-			["oai_preset_changed_after", t],
-			["preset_changed", t],
-			["oai_preset_import_ready", n],
-			["chatLoaded", r],
-			["chat_id_changed", r]
+		}, a = [
+			["oai_preset_changed_before", t],
+			["oai_preset_changed_after", n],
+			["preset_changed", n],
+			["oai_preset_import_ready", r],
+			["chatLoaded", i],
+			["chat_id_changed", i]
 		];
-		for (let [t, n] of i) e.on(t, n), this.boundHostEvents.push({
+		for (let [t, n] of a) e.on(t, n), this.boundHostEvents.push({
 			event: t,
 			handler: n
 		});
@@ -3719,13 +3727,30 @@ var Bc = class {
 		}));
 	}
 	teardown() {
-		this.flushEditorApply(), this.stopDrag?.(), this.stopDrag = void 0, this.stopDirtyPolling(), this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = 0, this.isSwitchingPreset = !1, this.dirtyTimer = 0, this.dirtyInterval = 0, this.resizeObserver?.disconnect(), this.resizeObserver = void 0, this.cancelLongPress(), Ic(this.editAreaMove), this.editAreaMove = void 0, Ic(this.inspectMove), this.inspectMove = void 0, this.previewSource = void 0, Ic(this.presetsMove, (e) => {
+		this.flushEditorApply(), this.stopDrag?.(), this.stopDrag = void 0, this.stopDirtyPolling(), this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = 0, this.isSwitchingPreset = !1, this.dirtyTimer = 0, this.dirtyInterval = 0, this.resizeObserver?.disconnect(), this.resizeObserver = void 0, this.cancelLongPress(), Ic(this.editAreaMove, (e) => {
+			let t = this.document.getElementById("completion_prompt_manager_popup");
+			t && t.append(e);
+		}), this.editAreaMove = void 0, Ic(this.inspectMove, (e) => {
+			let t = this.document.getElementById("completion_prompt_manager_popup");
+			t && t.prepend(e);
+		}), this.inspectMove = void 0, this.previewSource = void 0;
+		let e = this.presetsMove?.node ?? this.document.getElementById("respective-presets-block");
+		if (Ic(this.presetsMove, (e) => {
 			let t = this.document.getElementById("ai_response_configuration");
 			t && t.prepend(e);
-		}), this.presetsMove = void 0, Ic(this.pinMove, (e) => {
+		}), this.presetsMove = void 0, e && (this.toolbar?.contains(e) || !e.isConnected)) {
+			let t = this.document.getElementById("ai_response_configuration");
+			t && t.prepend(e);
+		}
+		let t = this.pinMove?.node ?? this.document.getElementById("lm_button_panel_pin_div");
+		if (Ic(this.pinMove, (e) => {
 			let t = this.document.getElementById("lm_button_panel_pin_div_parent") ?? this.document.getElementById("left-nav-panel");
 			t && t.prepend(e);
-		}), this.pinMove = void 0, this.toolbar?.remove(), this.toolbar = void 0, this.tabButtons.clear(), this.shell?.remove(), this.shell = void 0, this.list = void 0, this.editingId = null, this.editingPrompt = null, this.promptSection?.classList.remove(dc), this.promptSection = void 0, this.panel?.classList.remove(lc), this.panel?.removeAttribute(uc), this.panel = void 0;
+		}), this.pinMove = void 0, t && (t.parentElement?.classList.contains("th-modern-drawer-actions") || !t.isConnected)) {
+			let e = this.document.getElementById("lm_button_panel_pin_div_parent") ?? this.document.getElementById("left-nav-panel");
+			e && e.prepend(t);
+		}
+		this.toolbar?.remove(), this.toolbar = void 0, this.tabButtons.clear(), this.shell?.remove(), this.shell = void 0, this.list = void 0, this.editingId = null, this.editingPrompt = null, this.promptSection?.classList.remove(dc), this.promptSection = void 0, this.panel?.classList.remove(lc), this.panel?.removeAttribute(uc), this.panel = void 0;
 	}
 	ensurePanelPin(e) {
 		let t = this.document.getElementById("lm_button_panel_pin_div"), n = e.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
@@ -3739,24 +3764,30 @@ var Bc = class {
 	}
 	ensureToolbar(e) {
 		if (this.toolbar?.isConnected && e.parentElement === this.toolbar) return;
+		let t = this.document.getElementById("ai_response_configuration");
 		Ic(this.presetsMove, (e) => {
-			let t = this.document.getElementById("ai_response_configuration");
 			t && t.prepend(e);
-		}), this.toolbar?.remove();
-		let t = R(this.document, "div", "th-modern-preset-toolbar");
-		e.before(t), this.presetsMove = Fc(e, t);
-		let n = R(this.document, "div", "th-modern-preset-tabs"), r = R(this.document, "div", "th-modern-preset-tablist");
-		r.setAttribute("role", "tablist"), this.tabButtons.clear();
+		}), this.presetsMove = void 0, this.toolbar && this.toolbar.contains(e) && t && t.prepend(e), this.toolbar?.remove();
+		let n = R(this.document, "div", "th-modern-preset-toolbar");
+		e.before(n), this.presetsMove = Fc(e, n);
+		let r = e.querySelector("#settings_preset_openai");
+		r && !r.dataset.thPresetBound && (r.dataset.thPresetBound = "true", r.addEventListener("change", () => {
+			this.isSwitchingPreset = !0, this.activeId = null, this.activeGroupId = null, this.anchorId = null, this.selected.clear(), this.editingId = null, this.editingPrompt = null, this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = this.window.setTimeout(() => {
+				this.isSwitchingPreset = !1, this.presetSwitchTimer = 0, this.shell?.classList.remove("is-loading-preset");
+			}, 1500), this.shell && this.shell.classList.add("is-loading-preset");
+		}));
+		let i = R(this.document, "div", "th-modern-preset-tabs"), a = R(this.document, "div", "th-modern-preset-tablist");
+		a.setAttribute("role", "tablist"), this.tabButtons.clear();
 		for (let e of Oc) {
 			let t = R(this.document, "button", "th-modern-preset-tab");
-			t.type = "button", t.setAttribute("role", "tab"), t.dataset.tab = e.id, t.append(R(this.document, "span", "", e.label)), e.id === "prompts" && t.append(R(this.document, "span", "th-modern-preset-tab-count")), t.addEventListener("click", () => this.setTab(e.id)), r.append(t), this.tabButtons.set(e.id, t);
+			t.type = "button", t.setAttribute("role", "tab"), t.dataset.tab = e.id, t.append(R(this.document, "span", "", e.label)), e.id === "prompts" && t.append(R(this.document, "span", "th-modern-preset-tab-count")), t.addEventListener("click", () => this.setTab(e.id)), a.append(t), this.tabButtons.set(e.id, t);
 		}
-		let i = R(this.document, "div", "th-modern-preset-status");
+		let o = R(this.document, "div", "th-modern-preset-status");
 		this.dirtyBadge = R(this.document, "span", "th-modern-preset-dirty"), this.saveButton = R(this.document, "button", "th-modern-preset-save menu_button", "保存预设"), this.saveButton.type = "button", this.saveButton.addEventListener("click", () => {
 			this.flushEditorApply(), this.document.getElementById("update_oai_preset")?.click(), this.window.setTimeout(() => {
 				this.resetCleanBaseline(), this.scheduleDirtyCheck(200);
 			}, 1e3);
-		}), i.append(this.dirtyBadge, this.saveButton), n.append(r, i), t.append(n), this.toolbar = t, this.renderDirty();
+		}), o.append(this.dirtyBadge, this.saveButton), i.append(a, o), n.append(i), this.toolbar = n, this.renderDirty();
 	}
 	setTab(e) {
 		this.tab !== e && (this.flushEditorApply(), this.tab = e, Mc(mc, e), this.applyTab(), this.panel?.querySelector(".scrollableInner")?.scrollTo({ top: 0 }));
@@ -3768,14 +3799,26 @@ var Bc = class {
 			t.classList.toggle("is-active", n), t.setAttribute("aria-selected", String(n));
 		}
 	}
+	getActiveCharacterTarget() {
+		let e = this.promptManager;
+		if (!e) return;
+		if (e.activeCharacter && e.getPromptOrderForCharacter(e.activeCharacter)?.length) return e.activeCharacter;
+		let t = e.configuration?.promptOrder?.dummyId;
+		if (t !== void 0 && e.getPromptOrderForCharacter({ id: t })?.length) return { id: t };
+		if (Array.isArray(e.serviceSettings?.prompt_order) && e.serviceSettings.prompt_order.length > 0) {
+			let t = e.serviceSettings.prompt_order.find((e) => Array.isArray(e?.order) && e.order.length > 0);
+			if (t && t.character_id !== void 0) return { id: t.character_id };
+		}
+		return e.activeCharacter ?? (t === void 0 ? void 0 : { id: t });
+	}
 	takeSnapshot() {
 		let e = this.promptManager;
 		if (!e) return "";
 		try {
-			let t = (e.getPromptOrderForCharacter(e.activeCharacter) || []).map((e) => ({
+			let t = this.getActiveCharacterTarget(), n = (e.getPromptOrderForCharacter(t) || this.getOrder() || []).map((e) => ({
 				identifier: e.identifier,
 				enabled: !!e.enabled
-			})), n = (e.serviceSettings.prompts || []).map((e) => ({
+			})), r = (e.serviceSettings.prompts || []).map((e) => ({
 				identifier: e.identifier,
 				name: e.name || "",
 				role: e.role || "system",
@@ -3784,7 +3827,7 @@ var Bc = class {
 				marker: !!e.marker,
 				injection_position: e.injection_position ?? 0,
 				injection_depth: e.injection_depth ?? 0
-			})).sort((e, t) => e.identifier.localeCompare(t.identifier)), r = (Js(e.serviceSettings) || []).map((e) => ({
+			})).sort((e, t) => e.identifier.localeCompare(t.identifier)), i = (Js(e.serviceSettings) || []).map((e) => ({
 				id: e.id,
 				name: e.name,
 				identifiers: [...e.identifiers || []].sort(),
@@ -3792,9 +3835,9 @@ var Bc = class {
 				single_select: !!e.single_select
 			})).sort((e, t) => e.id.localeCompare(t.id));
 			return JSON.stringify({
-				order: t,
-				prompts: n,
-				groups: r
+				order: n,
+				prompts: r,
+				groups: i
 			});
 		} catch {
 			return "";
@@ -3945,7 +3988,13 @@ var Bc = class {
 	}
 	getOrder() {
 		let e = this.promptManager;
-		return e ? e.getPromptOrderForCharacter(e.activeCharacter) : [];
+		if (!e) return [];
+		let t = this.getActiveCharacterTarget(), n = e.getPromptOrderForCharacter(t);
+		if ((!n || !n.length) && Array.isArray(e.serviceSettings?.prompt_order) && e.serviceSettings.prompt_order.length > 0) {
+			let t = e.serviceSettings.prompt_order.find((e) => Array.isArray(e?.order) && e.order.length > 0);
+			t?.order && (n = t.order);
+		}
+		return n ?? [];
 	}
 	getPrompt(e) {
 		return this.promptManager?.getPromptById(e) ?? null;
@@ -3992,7 +4041,7 @@ var Bc = class {
 		this.groups = Js(e.serviceSettings), this.rows = ec(n, this.groups, (e) => this.getPrompt(e));
 		let r = new Set(n.map((e) => e.identifier));
 		for (let e of [...this.selected]) r.has(e) || this.selected.delete(e);
-		this.activeId && !r.has(this.activeId) && !this.getPrompt(this.activeId) && (this.activeId = null), this.activeGroupId && !this.getGroup(this.activeGroupId) && (this.activeGroupId = null), !this.activeId && !this.activeGroupId && n.length && !this.shell?.classList.contains(fc) && (this.activeId = n[0].identifier, this.selected = /* @__PURE__ */ new Set([this.activeId]), this.anchorId = this.activeId);
+		this.activeId && !r.has(this.activeId) && !this.getPrompt(this.activeId) && (this.activeId = null), this.activeGroupId && !this.getGroup(this.activeGroupId) && (this.activeGroupId = null), !this.activeId && !this.activeGroupId && n.length && (this.activeId = n[0].identifier, this.selected = /* @__PURE__ */ new Set([this.activeId]), this.anchorId = this.activeId);
 		let i = e.tokenHandler?.getCounts?.() ?? {};
 		t.classList.toggle("has-tokens", n.some((e) => typeof i[e.identifier] == "number"));
 		let a = t.scrollTop, o = this.document.createDocumentFragment();
@@ -4015,13 +4064,27 @@ var Bc = class {
 		let o = R(this.document, "span", "th-modern-pm-handle");
 		o.title = "拖动整组", o.append(R(this.document, "i", Ac("bi-grip-vertical")));
 		let s = Nc(this.document, "th-modern-pm-collapse", r ? "展开分组" : "折叠分组", r ? "bi-chevron-right" : "bi-chevron-down");
-		s.setAttribute("aria-expanded", String(!r));
+		s.setAttribute("aria-expanded", String(!r)), s.addEventListener("click", (e) => {
+			e.stopPropagation(), this.toggleCollapsed(n.id);
+		});
 		let c = R(this.document, "span", "th-modern-pm-main");
 		c.append(R(this.document, "i", `th-modern-pm-kind ${Ac(r ? "bi-folder" : "bi-folder2-open")}`), R(this.document, "span", "th-modern-pm-name", n.name || "未命名分组"), R(this.document, "span", "th-modern-pm-group-count", `${i.enabled}/${i.total}`)), n.single_select && c.append(R(this.document, "span", "th-modern-pm-badge is-mode", "单选")), e.continued && c.append(R(this.document, "span", "th-modern-pm-badge", "续"));
 		let l = n.single_select ? i.enabled > 0 : i.enabled === i.total ? !0 : i.enabled ? "mixed" : !1, u = Pc(this.document, l, n.single_select ? "单选组：有选项开启时点击全部关闭，否则开启第一项" : "开启或关闭组内全部条目");
 		u.disabled = !i.total;
-		let d = Qs(this.groups, n.id), f = d.length > 0 && d.every((e) => this.selected.has(e));
-		return a.classList.toggle("is-selected", this.multiSelect && f), a.append(o, this.createCheck(f), s, c, u), a;
+		let d = (e) => {
+			e.stopPropagation(), e.preventDefault(), this.toggleGroup(n.id);
+		};
+		u.addEventListener("click", d), u.addEventListener("pointerup", (e) => {
+			e.button === 0 && d(e);
+		});
+		let f = Qs(this.groups, n.id), p = f.length > 0 && f.every((e) => this.selected.has(e));
+		a.classList.toggle("is-selected", this.multiSelect && p), a.append(o, this.createCheck(p), s, c, u);
+		let m = 0, h = (e) => {
+			e.target?.closest(".th-modern-pm-handle, .th-modern-pm-toggle, .th-modern-pm-collapse, button") || Date.now() - m < 200 || (m = Date.now(), this.handleGroupRowClick(n.id, e));
+		};
+		return a.addEventListener("click", h), a.addEventListener("pointerup", (e) => {
+			e.pointerType === "mouse" && e.button === 0 && !this.stopDrag && h(e);
+		}), a;
 	}
 	createPromptRow(e, t, n) {
 		let { identifier: r, prompt: i } = t, a = R(this.document, "div", "th-modern-pm-row");
@@ -4036,13 +4099,33 @@ var Bc = class {
 		let c = R(this.document, "span", "th-modern-pm-badges");
 		i && !i.marker && i.role && c.append(R(this.document, "span", `th-modern-pm-badge is-role-${i.role}`, Dc[i.role] ?? i.role)), i?.injection_position === 1 && c.append(R(this.document, "span", "th-modern-pm-badge is-depth", `@${i.injection_depth ?? 4}`)), i || c.append(R(this.document, "span", "th-modern-pm-badge is-warning", "缺失")), a.append(c), a.append(R(this.document, "span", "th-modern-pm-tokens", typeof n == "number" ? String(n) : ""));
 		let l = R(this.document, "span", "th-modern-pm-actions");
-		if (i && !i.marker && l.append(Nc(this.document, "th-modern-pm-copy", "复制条目", "bi-files")), i) {
-			let t = e.isPromptDeletionAllowed(i);
-			l.append(Nc(this.document, "th-modern-pm-delete", t ? "删除条目" : "移出列表（内置条目不能删除）", t ? "bi-trash3" : "bi-box-arrow-right"));
+		if (i && !i.marker) {
+			let e = Nc(this.document, "th-modern-pm-copy", "复制条目", "bi-files");
+			e.addEventListener("click", (e) => {
+				e.stopPropagation(), this.copyEntries([r]);
+			}), l.append(e);
+		}
+		if (i) {
+			let t = e.isPromptDeletionAllowed(i), n = Nc(this.document, "th-modern-pm-delete", t ? "删除条目" : "移出列表（内置条目不能删除）", t ? "bi-trash3" : "bi-box-arrow-right");
+			n.addEventListener("click", (e) => {
+				e.stopPropagation(), this.deleteEntries([r]);
+			}), l.append(n);
 		}
 		a.append(l);
 		let u = Pc(this.document, t.enabled, t.enabled ? "已启用，点击关闭" : "已关闭，点击启用");
-		return u.disabled = !i || !e.isPromptToggleAllowed(i), a.append(u), a;
+		u.disabled = !i || !e.isPromptToggleAllowed(i);
+		let d = (e) => {
+			e.stopPropagation(), e.preventDefault(), this.toggleEntry(r);
+		};
+		u.addEventListener("click", d), u.addEventListener("pointerup", (e) => {
+			e.button === 0 && d(e);
+		}), a.append(u);
+		let f = 0, p = (e) => {
+			e.target?.closest(".th-modern-pm-handle, .th-modern-pm-toggle, .th-modern-pm-actions, button") || Date.now() - f < 200 || (f = Date.now(), this.handlePromptRowClick(r, e));
+		};
+		return a.addEventListener("click", p), a.addEventListener("pointerup", (e) => {
+			e.pointerType === "mouse" && e.button === 0 && !this.stopDrag && p(e);
+		}), a;
 	}
 	createUnusedSection(e, t) {
 		let n = e.serviceSettings.prompts.filter((e) => e && !t.has(e.identifier)), r = R(this.document, "details", "th-modern-pm-unused");
@@ -4060,32 +4143,58 @@ var Bc = class {
 	renderBatchBar() {
 		this.batchBar && this.batchCount && (this.batchBar.hidden = !this.multiSelect && this.selected.size < 2, this.batchCount.textContent = `已选 ${this.selected.size} 项`);
 	}
+	handleGroupRowClick(e, t) {
+		this.multiSelect ? this.toggleGroupSelection(e) : (this.flushEditorApply(), this.activeGroupId = e, this.selected.clear(), this.openDetail(), this.renderList());
+	}
+	handlePromptRowClick(e, t) {
+		if (this.suppressNextClick) this.suppressNextClick = !1;
+		else try {
+			if (t && t.shiftKey && this.anchorId) {
+				let t = this.visibleRows.flatMap((e) => e.kind === "prompt" ? [e.identifier] : []), n = t.indexOf(this.anchorId), r = t.indexOf(e);
+				n !== -1 && r !== -1 && (this.selected = new Set(t.slice(Math.min(n, r), Math.max(n, r) + 1)));
+			} else t && (this.multiSelect || t.ctrlKey || t.metaKey) ? (this.selected.has(e) && (this.multiSelect || this.selected.size > 1) ? this.selected.delete(e) : this.selected.add(e), this.anchorId = e, this.activeId = e, this.activeGroupId = null, this.openDetail()) : this.select(e);
+			this.updateActiveRowStyles(), this.syncEditor();
+		} catch (e) {
+			console.error("[现代化预设] 提示词条目点选异常：", e);
+		}
+	}
 	handleListClick = (e) => {
 		let t = e.target, n = t?.closest(".th-modern-pm-row");
-		if (this.suppressNextClick) {
-			this.suppressNextClick = !1;
-			return;
-		}
-		if (!n || t?.closest(".th-modern-pm-handle")) return;
-		let r = n.dataset.groupId;
-		if (r) {
-			t?.closest(".th-modern-pm-toggle") ? this.toggleGroup(r) : t?.closest(".th-modern-pm-collapse") ? this.toggleCollapsed(r) : this.multiSelect ? this.toggleGroupSelection(r) : (this.flushEditorApply(), this.activeGroupId = r, this.selected.clear(), this.openDetail(), this.renderList());
-			return;
-		}
-		let i = n.dataset.id;
-		if (i) {
-			if (t?.closest(".th-modern-pm-toggle")) this.toggleEntry(i);
-			else if (t?.closest(".th-modern-pm-copy")) this.copyEntries(this.selected.has(i) ? [...this.selected] : [i]);
-			else if (t?.closest(".th-modern-pm-delete")) this.deleteEntries(this.selected.has(i) ? [...this.selected] : [i]);
-			else {
-				if (e.shiftKey && this.anchorId) {
-					let e = this.visibleRows.flatMap((e) => e.kind === "prompt" ? [e.identifier] : []), t = e.indexOf(this.anchorId), n = e.indexOf(i);
-					t !== -1 && n !== -1 && (this.selected = new Set(e.slice(Math.min(t, n), Math.max(t, n) + 1)));
-				} else this.multiSelect || e.ctrlKey || e.metaKey ? (this.selected.has(i) && (this.multiSelect || this.selected.size > 1) ? this.selected.delete(i) : this.selected.add(i), this.anchorId = i) : this.select(i);
-				this.renderList();
+		if (this.suppressNextClick) this.suppressNextClick = !1;
+		else if (n && !t?.closest(".th-modern-pm-handle")) try {
+			let r = n.dataset.groupId;
+			if (r) {
+				t?.closest(".th-modern-pm-toggle") ? this.toggleGroup(r) : t?.closest(".th-modern-pm-collapse") ? this.toggleCollapsed(r) : this.handleGroupRowClick(r, e);
+				return;
 			}
+			let i = n.dataset.id;
+			if (!i) return;
+			if (t?.closest(".th-modern-pm-toggle")) {
+				this.toggleEntry(i);
+				return;
+			}
+			if (t?.closest(".th-modern-pm-copy")) {
+				this.copyEntries(this.selected.has(i) ? [...this.selected] : [i]);
+				return;
+			}
+			if (t?.closest(".th-modern-pm-delete")) {
+				this.deleteEntries(this.selected.has(i) ? [...this.selected] : [i]);
+				return;
+			}
+			this.handlePromptRowClick(i, e);
+		} catch (e) {
+			console.error("[现代化预设] 提示词条目点击处理异常：", e);
 		}
 	};
+	updateActiveRowStyles() {
+		if (!this.list) return;
+		let e = this.list.querySelectorAll(".th-modern-pm-row");
+		for (let t of e) {
+			let e = t.dataset.id, n = t.dataset.groupId;
+			e ? (t.classList.toggle("is-active", e === this.activeId && !this.activeGroupId), t.classList.toggle("is-selected", this.selected.has(e)), t.setAttribute("aria-selected", String(this.selected.has(e)))) : n && t.classList.toggle("is-active", n === this.activeGroupId);
+		}
+		this.renderBatchBar();
+	}
 	handleListKeyDown = (e) => {
 		e.key === "Escape" && (this.multiSelect || this.selected.size > 1) && (e.preventDefault(), this.clearSelection());
 	};
@@ -4144,11 +4253,13 @@ var Bc = class {
 	}
 	commit() {
 		let e = this.promptManager;
-		e && (Promise.resolve(e.saveServiceSettings()).catch((e) => console.error("[现代化界面] 保存提示词设置失败", e)), e.render(), this.renderList(), this.scheduleDirtyCheck());
+		e && (Promise.resolve(e.saveServiceSettings()).catch((e) => console.error("[现代化界面] 保存提示词设置失败", e)), e.render(!1), this.renderList(), this.scheduleDirtyCheck());
 	}
 	replaceOrder(e) {
 		let t = this.promptManager;
-		t && (t.removePromptOrderForCharacter(t.activeCharacter), t.addPromptOrderForCharacter(t.activeCharacter, e));
+		if (!t) return;
+		let n = this.getActiveCharacterTarget();
+		n && (t.removePromptOrderForCharacter(n), t.addPromptOrderForCharacter(n, e));
 	}
 	cleanupGroupData() {
 		let e = this.promptManager;
@@ -4160,7 +4271,15 @@ var Bc = class {
 	}
 	toggleEntry(e) {
 		let t = this.getOrder().find((t) => t.identifier === e);
-		t && this.setEnabled([e], !t.enabled);
+		if (t) {
+			let n = !t.enabled, r = this.list?.querySelector(`.th-modern-pm-row[data-id="${e}"]`);
+			if (r) {
+				r.classList.toggle("is-disabled", !n);
+				let e = r.querySelector(".th-modern-pm-toggle");
+				e && (e.setAttribute("aria-checked", String(n)), e.title = n ? "已启用，点击关闭" : "已关闭，点击启用");
+			}
+			this.setEnabled([e], n);
+		}
 	}
 	setEnabled(e, t) {
 		let n = this.promptManager;
@@ -4441,8 +4560,12 @@ var Bc = class {
 			this.flushEditorApply(), this.editingId = null, this.editingPrompt = null, this.renderGroupEditor(this.activeGroupId);
 			return;
 		}
-		let e = this.activeId, t = e ? this.getPrompt(e) : null;
-		e !== this.editingId || t !== this.editingPrompt ? (this.flushEditorApply(), this.editingId = e, this.editingPrompt = t, this.loadPromptEditor()) : t && (this.editorView === "preview" || !this.isEditable(t)) && this.renderPreview(), this.renderPromptEditorHeader();
+		let e = this.activeId, t = e ? this.getPrompt(e) : null, n = this.getEditArea(), r = n ? n.parentElement !== this.editorBody : !1, i = n ? n.style.display === "none" || r : !1;
+		try {
+			e !== this.editingId || t !== this.editingPrompt || t && this.isEditable(t) && i ? (this.flushEditorApply(), this.editingId = e, this.editingPrompt = t, this.loadPromptEditor()) : t && (this.editorView === "preview" || !this.isEditable(t)) && this.renderPreview(), this.renderPromptEditorHeader();
+		} catch (e) {
+			console.error("[现代化预设] 同步编辑器区域异常：", e);
+		}
 	}
 	getInspectArea() {
 		let e = this.promptManager?.configuration.prefix ?? "completion_";
@@ -4450,7 +4573,7 @@ var Bc = class {
 	}
 	showEditArea(e, t = "") {
 		let n = this.getEditArea(), r = this.getInspectArea();
-		n && (n.style.display = e ? "" : "none"), r && this.inspectMove && (r.style.display = "none"), this.previewSource = void 0, this.editorBody && (this.editorBody.hidden = !e), this.setPlaceholder(e ? "" : t);
+		n && n.style.setProperty("display", e ? "flex" : "none", "important"), r && this.inspectMove && (r.style.display = "none"), this.previewSource = void 0, this.editorBody && (this.editorBody.hidden = !e), this.setPlaceholder(e ? "" : t);
 	}
 	setPlaceholder(e) {
 		this.editorPlaceholder && (this.editorPlaceholder.hidden = !e, this.editorPlaceholder.textContent = e);
@@ -4461,7 +4584,7 @@ var Bc = class {
 	renderPreview(e = !1) {
 		let t = this.promptManager, n = this.editingId, r = this.getInspectArea();
 		if (!t || !n || !this.editorBody) return;
-		r && !this.inspectMove && (this.inspectMove = Fc(r, this.editorBody));
+		r && (this.inspectMove ? r.parentElement !== this.editorBody && this.editorBody.append(r) : this.inspectMove = Fc(r, this.editorBody));
 		let i = this.getEditArea();
 		i && (i.style.display = "none");
 		let a = t.messages?.hasItemWithIdentifier(n) ? t.messages.getItemByIdentifier(n) : null;
@@ -4473,19 +4596,29 @@ var Bc = class {
 	loadPromptEditor() {
 		let e = this.promptManager, t = this.editingId, n = this.getEditArea();
 		if (!e || !this.editorBody) return;
-		n && !this.editAreaMove && (this.editAreaMove = Fc(n, this.editorBody), n.addEventListener("input", this.handleEditorInput), n.addEventListener("change", this.handleEditorInput), n.addEventListener("click", this.handleEditorClick));
+		n && (this.editAreaMove ? n.parentElement !== this.editorBody && this.editorBody.append(n) : (this.editAreaMove = Fc(n, this.editorBody), n.addEventListener("input", this.handleEditorInput), n.addEventListener("change", this.handleEditorInput), n.addEventListener("click", this.handleEditorClick)));
 		let r = this.editingPrompt;
 		if (r && (this.editorView === "preview" || !this.isEditable(r))) this.renderPreview(!0);
 		else if (n && r && e.isPromptEditAllowed(r)) {
 			this.suppressEditorEvents = !0;
 			try {
 				e.loadPromptIntoEditForm(r);
+			} catch (e) {
+				console.warn("[现代化预设] 宿主加载条目表单失败，正在使用手动兜底填充：", e);
 			} finally {
 				this.suppressEditorEvents = !1;
 			}
+			this.ensureEditFormValues(r);
 			let t = e.configuration.prefix ?? "completion_", n = this.document.getElementById(`${t}prompt_manager_forbid_overrides_block`), i = this.document.getElementById(`${t}prompt_manager_popup_entry_form_forbid_overrides`);
 			n && (n.style.setProperty("display", "inline-flex", "important"), n.style.setProperty("width", "auto", "important"), n.style.setProperty("flex", "0 0 auto", "important")), i && (i.style.setProperty("width", "1rem", "important"), i.style.setProperty("height", "1rem", "important"), i.style.setProperty("min-width", "1rem", "important"), i.style.setProperty("max-width", "1rem", "important"), i.style.setProperty("flex", "0 0 1rem", "important"), i.style.setProperty("transform", "none", "important")), this.showEditArea(!0);
 		} else this.showEditArea(!1, t ? "这个条目在预设里找不到定义，可以删除后重新添加。" : "在左侧选择一个条目进行编辑");
+	}
+	ensureEditFormValues(e) {
+		let t = this.promptManager?.configuration.prefix ?? "completion_", n = this.document.getElementById(`${t}prompt_manager_popup_entry_form_name`), r = this.document.getElementById(`${t}prompt_manager_popup_entry_form_role`), i = this.document.getElementById(`${t}prompt_manager_popup_entry_form_prompt`), a = this.document.getElementById(`${t}prompt_manager_popup_entry_form_injection_position`), o = this.document.getElementById(`${t}prompt_manager_popup_entry_form_injection_depth`), s = this.document.getElementById(`${t}prompt_manager_popup_entry_form_injection_order`), c = this.document.getElementById(`${t}prompt_manager_popup_entry_form_forbid_overrides`), l = this.document.getElementById(`${t}prompt_manager_popup_entry_form_save`);
+		n && n.value !== (e.name ?? "") && (n.value = e.name ?? ""), r && r.value !== (e.role || "system") && (r.value = e.role || "system"), i && (i.value !== (e.content ?? "") && (i.value = e.content ?? ""), i.disabled = e.marker ?? !1), a && typeof e.injection_position == "number" && (a.value = String(e.injection_position)), o && typeof e.injection_depth == "number" && (o.value = String(e.injection_depth)), s && typeof e.injection_order == "number" && (s.value = String(e.injection_order)), c && (c.checked = !!e.forbid_overrides), l && (l.dataset.pmPrompt = e.identifier);
+	}
+	fallbackFillEditForm(e) {
+		this.ensureEditFormValues(e);
 	}
 	renderPromptEditorHeader() {
 		let e = this.editorHeader, t = this.editorExtra, n = this.promptManager;

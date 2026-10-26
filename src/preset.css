@@ -1,4 +1,4 @@
-﻿body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled {
+body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled {
   --th-modern-pm-border: color-mix(in srgb, var(--SmartThemeBorderColor) 72%, transparent);
   --th-modern-pm-muted: color-mix(in srgb, var(--SmartThemeBodyColor) 58%, transparent);
   --th-modern-pm-accent: var(--SmartThemeQuoteColor);
@@ -182,6 +182,14 @@ body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm {
   flex-direction: column;
   gap: 0.5rem;
   min-height: 0;
+}
+
+body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.is-loading-preset {
+  /* 预设切换中状态提示，绝不拦截用户交互与点击 */
+}
+
+body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.is-loading-preset .th-modern-pm-list {
+  transition: opacity 0.2s ease;
 }
 
 body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-toolbar {

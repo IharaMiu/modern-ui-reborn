@@ -253,3 +253,35 @@ test('insertOrderEntries handles anchors and fallbacks', () => {
   assert.deepEqual(appendEnd.map(e => e.identifier), ['a', 'b', 'x']);
 });
 
+test('buildPromptList smoothly handles large flat prompt orders without groups', () => {
+  const largeOrder: PromptOrderEntry[] = Array.from({ length: 120 }, (_, i) => ({
+    identifier: `uuid-${i}`,
+    enabled: i % 2 === 0,
+  }));
+  const promptsMap = new Map<string, HostPrompt>(
+    largeOrder.map(entry => [
+      entry.identifier,
+      {
+        identifier: entry.identifier,
+        name: `Prompt ${entry.identifier}`,
+        role: 'system',
+        content: `Content for ${entry.identifier}`,
+        system_prompt: false,
+        marker: false,
+      },
+    ]),
+  );
+
+  const rows = buildPromptList(largeOrder, [], id => promptsMap.get(id) ?? null);
+  assert.equal(rows.length, 120);
+  assert.equal(rows[0].kind, 'prompt');
+  if (rows[0].kind === 'prompt') {
+    assert.equal(rows[0].identifier, 'uuid-0');
+    assert.equal(rows[0].depth, 0);
+  }
+  if (rows[119].kind === 'prompt') {
+    assert.equal(rows[119].identifier, 'uuid-119');
+    assert.equal(rows[119].depth, 0);
+  }
+});
+

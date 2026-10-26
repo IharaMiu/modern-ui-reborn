@@ -1,4 +1,4 @@
-﻿import { watch } from 'vue';
+import { watch } from 'vue';
 
 import { getHostDocument, getHostWindow } from './host-context';
 import { trackHostPointerDrag } from './pointer-drag';
@@ -204,7 +204,7 @@ function restoreMovedNode(move: MovedNode | undefined, fallback?: (node: HTMLEle
   if (!move) return;
   if (move.marker.isConnected) {
     move.marker.replaceWith(move.node);
-  } else if (!move.node.isConnected && fallback) {
+  } else if (fallback) {
     fallback(move.node);
   }
   move.marker.remove();
@@ -347,20 +347,48 @@ export class PresetEditor {
     const eventSource = (this.window as any).eventSource;
     if (!eventSource || typeof eventSource.on !== 'function') return;
 
-    const onPresetChanged = () => {
-      this.resetCleanBaseline();
+    const onPresetBefore = () => {
       this.isSwitchingPreset = true;
+      this.activeId = null;
+      this.activeGroupId = null;
+      this.anchorId = null;
+      this.selected.clear();
+      this.editingId = null;
+      this.editingPrompt = null;
       if (this.presetSwitchTimer) this.window.clearTimeout(this.presetSwitchTimer);
       this.presetSwitchTimer = this.window.setTimeout(() => {
         this.isSwitchingPreset = false;
         this.presetSwitchTimer = 0;
-      }, 150);
+        this.shell?.classList.remove('is-loading-preset');
+      }, 1500);
+      if (this.shell) {
+        this.shell.classList.add('is-loading-preset');
+      }
+    };
 
-      if (this.shell?.isConnected) {
-        this.renderList();
-        this.scheduleDirtyCheck(400);
-      } else {
-        this.scheduleSync();
+    const onPresetChanged = () => {
+      this.isSwitchingPreset = false;
+      if (this.presetSwitchTimer) this.window.clearTimeout(this.presetSwitchTimer);
+      this.presetSwitchTimer = 0;
+      if (this.shell) {
+        this.shell.classList.remove('is-loading-preset');
+      }
+      this.activeId = null;
+      this.activeGroupId = null;
+      this.anchorId = null;
+      this.selected.clear();
+      this.editingId = null;
+      this.editingPrompt = null;
+      try {
+        this.resetCleanBaseline();
+        if (this.shell?.isConnected) {
+          this.renderList();
+          this.scheduleDirtyCheck(400);
+        } else {
+          this.scheduleSync();
+        }
+      } catch (error) {
+        console.error('[现代化预设] 预设切换刷新异常：', error);
       }
     };
 
@@ -386,6 +414,7 @@ export class PresetEditor {
     };
 
     const events: Array<[string, (...args: any[]) => void]> = [
+      ['oai_preset_changed_before', onPresetBefore],
       ['oai_preset_changed_after', onPresetChanged],
       ['preset_changed', onPresetChanged],
       ['oai_preset_import_ready', onImportReady],
@@ -535,21 +564,45 @@ export class PresetEditor {
     this.resizeObserver = undefined;
 
     this.cancelLongPress();
-    restoreMovedNode(this.editAreaMove);
+    restoreMovedNode(this.editAreaMove, node => {
+      const popup = this.document.getElementById('completion_prompt_manager_popup');
+      if (popup) popup.append(node);
+    });
     this.editAreaMove = undefined;
-    restoreMovedNode(this.inspectMove);
+
+    restoreMovedNode(this.inspectMove, node => {
+      const popup = this.document.getElementById('completion_prompt_manager_popup');
+      if (popup) popup.prepend(node);
+    });
     this.inspectMove = undefined;
     this.previewSource = undefined;
+
+    // 绝对安全归位：确保 respective-presets-block 必定回到原生 ai_response_configuration 顶部
+    const presetsBlock = this.presetsMove?.node ?? this.document.getElementById('respective-presets-block');
     restoreMovedNode(this.presetsMove, node => {
       const container = this.document.getElementById('ai_response_configuration');
       if (container) container.prepend(node);
     });
     this.presetsMove = undefined;
+
+    if (presetsBlock && (this.toolbar?.contains(presetsBlock) || !presetsBlock.isConnected)) {
+      const container = this.document.getElementById('ai_response_configuration');
+      if (container) container.prepend(presetsBlock);
+    }
+
+    // 绝对安全归位：确保固定按钮回到原生父节点
+    const pinNode = this.pinMove?.node ?? this.document.getElementById('lm_button_panel_pin_div');
     restoreMovedNode(this.pinMove, node => {
       const parent = this.document.getElementById('lm_button_panel_pin_div_parent') ?? this.document.getElementById('left-nav-panel');
       if (parent) parent.prepend(node);
     });
     this.pinMove = undefined;
+
+    if (pinNode && (pinNode.parentElement?.classList.contains('th-modern-drawer-actions') || !pinNode.isConnected)) {
+      const parent = this.document.getElementById('lm_button_panel_pin_div_parent') ?? this.document.getElementById('left-nav-panel');
+      if (parent) parent.prepend(pinNode);
+    }
+
     this.toolbar?.remove();
     this.toolbar = undefined;
     this.tabButtons.clear();
@@ -585,14 +638,43 @@ export class PresetEditor {
   private ensureToolbar(presetsBlock: HTMLElement): void {
     if (this.toolbar?.isConnected && presetsBlock.parentElement === this.toolbar) return;
 
+    const container = this.document.getElementById('ai_response_configuration');
     restoreMovedNode(this.presetsMove, node => {
-      const container = this.document.getElementById('ai_response_configuration');
       if (container) container.prepend(node);
     });
+    this.presetsMove = undefined;
+
+    if (this.toolbar && this.toolbar.contains(presetsBlock)) {
+      if (container) container.prepend(presetsBlock);
+    }
     this.toolbar?.remove();
     const toolbar = makeElement(this.document, 'div', 'th-modern-preset-toolbar');
     presetsBlock.before(toolbar);
     this.presetsMove = moveNode(presetsBlock, toolbar);
+
+    // 监听预设下拉框选择改变，第一时间进入加载保护状态
+    const presetSelect = presetsBlock.querySelector<HTMLSelectElement>('#settings_preset_openai');
+    if (presetSelect && !presetSelect.dataset.thPresetBound) {
+      presetSelect.dataset.thPresetBound = 'true';
+      presetSelect.addEventListener('change', () => {
+        this.isSwitchingPreset = true;
+        this.activeId = null;
+        this.activeGroupId = null;
+        this.anchorId = null;
+        this.selected.clear();
+        this.editingId = null;
+        this.editingPrompt = null;
+        if (this.presetSwitchTimer) this.window.clearTimeout(this.presetSwitchTimer);
+        this.presetSwitchTimer = this.window.setTimeout(() => {
+          this.isSwitchingPreset = false;
+          this.presetSwitchTimer = 0;
+          this.shell?.classList.remove('is-loading-preset');
+        }, 1500);
+        if (this.shell) {
+          this.shell.classList.add('is-loading-preset');
+        }
+      });
+    }
 
     const tabsRow = makeElement(this.document, 'div', 'th-modern-preset-tabs');
     const tabList = makeElement(this.document, 'div', 'th-modern-preset-tablist');
@@ -652,11 +734,31 @@ export class PresetEditor {
 
   /* ---------- 未保存快照对比与提示 ---------- */
 
+  private getActiveCharacterTarget(): { id: unknown } | undefined {
+    const pm = this.promptManager;
+    if (!pm) return undefined;
+    if (pm.activeCharacter && pm.getPromptOrderForCharacter(pm.activeCharacter)?.length) {
+      return pm.activeCharacter as { id: unknown };
+    }
+    const dummyId = pm.configuration?.promptOrder?.dummyId;
+    if (dummyId !== undefined && pm.getPromptOrderForCharacter({ id: dummyId })?.length) {
+      return { id: dummyId };
+    }
+    if (Array.isArray(pm.serviceSettings?.prompt_order) && pm.serviceSettings.prompt_order.length > 0) {
+      const valid = pm.serviceSettings.prompt_order.find(p => Array.isArray(p?.order) && p.order.length > 0);
+      if (valid && valid.character_id !== undefined) {
+        return { id: valid.character_id };
+      }
+    }
+    return (pm.activeCharacter as { id: unknown }) ?? (dummyId !== undefined ? { id: dummyId } : undefined);
+  }
+
   private takeSnapshot(): string {
     const pm = this.promptManager;
     if (!pm) return '';
     try {
-      const order = pm.getPromptOrderForCharacter(pm.activeCharacter) || [];
+      const target = this.getActiveCharacterTarget();
+      const order = pm.getPromptOrderForCharacter(target) || this.getOrder() || [];
       const normalizedOrder = order.map(o => ({ identifier: o.identifier, enabled: !!o.enabled }));
       const prompts = (pm.serviceSettings.prompts || [])
         .map(p => ({
@@ -911,7 +1013,16 @@ export class PresetEditor {
 
   private getOrder(): PromptOrderEntry[] {
     const pm = this.promptManager;
-    return pm ? pm.getPromptOrderForCharacter(pm.activeCharacter) : [];
+    if (!pm) return [];
+    const active = this.getActiveCharacterTarget();
+    let order = pm.getPromptOrderForCharacter(active);
+    if ((!order || !order.length) && Array.isArray(pm.serviceSettings?.prompt_order) && pm.serviceSettings.prompt_order.length > 0) {
+      const firstValid = pm.serviceSettings.prompt_order.find(p => Array.isArray(p?.order) && p.order.length > 0);
+      if (firstValid?.order) {
+        order = firstValid.order;
+      }
+    }
+    return order ?? [];
   }
 
   private getPrompt(identifier: string): HostPrompt | null {
@@ -998,7 +1109,7 @@ export class PresetEditor {
     }
     if (this.activeId && !known.has(this.activeId) && !this.getPrompt(this.activeId)) this.activeId = null;
     if (this.activeGroupId && !this.getGroup(this.activeGroupId)) this.activeGroupId = null;
-    if (!this.activeId && !this.activeGroupId && order.length && !this.shell?.classList.contains(NARROW_CLASS)) {
+    if (!this.activeId && !this.activeGroupId && order.length) {
       this.activeId = order[0].identifier;
       this.selected = new Set([this.activeId]);
       this.anchorId = this.activeId;
@@ -1057,6 +1168,10 @@ export class PresetEditor {
       collapsed ? 'bi-chevron-right' : 'bi-chevron-down',
     );
     chevron.setAttribute('aria-expanded', String(!collapsed));
+    chevron.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleCollapsed(group.id);
+    });
 
     const main = makeElement(this.document, 'span', 'th-modern-pm-main');
     main.append(
@@ -1080,10 +1195,36 @@ export class PresetEditor {
       group.single_select ? '单选组：有选项开启时点击全部关闭，否则开启第一项' : '开启或关闭组内全部条目',
     );
     toggle.disabled = !state.total;
+    const triggerGroupToggle = (e: Event) => {
+      e.stopPropagation();
+      e.preventDefault();
+      this.toggleGroup(group.id);
+    };
+    toggle.addEventListener('click', triggerGroupToggle);
+    toggle.addEventListener('pointerup', (e) => {
+      if ((e as PointerEvent).button === 0) triggerGroupToggle(e);
+    });
+
     const ids = getGroupPromptIds(this.groups, group.id);
     const allSelected = ids.length > 0 && ids.every(id => this.selected.has(id));
     element.classList.toggle('is-selected', this.multiSelect && allSelected);
     element.append(handle, this.createCheck(allSelected), chevron, main, toggle);
+
+    let lastGroupClickTime = 0;
+    const triggerGroupSelect = (e: MouseEvent | PointerEvent) => {
+      const target = e.target as Element | null;
+      if (target?.closest('.th-modern-pm-handle, .th-modern-pm-toggle, .th-modern-pm-collapse, button')) return;
+      if (Date.now() - lastGroupClickTime < 200) return;
+      lastGroupClickTime = Date.now();
+      this.handleGroupRowClick(group.id, e);
+    };
+    element.addEventListener('click', triggerGroupSelect);
+    element.addEventListener('pointerup', (e) => {
+      if (e.pointerType === 'mouse' && e.button === 0 && !this.stopDrag) {
+        triggerGroupSelect(e);
+      }
+    });
+
     return element;
   }
 
@@ -1131,23 +1272,58 @@ export class PresetEditor {
     element.append(makeElement(this.document, 'span', 'th-modern-pm-tokens', typeof tokens === 'number' ? String(tokens) : ''));
 
     const actions = makeElement(this.document, 'span', 'th-modern-pm-actions');
-    if (prompt && !prompt.marker) actions.append(makeIconButton(this.document, 'th-modern-pm-copy', '复制条目', 'bi-files'));
+    if (prompt && !prompt.marker) {
+      const copyBtn = makeIconButton(this.document, 'th-modern-pm-copy', '复制条目', 'bi-files');
+      copyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.copyEntries([identifier]);
+      });
+      actions.append(copyBtn);
+    }
     if (prompt) {
       const deletable = pm.isPromptDeletionAllowed(prompt);
-      actions.append(
-        makeIconButton(
-          this.document,
-          'th-modern-pm-delete',
-          deletable ? '删除条目' : '移出列表（内置条目不能删除）',
-          deletable ? 'bi-trash3' : 'bi-box-arrow-right',
-        ),
+      const deleteBtn = makeIconButton(
+        this.document,
+        'th-modern-pm-delete',
+        deletable ? '删除条目' : '移出列表（内置条目不能删除）',
+        deletable ? 'bi-trash3' : 'bi-box-arrow-right',
       );
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        void this.deleteEntries([identifier]);
+      });
+      actions.append(deleteBtn);
     }
     element.append(actions);
 
     const toggle = makeSwitch(this.document, row.enabled, row.enabled ? '已启用，点击关闭' : '已关闭，点击启用');
     toggle.disabled = !prompt || !pm.isPromptToggleAllowed(prompt);
+    const triggerToggle = (e: Event) => {
+      e.stopPropagation();
+      e.preventDefault();
+      this.toggleEntry(identifier);
+    };
+    toggle.addEventListener('click', triggerToggle);
+    toggle.addEventListener('pointerup', (e) => {
+      if ((e as PointerEvent).button === 0) triggerToggle(e);
+    });
     element.append(toggle);
+
+    let lastRowClickTime = 0;
+    const triggerRowSelect = (e: MouseEvent | PointerEvent) => {
+      const target = e.target as Element | null;
+      if (target?.closest('.th-modern-pm-handle, .th-modern-pm-toggle, .th-modern-pm-actions, button')) return;
+      if (Date.now() - lastRowClickTime < 200) return;
+      lastRowClickTime = Date.now();
+      this.handlePromptRowClick(identifier, e);
+    };
+    element.addEventListener('click', triggerRowSelect);
+    element.addEventListener('pointerup', (e) => {
+      if (e.pointerType === 'mouse' && e.button === 0 && !this.stopDrag) {
+        triggerRowSelect(e);
+      }
+    });
+
     return element;
   }
 
@@ -1181,6 +1357,51 @@ export class PresetEditor {
 
   /* ---------- 列表交互 ---------- */
 
+  private handleGroupRowClick(groupId: string, event?: Event): void {
+    if (this.multiSelect) {
+      this.toggleGroupSelection(groupId);
+    } else {
+      this.flushEditorApply();
+      this.activeGroupId = groupId;
+      this.selected.clear();
+      this.openDetail();
+      this.renderList();
+    }
+  }
+
+  private handlePromptRowClick(identifier: string, event?: MouseEvent | PointerEvent): void {
+    if (this.suppressNextClick) {
+      this.suppressNextClick = false;
+      return;
+    }
+    try {
+      if (event && event.shiftKey && this.anchorId) {
+        const visible = this.visibleRows.flatMap(row => (row.kind === 'prompt' ? [row.identifier] : []));
+        const from = visible.indexOf(this.anchorId);
+        const to = visible.indexOf(identifier);
+        if (from !== -1 && to !== -1) {
+          this.selected = new Set(visible.slice(Math.min(from, to), Math.max(from, to) + 1));
+        }
+      } else if (event && (this.multiSelect || event.ctrlKey || event.metaKey)) {
+        if (this.selected.has(identifier) && (this.multiSelect || this.selected.size > 1)) {
+          this.selected.delete(identifier);
+        } else {
+          this.selected.add(identifier);
+        }
+        this.anchorId = identifier;
+        this.activeId = identifier;
+        this.activeGroupId = null;
+        this.openDetail();
+      } else {
+        this.select(identifier);
+      }
+      this.updateActiveRowStyles();
+      this.syncEditor();
+    } catch (error) {
+      console.error('[现代化预设] 提示词条目点选异常：', error);
+    }
+  }
+
   private readonly handleListClick = (event: MouseEvent): void => {
     const target = event.target as Element | null;
     const element = target?.closest<HTMLElement>('.th-modern-pm-row');
@@ -1190,58 +1411,56 @@ export class PresetEditor {
     }
     if (!element || target?.closest('.th-modern-pm-handle')) return;
 
-    const groupId = element.dataset.groupId;
-    if (groupId) {
+    try {
+      const groupId = element.dataset.groupId;
+      if (groupId) {
+        if (target?.closest('.th-modern-pm-toggle')) {
+          this.toggleGroup(groupId);
+        } else if (target?.closest('.th-modern-pm-collapse')) {
+          this.toggleCollapsed(groupId);
+        } else {
+          this.handleGroupRowClick(groupId, event);
+        }
+        return;
+      }
+
+      const identifier = element.dataset.id;
+      if (!identifier) return;
       if (target?.closest('.th-modern-pm-toggle')) {
-        this.toggleGroup(groupId);
-      } else if (target?.closest('.th-modern-pm-collapse')) {
-        this.toggleCollapsed(groupId);
-      } else if (this.multiSelect) {
-        this.toggleGroupSelection(groupId);
-      } else {
-        this.flushEditorApply();
-        this.activeGroupId = groupId;
-        this.selected.clear();
-        this.openDetail();
-        this.renderList();
+        this.toggleEntry(identifier);
+        return;
       }
-      return;
-    }
+      if (target?.closest('.th-modern-pm-copy')) {
+        this.copyEntries(this.selected.has(identifier) ? [...this.selected] : [identifier]);
+        return;
+      }
+      if (target?.closest('.th-modern-pm-delete')) {
+        void this.deleteEntries(this.selected.has(identifier) ? [...this.selected] : [identifier]);
+        return;
+      }
 
-    const identifier = element.dataset.id;
-    if (!identifier) return;
-    if (target?.closest('.th-modern-pm-toggle')) {
-      this.toggleEntry(identifier);
-      return;
+      this.handlePromptRowClick(identifier, event);
+    } catch (error) {
+      console.error('[现代化预设] 提示词条目点击处理异常：', error);
     }
-    if (target?.closest('.th-modern-pm-copy')) {
-      this.copyEntries(this.selected.has(identifier) ? [...this.selected] : [identifier]);
-      return;
-    }
-    if (target?.closest('.th-modern-pm-delete')) {
-      void this.deleteEntries(this.selected.has(identifier) ? [...this.selected] : [identifier]);
-      return;
-    }
-
-    if (event.shiftKey && this.anchorId) {
-      const visible = this.visibleRows.flatMap(row => (row.kind === 'prompt' ? [row.identifier] : []));
-      const from = visible.indexOf(this.anchorId);
-      const to = visible.indexOf(identifier);
-      if (from !== -1 && to !== -1) {
-        this.selected = new Set(visible.slice(Math.min(from, to), Math.max(from, to) + 1));
-      }
-    } else if (this.multiSelect || event.ctrlKey || event.metaKey) {
-      if (this.selected.has(identifier) && (this.multiSelect || this.selected.size > 1)) {
-        this.selected.delete(identifier);
-      } else {
-        this.selected.add(identifier);
-      }
-      this.anchorId = identifier;
-    } else {
-      this.select(identifier);
-    }
-    this.renderList();
   };
+
+  private updateActiveRowStyles(): void {
+    if (!this.list) return;
+    const rows = this.list.querySelectorAll<HTMLElement>('.th-modern-pm-row');
+    for (const row of rows) {
+      const id = row.dataset.id;
+      const groupId = row.dataset.groupId;
+      if (id) {
+        row.classList.toggle('is-active', id === this.activeId && !this.activeGroupId);
+        row.classList.toggle('is-selected', this.selected.has(id));
+        row.setAttribute('aria-selected', String(this.selected.has(id)));
+      } else if (groupId) {
+        row.classList.toggle('is-active', groupId === this.activeGroupId);
+      }
+    }
+    this.renderBatchBar();
+  }
 
   private readonly handleListKeyDown = (event: KeyboardEvent): void => {
     if (event.key === 'Escape' && (this.multiSelect || this.selected.size > 1)) {
@@ -1360,7 +1579,8 @@ export class PresetEditor {
     const pm = this.promptManager;
     if (!pm) return;
     Promise.resolve(pm.saveServiceSettings()).catch(error => console.error('[现代化界面] 保存提示词设置失败', error));
-    pm.render();
+    // 关键优化：传递 false 禁用耗时数十秒的 Token dry-run 计算与异步重绘竞态
+    pm.render(false);
     this.renderList();
     this.scheduleDirtyCheck();
   }
@@ -1368,8 +1588,11 @@ export class PresetEditor {
   private replaceOrder(order: PromptOrderEntry[]): void {
     const pm = this.promptManager;
     if (!pm) return;
-    pm.removePromptOrderForCharacter(pm.activeCharacter);
-    pm.addPromptOrderForCharacter(pm.activeCharacter, order);
+    const active = this.getActiveCharacterTarget();
+    if (active) {
+      pm.removePromptOrderForCharacter(active);
+      pm.addPromptOrderForCharacter(active, order);
+    }
   }
 
   private cleanupGroupData(): void {
@@ -1387,7 +1610,20 @@ export class PresetEditor {
 
   private toggleEntry(identifier: string): void {
     const entry = this.getOrder().find(item => item.identifier === identifier);
-    if (entry) this.setEnabled([identifier], !entry.enabled);
+    if (entry) {
+      const nextEnabled = !entry.enabled;
+      // 0ms 实时视觉响应
+      const row = this.list?.querySelector<HTMLElement>(`.th-modern-pm-row[data-id="${identifier}"]`);
+      if (row) {
+        row.classList.toggle('is-disabled', !nextEnabled);
+        const toggleBtn = row.querySelector<HTMLButtonElement>('.th-modern-pm-toggle');
+        if (toggleBtn) {
+          toggleBtn.setAttribute('aria-checked', String(nextEnabled));
+          toggleBtn.title = nextEnabled ? '已启用，点击关闭' : '已关闭，点击启用';
+        }
+      }
+      this.setEnabled([identifier], nextEnabled);
+    }
   }
 
   private setEnabled(identifiers: string[], enabled: boolean): void {
@@ -1846,15 +2082,27 @@ export class PresetEditor {
     }
     const identifier = this.activeId;
     const prompt = identifier ? this.getPrompt(identifier) : null;
-    if (identifier !== this.editingId || prompt !== this.editingPrompt) {
-      this.flushEditorApply();
-      this.editingId = identifier;
-      this.editingPrompt = prompt;
-      this.loadPromptEditor();
-    } else if (prompt && (this.editorView === 'preview' || !this.isEditable(prompt))) {
-      this.renderPreview();
+    const editArea = this.getEditArea();
+    const isEditAreaDetached = editArea ? editArea.parentElement !== this.editorBody : false;
+    const isEditAreaHidden = editArea ? (editArea.style.display === 'none' || isEditAreaDetached) : false;
+
+    try {
+      if (
+        identifier !== this.editingId ||
+        prompt !== this.editingPrompt ||
+        (prompt && this.isEditable(prompt) && isEditAreaHidden)
+      ) {
+        this.flushEditorApply();
+        this.editingId = identifier;
+        this.editingPrompt = prompt;
+        this.loadPromptEditor();
+      } else if (prompt && (this.editorView === 'preview' || !this.isEditable(prompt))) {
+        this.renderPreview();
+      }
+      this.renderPromptEditorHeader();
+    } catch (error) {
+      console.error('[现代化预设] 同步编辑器区域异常：', error);
     }
-    this.renderPromptEditorHeader();
   }
 
   private getInspectArea(): HTMLElement | null {
@@ -1865,7 +2113,9 @@ export class PresetEditor {
   private showEditArea(visible: boolean, placeholder = ''): void {
     const editArea = this.getEditArea();
     const inspectArea = this.getInspectArea();
-    if (editArea) editArea.style.display = visible ? '' : 'none';
+    if (editArea) {
+      editArea.style.setProperty('display', visible ? 'flex' : 'none', 'important');
+    }
     if (inspectArea && this.inspectMove) inspectArea.style.display = 'none';
     this.previewSource = undefined;
     if (this.editorBody) this.editorBody.hidden = !visible;
@@ -1887,7 +2137,13 @@ export class PresetEditor {
     const identifier = this.editingId;
     const inspectArea = this.getInspectArea();
     if (!pm || !identifier || !this.editorBody) return;
-    if (inspectArea && !this.inspectMove) this.inspectMove = moveNode(inspectArea, this.editorBody);
+    if (inspectArea) {
+      if (!this.inspectMove) {
+        this.inspectMove = moveNode(inspectArea, this.editorBody);
+      } else if (inspectArea.parentElement !== this.editorBody) {
+        this.editorBody.append(inspectArea);
+      }
+    }
 
     const editArea = this.getEditArea();
     if (editArea) editArea.style.display = 'none';
@@ -1924,11 +2180,15 @@ export class PresetEditor {
     const editArea = this.getEditArea();
     if (!pm || !this.editorBody) return;
 
-    if (editArea && !this.editAreaMove) {
-      this.editAreaMove = moveNode(editArea, this.editorBody);
-      editArea.addEventListener('input', this.handleEditorInput);
-      editArea.addEventListener('change', this.handleEditorInput);
-      editArea.addEventListener('click', this.handleEditorClick);
+    if (editArea) {
+      if (!this.editAreaMove) {
+        this.editAreaMove = moveNode(editArea, this.editorBody);
+        editArea.addEventListener('input', this.handleEditorInput);
+        editArea.addEventListener('change', this.handleEditorInput);
+        editArea.addEventListener('click', this.handleEditorClick);
+      } else if (editArea.parentElement !== this.editorBody) {
+        this.editorBody.append(editArea);
+      }
     }
 
     const prompt = this.editingPrompt;
@@ -1940,9 +2200,12 @@ export class PresetEditor {
       this.suppressEditorEvents = true;
       try {
         pm.loadPromptIntoEditForm(prompt);
+      } catch (err) {
+        console.warn('[现代化预设] 宿主加载条目表单失败，正在使用手动兜底填充：', err);
       } finally {
         this.suppressEditorEvents = false;
       }
+      this.ensureEditFormValues(prompt);
 
       // 绝对防御：确保禁止覆盖复选框及其容器不被任何样式拉伸变形
       const prefix = pm.configuration.prefix ?? 'completion_';
@@ -1966,6 +2229,44 @@ export class PresetEditor {
       return;
     }
     this.showEditArea(false, !identifier ? '在左侧选择一个条目进行编辑' : '这个条目在预设里找不到定义，可以删除后重新添加。');
+  }
+
+  private ensureEditFormValues(prompt: HostPrompt): void {
+    const prefix = this.promptManager?.configuration.prefix ?? 'completion_';
+    const nameField = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_name`) as HTMLInputElement | null;
+    const roleField = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_role`) as HTMLSelectElement | null;
+    const promptField = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_prompt`) as HTMLTextAreaElement | null;
+    const injectionPositionField = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_injection_position`) as HTMLSelectElement | null;
+    const injectionDepthField = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_injection_depth`) as HTMLInputElement | null;
+    const injectionOrderField = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_injection_order`) as HTMLInputElement | null;
+    const forbidOverridesField = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_forbid_overrides`) as HTMLInputElement | null;
+    const savePromptButton = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_save`);
+
+    if (nameField && nameField.value !== (prompt.name ?? '')) nameField.value = prompt.name ?? '';
+    if (roleField && roleField.value !== (prompt.role || 'system')) roleField.value = prompt.role || 'system';
+    if (promptField) {
+      if (promptField.value !== (prompt.content ?? '')) promptField.value = prompt.content ?? '';
+      promptField.disabled = prompt.marker ?? false;
+    }
+    if (injectionPositionField && typeof prompt.injection_position === 'number') {
+      injectionPositionField.value = String(prompt.injection_position);
+    }
+    if (injectionDepthField && typeof prompt.injection_depth === 'number') {
+      injectionDepthField.value = String(prompt.injection_depth);
+    }
+    if (injectionOrderField && typeof prompt.injection_order === 'number') {
+      injectionOrderField.value = String(prompt.injection_order);
+    }
+    if (forbidOverridesField) {
+      forbidOverridesField.checked = !!prompt.forbid_overrides;
+    }
+    if (savePromptButton) {
+      savePromptButton.dataset.pmPrompt = prompt.identifier;
+    }
+  }
+
+  private fallbackFillEditForm(prompt: HostPrompt): void {
+    this.ensureEditFormValues(prompt);
   }
 
   private renderPromptEditorHeader(): void {
