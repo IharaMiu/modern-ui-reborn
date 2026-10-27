@@ -25,10 +25,12 @@ import './style.css';
 import './world-info.css';
 import './mobile-world-select.css';
 import './character-management.css';
+import './management.css';
 import './extension-settings.css';
 import './preset.css';
 
 const BODY_CLASS_ENABLED = 'th-modern-enabled';
+const BODY_CLASS_PERSONA_MANAGEMENT = 'th-modern-persona-management';
 const BODY_CLASS_TWO_COLUMN = 'th-modern-two-column';
 const BODY_CLASS_LEGACY_THREE_COLUMN = 'th-modern-three-column';
 const BODY_CLASS_DOCKED_DRAWER = 'th-modern-docked-drawer';
@@ -2381,6 +2383,8 @@ function mountApiPanelEnhancements(): { destroy: () => void } {
   const desktop_query = host_window.matchMedia(DESKTOP_TWO_COLUMN_QUERY);
   const moved_restores: Array<() => void> = [];
   const original_select_sizes = new Map<HTMLSelectElement, string | null>();
+  const api_group_restores: Array<() => void> = [];
+  const api_option_displays = new Map<HTMLOptionElement, string>();
   let active_source_restore: (() => void) | undefined;
   let active_source_selector: string | undefined;
   let scheduled_enhance_frame = 0;
@@ -2522,10 +2526,25 @@ function mountApiPanelEnhancements(): { destroy: () => void } {
       const optgroups = Array.from(select.querySelectorAll('optgroup'));
       if (optgroups.length > 0) {
         optgroups.forEach(group => {
-          while (group.firstChild) {
-            select.insertBefore(group.firstChild, group);
+          const marker = host_document.createComment('modern-api-group');
+          group.before(marker);
+          const children = Array.from(group.childNodes);
+          const disabledOptions = new Map<HTMLOptionElement, boolean>();
+          for (const child of children) {
+            if (group.disabled && child instanceof host_window.HTMLOptionElement) {
+              disabledOptions.set(child, child.disabled);
+              child.disabled = true;
+            }
+            select.insertBefore(child, group);
           }
           group.remove();
+          api_group_restores.push(() => {
+            if (!marker.parentNode) return;
+            marker.before(group);
+            for (const child of children) if (child.parentNode === select) group.append(child);
+            disabledOptions.forEach((disabled, option) => { option.disabled = disabled; });
+            marker.remove();
+          });
         });
       }
 
@@ -2533,6 +2552,7 @@ function mountApiPanelEnhancements(): { destroy: () => void } {
       options.forEach(option => {
         const text = option.textContent?.trim() ?? '';
         if (!text || /^[-─—_.\s]+$/.test(text)) {
+          if (!api_option_displays.has(option)) api_option_displays.set(option, option.style.display);
           option.style.display = 'none';
         }
       });
@@ -2568,7 +2588,7 @@ function mountApiPanelEnhancements(): { destroy: () => void } {
       main_api_block.querySelectorAll('.th-modern-api-hint-card').forEach(element => element.remove());
     }
 
-    if (main_api_block && use_expanded_selectors) {
+    if (main_api_block) {
       let main_title = main_api_block.querySelector<HTMLElement>('.th-modern-api-main-title');
       if (!main_title) {
         main_title = host_document.createElement('h4');
@@ -2653,6 +2673,9 @@ function mountApiPanelEnhancements(): { destroy: () => void } {
       host_document.querySelectorAll(`.${API_SOURCE_GROUP_CLASS}:empty`).forEach(element => element.remove());
       host_document.querySelectorAll(`.${API_FOOTER_CLASS}`).forEach(element => element.classList.remove(API_FOOTER_CLASS));
       host_document.querySelectorAll('.th-modern-api-main-title, .th-modern-api-hint-card').forEach(element => element.remove());
+      api_group_restores.splice(0).reverse().forEach(restore => restore());
+      api_option_displays.forEach((display, option) => { option.style.display = display; });
+      api_option_displays.clear();
       original_select_sizes.forEach((size, select) => {
         if (size === null) {
           select.removeAttribute('size');
@@ -2707,6 +2730,7 @@ function applyBodyState(settings: ModernLayoutSettings, is_active: boolean, shou
   const is_single_line_input = is_active && settings.singleLineChatInput;
   $body
     .toggleClass(BODY_CLASS_ENABLED, is_active)
+    .toggleClass(BODY_CLASS_PERSONA_MANAGEMENT, is_active && settings.modernPersonaManagement)
     .toggleClass(BODY_CLASS_TWO_COLUMN, should_use_two_column)
     .toggleClass(BODY_CLASS_DOCKED_DRAWER, should_use_docked_drawer)
     .toggleClass(BODY_CLASS_MAIN_FILL, is_active && should_use_two_column && settings.mainChatMaxWidth === 0)
@@ -2766,7 +2790,7 @@ function applyBodyState(settings: ModernLayoutSettings, is_active: boolean, shou
 function clearBodyState() {
   last_single_line_setting = undefined;
   $(getHostDocument().body).removeClass(
-    `${BODY_CLASS_ENABLED} ${BODY_CLASS_TWO_COLUMN} ${BODY_CLASS_LEGACY_THREE_COLUMN} ${BODY_CLASS_DOCKED_DRAWER} ${BODY_CLASS_MAIN_FILL} ${BODY_CLASS_FLOATING_INPUT} ${BODY_CLASS_SINGLE_LINE_INPUT} ${BODY_CLASS_REDUCE_MOTION} ${BODY_CLASS_REDUCE_ADVANCED_EFFECTS} ${BODY_CLASS_QUICK_REPLIES_COLLAPSED} ${BODY_CLASS_SIDEBAR_COLLAPSED} ${BODY_CLASS_AUTO_COLLAPSE} ${BODY_CLASS_TEMP_EXPANDED} ${BODY_CLASS_RESIZING} ${BODY_CLASS_DRAWER_FULLSCREEN} ${BODY_CLASS_DRAWER_OPEN} ${BODY_CLASS_DRAWER_SWITCHING}`,
+    `${BODY_CLASS_ENABLED} ${BODY_CLASS_PERSONA_MANAGEMENT} ${BODY_CLASS_TWO_COLUMN} ${BODY_CLASS_LEGACY_THREE_COLUMN} ${BODY_CLASS_DOCKED_DRAWER} ${BODY_CLASS_MAIN_FILL} ${BODY_CLASS_FLOATING_INPUT} ${BODY_CLASS_SINGLE_LINE_INPUT} ${BODY_CLASS_REDUCE_MOTION} ${BODY_CLASS_REDUCE_ADVANCED_EFFECTS} ${BODY_CLASS_QUICK_REPLIES_COLLAPSED} ${BODY_CLASS_SIDEBAR_COLLAPSED} ${BODY_CLASS_AUTO_COLLAPSE} ${BODY_CLASS_TEMP_EXPANDED} ${BODY_CLASS_RESIZING} ${BODY_CLASS_DRAWER_FULLSCREEN} ${BODY_CLASS_DRAWER_OPEN} ${BODY_CLASS_DRAWER_SWITCHING}`,
   );
   removeHostCssVariable('--th-modern-left-width');
   removeHostCssVariable('--th-modern-overlay-width');
@@ -2925,12 +2949,6 @@ function initializeModernLayout(): { dispose: () => void } {
   try {
     destroy_panel = initPanel(pinia).destroy;
     const syncRuntime = () => {
-      if (!store.should_enable) {
-        active_runtime?.destroy();
-        active_runtime = undefined;
-        return;
-      }
-
       if (store.is_active) {
         active_runtime ??= mountActiveRuntime(store);
       } else {
@@ -2938,7 +2956,7 @@ function initializeModernLayout(): { dispose: () => void } {
         active_runtime = undefined;
       }
     };
-    stop_runtime_watch = watch(() => [store.should_enable, store.is_active] as const, syncRuntime, {
+    stop_runtime_watch = watch(() => store.is_active, syncRuntime, {
       immediate: true,
       flush: 'sync',
     });
@@ -2955,7 +2973,7 @@ function initializeModernLayout(): { dispose: () => void } {
       if (runtime_registry.get(script_id) === destroy_all) {
         runtime_registry.delete(script_id);
       }
-      store.destroy({ unregisterUnique: options.unregisterUnique });
+      store.destroy();
     });
 
     runtime_registry.set(script_id, destroy_all);

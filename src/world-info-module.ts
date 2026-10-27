@@ -2,6 +2,7 @@ import { watch } from 'vue';
 
 import { getHostDocument, getHostWindow } from './host-context';
 import { mountMobileWorldSelects } from './mobile-world-select-module';
+import { worldInfoChanged } from './world-info-concurrency';
 import type { useModernLayoutStore } from './store';
 
 const WORLD_INFO_ENABLED_CLASS = 'th-modern-wi-enabled';
@@ -1969,7 +1970,6 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         this.setDeleteBusy(true);
 
         let originalWorldInfo: unknown;
-        let saveStarted = false;
         try {
             originalWorldInfo = await SillyTavern.loadWorldInfo(worldName);
             if (!this.isDeleteContextCurrent(worldName, worldRevision)) {
@@ -1978,24 +1978,27 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             if (!originalWorldInfo) {
                 throw new Error(`无法读取世界书“${worldName}”`);
             }
+            const baseline = JSON.stringify(originalWorldInfo);
+            const headers = this.window.SillyTavern?.getContext?.()?.getRequestHeaders?.();
+            if (!headers) throw new Error('宿主不支持验证世界书版本，请使用原生删除功能');
+            const response = await this.window.fetch('/api/worldinfo/get', {
+                method: 'POST', headers, body: JSON.stringify({ name: worldName }), cache: 'no-cache',
+            });
+            if (!response.ok) throw new Error('无法验证世界书是否被其他窗口修改');
+            const latest = await response.json();
+            if (worldInfoChanged(baseline, latest, originalWorldInfo)) {
+                throw new Error('世界书已更改，请检查并刷新后重试');
+            }
             const updatedWorldInfo = removeWorldInfoEntries(originalWorldInfo, selectedSnapshot, this.window);
             if (!this.isDeleteContextCurrent(worldName, worldRevision)) {
                 return;
             }
-            saveStarted = true;
+            // shortcut: the host has no atomic version check; concurrent writes after this check can still race.
             await SillyTavern.saveWorldInfo(worldName, updatedWorldInfo, true);
             if (!this.isDeleteContextCurrent(worldName, worldRevision)) {
                 return;
             }
         } catch (error) {
-            if (saveStarted && originalWorldInfo) {
-                try {
-                    await SillyTavern.saveWorldInfo(worldName, originalWorldInfo, true);
-                } catch (rollbackError) {
-                    console.error('[现代化界面] 恢复世界书缓存失败', rollbackError);
-                    toastr.error(`恢复世界书原数据失败：${getErrorMessage(rollbackError)}`);
-                }
-            }
             console.error('[现代化界面] 世界书批量删除失败', error);
             toastr.error(`删除世界书条目失败：${getErrorMessage(error)}`);
             return;
@@ -2038,7 +2041,7 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
     };
 
     const syncWorldSelects = (enabled: boolean, selectorEnabled: boolean) => {
-        if (!enabled) {
+        if (!enabled || !selectorEnabled) {
             worldSelects?.destroy();
             worldSelects = undefined;
             return;

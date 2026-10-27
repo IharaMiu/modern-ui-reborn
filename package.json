@@ -1,13 +1,15 @@
 {
   "name": "modern-ui-reborn",
-  "version": "0.2.0-alpha.4",
+  "version": "0.2.1",
   "author": "IharaMiu",
   "description": "SillyTavern & TauriTavern 现代化界面原生扩展",
   "type": "module",
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "test": "node --experimental-strip-types --test test/**/*.test.ts"
+    "test": "node --experimental-strip-types --test test/**/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
     "klona": "^2.0.6",

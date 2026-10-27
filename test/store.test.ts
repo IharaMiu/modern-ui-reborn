@@ -17,6 +17,15 @@ test('ModernLayoutSettings parses defaults cleanly', () => {
   assert.equal(parsed.inputBottomGap, DEFAULT_INPUT_BOTTOM_GAP);
   assert.equal(parsed.singleLineChatInput, false);
   assert.equal(parsed.modernPresetEditor, false);
+  assert.equal(parsed.modernPersonaManagement, true);
+});
+
+test('persona enhancement can be disabled and persists independently of character management', () => {
+  const settings = ModernLayoutSettings.parse({ modernPersonaManagement: false, modernCharacterManagement: true });
+  persistSettings(settings);
+  const restored = readSettings();
+  assert.equal(restored.modernPersonaManagement, false);
+  assert.equal(restored.modernCharacterManagement, true);
 });
 
 test('ModernLayoutSettings handles singleLineChatInput option correctly', () => {

@@ -1,0 +1,233 @@
+/* 人设与角色管理沿用世界书、预设的主题卡片和控件。 */
+body.th-modern-enabled :is(#PersonaManagement:where(.th-modern-persona-management *), #right-nav-panel.th-modern-character-panel) {
+  --th-modern-management-border: color-mix(in srgb, var(--SmartThemeBorderColor) 78%, transparent);
+  --th-modern-management-card: color-mix(in srgb, var(--SmartThemeBlurTintColor) 56%, var(--SmartThemeBodyColor) 3%);
+  --th-modern-management-control: color-mix(in srgb, var(--SmartThemeBlurTintColor) 62%, var(--SmartThemeBodyColor) 6%);
+  min-width: 0;
+  background: var(--SmartThemeBlurTintColor) !important;
+}
+
+body.th-modern-enabled :is(#PersonaManagement:where(.th-modern-persona-management *), #right-nav-panel.th-modern-character-panel)
+  :is(h4, .standoutHeader):not(#chat *):not(.mes_text *):not(.inline-drawer-toggle *):not(.inline-drawer-header *) {
+  gap: 0.45rem !important;
+  margin: 0.5rem 0 !important;
+  padding: 0.4rem 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--th-modern-management-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--SmartThemeBodyColor) !important;
+  font-size: 0.9em !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+body.th-modern-enabled :is(#PersonaManagement:where(.th-modern-persona-management *), #right-nav-panel.th-modern-character-panel)
+  :is(input[type='text'], input[type='search'], input[type='number'], select, textarea) {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid var(--th-modern-management-border);
+  border-radius: 7px;
+  background: var(--th-modern-management-control);
+  color: var(--SmartThemeBodyColor);
+  box-shadow: none;
+}
+
+body.th-modern-enabled :is(#PersonaManagement:where(.th-modern-persona-management *), #right-nav-panel.th-modern-character-panel)
+  :is(input, select, textarea, button, .menu_button):focus-visible {
+  outline: 2px solid var(--SmartThemeQuoteColor);
+  outline-offset: 2px;
+}
+
+body.th-modern-enabled :is(#PersonaManagement:where(.th-modern-persona-management *), #right-nav-panel.th-modern-character-panel) .menu_button {
+  border: 1px solid var(--th-modern-management-border);
+  border-radius: 7px;
+  background: var(--th-modern-management-control);
+  color: var(--SmartThemeBodyColor);
+  box-shadow: none;
+}
+
+body.th-modern-enabled :is(#PersonaManagement:where(.th-modern-persona-management *), #right-nav-panel.th-modern-character-panel) .red_button {
+  color: var(--crimson, #d14d55);
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) > .flex-container {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) > .flex-container > .flex-container:first-child {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) #persona-management-block {
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) :is(.persona_management_left_column, .persona_management_right_column) {
+  min-width: 0;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) :is(.persona_management_current_persona, .persona_management_global_settings),
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel :is(#charListFixedTop, #avatar-and-name-block.th-modern-character-summary) {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0.6rem;
+  border: 1px solid var(--th-modern-management-border);
+  border-radius: 8px;
+  background: var(--th-modern-management-card);
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) .persona_management_global_settings {
+  margin-top: 0.65rem;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) :is(#persona_controls, .persona_controls_buttons_block, #persona_connections_buttons),
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel :is(#rm_button_bar, #rm_print_characters_pagination) {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) #persona_controls {
+  align-items: stretch;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) .persona_controls_buttons_block {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 100%;
+  justify-content: flex-start;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) #your_name {
+  flex: 1 1 100%;
+  min-width: 0;
+  margin: 0 0 0.4rem;
+  color: var(--SmartThemeBodyColor) !important;
+  font-size: 1.05em;
+  opacity: 1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) .character_select_container,
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel .character_select_container {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) #persona_description {
+  width: 100%;
+  min-height: 12rem;
+  padding: 0.6rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) #user_avatar_block {
+  justify-content: flex-start;
+  gap: 0.4rem;
+  padding: 0.4rem 0;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) .avatar-container,
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel :is(.character_select, .group_select) {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0.5rem;
+  border: 1px solid var(--th-modern-management-border);
+  border-radius: 8px;
+  background: var(--th-modern-management-card);
+  gap: 0.5rem;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) .avatar-container.selected,
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel .character_select[aria-selected='true'] {
+  border-color: var(--SmartThemeQuoteColor);
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent);
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) .avatar-container:hover,
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel :is(.character_select, .group_select):hover {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 55%, transparent);
+}
+
+@media (max-width: 899.98px) {
+  body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) #persona-management-block {
+    flex-direction: column;
+  }
+
+  body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) :is(.persona_management_left_column, .persona_management_right_column) {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) .persona_management_left_column > .flex-container {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) #persona_search_bar {
+    flex: 1 1 10rem;
+    width: auto;
+  }
+
+  body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) :is(#persona_description_position, #persona-management-dropdown) {
+    width: 100%;
+  }
+
+  body.th-modern-enabled :is(#PersonaManagement:where(.th-modern-persona-management *), #right-nav-panel.th-modern-character-panel)
+    :is(input[type='text'], input[type='search'], input[type='number'], select, textarea) {
+    min-height: 2.5rem;
+    padding: 0.45rem 0.6rem;
+    font-size: max(16px, var(--mainFontSize));
+  }
+
+  body.th-modern-enabled :is(#PersonaManagement:where(.th-modern-persona-management *), #right-nav-panel.th-modern-character-panel) .menu_button,
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel #rm_button_search {
+    box-sizing: border-box;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    height: auto;
+    padding: 0.4rem 0.6rem;
+    touch-action: manipulation;
+  }
+
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel #character_sort_order {
+    flex: 1 1 8rem;
+    width: auto;
+  }
+
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel #character_search_bar {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0.45rem 0;
+  }
+
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel #form_create {
+    gap: 0.65rem;
+    padding: 0;
+  }
+
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel :is(#descriptionWrapper, #firstMessageWrapper) {
+    min-height: 16rem;
+    padding: 0.6rem;
+    border-color: var(--th-modern-management-border);
+    background: var(--th-modern-management-card);
+  }
+
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel :is(#descriptionWrapper, #firstMessageWrapper) textarea {
+    min-height: 12rem;
+    line-height: 1.6;
+  }
+}

@@ -1021,116 +1021,116 @@ function xn(e, t, n, r = !0, i = !1) {
 	if (i) throw e;
 	console.error(e);
 }
-var Sn = [], Cn = -1, wn = [], Tn = null, En = 0, Dn = /* @__PURE__ */ Promise.resolve(), On = null;
-function kn(e) {
-	let t = On || Dn;
+var P = [], Sn = -1, Cn = [], wn = null, Tn = 0, En = /* @__PURE__ */ Promise.resolve(), Dn = null;
+function On(e) {
+	let t = Dn || En;
 	return e ? t.then(this ? e.bind(this) : e) : t;
 }
-function An(e) {
-	let t = Cn + 1, n = Sn.length;
+function kn(e) {
+	let t = Sn + 1, n = P.length;
 	for (; t < n;) {
-		let r = t + n >>> 1, i = Sn[r], a = Rn(i);
+		let r = t + n >>> 1, i = P[r], a = Ln(i);
 		a < e || a === e && i.flags & 2 ? t = r + 1 : n = r;
 	}
 	return t;
 }
-function jn(e) {
+function An(e) {
 	if (!(e.flags & 1)) {
-		let t = Rn(e), n = Sn[Sn.length - 1];
-		!n || !(e.flags & 2) && t >= Rn(n) ? Sn.push(e) : Sn.splice(An(t), 0, e), e.flags |= 1, Mn();
+		let t = Ln(e), n = P[P.length - 1];
+		!n || !(e.flags & 2) && t >= Ln(n) ? P.push(e) : P.splice(kn(t), 0, e), e.flags |= 1, jn();
 	}
 }
-function Mn() {
-	On ||= Dn.then(zn);
+function jn() {
+	Dn ||= En.then(Rn);
 }
-function Nn(e) {
-	if (!f(e)) Tn && e.id === -1 ? Tn.splice(En + 1, 0, e) : e.flags & 1 || (wn.push(e), e.flags |= 1);
-	else for (let t = 0; t < e.length; t++) wn.push(e[t]);
-	Mn();
+function Mn(e) {
+	if (!f(e)) wn && e.id === -1 ? wn.splice(Tn + 1, 0, e) : e.flags & 1 || (Cn.push(e), e.flags |= 1);
+	else for (let t = 0; t < e.length; t++) Cn.push(e[t]);
+	jn();
 }
-function Pn(e, t, n, r = Cn + 1) {
-	for (; r < Sn.length; r++) {
-		let n = Sn[r];
+function Nn(e, t, n, r = Sn + 1) {
+	for (; r < P.length; r++) {
+		let n = P[r];
 		if (n && n.flags & 2) {
 			if (e && n.id !== e.uid || t !== void 0 && !(n.id >= t)) continue;
-			Sn.splice(r, 1), r = e ? r - 1 : Cn, n.flags & 4 && (n.flags &= -2), n(), n.flags & 4 || (n.flags &= -2);
+			P.splice(r, 1), r = e ? r - 1 : Sn, n.flags & 4 && (n.flags &= -2), n(), n.flags & 4 || (n.flags &= -2);
 		}
 	}
 }
-function Fn(e, t, n = 0) {
-	if (wn.length) {
-		let e = wn, r = 0;
+function Pn(e, t, n = 0) {
+	if (Cn.length) {
+		let e = Cn, r = 0;
 		if (t) {
 			e = [];
-			for (let i = 0; i < wn.length; i++) {
-				let a = wn[i];
-				(a.i === void 0 ? t.has(a) : !a.i || a.i.uid < n) ? wn[r++] = a : e.push(a);
+			for (let i = 0; i < Cn.length; i++) {
+				let a = Cn[i];
+				(a.i === void 0 ? t.has(a) : !a.i || a.i.uid < n) ? Cn[r++] = a : e.push(a);
 			}
 		}
-		let i = [...new Set(e)].sort((e, t) => Rn(e) - Rn(t));
-		if (wn.length = r, Tn) {
-			for (let e = 0; e < i.length; e++) Tn.push(i[e]);
+		let i = [...new Set(e)].sort((e, t) => Ln(e) - Ln(t));
+		if (Cn.length = r, wn) {
+			for (let e = 0; e < i.length; e++) wn.push(i[e]);
 			return;
 		}
-		for (Tn = i, En = 0; En < Tn.length; En++) {
-			let e = Tn[En];
+		for (wn = i, Tn = 0; Tn < wn.length; Tn++) {
+			let e = wn[Tn];
 			e.flags & 4 && (e.flags &= -2), e.flags & 8 || e(), e.flags &= -2;
 		}
-		Tn = null, En = 0;
+		wn = null, Tn = 0;
 	}
 }
-var In = !1;
-function Ln(e, t) {
-	if (In) {
+var Fn = !1;
+function In(e, t) {
+	if (Fn) {
 		e();
 		return;
 	}
-	let n = t === void 0 ? void 0 : new Set(wn);
-	e(), In = !0;
+	let n = t === void 0 ? void 0 : new Set(Cn);
+	e(), Fn = !0;
 	try {
-		Pn(void 0, t), Fn(void 0, n, t);
+		Nn(void 0, t), Pn(void 0, n, t);
 	} finally {
-		In = !1;
+		Fn = !1;
 	}
 }
-var Rn = (e) => e.id == null ? e.flags & 2 ? -1 : Infinity : e.id;
-function zn(e) {
+var Ln = (e) => e.id == null ? e.flags & 2 ? -1 : Infinity : e.id;
+function Rn(e) {
 	try {
-		for (Cn = 0; Cn < Sn.length; Cn++) {
-			let e = Sn[Cn];
+		for (Sn = 0; Sn < P.length; Sn++) {
+			let e = P[Sn];
 			e && !(e.flags & 8) && (e.flags & 4 && (e.flags &= -2), vn(e, e.i, e.i ? 15 : 14), e.flags & 4 || (e.flags &= -2));
 		}
 	} finally {
-		for (; Cn < Sn.length; Cn++) {
-			let e = Sn[Cn];
+		for (; Sn < P.length; Sn++) {
+			let e = P[Sn];
 			e && (e.flags &= -2);
 		}
-		Cn = -1, Sn.length = 0, Fn(e), On = null, (Sn.length || wn.length) && zn(e);
+		Sn = -1, P.length = 0, Pn(e), Dn = null, (P.length || Cn.length) && Rn(e);
 	}
 }
-var Bn = null, Vn = null;
-function Hn(e) {
-	let t = Bn;
-	return Bn = e, Vn = e && e.type.__scopeId || null, t;
+var zn = null, Bn = null;
+function Vn(e) {
+	let t = zn;
+	return zn = e, Bn = e && e.type.__scopeId || null, t;
 }
-function Un(e, t = Bn, n) {
+function Hn(e, t = zn, n) {
 	if (!t || e._n) return e;
 	let r = (...n) => {
-		r._d && ra(-1);
-		let i = Hn(t), a = Qi.length, o;
+		r._d && na(-1);
+		let i = Vn(t), a = Zi.length, o;
 		try {
 			o = e(...n);
 		} finally {
-			for (let e = Qi.length; e > a; e--) ta();
-			Hn(i), r._d && ra(1);
+			for (let e = Zi.length; e > a; e--) ea();
+			Vn(i), r._d && na(1);
 		}
 		return o;
 	};
 	return r._n = !0, r._c = !0, r._d = !0, r;
 }
-function Wn(e, t) {
-	if (Bn === null) return e;
-	let r = za(Bn), i = e.dirs ||= [];
+function Un(e, t) {
+	if (zn === null) return e;
+	let r = La(zn), i = e.dirs ||= [];
 	for (let e = 0; e < t.length; e++) {
 		let [a, o, s, c = n] = t[e];
 		a && (g(a) && (a = {
@@ -1147,7 +1147,7 @@ function Wn(e, t) {
 	}
 	return e;
 }
-function Gn(e, t, n, r) {
+function Wn(e, t, n, r) {
 	let i = e.dirs, a = t && t.dirs;
 	for (let o = 0; o < i.length; o++) {
 		let s = i[o];
@@ -1161,61 +1161,61 @@ function Gn(e, t, n, r) {
 		]), Qe());
 	}
 }
-function Kn(e, t) {
-	if (F) {
-		let n = F.provides, r = F.parent && F.parent.provides;
-		r === n && (n = F.provides = Object.create(r)), n[e] = t;
+function Gn(e, t) {
+	if (Ca) {
+		let n = Ca.provides, r = Ca.parent && Ca.parent.provides;
+		r === n && (n = Ca.provides = Object.create(r)), n[e] = t;
 	}
 }
-function qn(e, t, n = !1) {
-	let r = Ea();
-	if (r || ri) {
-		let i = ri ? ri._context.provides : r ? r.parent == null || r.ce ? r.vnode.appContext && r.vnode.appContext.provides : r.parent.provides : void 0;
+function Kn(e, t, n = !1) {
+	let r = wa();
+	if (r || ni) {
+		let i = ni ? ni._context.provides : r ? r.parent == null || r.ce ? r.vnode.appContext && r.vnode.appContext.provides : r.parent.provides : void 0;
 		if (i && e in i) return i[e];
 		if (arguments.length > 1) return n && g(t) ? t.call(r && r.proxy) : t;
 	}
 }
-function Jn() {
-	return !!(Ea() || ri);
+function qn() {
+	return !!(wa() || ni);
 }
-var Yn = /* @__PURE__ */ Symbol.for("v-scx"), Xn = () => qn(Yn);
-function Zn(e, t) {
-	return $n(e, null, t);
+var Jn = /* @__PURE__ */ Symbol.for("v-scx"), Yn = () => Kn(Jn);
+function Xn(e, t) {
+	return Qn(e, null, t);
 }
-function Qn(e, t, n) {
-	return $n(e, t, n);
+function Zn(e, t, n) {
+	return Qn(e, t, n);
 }
-function $n(e, t, r = n) {
+function Qn(e, t, r = n) {
 	let { immediate: a, deep: o, flush: s, once: l } = r, u = c({}, r), d = t && a || !t && s !== "post", f;
-	if (Ma) {
+	if (Aa) {
 		if (s === "sync") {
-			let e = Xn();
+			let e = Yn();
 			f = e.__watcherHandles ||= [];
 		} else if (!d) {
 			let e = () => {};
 			return e.stop = i, e.resume = i, e.pause = i, e;
 		}
 	}
-	let p = F;
+	let p = Ca;
 	u.call = (e, t, n) => yn(e, p, t, n);
 	let m = !1;
 	s === "post" ? u.scheduler = (e) => {
-		e.i = p, Fi(e, p && p.suspense);
+		e.i = p, Pi(e, p && p.suspense);
 	} : s !== "sync" && (m = !0, u.scheduler = (e, t) => {
-		t ? e() : jn(e);
+		t ? e() : An(e);
 	}), u.augmentJob = (e) => {
 		t && (e.flags |= 4), m && (e.flags |= 2, p && (e.id = p.uid, e.i = p));
 	};
 	let h = gn(e, t, u);
-	return Ma && (f ? f.push(h) : d && h()), h;
+	return Aa && (f ? f.push(h) : d && h()), h;
 }
-function er(e, t, n) {
-	let r = this.proxy, i = v(e) ? e.includes(".") ? tr(r, e) : () => r[e] : e.bind(r, r), a;
+function $n(e, t, n) {
+	let r = this.proxy, i = v(e) ? e.includes(".") ? er(r, e) : () => r[e] : e.bind(r, r), a;
 	g(t) ? a = t : (a = t.handler, n = t);
-	let o = ka(this), s = $n(i, a.bind(r), n);
+	let o = Da(this), s = Qn(i, a.bind(r), n);
 	return o(), s;
 }
-function tr(e, t) {
+function er(e, t) {
 	let n = t.split(".");
 	return () => {
 		let t = e;
@@ -1223,19 +1223,19 @@ function tr(e, t) {
 		return t;
 	};
 }
-var nr = /* @__PURE__ */ Symbol("_vte"), rr = (e) => e.__isTeleport, ir = /* @__PURE__ */ Symbol("_leaveCb");
-function ar(e) {
+var tr = /* @__PURE__ */ Symbol("_vte"), nr = (e) => e.__isTeleport, rr = /* @__PURE__ */ Symbol("_leaveCb");
+function ir(e) {
 	let t = e[0];
 	if (e.length > 1) {
-		for (let n of e) if (n.type !== Xi) {
+		for (let n of e) if (n.type !== Yi) {
 			t = n;
 			break;
 		}
 	}
 	return t;
 }
-function or(e) {
-	if (!gr(e)) return rr(e.type) && e.children ? ar(e.children) : e;
+function ar(e) {
+	if (!hr(e)) return nr(e.type) && e.children ? ir(e.children) : e;
 	if (e.component) return e.component.subTree;
 	let { shapeFlag: t, children: n } = e;
 	if (n) {
@@ -1243,53 +1243,53 @@ function or(e) {
 		if (t & 32 && g(n.default)) return n.default();
 	}
 }
-function sr(e, t) {
+function or(e, t) {
 	if (e.shapeFlag & 6 && e.component) {
 		e.transition = t;
 		let n = e.component.subTree;
-		sr(rr(n.type) && or(n) || n, t);
+		or(nr(n.type) && ar(n) || n, t);
 	} else if (e.shapeFlag & 128) e.ssContent.transition = t.clone(e.ssContent), e.ssFallback.transition = t.clone(e.ssFallback);
-	else if (e.transition = t, e.type === Ji && f(e.children)) {
-		let n = ui(e.children, !1);
-		n && sr(n, t);
+	else if (e.transition = t, e.type === qi && f(e.children)) {
+		let n = li(e.children, !1);
+		n && or(n, t);
 	}
 }
-function cr(e) {
-	if (e.component) return cr(e.component.subTree);
-	if (e.type === Ji) {
-		let t = f(e.children) && ui(e.children, !1);
-		return t ? cr(t) : void 0;
+function sr(e) {
+	if (e.component) return sr(e.component.subTree);
+	if (e.type === qi) {
+		let t = f(e.children) && li(e.children, !1);
+		return t ? sr(t) : void 0;
 	}
-	if (e.type !== Xi) return e;
+	if (e.type !== Yi) return e;
 }
 // @__NO_SIDE_EFFECTS__
-function lr(e, t) {
+function cr(e, t) {
 	return g(e) ? /* @__PURE__ */ c({ name: e.name }, t, { setup: e }) : e;
 }
-function ur(e) {
+function lr(e) {
 	e.ids = [
 		e.ids[0] + e.ids[2]++ + "-",
 		0,
 		0
 	];
 }
-function dr(e, t) {
+function ur(e, t) {
 	let n;
 	return !!((n = Object.getOwnPropertyDescriptor(e, t)) && !n.configurable);
 }
-var fr = /* @__PURE__ */ new WeakMap();
-function pr(e, t, r, i, o = !1) {
+var dr = /* @__PURE__ */ new WeakMap();
+function fr(e, t, r, i, o = !1) {
 	if (f(e)) {
-		e.forEach((e, n) => pr(e, t && (f(t) ? t[n] : t), r, i, o));
+		e.forEach((e, n) => fr(e, t && (f(t) ? t[n] : t), r, i, o));
 		return;
 	}
-	if (hr(i) && !o) {
-		i.shapeFlag & 512 && i.type.__asyncResolved && i.component.subTree.component && pr(e, t, r, i.component.subTree);
+	if (mr(i) && !o) {
+		i.shapeFlag & 512 && i.type.__asyncResolved && i.component.subTree.component && fr(e, t, r, i.component.subTree);
 		return;
 	}
-	let s = i.shapeFlag & 4 ? za(i.component) : i.el, c = o ? null : s, { i: u, r: p } = e, m = t && t.r, h = u.refs === n ? u.refs = {} : u.refs, y = u.setupState, b = /* @__PURE__ */ j(y), x = y === n ? a : (e) => !dr(h, e) && d(b, e), S = (e, t) => !(t && dr(h, t));
+	let s = i.shapeFlag & 4 ? La(i.component) : i.el, c = o ? null : s, { i: u, r: p } = e, m = t && t.r, h = u.refs === n ? u.refs = {} : u.refs, y = u.setupState, b = /* @__PURE__ */ j(y), x = y === n ? a : (e) => !ur(h, e) && d(b, e), S = (e, t) => !(t && ur(h, t));
 	if (m != null && m !== p) {
-		if (mr(t), v(m)) h[m] = null, x(m) && (y[m] = null);
+		if (pr(t), v(m)) h[m] = null, x(m) && (y[m] = null);
 		else if (/* @__PURE__ */ M(m)) {
 			let e = t;
 			S(m, e.k) && (m.value = null), e.k && (h[e.k] = null);
@@ -1313,26 +1313,26 @@ function pr(e, t, r, i, o = !1) {
 			};
 			if (c) {
 				let t = () => {
-					i(), fr.delete(e);
+					i(), dr.delete(e);
 				};
-				t.id = -1, fr.set(e, t), Fi(t, r);
-			} else mr(e), i();
+				t.id = -1, dr.set(e, t), Pi(t, r);
+			} else pr(e), i();
 		}
 	}
 }
-function mr(e) {
-	let t = fr.get(e);
-	t && (t.flags |= 8, fr.delete(e));
+function pr(e) {
+	let t = dr.get(e);
+	t && (t.flags |= 8, dr.delete(e));
 }
 fe().requestIdleCallback, fe().cancelIdleCallback;
-var hr = (e) => !!e.type.__asyncLoader, gr = (e) => e.type.__isKeepAlive;
+var mr = (e) => !!e.type.__asyncLoader, hr = (e) => e.type.__isKeepAlive;
+function gr(e, t) {
+	vr(e, "a", t);
+}
 function _r(e, t) {
-	yr(e, "a", t);
+	vr(e, "da", t);
 }
-function vr(e, t) {
-	yr(e, "da", t);
-}
-function yr(e, t, n = F) {
+function vr(e, t, n = Ca) {
 	let r = e.__wdc ||= () => {
 		let t = n;
 		for (; t;) {
@@ -1341,34 +1341,34 @@ function yr(e, t, n = F) {
 		}
 		return e();
 	};
-	if (xr(t, r, n), n) {
+	if (br(t, r, n), n) {
 		let e = n.parent;
-		for (; e && e.parent;) gr(e.parent.vnode) && br(r, t, n, e), e = e.parent;
+		for (; e && e.parent;) hr(e.parent.vnode) && yr(r, t, n, e), e = e.parent;
 	}
 }
-function br(e, t, n, r) {
-	let i = xr(t, e, r, !0);
-	Or(() => {
+function yr(e, t, n, r) {
+	let i = br(t, e, r, !0);
+	Dr(() => {
 		l(r[t], i);
 	}, n);
 }
-function xr(e, t, n = F, r = !1) {
+function br(e, t, n = Ca, r = !1) {
 	if (n) {
 		let i = n[e] || (n[e] = []), a = t.__weh ||= (...r) => {
 			Ze();
-			let i = ka(n), a = yn(t, n, e, r);
+			let i = Da(n), a = yn(t, n, e, r);
 			return i(), Qe(), a;
 		};
 		return r ? i.unshift(a) : i.push(a), a;
 	}
 }
-var Sr = (e) => (t, n = F) => {
-	Ma && e !== "sp" || xr(e, (...e) => t(...e), n);
-}, Cr = Sr("bm"), wr = Sr("m"), Tr = Sr("bu"), Er = Sr("u"), Dr = Sr("bum"), Or = Sr("um"), kr = Sr("sp"), Ar = Sr("rtg"), jr = Sr("rtc");
-function Mr(e, t = F) {
-	xr("ec", e, t);
+var xr = (e) => (t, n = Ca) => {
+	Aa && e !== "sp" || br(e, (...e) => t(...e), n);
+}, Sr = xr("bm"), Cr = xr("m"), wr = xr("bu"), Tr = xr("u"), Er = xr("bum"), Dr = xr("um"), Or = xr("sp"), kr = xr("rtg"), Ar = xr("rtc");
+function jr(e, t = Ca) {
+	br("ec", e, t);
 }
-var Nr = /* @__PURE__ */ Symbol.for("v-ndc"), Pr = (e) => e ? ja(e) ? za(e) : Pr(e.parent) : null, Fr = /* @__PURE__ */ c(/* @__PURE__ */ Object.create(null), {
+var Mr = /* @__PURE__ */ Symbol.for("v-ndc"), Nr = (e) => e ? ka(e) ? La(e) : Nr(e.parent) : null, Pr = /* @__PURE__ */ c(/* @__PURE__ */ Object.create(null), {
 	$: (e) => e,
 	$el: (e) => e.vnode.el,
 	$data: (e) => e.data,
@@ -1376,17 +1376,17 @@ var Nr = /* @__PURE__ */ Symbol.for("v-ndc"), Pr = (e) => e ? ja(e) ? za(e) : Pr
 	$attrs: (e) => e.attrs,
 	$slots: (e) => e.slots,
 	$refs: (e) => e.refs,
-	$parent: (e) => Pr(e.parent),
-	$root: (e) => Pr(e.root),
+	$parent: (e) => Nr(e.parent),
+	$root: (e) => Nr(e.root),
 	$host: (e) => e.ce,
 	$emit: (e) => e.emit,
-	$options: (e) => Wr(e),
+	$options: (e) => Ur(e),
 	$forceUpdate: (e) => e.f ||= () => {
-		jn(e.update);
+		An(e.update);
 	},
-	$nextTick: (e) => e.n ||= kn.bind(e.proxy),
-	$watch: (e) => er.bind(e)
-}), Ir = (e, t) => e !== n && !e.__isScriptSetup && d(e, t), Lr = {
+	$nextTick: (e) => e.n ||= On.bind(e.proxy),
+	$watch: (e) => $n.bind(e)
+}), Fr = (e, t) => e !== n && !e.__isScriptSetup && d(e, t), Ir = {
 	get({ _: e }, t) {
 		if (t === "__v_skip") return !0;
 		let { ctx: r, setupState: i, data: a, props: o, accessCache: s, type: c, appContext: l } = e;
@@ -1398,13 +1398,13 @@ var Nr = /* @__PURE__ */ Symbol.for("v-ndc"), Pr = (e) => e ? ja(e) ? za(e) : Pr
 				case 4: return r[t];
 				case 3: return o[t];
 			}
-			else if (Ir(i, t)) return s[t] = 1, i[t];
+			else if (Fr(i, t)) return s[t] = 1, i[t];
 			else if (a !== n && d(a, t)) return s[t] = 2, a[t];
 			else if (d(o, t)) return s[t] = 3, o[t];
 			else if (r !== n && d(r, t)) return s[t] = 4, r[t];
-			else zr && (s[t] = 0);
+			else Rr && (s[t] = 0);
 		}
-		let u = Fr[t], f, p;
+		let u = Pr[t], f, p;
 		if (u) return t === "$attrs" && A(e.attrs, "get", ""), u(e);
 		if ((f = c.__cssModules) && (f = f[t])) return f;
 		if (r !== n && d(r, t)) return s[t] = 4, r[t];
@@ -1412,25 +1412,25 @@ var Nr = /* @__PURE__ */ Symbol.for("v-ndc"), Pr = (e) => e ? ja(e) ? za(e) : Pr
 	},
 	set({ _: e }, t, r) {
 		let { data: i, setupState: a, ctx: o } = e;
-		return Ir(a, t) ? (a[t] = r, !0) : i !== n && d(i, t) ? (i[t] = r, !0) : d(e.props, t) || t[0] === "$" && t.slice(1) in e ? !1 : (o[t] = r, !0);
+		return Fr(a, t) ? (a[t] = r, !0) : i !== n && d(i, t) ? (i[t] = r, !0) : d(e.props, t) || t[0] === "$" && t.slice(1) in e ? !1 : (o[t] = r, !0);
 	},
 	has({ _: { data: e, setupState: t, accessCache: r, ctx: i, appContext: a, props: o, type: s } }, c) {
 		let l;
-		return !!(r[c] || e !== n && c[0] !== "$" && d(e, c) || Ir(t, c) || d(o, c) || d(i, c) || d(Fr, c) || d(a.config.globalProperties, c) || (l = s.__cssModules) && l[c]);
+		return !!(r[c] || e !== n && c[0] !== "$" && d(e, c) || Fr(t, c) || d(o, c) || d(i, c) || d(Pr, c) || d(a.config.globalProperties, c) || (l = s.__cssModules) && l[c]);
 	},
 	defineProperty(e, t, n) {
 		return n.get == null ? d(n, "value") && this.set(e, t, n.value, null) : e._.accessCache[t] = 0, Reflect.defineProperty(e, t, n);
 	}
 };
-function Rr(e) {
+function Lr(e) {
 	return f(e) ? e.reduce((e, t) => (e[t] = null, e), {}) : e;
 }
-var zr = !0;
-function Br(e) {
-	let t = Wr(e), n = e.proxy, r = e.ctx;
-	zr = !1, t.beforeCreate && Hr(t.beforeCreate, e, "bc");
+var Rr = !0;
+function zr(e) {
+	let t = Ur(e), n = e.proxy, r = e.ctx;
+	Rr = !1, t.beforeCreate && Vr(t.beforeCreate, e, "bc");
 	let { data: a, computed: o, methods: s, watch: c, provide: l, inject: u, created: d, beforeMount: p, mounted: m, beforeUpdate: h, updated: v, activated: y, deactivated: x, beforeDestroy: S, beforeUnmount: C, destroyed: w, unmounted: T, render: ee, renderTracked: te, renderTriggered: ne, errorCaptured: re, serverPrefetch: E, expose: ie, inheritAttrs: ae, components: oe, directives: se, filters: ce } = t;
-	if (u && Vr(u, r, null), s) for (let e in s) {
+	if (u && Br(u, r, null), s) for (let e in s) {
 		let t = s[e];
 		g(t) && (r[e] = t.bind(n));
 	}
@@ -1438,8 +1438,8 @@ function Br(e) {
 		let t = a.call(n, n);
 		b(t) && (e.data = /* @__PURE__ */ Wt(t));
 	}
-	if (zr = !0, o) for (let e in o) {
-		let t = o[e], a = Va({
+	if (Rr = !0, o) for (let e in o) {
+		let t = o[e], a = za({
 			get: g(t) ? t.bind(n, n) : g(t.get) ? t.get.bind(n, n) : i,
 			set: !g(t) && g(t.set) ? t.set.bind(n) : i
 		});
@@ -1450,18 +1450,18 @@ function Br(e) {
 			set: (e) => a.value = e
 		});
 	}
-	if (c) for (let e in c) Ur(c[e], r, n, e);
+	if (c) for (let e in c) Hr(c[e], r, n, e);
 	if (l) {
 		let e = g(l) ? l.call(n) : l;
 		Reflect.ownKeys(e).forEach((t) => {
-			Kn(t, e[t]);
+			Gn(t, e[t]);
 		});
 	}
-	d && Hr(d, e, "c");
+	d && Vr(d, e, "c");
 	function D(e, t) {
 		f(t) ? t.forEach((t) => e(t.bind(n))) : t && e(t.bind(n));
 	}
-	if (D(Cr, p), D(wr, m), D(Tr, h), D(Er, v), D(_r, y), D(vr, x), D(Mr, re), D(jr, te), D(Ar, ne), D(Dr, C), D(Or, T), D(kr, E), f(ie)) {
+	if (D(Sr, p), D(Cr, m), D(wr, h), D(Tr, v), D(gr, y), D(_r, x), D(jr, re), D(Ar, te), D(kr, ne), D(Er, C), D(Dr, T), D(Or, E), f(ie)) {
 		if (ie.length) {
 			let t = e.exposed ||= {};
 			ie.forEach((e) => {
@@ -1473,13 +1473,13 @@ function Br(e) {
 			});
 		} else e.exposed ||= {};
 	}
-	ee && e.render === i && (e.render = ee), ae != null && (e.inheritAttrs = ae), oe && (e.components = oe), se && (e.directives = se), E && ur(e);
+	ee && e.render === i && (e.render = ee), ae != null && (e.inheritAttrs = ae), oe && (e.components = oe), se && (e.directives = se), E && lr(e);
 }
-function Vr(e, t, n = i) {
-	f(e) && (e = Yr(e));
+function Br(e, t, n = i) {
+	f(e) && (e = Jr(e));
 	for (let n in e) {
 		let r = e[n], i;
-		i = b(r) ? "default" in r ? qn(r.from || n, r.default, !0) : qn(r.from || n) : qn(r), /* @__PURE__ */ M(i) ? Object.defineProperty(t, n, {
+		i = b(r) ? "default" in r ? Kn(r.from || n, r.default, !0) : Kn(r.from || n) : Kn(r), /* @__PURE__ */ M(i) ? Object.defineProperty(t, n, {
 			enumerable: !0,
 			configurable: !0,
 			get: () => i.value,
@@ -1487,71 +1487,71 @@ function Vr(e, t, n = i) {
 		}) : t[n] = i;
 	}
 }
-function Hr(e, t, n) {
+function Vr(e, t, n) {
 	yn(f(e) ? e.map((e) => e.bind(t.proxy)) : e.bind(t.proxy), t, n);
 }
-function Ur(e, t, n, r) {
-	let i = r.includes(".") ? tr(n, r) : () => n[r];
+function Hr(e, t, n, r) {
+	let i = r.includes(".") ? er(n, r) : () => n[r];
 	if (v(e)) {
 		let n = t[e];
-		g(n) && Qn(i, n);
-	} else if (g(e)) Qn(i, e.bind(n));
+		g(n) && Zn(i, n);
+	} else if (g(e)) Zn(i, e.bind(n));
 	else if (b(e)) {
-		if (f(e)) e.forEach((e) => Ur(e, t, n, r));
+		if (f(e)) e.forEach((e) => Hr(e, t, n, r));
 		else {
 			let r = g(e.handler) ? e.handler.bind(n) : t[e.handler];
-			g(r) && Qn(i, r, e);
+			g(r) && Zn(i, r, e);
 		}
 	}
 }
-function Wr(e) {
+function Ur(e) {
 	let t = e.type, { mixins: n, extends: r } = t, { mixins: i, optionsCache: a, config: { optionMergeStrategies: o } } = e.appContext, s = a.get(t), c;
-	return s ? c = s : !i.length && !n && !r ? c = t : (c = {}, i.length && i.forEach((e) => Gr(c, e, o, !0)), Gr(c, t, o)), b(t) && a.set(t, c), c;
+	return s ? c = s : !i.length && !n && !r ? c = t : (c = {}, i.length && i.forEach((e) => Wr(c, e, o, !0)), Wr(c, t, o)), b(t) && a.set(t, c), c;
 }
-function Gr(e, t, n, r = !1) {
+function Wr(e, t, n, r = !1) {
 	let { mixins: i, extends: a } = t;
-	a && Gr(e, a, n, !0), i && i.forEach((t) => Gr(e, t, n, !0));
+	a && Wr(e, a, n, !0), i && i.forEach((t) => Wr(e, t, n, !0));
 	for (let i in t) if (!(r && i === "expose")) {
-		let r = Kr[i] || n && n[i];
+		let r = Gr[i] || n && n[i];
 		e[i] = r ? r(e[i], t[i]) : t[i];
 	}
 	return e;
 }
-var Kr = {
-	data: qr,
-	props: Qr,
-	emits: Qr,
-	methods: Zr,
-	computed: Zr,
-	beforeCreate: Xr,
-	created: Xr,
-	beforeMount: Xr,
-	mounted: Xr,
-	beforeUpdate: Xr,
-	updated: Xr,
-	beforeDestroy: Xr,
-	beforeUnmount: Xr,
-	destroyed: Xr,
-	unmounted: Xr,
-	activated: Xr,
-	deactivated: Xr,
-	errorCaptured: Xr,
-	serverPrefetch: Xr,
-	components: Zr,
-	directives: Zr,
-	watch: $r,
-	provide: qr,
-	inject: Jr
+var Gr = {
+	data: Kr,
+	props: Zr,
+	emits: Zr,
+	methods: Xr,
+	computed: Xr,
+	beforeCreate: Yr,
+	created: Yr,
+	beforeMount: Yr,
+	mounted: Yr,
+	beforeUpdate: Yr,
+	updated: Yr,
+	beforeDestroy: Yr,
+	beforeUnmount: Yr,
+	destroyed: Yr,
+	unmounted: Yr,
+	activated: Yr,
+	deactivated: Yr,
+	errorCaptured: Yr,
+	serverPrefetch: Yr,
+	components: Xr,
+	directives: Xr,
+	watch: Qr,
+	provide: Kr,
+	inject: qr
 };
-function qr(e, t) {
+function Kr(e, t) {
 	return t ? e ? function() {
 		return c(g(e) ? e.call(this, this) : e, g(t) ? t.call(this, this) : t);
 	} : t : e;
 }
-function Jr(e, t) {
-	return Zr(Yr(e), Yr(t));
+function qr(e, t) {
+	return Xr(Jr(e), Jr(t));
 }
-function Yr(e) {
+function Jr(e) {
 	if (f(e)) {
 		let t = {};
 		for (let n = 0; n < e.length; n++) t[e[n]] = e[n];
@@ -1559,23 +1559,23 @@ function Yr(e) {
 	}
 	return e;
 }
-function Xr(e, t) {
+function Yr(e, t) {
 	return e ? [...new Set([].concat(e, t))] : t;
 }
-function Zr(e, t) {
+function Xr(e, t) {
 	return e ? c(/* @__PURE__ */ Object.create(null), e, t) : t;
 }
-function Qr(e, t) {
-	return e ? f(e) && f(t) ? [.../* @__PURE__ */ new Set([...e, ...t])] : c(/* @__PURE__ */ Object.create(null), Rr(e), Rr(t ?? {})) : t;
+function Zr(e, t) {
+	return e ? f(e) && f(t) ? [.../* @__PURE__ */ new Set([...e, ...t])] : c(/* @__PURE__ */ Object.create(null), Lr(e), Lr(t ?? {})) : t;
 }
-function $r(e, t) {
+function Qr(e, t) {
 	if (!e) return t;
 	if (!t) return e;
 	let n = c(/* @__PURE__ */ Object.create(null), e);
-	for (let r in t) n[r] = Xr(e[r], t[r]);
+	for (let r in t) n[r] = Yr(e[r], t[r]);
 	return n;
 }
-function ei() {
+function $r() {
 	return {
 		app: null,
 		config: {
@@ -1596,18 +1596,18 @@ function ei() {
 		emitsCache: /* @__PURE__ */ new WeakMap()
 	};
 }
-var ti = 0;
-function ni(e, t) {
+var ei = 0;
+function ti(e, t) {
 	return function(n, r = null) {
 		g(n) || (n = c({}, n)), r != null && !b(r) && (r = null);
-		let i = ei(), a = /* @__PURE__ */ new WeakSet(), o = [], s = !1, l = i.app = {
-			_uid: ti++,
+		let i = $r(), a = /* @__PURE__ */ new WeakSet(), o = [], s = !1, l = i.app = {
+			_uid: ei++,
 			_component: n,
 			_props: r,
 			_container: null,
 			_context: i,
 			_instance: null,
-			version: Ha,
+			version: Ba,
 			get config() {
 				return i.config;
 			},
@@ -1626,8 +1626,8 @@ function ni(e, t) {
 			},
 			mount(a, o, c) {
 				if (!s) {
-					let u = l._ceVNode || da(n, r);
-					return u.appContext = i, c === !0 ? c = "svg" : c === !1 && (c = void 0), o && t ? t(u, a) : e(u, a, c), s = !0, l._container = a, a.__vue_app__ = l, za(u.component);
+					let u = l._ceVNode || la(n, r);
+					return u.appContext = i, c === !0 ? c = "svg" : c === !1 && (c = void 0), o && t ? t(u, a) : e(u, a, c), s = !0, l._container = a, a.__vue_app__ = l, La(u.component);
 				}
 			},
 			onUnmount(e) {
@@ -1640,22 +1640,22 @@ function ni(e, t) {
 				return i.provides[e] = t, l;
 			},
 			runWithContext(e) {
-				let t = ri;
-				ri = l;
+				let t = ni;
+				ni = l;
 				try {
 					return e();
 				} finally {
-					ri = t;
+					ni = t;
 				}
 			}
 		};
 		return l;
 	};
 }
-var ri = null, ii = (e, t) => t === "modelValue" || t === "model-value" ? e.modelModifiers : e[`${t}Modifiers`] || e[`${E(t)}Modifiers`] || e[`${ae(t)}Modifiers`];
-function ai(e, t, ...r) {
+var ni = null, ri = (e, t) => t === "modelValue" || t === "model-value" ? e.modelModifiers : e[`${t}Modifiers`] || e[`${E(t)}Modifiers`] || e[`${ae(t)}Modifiers`];
+function ii(e, t, ...r) {
 	if (e.isUnmounted) return;
-	let i = e.vnode.props || n, a = r, o = t.startsWith("update:"), s = o && ii(i, t.slice(7));
+	let i = e.vnode.props || n, a = r, o = t.startsWith("update:"), s = o && ri(i, t.slice(7));
 	s && (s.trim && (a = r.map((e) => v(e) ? e.trim() : e)), s.number && (a = a.map(ue)));
 	let c, l = i[c = se(t)] || i[c = se(E(t))];
 	!l && o && (l = i[c = se(ae(t))]), l && yn(l, e, 6, a);
@@ -1666,53 +1666,53 @@ function ai(e, t, ...r) {
 		e.emitted[c] = !0, yn(u, e, 6, a);
 	}
 }
-var oi = /* @__PURE__ */ new WeakMap();
-function si(e, t, n = !1) {
-	let r = n ? oi : t.emitsCache, i = r.get(e);
+var ai = /* @__PURE__ */ new WeakMap();
+function oi(e, t, n = !1) {
+	let r = n ? ai : t.emitsCache, i = r.get(e);
 	if (i !== void 0) return i;
 	let a = e.emits, o = {}, s = !1;
 	if (!g(e)) {
 		let r = (e) => {
-			let n = si(e, t, !0);
+			let n = oi(e, t, !0);
 			n && (s = !0, c(o, n));
 		};
 		!n && t.mixins.length && t.mixins.forEach(r), e.extends && r(e.extends), e.mixins && e.mixins.forEach(r);
 	}
 	return !a && !s ? (b(e) && r.set(e, null), null) : (f(a) ? a.forEach((e) => o[e] = null) : c(o, a), b(e) && r.set(e, o), o);
 }
-function ci(e, t) {
+function si(e, t) {
 	return !e || !o(t) ? !1 : (t = t.slice(2), t = t === "Once" ? t : t.replace(/Once$/, ""), d(e, t[0].toLowerCase() + t.slice(1)) || d(e, ae(t)) || d(e, t));
 }
-function li(e) {
-	let { type: t, vnode: n, proxy: r, withProxy: i, propsOptions: [a], slots: o, attrs: c, emit: l, render: u, renderCache: d, props: f, data: p, setupState: m, ctx: h, inheritAttrs: g } = e, v = Hn(e), y, b;
+function ci(e) {
+	let { type: t, vnode: n, proxy: r, withProxy: i, propsOptions: [a], slots: o, attrs: c, emit: l, render: u, renderCache: d, props: f, data: p, setupState: m, ctx: h, inheritAttrs: g } = e, v = Vn(e), y, b;
 	try {
 		if (n.shapeFlag & 4) {
 			let e = i || r, t = e;
-			y = _a(u.call(t, e, d, f, m, p, h)), b = c;
+			y = ma(u.call(t, e, d, f, m, p, h)), b = c;
 		} else {
 			let e = t;
-			y = _a(e.length > 1 ? e(f, {
+			y = ma(e.length > 1 ? e(f, {
 				attrs: c,
 				slots: o,
 				emit: l
-			}) : e(f, null)), b = t.props ? c : di(c);
+			}) : e(f, null)), b = t.props ? c : ui(c);
 		}
 	} catch (t) {
-		Qi.length = 0, bn(t, e, 1), y = da(Xi);
+		Zi.length = 0, bn(t, e, 1), y = la(Yi);
 	}
 	let x = y;
 	if (b && g !== !1) {
 		let e = Object.keys(b), { shapeFlag: t } = x;
-		e.length && t & 7 && (a && e.some(s) && (b = fi(b, a)), x = ma(x, b, !1, !0));
+		e.length && t & 7 && (a && e.some(s) && (b = di(b, a)), x = fa(x, b, !1, !0));
 	}
-	return n.dirs && (x = ma(x, null, !1, !0), x.dirs = x.dirs ? x.dirs.concat(n.dirs) : n.dirs), n.transition && sr(rr(x.type) && or(x) || x, n.transition), y = x, Hn(v), y;
+	return n.dirs && (x = fa(x, null, !1, !0), x.dirs = x.dirs ? x.dirs.concat(n.dirs) : n.dirs), n.transition && or(nr(x.type) && ar(x) || x, n.transition), y = x, Vn(v), y;
 }
-function ui(e, t = !0) {
+function li(e, t = !0) {
 	let n;
 	for (let t = 0; t < e.length; t++) {
 		let r = e[t];
-		if (sa(r)) {
-			if (r.type !== Xi || r.children === "v-if") {
+		if (aa(r)) {
+			if (r.type !== Yi || r.children === "v-if") {
 				if (n) return;
 				n = r;
 			}
@@ -1720,45 +1720,45 @@ function ui(e, t = !0) {
 	}
 	return n;
 }
-var di = (e) => {
+var ui = (e) => {
 	let t;
 	for (let n in e) (n === "class" || n === "style" || o(n)) && ((t ||= {})[n] = e[n]);
 	return t;
-}, fi = (e, t) => {
+}, di = (e, t) => {
 	let n = {};
 	for (let r in e) s(r) && r.slice(9) in t || (n[r] = e[r]);
 	return n;
 };
-function pi(e, t, n) {
+function fi(e, t, n) {
 	let { props: r, children: i, component: a } = e, { props: o, children: s, patchFlag: c } = t, l = a.emitsOptions;
 	if (t.dirs || t.transition) return !0;
 	if (n && c >= 0) {
 		if (c & 1024) return !0;
-		if (c & 16) return r ? mi(r, o, l) : !!o;
+		if (c & 16) return r ? pi(r, o, l) : !!o;
 		if (c & 8) {
 			let e = t.dynamicProps;
 			for (let t = 0; t < e.length; t++) {
 				let n = e[t];
-				if (hi(o, r, n) && !ci(l, n)) return !0;
+				if (mi(o, r, n) && !si(l, n)) return !0;
 			}
 		}
-	} else return (i || s) && (!s || !s.$stable) ? !0 : r === o ? !1 : r ? !o || mi(r, o, l) : !!o;
+	} else return (i || s) && (!s || !s.$stable) ? !0 : r === o ? !1 : r ? !o || pi(r, o, l) : !!o;
 	return !1;
 }
-function mi(e, t, n) {
+function pi(e, t, n) {
 	let r = Object.keys(t);
 	if (r.length !== Object.keys(e).length) return !0;
 	for (let i = 0; i < r.length; i++) {
 		let a = r[i];
-		if (!d(e, a) || hi(t, e, a) && !ci(n, a)) return !0;
+		if (!d(e, a) || mi(t, e, a) && !si(n, a)) return !0;
 	}
 	return !1;
 }
-function hi(e, t, n) {
+function mi(e, t, n) {
 	let r = e[n], i = t[n];
 	return n === "style" && b(r) && b(i) ? !Te(r, i) : r !== i;
 }
-function gi({ vnode: e, parent: t, suspense: n }, r) {
+function hi({ vnode: e, parent: t, suspense: n }, r) {
 	for (; t;) {
 		let n = t.subTree;
 		if (n.suspense && n.suspense.activeBranch === e && (n.suspense.vnode.el = n.el = r, e = n), n === e) (e = t.vnode).el = r, t = t.parent;
@@ -1766,56 +1766,56 @@ function gi({ vnode: e, parent: t, suspense: n }, r) {
 	}
 	n && n.activeBranch === e && (n.vnode.el = r);
 }
-var _i = {}, vi = () => Object.create(_i), yi = (e) => Object.getPrototypeOf(e) === _i;
-function bi(e, t, n, r = !1) {
-	let i = {}, a = vi();
-	e.propsDefaults = /* @__PURE__ */ Object.create(null), Si(e, t, i, a);
+var gi = {}, _i = () => Object.create(gi), vi = (e) => Object.getPrototypeOf(e) === gi;
+function yi(e, t, n, r = !1) {
+	let i = {}, a = _i();
+	e.propsDefaults = /* @__PURE__ */ Object.create(null), xi(e, t, i, a);
 	for (let t in e.propsOptions[0]) t in i || (i[t] = void 0);
 	e.props = n ? r ? i : /* @__PURE__ */ Gt(i) : e.type.props ? i : a, e.attrs = a;
 }
-function xi(e, t, n, r) {
+function bi(e, t, n, r) {
 	let { props: i, attrs: a, vnode: { patchFlag: o } } = e, s = /* @__PURE__ */ j(i), [c] = e.propsOptions, l = !1;
 	if ((r || o > 0) && !(o & 16)) {
 		if (o & 8) {
 			let n = e.vnode.dynamicProps;
 			for (let r = 0; r < n.length; r++) {
 				let o = n[r];
-				if (ci(e.emitsOptions, o)) continue;
+				if (si(e.emitsOptions, o)) continue;
 				let u = t[o];
 				if (c) {
 					if (d(a, o)) u !== a[o] && (a[o] = u, l = !0);
 					else {
 						let t = E(o);
-						i[t] = Ci(c, s, t, u, e, !1);
+						i[t] = Si(c, s, t, u, e, !1);
 					}
 				} else u !== a[o] && (a[o] = u, l = !0);
 			}
 		}
 	} else {
-		Si(e, t, i, a) && (l = !0);
+		xi(e, t, i, a) && (l = !0);
 		let r;
-		for (let a in s) t && (d(t, a) || (r = ae(a)) !== a && d(t, r)) || (c ? n && (n[a] !== void 0 || n[r] !== void 0) && (i[a] = Ci(c, s, a, void 0, e, !0)) : delete i[a]);
+		for (let a in s) t && (d(t, a) || (r = ae(a)) !== a && d(t, r)) || (c ? n && (n[a] !== void 0 || n[r] !== void 0) && (i[a] = Si(c, s, a, void 0, e, !0)) : delete i[a]);
 		if (a !== s) for (let e in a) t && d(t, e) || (delete a[e], l = !0);
 	}
 	l && ct(e.attrs, "set", "");
 }
-function Si(e, t, r, i) {
+function xi(e, t, r, i) {
 	let [a, o] = e.propsOptions, s = !1, c;
 	if (t) for (let n in t) {
 		if (te(n)) continue;
 		let l = t[n], u;
-		a && d(a, u = E(n)) ? !o || !o.includes(u) ? r[u] = l : (c ||= {})[u] = l : ci(e.emitsOptions, n) || n in i && l === i[n] || (i[n] = l, s = !0);
+		a && d(a, u = E(n)) ? !o || !o.includes(u) ? r[u] = l : (c ||= {})[u] = l : si(e.emitsOptions, n) || n in i && l === i[n] || (i[n] = l, s = !0);
 	}
 	if (o) {
 		let t = /* @__PURE__ */ j(r), i = c || n;
 		for (let n = 0; n < o.length; n++) {
 			let s = o[n];
-			r[s] = Ci(a, t, s, i[s], e, !d(i, s));
+			r[s] = Si(a, t, s, i[s], e, !d(i, s));
 		}
 	}
 	return s;
 }
-function Ci(e, t, n, r, i, a) {
+function Si(e, t, n, r, i, a) {
 	let o = e[n];
 	if (o != null) {
 		let e = d(o, "default");
@@ -1825,7 +1825,7 @@ function Ci(e, t, n, r, i, a) {
 				let { propsDefaults: a } = i;
 				if (n in a) r = a[n];
 				else {
-					let o = ka(i);
+					let o = Da(i);
 					r = a[n] = e.call(null, t), o();
 				}
 			} else r = e;
@@ -1835,15 +1835,15 @@ function Ci(e, t, n, r, i, a) {
 	}
 	return r;
 }
-var wi = /* @__PURE__ */ new WeakMap();
-function Ti(e, t, i = !1) {
-	let a = i ? wi : t.propsCache, o = a.get(e);
+var Ci = /* @__PURE__ */ new WeakMap();
+function wi(e, t, i = !1) {
+	let a = i ? Ci : t.propsCache, o = a.get(e);
 	if (o) return o;
 	let s = e.props, l = {}, u = [], p = !1;
 	if (!g(e)) {
 		let n = (e) => {
 			p = !0;
-			let [n, r] = Ti(e, t, !0);
+			let [n, r] = wi(e, t, !0);
 			c(l, n), r && u.push(...r);
 		};
 		!i && t.mixins.length && t.mixins.forEach(n), e.extends && n(e.extends), e.mixins && e.mixins.forEach(n);
@@ -1851,11 +1851,11 @@ function Ti(e, t, i = !1) {
 	if (!s && !p) return b(e) && a.set(e, r), r;
 	if (f(s)) for (let e = 0; e < s.length; e++) {
 		let t = E(s[e]);
-		Ei(t) && (l[t] = n);
+		Ti(t) && (l[t] = n);
 	}
 	else if (s) for (let e in s) {
 		let t = E(e);
-		if (Ei(t)) {
+		if (Ti(t)) {
 			let n = s[e], r = l[t] = f(n) || g(n) ? { type: n } : c({}, n), i = r.type, a = !1, o = !0;
 			if (f(i)) for (let e = 0; e < i.length; ++e) {
 				let t = i[e], n = g(t) && t.name;
@@ -1872,69 +1872,69 @@ function Ti(e, t, i = !1) {
 	let m = [l, u];
 	return b(e) && a.set(e, m), m;
 }
-function Ei(e) {
+function Ti(e) {
 	return e[0] !== "$" && !te(e);
 }
-var Di = (e) => e === "_" || e === "_ctx" || e === "$stable", Oi = (e) => f(e) ? e.map(_a) : [_a(e)], ki = (e, t, n) => {
+var Ei = (e) => e === "_" || e === "_ctx" || e === "$stable", Di = (e) => f(e) ? e.map(ma) : [ma(e)], Oi = (e, t, n) => {
 	if (t._n) return t;
-	let r = Un((...e) => Oi(t(...e)), n);
+	let r = Hn((...e) => Di(t(...e)), n);
 	return r._c = !1, r;
-}, Ai = (e, t, n) => {
+}, ki = (e, t, n) => {
 	let r = e._ctx;
 	for (let n in e) {
-		if (Di(n)) continue;
+		if (Ei(n)) continue;
 		let i = e[n];
-		if (g(i)) t[n] = ki(n, i, r);
+		if (g(i)) t[n] = Oi(n, i, r);
 		else if (i != null) {
-			let e = Oi(i);
+			let e = Di(i);
 			t[n] = () => e;
 		}
 	}
-}, ji = (e, t) => {
-	let n = Oi(t);
+}, Ai = (e, t) => {
+	let n = Di(t);
 	e.slots.default = () => n;
+}, ji = (e, t, n) => {
+	for (let r in t) (n || !Ei(r)) && (e[r] = t[r]);
 }, Mi = (e, t, n) => {
-	for (let r in t) (n || !Di(r)) && (e[r] = t[r]);
-}, Ni = (e, t, n) => {
-	let r = e.slots = vi();
+	let r = e.slots = _i();
 	if (e.vnode.shapeFlag & 32) {
 		let e = t._;
-		e ? (Mi(r, t, n), n && le(r, "_", e, !0)) : Ai(t, r);
-	} else t && ji(e, t);
-}, Pi = (e, t, r) => {
+		e ? (ji(r, t, n), n && le(r, "_", e, !0)) : ki(t, r);
+	} else t && Ai(e, t);
+}, Ni = (e, t, r) => {
 	let { vnode: i, slots: a } = e, o = !0, s = n;
 	if (i.shapeFlag & 32) {
 		let e = t._;
-		e ? r && e === 1 ? o = !1 : Mi(a, t, r) : (o = !t.$stable, Ai(t, a)), s = t;
-	} else t && (ji(e, t), s = { default: 1 });
-	if (o) for (let e in a) !Di(e) && s[e] == null && delete a[e];
-}, Fi = qi;
-function Ii(e) {
-	return Li(e);
+		e ? r && e === 1 ? o = !1 : ji(a, t, r) : (o = !t.$stable, ki(t, a)), s = t;
+	} else t && (Ai(e, t), s = { default: 1 });
+	if (o) for (let e in a) !Ei(e) && s[e] == null && delete a[e];
+}, Pi = Ki;
+function Fi(e) {
+	return Ii(e);
 }
-function Li(e, t) {
+function Ii(e, t) {
 	let a = fe();
 	a.__VUE__ = !0;
 	let { insert: o, remove: s, patchProp: c, createElement: l, createText: u, createComment: d, setText: f, setElementText: p, parentNode: m, nextSibling: h, setScopeId: g = i, insertStaticContent: v } = e, y = (e, t, n, i = null, a = null, o = null, s = void 0, c = null, l = !!t.dynamicChildren) => {
 		if (e === t) return;
-		e && !ca(e, t) && (i = Se(e), _e(e, a, o, !0), e = null), t.patchFlag === -2 && (l = !1, t.dynamicChildren = null), t.dynamicChildren && e && e.dynamicChildren && e.dynamicChildren.hasOnce && (t.dynamicChildren === r && (t.dynamicChildren = []), t.dynamicChildren.hasOnce = !0);
+		e && !oa(e, t) && (i = Se(e), _e(e, a, o, !0), e = null), t.patchFlag === -2 && (l = !1, t.dynamicChildren = null), t.dynamicChildren && e && e.dynamicChildren && e.dynamicChildren.hasOnce && (t.dynamicChildren === r && (t.dynamicChildren = []), t.dynamicChildren.hasOnce = !0);
 		let { type: u, ref: d, shapeFlag: f } = t;
 		switch (u) {
-			case Yi:
+			case Ji:
 				b(e, t, n, i);
 				break;
-			case Xi:
+			case Yi:
 				x(e, t, n, i);
 				break;
-			case Zi:
+			case Xi:
 				e ?? S(t, n, i, s);
 				break;
-			case Ji:
+			case qi:
 				oe(e, t, n, i, a, o, s, c, l);
 				break;
 			default: f & 1 ? T(e, t, n, i, a, o, s, c, l) : f & 6 ? se(e, t, n, i, a, o, s, c, l) : (f & 64 || f & 128) && u.process(e, t, n, i, a, o, s, c, l, we);
 		}
-		d != null && a ? pr(d, e && e.ref, o, t || e, !t) : d == null && e && e.ref != null && pr(e.ref, null, o, e, !0);
+		d != null && a ? fr(d, e && e.ref, o, t || e, !t) : d == null && e && e.ref != null && fr(e.ref, null, o, e, !0);
 	}, b = (e, t, n, r) => {
 		if (e == null) o(t.el = u(t.children), n, r);
 		else {
@@ -1965,36 +1965,36 @@ function Li(e, t) {
 		}
 	}, ee = (e, t, n, r, i, a, s, u) => {
 		let d, f, { props: m, shapeFlag: h, transition: g, dirs: v } = e;
-		if (d = e.el = l(e.type, a, m && m.is, m), h & 8 ? p(d, e.children) : h & 16 && re(e.children, d, null, r, i, Ri(e, a), s, u), v && Gn(e, null, r, "created"), ne(d, e, e.scopeId, s, r), m) {
+		if (d = e.el = l(e.type, a, m && m.is, m), h & 8 ? p(d, e.children) : h & 16 && re(e.children, d, null, r, i, Li(e, a), s, u), v && Wn(e, null, r, "created"), ne(d, e, e.scopeId, s, r), m) {
 			for (let e in m) e !== "value" && !te(e) && c(d, e, null, m[e], a, r);
-			"value" in m && c(d, "value", null, m.value, a), (f = m.onVnodeBeforeMount) && xa(f, r, e);
+			"value" in m && c(d, "value", null, m.value, a), (f = m.onVnodeBeforeMount) && va(f, r, e);
 		}
-		v && Gn(e, null, r, "beforeMount");
-		let y = Bi(i, g);
-		y && g.beforeEnter(d), o(d, t, n), ((f = m && m.onVnodeMounted) || y || v) && Fi(() => {
+		v && Wn(e, null, r, "beforeMount");
+		let y = zi(i, g);
+		y && g.beforeEnter(d), o(d, t, n), ((f = m && m.onVnodeMounted) || y || v) && Pi(() => {
 			try {
-				f && xa(f, r, e), y && g.enter(d), v && Gn(e, null, r, "mounted");
+				f && va(f, r, e), y && g.enter(d), v && Wn(e, null, r, "mounted");
 			} finally {}
 		}, i);
 	}, ne = (e, t, n, r, i) => {
 		if (n && g(e, n), r) for (let t = 0; t < r.length; t++) g(e, r[t]);
 		if (i) {
 			let n = i.subTree;
-			if (t === n || Ki(n.type) && (n.ssContent === t || n.ssFallback === t)) {
+			if (t === n || Gi(n.type) && (n.ssContent === t || n.ssFallback === t)) {
 				let t = i.vnode;
 				ne(e, t, t.scopeId, t.slotScopeIds, i.parent);
 			}
 		}
 	}, re = (e, t, n, r, i, a, o, s, c = 0) => {
 		for (let l = c; l < e.length; l++) {
-			let c = e[l] = s ? va(e[l]) : _a(e[l]);
+			let c = e[l] = s ? ha(e[l]) : ma(e[l]);
 			y(null, c, t, n, r, i, a, o, s);
 		}
 	}, E = (e, t, r, i, a, o, s) => {
 		let l = t.el = e.el, { patchFlag: u, dynamicChildren: d, dirs: f } = t;
 		u |= e.patchFlag & 16;
 		let m = e.props || n, h = t.props || n, g;
-		if (r && zi(r, !1), (g = h.onVnodeBeforeUpdate) && xa(g, r, t, e), f && Gn(t, e, r, "beforeUpdate"), r && zi(r, !0), d && (!e.dynamicChildren || e.dynamicChildren.length !== d.length) && (u = 0, s = !1, d = null), (m.innerHTML && h.innerHTML == null || m.textContent && h.textContent == null) && p(l, ""), d ? ie(e.dynamicChildren, d, l, r, i, Ri(t, a), o) : s || pe(e, t, l, null, r, i, Ri(t, a), o, !1), u > 0) {
+		if (r && Ri(r, !1), (g = h.onVnodeBeforeUpdate) && va(g, r, t, e), f && Wn(t, e, r, "beforeUpdate"), r && Ri(r, !0), d && (!e.dynamicChildren || e.dynamicChildren.length !== d.length) && (u = 0, s = !1, d = null), (m.innerHTML && h.innerHTML == null || m.textContent && h.textContent == null) && p(l, ""), d ? ie(e.dynamicChildren, d, l, r, i, Li(t, a), o) : s || pe(e, t, l, null, r, i, Li(t, a), o, !1), u > 0) {
 			if (u & 16) ae(l, m, h, r, a);
 			else if (u & 2 && m.class !== h.class && c(l, "class", null, h.class, a), u & 4 && c(l, "style", m.style, h.style, a), u & 8) {
 				let e = t.dynamicProps;
@@ -2005,12 +2005,12 @@ function Li(e, t) {
 			}
 			u & 1 && e.children !== t.children && p(l, t.children);
 		} else !s && d == null && ae(l, m, h, r, a);
-		((g = h.onVnodeUpdated) || f) && Fi(() => {
-			g && xa(g, r, t, e), f && Gn(t, e, r, "updated");
+		((g = h.onVnodeUpdated) || f) && Pi(() => {
+			g && va(g, r, t, e), f && Wn(t, e, r, "updated");
 		}, i);
 	}, ie = (e, t, n, r, i, a, o) => {
 		for (let s = 0; s < t.length; s++) {
-			let c = e[s], l = t[s], u = c.el || Gi(c), d = u && (c.type === Ji || !ca(c, l) || c.shapeFlag & 198) ? m(u) : n;
+			let c = e[s], l = t[s], u = c.el || Wi(c), d = u && (c.type === qi || !oa(c, l) || c.shapeFlag & 198) ? m(u) : n;
 			y(c, l, d, null, r, i, a, o, !0);
 		}
 	}, ae = (e, t, r, i, a) => {
@@ -2025,20 +2025,20 @@ function Li(e, t) {
 		}
 	}, oe = (e, t, n, r, i, a, s, c, l) => {
 		let d = t.el = e ? e.el : u(""), f = t.anchor = e ? e.anchor : u(""), { patchFlag: p, dynamicChildren: m, slotScopeIds: h } = t;
-		h && (c = c ? c.concat(h) : h), e == null ? (o(d, n, r), o(f, n, r), re(t.children || [], n, f, i, a, s, c, l)) : p > 0 && p & 64 && m && e.dynamicChildren && e.dynamicChildren.length === m.length ? (ie(e.dynamicChildren, m, n, i, a, s, c), (t.key != null || i && t === i.subTree) && Vi(e, t, !0)) : pe(e, t, n, f, i, a, s, c, l);
+		h && (c = c ? c.concat(h) : h), e == null ? (o(d, n, r), o(f, n, r), re(t.children || [], n, f, i, a, s, c, l)) : p > 0 && p & 64 && m && e.dynamicChildren && e.dynamicChildren.length === m.length ? (ie(e.dynamicChildren, m, n, i, a, s, c), (t.key != null || i && t === i.subTree) && Bi(e, t, !0)) : pe(e, t, n, f, i, a, s, c, l);
 	}, se = (e, t, n, r, i, a, o, s, c) => {
 		t.slotScopeIds = s, e == null ? t.shapeFlag & 512 ? i.ctx.activate(t, n, r, o, c) : ce(t, n, r, i, a, o, c) : le(e, t, c);
 	}, ce = (e, t, n, r, i, a, o) => {
-		let s = e.component = Ta(e, r, i);
-		if (gr(e) && (s.ctx.renderer = we), Na(s, !1, o), s.asyncDep) {
+		let s = e.component = Sa(e, r, i);
+		if (hr(e) && (s.ctx.renderer = we), ja(s, !1, o), s.asyncDep) {
 			if (i && i.registerDep(s, ue, o, a), !e.el) {
-				let r = s.subTree = da(Xi);
+				let r = s.subTree = la(Yi);
 				x(null, r, t, n), e.placeholder = r.el;
 			}
 		} else ue(s, e, t, n, i, a, o);
 	}, le = (e, t, n) => {
 		let r = t.component = e.component;
-		if (pi(e, t, n)) {
+		if (fi(e, t, n)) {
 			if (r.asyncDep && !r.asyncResolved) {
 				t.el = e.el, t.placeholder = e.placeholder, de(r, t, n);
 				return;
@@ -2050,10 +2050,10 @@ function Li(e, t) {
 			if (e.isMounted) {
 				let { next: t, bu: n, u: r, parent: s, vnode: c } = e;
 				{
-					let n = Ui(e);
+					let n = Hi(e);
 					if (n) {
 						t && (t.el = c.el, de(e, t, o)), n.asyncDep.then(() => {
-							Fi(() => {
+							Pi(() => {
 								e.isUnmounted || l();
 							}, i);
 						});
@@ -2061,37 +2061,37 @@ function Li(e, t) {
 					}
 				}
 				let u = t, d;
-				zi(e, !1), t ? (t.el = c.el, de(e, t, o)) : t = c, n && D(n), (d = t.props && t.props.onVnodeBeforeUpdate) && xa(d, s, t, c), zi(e, !0);
-				let f = li(e), p = e.subTree;
-				e.subTree = f, y(p, f, m(p.el), Se(p), e, i, a), t.el = f.el, u === null && gi(e, f.el), r && Fi(r, i), (d = t.props && t.props.onVnodeUpdated) && Fi(() => xa(d, s, t, c), i);
+				Ri(e, !1), t ? (t.el = c.el, de(e, t, o)) : t = c, n && D(n), (d = t.props && t.props.onVnodeBeforeUpdate) && va(d, s, t, c), Ri(e, !0);
+				let f = ci(e), p = e.subTree;
+				e.subTree = f, y(p, f, m(p.el), Se(p), e, i, a), t.el = f.el, u === null && hi(e, f.el), r && Pi(r, i), (d = t.props && t.props.onVnodeUpdated) && Pi(() => va(d, s, t, c), i);
 			} else {
-				let o, { el: s, props: c } = t, { bm: l, m: u, parent: d, root: f, type: p } = e, m = hr(t);
-				if (zi(e, !1), l && D(l), !m && (o = c && c.onVnodeBeforeMount) && xa(o, d, t), zi(e, !0), s && Ee) {
+				let o, { el: s, props: c } = t, { bm: l, m: u, parent: d, root: f, type: p } = e, m = mr(t);
+				if (Ri(e, !1), l && D(l), !m && (o = c && c.onVnodeBeforeMount) && va(o, d, t), Ri(e, !0), s && Ee) {
 					let t = () => {
-						e.subTree = li(e), Ee(s, e.subTree, e, i, null);
+						e.subTree = ci(e), Ee(s, e.subTree, e, i, null);
 					};
 					m && p.__asyncHydrate ? p.__asyncHydrate(s, e, t) : t();
 				} else {
 					f.ce && f.ce._hasShadowRoot() && f.ce._injectChildStyle(p, e.parent ? e.parent.type : void 0);
-					let o = e.subTree = li(e);
+					let o = e.subTree = ci(e);
 					y(null, o, n, r, e, i, a), t.el = o.el;
 				}
-				if (u && Fi(u, i), !m && (o = c && c.onVnodeMounted)) {
+				if (u && Pi(u, i), !m && (o = c && c.onVnodeMounted)) {
 					let e = t;
-					Fi(() => xa(o, d, e), i);
+					Pi(() => va(o, d, e), i);
 				}
-				(t.shapeFlag & 256 || d && hr(d.vnode) && d.vnode.shapeFlag & 256) && e.a && Fi(e.a, i), e.isMounted = !0, t = n = r = null;
+				(t.shapeFlag & 256 || d && mr(d.vnode) && d.vnode.shapeFlag & 256) && e.a && Pi(e.a, i), e.isMounted = !0, t = n = r = null;
 			}
 		};
 		e.scope.on();
 		let c = e.effect = new Ie(s);
 		e.scope.off();
 		let l = e.update = c.run.bind(c), u = e.job = c.runIfDirty.bind(c);
-		u.i = e, u.id = e.uid, c.scheduler = () => jn(u), zi(e, !0), l();
+		u.i = e, u.id = e.uid, c.scheduler = () => An(u), Ri(e, !0), l();
 	}, de = (e, t, n) => {
 		t.component = e;
 		let r = e.vnode.props;
-		e.vnode = t, e.next = null, xi(e, t.props, r, n), Pi(e, t.children, n), Ze(), Pn(e), Qe();
+		e.vnode = t, e.next = null, bi(e, t.props, r, n), Ni(e, t.children, n), Ze(), Nn(e), Qe();
 	}, pe = (e, t, n, r, i, a, o, s, c = !1) => {
 		let l = e && e.children, u = e ? e.shapeFlag : 0, d = t.children, { patchFlag: f, shapeFlag: m } = t;
 		if (f > 0) {
@@ -2109,34 +2109,34 @@ function Li(e, t) {
 		e ||= r, t ||= r;
 		let u = e.length, d = t.length, f = Math.min(u, d), p = 0;
 		for (; p < f; p++) {
-			let r = t[p] = l ? va(t[p]) : _a(t[p]);
+			let r = t[p] = l ? ha(t[p]) : ma(t[p]);
 			y(e[p], r, n, null, a, o, s, c, l);
 		}
 		u > d ? xe(e, a, o, !0, !1, f) : re(t, n, i, a, o, s, c, l, f);
 	}, he = (e, t, n, i, a, o, s, c, l) => {
 		let u = 0, d = t.length, f = e.length - 1, p = d - 1;
 		for (; u <= f && u <= p;) {
-			let r = e[u], i = t[u] = l ? va(t[u]) : _a(t[u]);
-			if (ca(r, i)) y(r, i, n, null, a, o, s, c, l);
+			let r = e[u], i = t[u] = l ? ha(t[u]) : ma(t[u]);
+			if (oa(r, i)) y(r, i, n, null, a, o, s, c, l);
 			else break;
 			u++;
 		}
 		for (; u <= f && u <= p;) {
-			let r = e[f], i = t[p] = l ? va(t[p]) : _a(t[p]);
-			if (ca(r, i)) y(r, i, n, null, a, o, s, c, l);
+			let r = e[f], i = t[p] = l ? ha(t[p]) : ma(t[p]);
+			if (oa(r, i)) y(r, i, n, null, a, o, s, c, l);
 			else break;
 			f--, p--;
 		}
 		if (u > f) {
 			if (u <= p) {
 				let e = p + 1, r = e < d ? t[e].el : i;
-				for (; u <= p;) y(null, t[u] = l ? va(t[u]) : _a(t[u]), n, r, a, o, s, c, l), u++;
+				for (; u <= p;) y(null, t[u] = l ? ha(t[u]) : ma(t[u]), n, r, a, o, s, c, l), u++;
 			}
 		} else if (u > p) for (; u <= f;) _e(e[u], a, o, !0), u++;
 		else {
 			let m = u, h = u, g = /* @__PURE__ */ new Map();
 			for (u = h; u <= p; u++) {
-				let e = t[u] = l ? va(t[u]) : _a(t[u]);
+				let e = t[u] = l ? ha(t[u]) : ma(t[u]);
 				e.key != null && g.set(e.key, u);
 			}
 			let v, b = 0, x = p - h + 1, S = !1, C = 0, w = Array(x);
@@ -2149,15 +2149,15 @@ function Li(e, t) {
 				}
 				let i;
 				if (r.key != null) i = g.get(r.key);
-				else for (v = h; v <= p; v++) if (w[v - h] === 0 && ca(r, t[v])) {
+				else for (v = h; v <= p; v++) if (w[v - h] === 0 && oa(r, t[v])) {
 					i = v;
 					break;
 				}
 				i === void 0 ? _e(r, a, o, !0) : (w[i - h] = u + 1, i >= C ? C = i : S = !0, y(r, t[i], n, null, a, o, s, c, l), b++);
 			}
-			let T = S ? Hi(w) : r;
+			let T = S ? Vi(w) : r;
 			for (v = T.length - 1, u = x - 1; u >= 0; u--) {
-				let e = h + u, r = t[e], f = t[e + 1], p = e + 1 < d ? f.el || Gi(f) : i;
+				let e = h + u, r = t[e], f = t[e + 1], p = e + 1 < d ? f.el || Wi(f) : i;
 				w[u] === 0 ? y(null, r, n, p, a, o, s, c, l) : S && (v < 0 || u !== T[v] ? ge(r, n, p, 2) : v--);
 			}
 		}
@@ -2166,19 +2166,19 @@ function Li(e, t) {
 		if (d & 6) ge(e.component.subTree, t, n, r);
 		else if (d & 128) e.suspense.move(t, n, r);
 		else if (d & 64) c.move(e, t, n, we);
-		else if (c === Ji) {
+		else if (c === qi) {
 			o(a, t, n);
 			for (let e = 0; e < u.length; e++) ge(u[e], t, n, r);
 			o(e.anchor, t, n);
-		} else if (c === Zi) C(e, t, n);
+		} else if (c === Xi) C(e, t, n);
 		else if (r !== 2 && d & 1 && l) {
-			if (r === 0) l.persisted && !a[ir] ? o(a, t, n) : (l.beforeEnter(a), o(a, t, n), Fi(() => l.enter(a), i));
+			if (r === 0) l.persisted && !a[rr] ? o(a, t, n) : (l.beforeEnter(a), o(a, t, n), Pi(() => l.enter(a), i));
 			else {
 				let { leave: r, delayLeave: i, afterLeave: c } = l, u = () => {
 					e.ctx.isUnmounted ? s(a) : o(a, t, n);
 				}, d = () => {
-					let e = a._isLeaving || !!a[ir];
-					a._isLeaving && a[ir](!0), l.persisted && !e ? u() : r(a, () => {
+					let e = a._isLeaving || !!a[rr];
+					a._isLeaving && a[rr](!0), l.persisted && !e ? u() : r(a, () => {
 						u(), c && c();
 					});
 				};
@@ -2187,34 +2187,34 @@ function Li(e, t) {
 		} else o(a, t, n);
 	}, _e = (e, t, n, r = !1, i = !1) => {
 		let { type: a, props: o, ref: s, children: c, dynamicChildren: l, shapeFlag: u, patchFlag: d, dirs: f, cacheIndex: p, memo: m } = e;
-		if ((d === -2 || l && l.hasOnce) && (i = !1), s != null && (Ze(), pr(s, null, n, e, !0), Qe()), p == null || e.ctx && e.ctx !== t || (t.renderCache[p] = void 0), u & 256) {
+		if ((d === -2 || l && l.hasOnce) && (i = !1), s != null && (Ze(), fr(s, null, n, e, !0), Qe()), p == null || e.ctx && e.ctx !== t || (t.renderCache[p] = void 0), u & 256) {
 			t.ctx.deactivate(e);
 			return;
 		}
-		let h = u & 1 && f, g = !hr(e), v;
-		if (g && (v = o && o.onVnodeBeforeUnmount) && xa(v, t, e), u & 6) be(e.component, n, r);
+		let h = u & 1 && f, g = !mr(e), v;
+		if (g && (v = o && o.onVnodeBeforeUnmount) && va(v, t, e), u & 6) be(e.component, n, r);
 		else {
 			if (u & 128) {
 				e.suspense.unmount(n, r);
 				return;
 			}
-			h && Gn(e, null, t, "beforeUnmount"), u & 64 ? e.type.remove(e, t, n, we, r) : l && !l.hasOnce && (a !== Ji || d > 0 && d & 64) ? xe(l, t, n, !1, !0) : (a === Ji && d & 384 || !i && u & 16) && xe(c, t, n), r && ve(e);
+			h && Wn(e, null, t, "beforeUnmount"), u & 64 ? e.type.remove(e, t, n, we, r) : l && !l.hasOnce && (a !== qi || d > 0 && d & 64) ? xe(l, t, n, !1, !0) : (a === qi && d & 384 || !i && u & 16) && xe(c, t, n), r && ve(e);
 		}
 		let y = m != null && p == null;
-		(g && (v = o && o.onVnodeUnmounted) || h || y) && Fi(() => {
-			v && xa(v, t, e), h && Gn(e, null, t, "unmounted"), y && (e.el = null);
+		(g && (v = o && o.onVnodeUnmounted) || h || y) && Pi(() => {
+			v && va(v, t, e), h && Wn(e, null, t, "unmounted"), y && (e.el = null);
 		}, n);
 	}, ve = (e) => {
-		let { type: t, el: n, anchor: r, transition: i } = e, a = t === Ji;
+		let { type: t, el: n, anchor: r, transition: i } = e, a = t === qi;
 		if (a && !i) {
 			ye(n, r);
 			return;
 		}
-		if (t === Zi) {
+		if (t === Xi) {
 			w(e), i && !i.persisted && i.afterLeave && i.afterLeave();
 			return;
 		}
-		let o = a ? cr(e) : e, c = () => {
+		let o = a ? sr(e) : e, c = () => {
 			a ? m(n) && ye(n, r) : s(n), i && !i.persisted && i.afterLeave && i.afterLeave();
 		};
 		if (o && o.shapeFlag & 1 && i && !i.persisted) {
@@ -2227,7 +2227,7 @@ function Li(e, t) {
 		s(t);
 	}, be = (e, t, n) => {
 		let { bum: r, scope: i, job: a, subTree: o, um: s, m: c, a: l } = e;
-		Wi(c), Wi(l), r && D(r), i.stop(), a ? (a.flags |= 8, _e(o, e, t, n)) : e.vnode.el && o && (o.transition = e.vnode.transition, _e(o, e, t, n)), s && Fi(s, t), Fi(() => {
+		Ui(c), Ui(l), r && D(r), i.stop(), a ? (a.flags |= 8, _e(o, e, t, n)) : e.vnode.el && o && (o.transition = e.vnode.transition, _e(o, e, t, n)), s && Pi(s, t), Pi(() => {
 			e.isUnmounted = !0;
 		}, t);
 	}, xe = (e, t, n, r = !1, i = !1, a = 0) => {
@@ -2235,12 +2235,12 @@ function Li(e, t) {
 	}, Se = (e) => {
 		if (e.shapeFlag & 6) return Se(e.component.subTree);
 		if (e.shapeFlag & 128) return e.suspense.next();
-		let t = h(e.anchor || e.el), n = t && t[nr];
+		let t = h(e.anchor || e.el), n = t && t[tr];
 		return n ? h(n) : t;
 	}, Ce = (e, t, n) => {
-		Ln(() => {
+		In(() => {
 			e == null ? t._vnode && _e(t._vnode, null, null, !0) : y(t._vnode || null, e, t, null, null, null, n), t._vnode = e;
-		}, e && t._vnode ? void 0 : e && e.component ? e.component.uid : wa());
+		}, e && t._vnode ? void 0 : e && e.component ? e.component.uid : xa());
 	}, we = {
 		p: y,
 		um: _e,
@@ -2256,26 +2256,26 @@ function Li(e, t) {
 	return t && ([Te, Ee] = t(we)), {
 		render: Ce,
 		hydrate: Te,
-		createApp: ni(Ce, Te)
+		createApp: ti(Ce, Te)
 	};
 }
-function Ri({ type: e, props: t }, n) {
+function Li({ type: e, props: t }, n) {
 	return n === "svg" && e === "foreignObject" || n === "mathml" && e === "annotation-xml" && t && t.encoding && t.encoding.includes("html") ? void 0 : n;
 }
-function zi({ effect: e, job: t }, n) {
+function Ri({ effect: e, job: t }, n) {
 	n ? (e.flags |= 32, t.flags |= 4) : (e.flags &= -33, t.flags &= -5);
 }
-function Bi(e, t) {
+function zi(e, t) {
 	return (!e || e && !e.pendingBranch) && t && !t.persisted;
 }
-function Vi(e, t, n = !1) {
+function Bi(e, t, n = !1) {
 	let r = e.children, i = t.children;
 	if (f(r) && f(i)) for (let e = 0; e < r.length; e++) {
 		let t = r[e], a = i[e];
-		a.shapeFlag & 1 && !a.dynamicChildren && ((a.patchFlag <= 0 || a.patchFlag === 32) && (a = i[e] = va(i[e]), a.el = t.el), !n && a.patchFlag !== -2 && Vi(t, a)), a.type === Yi && (a.patchFlag === -1 && (a = i[e] = va(a)), a.el = t.el), a.type === Xi && !a.el && (a.el = t.el);
+		a.shapeFlag & 1 && !a.dynamicChildren && ((a.patchFlag <= 0 || a.patchFlag === 32) && (a = i[e] = ha(i[e]), a.el = t.el), !n && a.patchFlag !== -2 && Bi(t, a)), a.type === Ji && (a.patchFlag === -1 && (a = i[e] = ha(a)), a.el = t.el), a.type === Yi && !a.el && (a.el = t.el);
 	}
 }
-function Hi(e) {
+function Vi(e) {
 	let t = e.slice(), n = [0], r, i, a, o, s, c = e.length;
 	for (r = 0; r < c; r++) {
 		let c = e[r];
@@ -2291,63 +2291,60 @@ function Hi(e) {
 	for (a = n.length, o = n[a - 1]; a-- > 0;) n[a] = o, o = t[o];
 	return n;
 }
-function Ui(e) {
+function Hi(e) {
 	let t = e.subTree.component;
-	if (t) return t.asyncDep && !t.asyncResolved ? t : Ui(t);
+	if (t) return t.asyncDep && !t.asyncResolved ? t : Hi(t);
 }
-function Wi(e) {
+function Ui(e) {
 	if (e) for (let t = 0; t < e.length; t++) e[t].flags |= 8;
 }
-function Gi(e) {
+function Wi(e) {
 	if (e.placeholder) return e.placeholder;
 	let t = e.component;
-	return t ? Gi(t.subTree) : null;
+	return t ? Wi(t.subTree) : null;
 }
-var Ki = (e) => e.__isSuspense;
-function qi(e, t) {
-	t && t.pendingBranch ? f(e) ? t.effects.push(...e) : t.effects.push(e) : Nn(e);
+var Gi = (e) => e.__isSuspense;
+function Ki(e, t) {
+	t && t.pendingBranch ? f(e) ? t.effects.push(...e) : t.effects.push(e) : Mn(e);
 }
-var Ji = /* @__PURE__ */ Symbol.for("v-fgt"), Yi = /* @__PURE__ */ Symbol.for("v-txt"), Xi = /* @__PURE__ */ Symbol.for("v-cmt"), Zi = /* @__PURE__ */ Symbol.for("v-stc"), Qi = [], $i = null;
-function ea(e = !1) {
-	Qi.push($i = e ? null : []);
+var qi = /* @__PURE__ */ Symbol.for("v-fgt"), Ji = /* @__PURE__ */ Symbol.for("v-txt"), Yi = /* @__PURE__ */ Symbol.for("v-cmt"), Xi = /* @__PURE__ */ Symbol.for("v-stc"), Zi = [], Qi = null;
+function $i(e = !1) {
+	Zi.push(Qi = e ? null : []);
 }
-function ta() {
-	Qi.pop(), $i = Qi[Qi.length - 1] || null;
+function ea() {
+	Zi.pop(), Qi = Zi[Zi.length - 1] || null;
 }
-var na = 1;
-function ra(e, t = !1) {
-	na += e, e < 0 && $i && t && ($i.hasOnce = !0);
+var ta = 1;
+function na(e, t = !1) {
+	ta += e, e < 0 && Qi && t && (Qi.hasOnce = !0);
 }
-function ia(e) {
-	return e.dynamicChildren = na > 0 ? $i || r : null, ta(), na > 0 && $i && $i.push(e), e;
+function ra(e) {
+	return e.dynamicChildren = ta > 0 ? Qi || r : null, ea(), ta > 0 && Qi && Qi.push(e), e;
 }
-function aa(e, t, n, r, i, a) {
-	return ia(P(e, t, n, r, i, a, !0));
+function ia(e, t, n, r, i, a) {
+	return ra(F(e, t, n, r, i, a, !0));
 }
-function oa(e, t, n, r, i) {
-	return ia(da(e, t, n, r, i, !0));
-}
-function sa(e) {
+function aa(e) {
 	return e ? e.__v_isVNode === !0 : !1;
 }
-function ca(e, t) {
+function oa(e, t) {
 	return e.type === t.type && e.key === t.key;
 }
-var la = ({ key: e }) => e ?? null, ua = ({ ref: e, ref_key: t, ref_for: n }) => (typeof e == "number" && (e = "" + e), e == null ? null : v(e) || /* @__PURE__ */ M(e) || g(e) ? {
-	i: Bn,
+var sa = ({ key: e }) => e ?? null, ca = ({ ref: e, ref_key: t, ref_for: n }) => (typeof e == "number" && (e = "" + e), e == null ? null : v(e) || /* @__PURE__ */ M(e) || g(e) ? {
+	i: zn,
 	r: e,
 	k: t,
 	f: !!n
 } : e);
-function P(e, t = null, n = null, r = 0, i = null, a = e === Ji ? 0 : 1, o = !1, s = !1) {
+function F(e, t = null, n = null, r = 0, i = null, a = e === qi ? 0 : 1, o = !1, s = !1) {
 	let c = {
 		__v_isVNode: !0,
 		__v_skip: !0,
 		type: e,
 		props: t,
-		key: t && la(t),
-		ref: t && ua(t),
-		scopeId: Vn,
+		key: t && sa(t),
+		ref: t && ca(t),
+		scopeId: Bn,
 		slotScopeIds: null,
 		children: n,
 		component: null,
@@ -2367,35 +2364,35 @@ function P(e, t = null, n = null, r = 0, i = null, a = e === Ji ? 0 : 1, o = !1,
 		dynamicProps: i,
 		dynamicChildren: null,
 		appContext: null,
-		ctx: Bn
+		ctx: zn
 	};
-	return s ? (ya(c, n), a & 128 && e.normalize(c)) : n && (c.shapeFlag |= v(n) ? 8 : 16), na > 0 && !o && $i && (c.patchFlag > 0 || a & 6) && c.patchFlag !== 32 && $i.push(c), c;
+	return s ? (ga(c, n), a & 128 && e.normalize(c)) : n && (c.shapeFlag |= v(n) ? 8 : 16), ta > 0 && !o && Qi && (c.patchFlag > 0 || a & 6) && c.patchFlag !== 32 && Qi.push(c), c;
 }
-var da = fa;
-function fa(e, t = null, n = null, r = 0, i = null, a = !1) {
-	if (e && e !== Nr || (e = Xi), sa(e)) {
-		let r = ma(e, t, !0);
-		return n && ya(r, n), na > 0 && !a && $i && (r.shapeFlag & 6 ? $i[$i.indexOf(e)] = r : $i.push(r)), r.patchFlag = -2, r;
+var la = ua;
+function ua(e, t = null, n = null, r = 0, i = null, a = !1) {
+	if (e && e !== Mr || (e = Yi), aa(e)) {
+		let r = fa(e, t, !0);
+		return n && ga(r, n), ta > 0 && !a && Qi && (r.shapeFlag & 6 ? Qi[Qi.indexOf(e)] = r : Qi.push(r)), r.patchFlag = -2, r;
 	}
-	if (Ba(e) && (e = e.__vccOpts), t) {
-		t = pa(t);
+	if (Ra(e) && (e = e.__vccOpts), t) {
+		t = da(t);
 		let { class: e, style: n } = t;
 		e && !v(e) && (t.class = ve(e)), b(n) && (/* @__PURE__ */ Zt(n) && !f(n) && (n = c({}, n)), t.style = pe(n));
 	}
-	let o = v(e) ? 1 : Ki(e) ? 128 : rr(e) ? 64 : b(e) ? 4 : g(e) ? 2 : 0;
-	return P(e, t, n, r, i, o, a, !0);
+	let o = v(e) ? 1 : Gi(e) ? 128 : nr(e) ? 64 : b(e) ? 4 : g(e) ? 2 : 0;
+	return F(e, t, n, r, i, o, a, !0);
 }
-function pa(e) {
-	return e ? /* @__PURE__ */ Zt(e) || yi(e) ? c({}, e) : e : null;
+function da(e) {
+	return e ? /* @__PURE__ */ Zt(e) || vi(e) ? c({}, e) : e : null;
 }
-function ma(e, t, n = !1, r = !1) {
-	let { props: i, ref: a, patchFlag: o, children: s, transition: c } = e, l = t ? ba(i || {}, t) : i, u = {
+function fa(e, t, n = !1, r = !1) {
+	let { props: i, ref: a, patchFlag: o, children: s, transition: c } = e, l = t ? _a(i || {}, t) : i, u = {
 		__v_isVNode: !0,
 		__v_skip: !0,
 		type: e.type,
 		props: l,
-		key: l && la(l),
-		ref: t && t.ref ? n && a ? f(a) ? a.concat(ua(t)) : [a, ua(t)] : ua(t) : a,
+		key: l && sa(l),
+		ref: t && t.ref ? n && a ? f(a) ? a.concat(ca(t)) : [a, ca(t)] : ca(t) : a,
 		scopeId: e.scopeId,
 		slotScopeIds: e.slotScopeIds,
 		children: s,
@@ -2404,7 +2401,7 @@ function ma(e, t, n = !1, r = !1) {
 		targetAnchor: e.targetAnchor,
 		staticCount: e.staticCount,
 		shapeFlag: e.shapeFlag,
-		patchFlag: t && e.type !== Ji ? o === -1 ? 16 : o | 16 : o,
+		patchFlag: t && e.type !== qi ? o === -1 ? 16 : o | 16 : o,
 		dynamicProps: e.dynamicProps,
 		dynamicChildren: e.dynamicChildren,
 		appContext: e.appContext,
@@ -2412,8 +2409,8 @@ function ma(e, t, n = !1, r = !1) {
 		transition: c,
 		component: e.component,
 		suspense: e.suspense,
-		ssContent: e.ssContent && ma(e.ssContent),
-		ssFallback: e.ssFallback && ma(e.ssFallback),
+		ssContent: e.ssContent && fa(e.ssContent),
+		ssFallback: e.ssFallback && fa(e.ssFallback),
 		placeholder: e.placeholder,
 		el: e.el,
 		anchor: e.anchor,
@@ -2421,48 +2418,45 @@ function ma(e, t, n = !1, r = !1) {
 		ce: e.ce,
 		cacheIndex: e.cacheIndex
 	};
-	return c && r && sr(u, c.clone(u)), u;
+	return c && r && or(u, c.clone(u)), u;
 }
-function ha(e = " ", t = 0) {
-	return da(Yi, null, e, t);
+function pa(e = " ", t = 0) {
+	return la(Ji, null, e, t);
 }
-function ga(e = "", t = !1) {
-	return t ? (ea(), oa(Xi, null, e)) : da(Xi, null, e);
+function ma(e) {
+	return e == null || typeof e == "boolean" ? la(Yi) : f(e) ? la(qi, null, e.slice()) : aa(e) ? ha(e) : la(Ji, null, String(e));
 }
-function _a(e) {
-	return e == null || typeof e == "boolean" ? da(Xi) : f(e) ? da(Ji, null, e.slice()) : sa(e) ? va(e) : da(Yi, null, String(e));
+function ha(e) {
+	return e.el === null && e.patchFlag !== -1 || e.memo ? e : fa(e);
 }
-function va(e) {
-	return e.el === null && e.patchFlag !== -1 || e.memo ? e : ma(e);
-}
-function ya(e, t) {
+function ga(e, t) {
 	let n = 0, { shapeFlag: r } = e;
 	if (t == null) t = null;
 	else if (f(t)) n = 16;
 	else if (typeof t == "object") {
 		if (r & 65) {
 			let n = t.default;
-			n && (n._c && (n._d = !1), ya(e, n()), n._c && (n._d = !0));
+			n && (n._c && (n._d = !1), ga(e, n()), n._c && (n._d = !0));
 			return;
 		}
 		{
 			n = 32;
 			let r = t._;
-			!r && !yi(t) ? t._ctx = Bn : r === 3 && Bn && (Bn.slots._ === 1 ? t._ = 1 : (t._ = 2, e.patchFlag |= 1024));
+			!r && !vi(t) ? t._ctx = zn : r === 3 && zn && (zn.slots._ === 1 ? t._ = 1 : (t._ = 2, e.patchFlag |= 1024));
 		}
 	} else if (g(t)) {
 		if (r & 65) {
-			ya(e, { default: t });
+			ga(e, { default: t });
 			return;
 		}
 		t = {
 			default: t,
-			_ctx: Bn
+			_ctx: zn
 		}, n = 32;
-	} else t = String(t), r & 64 ? (n = 16, t = [ha(t)]) : n = 8;
+	} else t = String(t), r & 64 ? (n = 16, t = [pa(t)]) : n = 8;
 	e.children = t, e.shapeFlag |= n;
 }
-function ba(...e) {
+function _a(...e) {
 	let t = {};
 	for (let n = 0; n < e.length; n++) {
 		let r = e[n];
@@ -2475,16 +2469,16 @@ function ba(...e) {
 	}
 	return t;
 }
-function xa(e, t, n, r = null) {
+function va(e, t, n, r = null) {
 	yn(e, t, 7, [n, r]);
 }
-var Sa = ei(), Ca = 0;
-function wa() {
-	return Ca;
+var ya = $r(), ba = 0;
+function xa() {
+	return ba;
 }
-function Ta(e, t, r) {
-	let i = e.type, a = (t ? t.appContext : e.appContext) || Sa, o = {
-		uid: Ca++,
+function Sa(e, t, r) {
+	let i = e.type, a = (t ? t.appContext : e.appContext) || ya, o = {
+		uid: ba++,
 		vnode: e,
 		type: i,
 		parent: t,
@@ -2511,8 +2505,8 @@ function Ta(e, t, r) {
 		renderCache: [],
 		components: null,
 		directives: null,
-		propsOptions: Ti(i, a),
-		emitsOptions: si(i, a),
+		propsOptions: wi(i, a),
+		emitsOptions: oi(i, a),
 		emit: null,
 		emitted: null,
 		propsDefaults: n,
@@ -2547,9 +2541,9 @@ function Ta(e, t, r) {
 		ec: null,
 		sp: null
 	};
-	return o.ctx = { _: o }, o.root = t ? t.root : o, o.emit = ai.bind(null, o), e.ce && e.ce(o), o;
+	return o.ctx = { _: o }, o.root = t ? t.root : o, o.emit = ii.bind(null, o), e.ce && e.ce(o), o;
 }
-var F = null, Ea = () => F || Bn, Da, Oa;
+var Ca = null, wa = () => Ca || zn, Ta, Ea;
 {
 	let e = fe(), t = (t, n) => {
 		let r;
@@ -2557,71 +2551,71 @@ var F = null, Ea = () => F || Bn, Da, Oa;
 			r.length > 1 ? r.forEach((t) => t(e)) : r[0](e);
 		};
 	};
-	Da = t("__VUE_INSTANCE_SETTERS__", (e) => F = e), Oa = t("__VUE_SSR_SETTERS__", (e) => Ma = e);
+	Ta = t("__VUE_INSTANCE_SETTERS__", (e) => Ca = e), Ea = t("__VUE_SSR_SETTERS__", (e) => Aa = e);
 }
-var ka = (e) => {
-	let t = F;
-	return Da(e), e.scope.on(), () => {
-		e.scope.off(), Da(t);
+var Da = (e) => {
+	let t = Ca;
+	return Ta(e), e.scope.on(), () => {
+		e.scope.off(), Ta(t);
 	};
-}, Aa = () => {
-	F && F.scope.off(), Da(null);
+}, Oa = () => {
+	Ca && Ca.scope.off(), Ta(null);
 };
-function ja(e) {
+function ka(e) {
 	return e.vnode.shapeFlag & 4;
 }
-var Ma = !1;
-function Na(e, t = !1, n = !1) {
-	t && Oa(t);
-	let { props: r, children: i } = e.vnode, a = ja(e);
-	bi(e, r, a, t), Ni(e, i, n || t);
-	let o = a ? Pa(e, t) : void 0;
-	return t && Oa(!1), o;
+var Aa = !1;
+function ja(e, t = !1, n = !1) {
+	t && Ea(t);
+	let { props: r, children: i } = e.vnode, a = ka(e);
+	yi(e, r, a, t), Mi(e, i, n || t);
+	let o = a ? Ma(e, t) : void 0;
+	return t && Ea(!1), o;
 }
-function Pa(e, t) {
+function Ma(e, t) {
 	let n = e.type;
-	e.accessCache = /* @__PURE__ */ Object.create(null), e.proxy = new Proxy(e.ctx, Lr);
+	e.accessCache = /* @__PURE__ */ Object.create(null), e.proxy = new Proxy(e.ctx, Ir);
 	let { setup: r } = n;
 	if (r) {
 		Ze();
-		let n = e.setupContext = r.length > 1 ? Ra(e) : null, i = ka(e), a = vn(r, e, 0, [e.props, n]), o = x(a);
-		if (Qe(), i(), (o || e.sp) && !hr(e) && ur(e), o) {
-			if (a.then(Aa, Aa), t) return a.then((n) => {
-				Oa(!0);
+		let n = e.setupContext = r.length > 1 ? Ia(e) : null, i = Da(e), a = vn(r, e, 0, [e.props, n]), o = x(a);
+		if (Qe(), i(), (o || e.sp) && !mr(e) && lr(e), o) {
+			if (a.then(Oa, Oa), t) return a.then((n) => {
+				Ea(!0);
 				try {
-					Fa(e, n, t);
+					Na(e, n, t);
 				} finally {
-					Oa(!1);
+					Ea(!1);
 				}
 			}).catch((t) => {
 				bn(t, e, 0);
 			});
 			e.asyncDep = a;
-		} else Fa(e, a, t);
-	} else Ia(e, t);
+		} else Na(e, a, t);
+	} else Pa(e, t);
 }
-function Fa(e, t, n) {
-	g(t) ? e.type.__ssrInlineRender ? e.ssrRender = t : e.render = t : b(t) && (e.setupState = on(t)), Ia(e, n);
+function Na(e, t, n) {
+	g(t) ? e.type.__ssrInlineRender ? e.ssrRender = t : e.render = t : b(t) && (e.setupState = on(t)), Pa(e, n);
 }
-function Ia(e, t, n) {
+function Pa(e, t, n) {
 	let r = e.type;
 	e.render ||= r.render || i;
 	{
-		let t = ka(e);
+		let t = Da(e);
 		Ze();
 		try {
-			Br(e);
+			zr(e);
 		} finally {
 			Qe(), t();
 		}
 	}
 }
-var La = { get(e, t) {
+var Fa = { get(e, t) {
 	return A(e, "get", ""), e[t];
 } };
-function Ra(e) {
+function Ia(e) {
 	return {
-		attrs: new Proxy(e.attrs, La),
+		attrs: new Proxy(e.attrs, Fa),
 		slots: e.slots,
 		emit: e.emit,
 		expose: (t) => {
@@ -2629,25 +2623,25 @@ function Ra(e) {
 		}
 	};
 }
-function za(e) {
+function La(e) {
 	return e.exposed ? e.exposeProxy ||= new Proxy(on(Qt(e.exposed)), {
 		get(t, n) {
 			if (n in t) return t[n];
-			if (n in Fr) return Fr[n](e);
+			if (n in Pr) return Pr[n](e);
 		},
 		has(e, t) {
-			return t in e || t in Fr;
+			return t in e || t in Pr;
 		}
 	}) : e.proxy;
 }
-function Ba(e) {
+function Ra(e) {
 	return g(e) && "__vccOpts" in e;
 }
-var Va = (e, t) => /* @__PURE__ */ dn(e, t, Ma), Ha = "3.5.44", Ua = void 0, Wa = typeof window < "u" && window.trustedTypes;
-if (Wa) try {
-	Ua = /* @__PURE__ */ Wa.createPolicy("vue", { createHTML: (e) => e });
+var za = (e, t) => /* @__PURE__ */ dn(e, t, Aa), Ba = "3.5.44", Va = void 0, Ha = typeof window < "u" && window.trustedTypes;
+if (Ha) try {
+	Va = /* @__PURE__ */ Ha.createPolicy("vue", { createHTML: (e) => e });
 } catch {}
-var Ga = Ua ? (e) => Ua.createHTML(e) : (e) => e, Ka = "http://www.w3.org/2000/svg", qa = "http://www.w3.org/1998/Math/MathML", Ja = typeof document < "u" ? document : null, Ya = Ja && /* @__PURE__ */ Ja.createElement("template"), Xa = {
+var Ua = Va ? (e) => Va.createHTML(e) : (e) => e, Wa = "http://www.w3.org/2000/svg", Ga = "http://www.w3.org/1998/Math/MathML", Ka = typeof document < "u" ? document : null, qa = Ka && /* @__PURE__ */ Ka.createElement("template"), Ja = {
 	insert: (e, t, n) => {
 		t.insertBefore(e, n || null);
 	},
@@ -2656,11 +2650,11 @@ var Ga = Ua ? (e) => Ua.createHTML(e) : (e) => e, Ka = "http://www.w3.org/2000/s
 		t && t.removeChild(e);
 	},
 	createElement: (e, t, n, r) => {
-		let i = t === "svg" ? Ja.createElementNS(Ka, e) : t === "mathml" ? Ja.createElementNS(qa, e) : n ? Ja.createElement(e, { is: n }) : Ja.createElement(e);
+		let i = t === "svg" ? Ka.createElementNS(Wa, e) : t === "mathml" ? Ka.createElementNS(Ga, e) : n ? Ka.createElement(e, { is: n }) : Ka.createElement(e);
 		return e === "select" && r && r.multiple != null && i.setAttribute("multiple", r.multiple), i;
 	},
-	createText: (e) => Ja.createTextNode(e),
-	createComment: (e) => Ja.createComment(e),
+	createText: (e) => Ka.createTextNode(e),
+	createComment: (e) => Ka.createComment(e),
 	setText: (e, t) => {
 		e.nodeValue = t;
 	},
@@ -2669,7 +2663,7 @@ var Ga = Ua ? (e) => Ua.createHTML(e) : (e) => e, Ka = "http://www.w3.org/2000/s
 	},
 	parentNode: (e) => e.parentNode,
 	nextSibling: (e) => e.nextSibling,
-	querySelector: (e) => Ja.querySelector(e),
+	querySelector: (e) => Ka.querySelector(e),
 	setScopeId(e, t) {
 		e.setAttribute(t, "");
 	},
@@ -2677,8 +2671,8 @@ var Ga = Ua ? (e) => Ua.createHTML(e) : (e) => e, Ka = "http://www.w3.org/2000/s
 		let o = n ? n.previousSibling : t.lastChild;
 		if (i && (i === a || i.nextSibling)) for (; t.insertBefore(i.cloneNode(!0), n), i !== a && (i = i.nextSibling););
 		else {
-			Ya.innerHTML = Ga(r === "svg" ? `<svg>${e}</svg>` : r === "mathml" ? `<math>${e}</math>` : e);
-			let i = Ya.content;
+			qa.innerHTML = Ua(r === "svg" ? `<svg>${e}</svg>` : r === "mathml" ? `<math>${e}</math>` : e);
+			let i = qa.content;
 			if (r === "svg" || r === "mathml") {
 				let e = i.firstChild;
 				for (; e.firstChild;) i.appendChild(e.firstChild);
@@ -2688,71 +2682,71 @@ var Ga = Ua ? (e) => Ua.createHTML(e) : (e) => e, Ka = "http://www.w3.org/2000/s
 		}
 		return [o ? o.nextSibling : t.firstChild, n ? n.previousSibling : t.lastChild];
 	}
-}, Za = /* @__PURE__ */ Symbol("_vtc");
-function Qa(e, t, n) {
-	let r = e[Za];
+}, Ya = /* @__PURE__ */ Symbol("_vtc");
+function Xa(e, t, n) {
+	let r = e[Ya];
 	r && (t = (t ? [t, ...r] : [...r]).join(" ")), t == null ? e.removeAttribute("class") : n ? e.setAttribute("class", t) : e.className = t;
 }
-var $a = /* @__PURE__ */ Symbol("_vod"), eo = /* @__PURE__ */ Symbol("_vsh"), to = /* @__PURE__ */ Symbol(""), no = /(?:^|;)\s*display\s*:/;
-function ro(e, t, n) {
+var Za = /* @__PURE__ */ Symbol("_vod"), Qa = /* @__PURE__ */ Symbol("_vsh"), $a = /* @__PURE__ */ Symbol(""), eo = /(?:^|;)\s*display\s*:/;
+function to(e, t, n) {
 	let r = e.style, i = v(n), a = !1;
 	if (n && !i) {
 		if (t) {
 			if (v(t)) for (let e of t.split(";")) {
 				let t = e.slice(0, e.indexOf(":")).trim();
-				n[t] ?? ao(r, t, "");
+				n[t] ?? ro(r, t, "");
 			}
-			else for (let e in t) n[e] ?? ao(r, e, "");
+			else for (let e in t) n[e] ?? ro(r, e, "");
 		}
 		for (let i in n) {
 			i === "display" && (a = !0);
 			let o = n[i];
-			o == null ? ao(r, i, "") : lo(e, i, !v(t) && t ? t[i] : void 0, o) || ao(r, i, o);
+			o == null ? ro(r, i, "") : so(e, i, !v(t) && t ? t[i] : void 0, o) || ro(r, i, o);
 		}
 	} else if (i) {
 		if (t !== n) {
-			let e = r[to];
-			e && (n += ";" + e), r.cssText = n, a = no.test(n);
+			let e = r[$a];
+			e && (n += ";" + e), r.cssText = n, a = eo.test(n);
 		}
 	} else t && e.removeAttribute("style");
-	$a in e && (i && t === n || (e[$a] = a ? r.display : ""), e[eo] && (r.display = "none"));
+	Za in e && (i && t === n || (e[Za] = a ? r.display : ""), e[Qa] && (r.display = "none"));
 }
-var io = /\s*!important$/;
-function ao(e, t, n) {
-	if (f(n)) n.forEach((n) => ao(e, t, n));
-	else if (n ??= "", t.startsWith("--")) io.test(n) ? e.setProperty(t, n.replace(io, ""), "important") : e.setProperty(t, n);
+var no = /\s*!important$/;
+function ro(e, t, n) {
+	if (f(n)) n.forEach((n) => ro(e, t, n));
+	else if (n ??= "", t.startsWith("--")) no.test(n) ? e.setProperty(t, n.replace(no, ""), "important") : e.setProperty(t, n);
 	else {
-		let r = co(e, t);
-		io.test(n) ? e.setProperty(ae(r), n.replace(io, ""), "important") : e[r] = n;
+		let r = oo(e, t);
+		no.test(n) ? e.setProperty(ae(r), n.replace(no, ""), "important") : e[r] = n;
 	}
 }
-var oo = [
+var io = [
 	"Webkit",
 	"Moz",
 	"ms"
-], so = {};
-function co(e, t) {
-	let n = so[t];
+], ao = {};
+function oo(e, t) {
+	let n = ao[t];
 	if (n) return n;
 	let r = E(t);
-	if (r !== "filter" && r in e) return so[t] = r;
+	if (r !== "filter" && r in e) return ao[t] = r;
 	r = oe(r);
-	for (let n = 0; n < oo.length; n++) {
-		let i = oo[n] + r;
-		if (i in e) return so[t] = i;
+	for (let n = 0; n < io.length; n++) {
+		let i = io[n] + r;
+		if (i in e) return ao[t] = i;
 	}
 	return t;
 }
-function lo(e, t, n, r) {
+function so(e, t, n, r) {
 	return e.tagName === "TEXTAREA" && (t === "width" || t === "height") && v(r) && n === r;
 }
-var uo = "http://www.w3.org/1999/xlink";
-function fo(e, t, n, r, i, a = ye(t)) {
-	r && t.startsWith("xlink:") ? n == null ? e.removeAttributeNS(uo, t.slice(6, t.length)) : e.setAttributeNS(uo, t, n) : n == null || a && !be(n) ? e.removeAttribute(t) : e.setAttribute(t, a ? "" : y(n) ? String(n) : n);
+var co = "http://www.w3.org/1999/xlink";
+function lo(e, t, n, r, i, a = ye(t)) {
+	r && t.startsWith("xlink:") ? n == null ? e.removeAttributeNS(co, t.slice(6, t.length)) : e.setAttributeNS(co, t, n) : n == null || a && !be(n) ? e.removeAttribute(t) : e.setAttribute(t, a ? "" : y(n) ? String(n) : n);
 }
-function po(e, t, n, r, i) {
+function uo(e, t, n, r, i) {
 	if (t === "innerHTML" || t === "textContent") {
-		n != null && (e[t] = t === "innerHTML" ? Ga(n) : n);
+		n != null && (e[t] = t === "innerHTML" ? Ua(n) : n);
 		return;
 	}
 	let a = e.tagName;
@@ -2771,29 +2765,29 @@ function po(e, t, n, r, i) {
 	} catch {}
 	o && e.removeAttribute(i || t);
 }
-function mo(e, t, n, r) {
+function fo(e, t, n, r) {
 	e.addEventListener(t, n, r);
 }
-function ho(e, t, n, r) {
+function po(e, t, n, r) {
 	e.removeEventListener(t, n, r);
 }
-var go = /* @__PURE__ */ Symbol("_vei");
-function _o(e, t, n, r, i = null) {
-	let a = e[go] || (e[go] = {}), o = a[t];
+var mo = /* @__PURE__ */ Symbol("_vei");
+function ho(e, t, n, r, i = null) {
+	let a = e[mo] || (e[mo] = {}), o = a[t];
 	if (r && o) o.value = r;
 	else {
-		let [n, s] = bo(t);
-		r ? mo(e, n, a[t] = wo(r, i), s) : o && (ho(e, n, o, s), a[t] = void 0);
+		let [n, s] = vo(t);
+		r ? fo(e, n, a[t] = So(r, i), s) : o && (po(e, n, o, s), a[t] = void 0);
 	}
 }
-var vo = /(Once|Passive|Capture)$/, yo = /^on:?(?:Once|Passive|Capture)$/;
-function bo(e) {
+var go = /(Once|Passive|Capture)$/, _o = /^on:?(?:Once|Passive|Capture)$/;
+function vo(e) {
 	let t, n;
-	for (; (n = e.match(vo)) && !yo.test(e);) t ||= {}, e = e.slice(0, e.length - n[1].length), t[n[1].toLowerCase()] = !0;
+	for (; (n = e.match(go)) && !_o.test(e);) t ||= {}, e = e.slice(0, e.length - n[1].length), t[n[1].toLowerCase()] = !0;
 	return [e[2] === ":" ? e.slice(3) : ae(e.slice(2)), t];
 }
-var xo = 0, So = /* @__PURE__ */ Promise.resolve(), Co = () => xo ||= (So.then(() => xo = 0), Date.now());
-function wo(e, t) {
+var yo = 0, bo = /* @__PURE__ */ Promise.resolve(), xo = () => yo ||= (bo.then(() => yo = 0), Date.now());
+function So(e, t) {
 	let n = (e) => {
 		if (!e._vts) e._vts = Date.now();
 		else if (e._vts <= n.attached) return;
@@ -2810,68 +2804,68 @@ function wo(e, t) {
 			}
 		} else yn(r, t, 5, [e]);
 	};
-	return n.value = e, n.attached = Co(), n;
+	return n.value = e, n.attached = xo(), n;
 }
-var To = (e) => e.charCodeAt(0) === 111 && e.charCodeAt(1) === 110 && e.charCodeAt(2) > 96 && e.charCodeAt(2) < 123, Eo = (e, t, n, r, i, a) => {
+var Co = (e) => e.charCodeAt(0) === 111 && e.charCodeAt(1) === 110 && e.charCodeAt(2) > 96 && e.charCodeAt(2) < 123, wo = (e, t, n, r, i, a) => {
 	let c = i === "svg";
-	t === "class" ? Qa(e, r, c) : t === "style" ? ro(e, n, r) : o(t) ? s(t) || _o(e, t, n, r, a) : (t[0] === "." ? (t = t.slice(1), 1) : t[0] === "^" ? (t = t.slice(1), 0) : Do(e, t, r, c)) ? (po(e, t, r), e.tagName.includes("-") || t !== "value" && t !== "checked" && t !== "selected" || fo(e, t, r, c, a, t !== "value")) : e._isVueCE && (Oo(e, t) || e._def.__asyncLoader && (/[A-Z]/.test(t) || !v(r))) ? po(e, E(t), r, a, t) : (t === "true-value" ? e._trueValue = r : t === "false-value" && (e._falseValue = r), fo(e, t, r, c));
+	t === "class" ? Xa(e, r, c) : t === "style" ? to(e, n, r) : o(t) ? s(t) || ho(e, t, n, r, a) : (t[0] === "." ? (t = t.slice(1), 1) : t[0] === "^" ? (t = t.slice(1), 0) : To(e, t, r, c)) ? (uo(e, t, r), e.tagName.includes("-") || t !== "value" && t !== "checked" && t !== "selected" || lo(e, t, r, c, a, t !== "value")) : e._isVueCE && (Eo(e, t) || e._def.__asyncLoader && (/[A-Z]/.test(t) || !v(r))) ? uo(e, E(t), r, a, t) : (t === "true-value" ? e._trueValue = r : t === "false-value" && (e._falseValue = r), lo(e, t, r, c));
 };
-function Do(e, t, n, r) {
-	if (r) return !!(t === "innerHTML" || t === "textContent" || t in e && To(t) && g(n));
+function To(e, t, n, r) {
+	if (r) return !!(t === "innerHTML" || t === "textContent" || t in e && Co(t) && g(n));
 	if (t === "spellcheck" || t === "draggable" || t === "translate" || t === "autocorrect" || t === "sandbox" && e.tagName === "IFRAME" || t === "form" || t === "list" && e.tagName === "INPUT" || t === "type" && e.tagName === "TEXTAREA") return !1;
 	if (t === "width" || t === "height") {
 		let t = e.tagName;
 		if (t === "IMG" || t === "VIDEO" || t === "CANVAS" || t === "SOURCE") return !1;
 	}
-	return To(t) && v(n) ? !1 : t in e;
+	return Co(t) && v(n) ? !1 : t in e;
 }
-function Oo(e, t) {
+function Eo(e, t) {
 	let n = e._def.props;
 	if (!n) return !1;
 	let r = E(t);
 	return Array.isArray(n) ? n.some((e) => E(e) === r) : Object.keys(n).some((e) => E(e) === r);
 }
-var ko = (e) => {
+var Do = (e) => {
 	let t = e.props["onUpdate:modelValue"] || !1;
 	return f(t) ? (e) => D(t, e) : t;
 };
-function Ao(e) {
+function Oo(e) {
 	e.target.composing = !0;
 }
-function jo(e) {
+function ko(e) {
 	let t = e.target;
 	t.composing && (t.composing = !1, t.dispatchEvent(new Event("input")));
 }
-var Mo = /* @__PURE__ */ Symbol("_assign"), No = /* @__PURE__ */ Symbol("_initialValue");
-function Po(e, t, n) {
+var Ao = /* @__PURE__ */ Symbol("_assign"), jo = /* @__PURE__ */ Symbol("_initialValue");
+function Mo(e, t, n) {
 	return t && (e = e.trim()), n && (e = ue(e)), e;
 }
-var Fo = {
+var No = {
 	created(e, { modifiers: { lazy: t, trim: n, number: r } }, i) {
-		e.parentNode && (e.type === "text" ? e[No] = e.defaultValue.replace(/[\r\n]/g, "") : e.type === "textarea" && (e[No] = e.defaultValue.replace(/\r\n?/g, "\n"))), e[Mo] = ko(i);
+		e.parentNode && (e.type === "text" ? e[jo] = e.defaultValue.replace(/[\r\n]/g, "") : e.type === "textarea" && (e[jo] = e.defaultValue.replace(/\r\n?/g, "\n"))), e[Ao] = Do(i);
 		let a = r || i.props && i.props.type === "number";
-		mo(e, t ? "change" : "input", (t) => {
-			t.target.composing || e[Mo](Po(e.value, n, a));
-		}), (n || a) && mo(e, "change", () => {
-			e.value = Po(e.value, n, a);
-		}), t || (mo(e, "compositionstart", Ao), mo(e, "compositionend", jo), mo(e, "change", jo));
+		fo(e, t ? "change" : "input", (t) => {
+			t.target.composing || e[Ao](Mo(e.value, n, a));
+		}), (n || a) && fo(e, "change", () => {
+			e.value = Mo(e.value, n, a);
+		}), t || (fo(e, "compositionstart", Oo), fo(e, "compositionend", ko), fo(e, "change", ko));
 	},
 	mounted(e, { value: t, modifiers: { trim: n, number: r } }) {
-		let i = t ?? "", a = e[No];
-		delete e[No], a !== void 0 && (e.type === "text" || e.type === "textarea") && e.value !== a ? e[Mo](Po(e.value, n, r)) : e.value = i;
+		let i = t ?? "", a = e[jo];
+		delete e[jo], a !== void 0 && (e.type === "text" || e.type === "textarea") && e.value !== a ? e[Ao](Mo(e.value, n, r)) : e.value = i;
 	},
 	beforeUpdate(e, { value: t, oldValue: n, modifiers: { lazy: r, trim: i, number: a } }, o) {
-		if (e[Mo] = ko(o), e.composing) return;
+		if (e[Ao] = Do(o), e.composing) return;
 		let s = (a || e.type === "number") && !/^0\d/.test(e.value) ? ue(e.value) : e.value, c = t ?? "";
 		if (s === c) return;
 		let l = e.getRootNode();
 		(l instanceof Document || l instanceof ShadowRoot) && l.activeElement === e && e.type !== "range" && (r && t === n || i && e.value.trim() === c) || (e.value = c);
 	}
-}, Io = {
+}, Po = {
 	deep: !0,
 	created(e, t, n) {
-		e[Mo] = ko(n), mo(e, "change", () => {
-			let t = e._modelValue, n = Ro(e), r = e.checked, i = e[Mo];
+		e[Ao] = Do(n), fo(e, "change", () => {
+			let t = e._modelValue, n = Io(e), r = e.checked, i = e[Ao];
 			if (f(t)) {
 				let e = Ee(t, n), a = e !== -1;
 				if (r && !a) i(t.concat(n));
@@ -2882,38 +2876,38 @@ var Fo = {
 			} else if (m(t)) {
 				let e = new Set(t);
 				r ? e.add(n) : e.delete(n), i(e);
-			} else i(zo(e, r));
+			} else i(Lo(e, r));
 		});
 	},
-	mounted: Lo,
+	mounted: Fo,
 	beforeUpdate(e, t, n) {
-		e[Mo] = ko(n), Lo(e, t, n);
+		e[Ao] = Do(n), Fo(e, t, n);
 	}
 };
-function Lo(e, { value: t, oldValue: n }, r) {
+function Fo(e, { value: t, oldValue: n }, r) {
 	e._modelValue = t;
 	let i;
 	if (f(t)) i = Ee(t, r.props.value) > -1;
 	else if (m(t)) i = t.has(r.props.value);
 	else {
 		if (t === n) return;
-		i = Te(t, zo(e, !0));
+		i = Te(t, Lo(e, !0));
 	}
 	e.checked !== i && (e.checked = i);
 }
-function Ro(e) {
+function Io(e) {
 	return "_value" in e ? e._value : e.value;
 }
-function zo(e, t) {
+function Lo(e, t) {
 	let n = t ? "_trueValue" : "_falseValue";
 	return n in e ? e[n] : t;
 }
-var Bo = [
+var Ro = [
 	"ctrl",
 	"shift",
 	"alt",
 	"meta"
-], Vo = {
+], zo = {
 	stop: (e) => e.stopPropagation(),
 	prevent: (e) => e.preventDefault(),
 	self: (e) => e.target !== e.currentTarget,
@@ -2924,61 +2918,61 @@ var Bo = [
 	left: (e) => "button" in e && e.button !== 0,
 	middle: (e) => "button" in e && e.button !== 1,
 	right: (e) => "button" in e && e.button !== 2,
-	exact: (e, t) => Bo.some((n) => e[`${n}Key`] && !t.includes(n))
-}, Ho = (e, t) => {
+	exact: (e, t) => Ro.some((n) => e[`${n}Key`] && !t.includes(n))
+}, Bo = (e, t) => {
 	if (!e) return e;
 	let n = e._withMods ||= {}, r = t.join(".");
 	return n[r] || (n[r] = ((n, ...r) => {
 		for (let e = 0; e < t.length; e++) {
-			let r = Vo[t[e]];
+			let r = zo[t[e]];
 			if (r && r(n, t)) return;
 		}
 		return e(n, ...r);
 	}));
-}, Uo = /* @__PURE__ */ c({ patchProp: Eo }, Xa), Wo;
-function Go() {
-	return Wo ||= Ii(Uo);
+}, Vo = /* @__PURE__ */ c({ patchProp: wo }, Ja), Ho;
+function Uo() {
+	return Ho ||= Fi(Vo);
 }
-var Ko = ((...e) => {
-	let t = Go().createApp(...e), { mount: n } = t;
+var Wo = ((...e) => {
+	let t = Uo().createApp(...e), { mount: n } = t;
 	return t.mount = (e) => {
-		let r = Jo(e);
+		let r = Ko(e);
 		if (!r) return;
 		let i = t._component;
 		g(i) || i.render || i.template || (i.template = r.innerHTML), r.nodeType === 1 && (r.textContent = "");
-		let a = n(r, !1, qo(r));
+		let a = n(r, !1, Go(r));
 		return r instanceof Element && (r.removeAttribute("v-cloak"), r.setAttribute("data-v-app", "")), a;
 	}, t;
 });
-function qo(e) {
+function Go(e) {
 	if (e instanceof SVGElement) return "svg";
 	if (typeof MathMLElement == "function" && e instanceof MathMLElement) return "mathml";
 }
-function Jo(e) {
+function Ko(e) {
 	return v(e) ? document.querySelector(e) : e;
 }
 // node_modules/pinia/dist/pinia.mjs
-var Yo, Xo = (e) => Yo = e, Zo = () => Jn() && qn(Qo) || Yo, Qo = Symbol();
-function $o(e) {
+var qo, Jo = (e) => qo = e, Yo = () => qn() && Kn(Xo) || qo, Xo = Symbol();
+function Zo(e) {
 	return e && typeof e == "object" && Object.prototype.toString.call(e) === "[object Object]" && typeof e.toJSON != "function";
 }
-var es;
+var Qo;
 (function(e) {
 	e.direct = "direct", e.patchObject = "patch object", e.patchFunction = "patch function";
-})(es ||= {});
-var ts = typeof window < "u", ns = typeof window == "object" && window.window === window ? window : typeof self == "object" && self.self === self ? self : typeof global == "object" && global.global === global ? global : typeof globalThis == "object" ? globalThis : { HTMLElement: null };
-function rs(e, { autoBom: t = !1 } = {}) {
+})(Qo ||= {});
+var $o = typeof window < "u", es = typeof window == "object" && window.window === window ? window : typeof self == "object" && self.self === self ? self : typeof global == "object" && global.global === global ? global : typeof globalThis == "object" ? globalThis : { HTMLElement: null };
+function ts(e, { autoBom: t = !1 } = {}) {
 	return t && /^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(e.type) ? new Blob(["﻿", e], { type: e.type }) : e;
 }
-function is(e, t, n) {
+function ns(e, t, n) {
 	let r = new XMLHttpRequest();
 	r.open("GET", e), r.responseType = "blob", r.onload = function() {
-		ls(r.response, t, n);
+		ss(r.response, t, n);
 	}, r.onerror = function() {
 		console.error("could not download file");
 	}, r.send();
 }
-function as(e) {
+function rs(e) {
 	let t = new XMLHttpRequest();
 	t.open("HEAD", e, !1);
 	try {
@@ -2986,7 +2980,7 @@ function as(e) {
 	} catch {}
 	return t.status >= 200 && t.status <= 299;
 }
-function os(e) {
+function is(e) {
 	try {
 		e.dispatchEvent(new MouseEvent("click"));
 	} catch {
@@ -2994,30 +2988,30 @@ function os(e) {
 		t.initMouseEvent("click", !0, !0, window, 0, 0, 0, 80, 20, !1, !1, !1, !1, 0, null), e.dispatchEvent(t);
 	}
 }
-var ss = typeof navigator == "object" ? navigator : { userAgent: "" }, cs = /Macintosh/.test(ss.userAgent) && /AppleWebKit/.test(ss.userAgent) && !/Safari/.test(ss.userAgent), ls = ts ? typeof HTMLAnchorElement < "u" && "download" in HTMLAnchorElement.prototype && !cs ? us : "msSaveOrOpenBlob" in ss ? ds : fs : () => {};
-function us(e, t = "download", n) {
+var as = typeof navigator == "object" ? navigator : { userAgent: "" }, os = /Macintosh/.test(as.userAgent) && /AppleWebKit/.test(as.userAgent) && !/Safari/.test(as.userAgent), ss = $o ? typeof HTMLAnchorElement < "u" && "download" in HTMLAnchorElement.prototype && !os ? cs : "msSaveOrOpenBlob" in as ? ls : us : () => {};
+function cs(e, t = "download", n) {
 	let r = document.createElement("a");
-	r.download = t, r.rel = "noopener", typeof e == "string" ? (r.href = e, r.origin === location.origin ? os(r) : as(r.href) ? is(e, t, n) : (r.target = "_blank", os(r))) : (r.href = URL.createObjectURL(e), setTimeout(function() {
+	r.download = t, r.rel = "noopener", typeof e == "string" ? (r.href = e, r.origin === location.origin ? is(r) : rs(r.href) ? ns(e, t, n) : (r.target = "_blank", is(r))) : (r.href = URL.createObjectURL(e), setTimeout(function() {
 		URL.revokeObjectURL(r.href);
 	}, 4e4), setTimeout(function() {
-		os(r);
+		is(r);
 	}, 0));
 }
-function ds(e, t = "download", n) {
+function ls(e, t = "download", n) {
 	if (typeof e == "string") {
-		if (as(e)) is(e, t, n);
+		if (rs(e)) ns(e, t, n);
 		else {
 			let t = document.createElement("a");
 			t.href = e, t.target = "_blank", setTimeout(function() {
-				os(t);
+				is(t);
 			});
 		}
-	} else navigator.msSaveOrOpenBlob(rs(e, n), t);
+	} else navigator.msSaveOrOpenBlob(ts(e, n), t);
 }
-function fs(e, t, n, r) {
-	if (r ||= open("", "_blank"), r && (r.document.title = r.document.body.innerText = "downloading..."), typeof e == "string") return is(e, t, n);
-	let i = e.type === "application/octet-stream", a = /constructor/i.test(String(ns.HTMLElement)) || "safari" in ns, o = /CriOS\/[\d]+/.test(navigator.userAgent);
-	if ((o || i && a || cs) && typeof FileReader < "u") {
+function us(e, t, n, r) {
+	if (r ||= open("", "_blank"), r && (r.document.title = r.document.body.innerText = "downloading..."), typeof e == "string") return ns(e, t, n);
+	let i = e.type === "application/octet-stream", a = /constructor/i.test(String(es.HTMLElement)) || "safari" in es, o = /CriOS\/[\d]+/.test(navigator.userAgent);
+	if ((o || i && a || os) && typeof FileReader < "u") {
 		let t = new FileReader();
 		t.onloadend = function() {
 			let e = t.result;
@@ -3031,11 +3025,11 @@ function fs(e, t, n, r) {
 		}, 4e4);
 	}
 }
-var { assign: ps } = Object;
-function ms() {
+var { assign: ds } = Object;
+function fs() {
 	let e = Me(!0), t = e.run(() => /* @__PURE__ */ tn({})), n = [], r = [], i = Qt({
 		install(e) {
-			Xo(i), i._a = e, e.provide(Qo, i), e.config.globalProperties.$pinia = i, r.forEach((e) => n.push(e)), r = [];
+			Jo(i), i._a = e, e.provide(Xo, i), e.config.globalProperties.$pinia = i, r.forEach((e) => n.push(e)), r = [];
 		},
 		use(e) {
 			return this._a ? n.push(e) : r.push(e), this;
@@ -3048,8 +3042,8 @@ function ms() {
 	});
 	return i;
 }
-var hs = () => {};
-function gs(e, t, n, r = hs) {
+var ps = () => {};
+function ms(e, t, n, r = ps) {
 	e.push(t);
 	let i = () => {
 		let n = e.indexOf(t);
@@ -3057,74 +3051,74 @@ function gs(e, t, n, r = hs) {
 	};
 	return !n && Ne() && Pe(i), i;
 }
-function _s(e, ...t) {
+function hs(e, ...t) {
 	e.slice().forEach((e) => {
 		e(...t);
 	});
 }
-var vs = (e) => e(), ys = Symbol(), bs = Symbol();
-function xs(e, t) {
+var gs = (e) => e(), _s = Symbol(), vs = Symbol();
+function ys(e, t) {
 	e instanceof Map && t instanceof Map ? t.forEach((t, n) => e.set(n, t)) : e instanceof Set && t instanceof Set && t.forEach(e.add, e);
 	for (let n in t) {
 		if (!t.hasOwnProperty(n)) continue;
 		let r = t[n], i = e[n];
-		e[n] = $o(i) && $o(r) && e.hasOwnProperty(n) && !/* @__PURE__ */ M(r) && !/* @__PURE__ */ Jt(r) ? xs(i, r) : r;
+		e[n] = Zo(i) && Zo(r) && e.hasOwnProperty(n) && !/* @__PURE__ */ M(r) && !/* @__PURE__ */ Jt(r) ? ys(i, r) : r;
 	}
 	return e;
 }
-var Ss = Symbol();
-function Cs(e) {
-	return !$o(e) || !e.hasOwnProperty(Ss);
+var bs = Symbol();
+function xs(e) {
+	return !Zo(e) || !e.hasOwnProperty(bs);
 }
-var { assign: ws } = Object;
-function Ts(e) {
+var { assign: Ss } = Object;
+function Cs(e) {
 	return !!(/* @__PURE__ */ M(e) && e.effect);
 }
-function Es(e, t, n, r) {
+function ws(e, t, n, r) {
 	let { state: i, actions: a, getters: o } = t, s = n.state.value[e], c;
 	function l() {
-		return s || (n.state.value[e] = i ? i() : {}), ws(/* @__PURE__ */ sn(n.state.value[e]), a, Object.keys(o || {}).reduce((t, r) => (t[r] = Qt(Va(() => {
-			Xo(n);
+		return s || (n.state.value[e] = i ? i() : {}), Ss(/* @__PURE__ */ sn(n.state.value[e]), a, Object.keys(o || {}).reduce((t, r) => (t[r] = Qt(za(() => {
+			Jo(n);
 			let t = n._s.get(e);
 			return o[r].call(t, t);
 		})), t), {}));
 	}
-	return c = Ds(e, l, t, n, r, !0), c;
+	return c = Ts(e, l, t, n, r, !0), c;
 }
-function Ds(e, t, n = {}, r, i, a) {
-	let o, s = ws({ actions: {} }, n), c = { deep: !0 }, l, u, d = [], f = [], p, m = r.state.value[e];
+function Ts(e, t, n = {}, r, i, a) {
+	let o, s = Ss({ actions: {} }, n), c = { deep: !0 }, l, u, d = [], f = [], p, m = r.state.value[e];
 	!a && !m && (r.state.value[e] = {});
 	let h;
 	function g(t) {
 		let n;
 		l = u = !1, typeof t == "function" ? (t(r.state.value[e]), n = {
-			type: es.patchFunction,
+			type: Qo.patchFunction,
 			storeId: e,
 			events: p
-		}) : (xs(r.state.value[e], t), n = {
-			type: es.patchObject,
+		}) : (ys(r.state.value[e], t), n = {
+			type: Qo.patchObject,
 			payload: t,
 			storeId: e,
 			events: p
 		});
 		let i = h = Symbol();
-		kn().then(() => {
+		On().then(() => {
 			h === i && (l = !0);
-		}), u = !0, _s(d, n, r.state.value[e]);
+		}), u = !0, hs(d, n, r.state.value[e]);
 	}
 	let v = a ? function() {
 		let { state: e } = n, t = e ? e() : {};
 		this.$patch((e) => {
-			ws(e, t);
+			Ss(e, t);
 		});
-	} : hs;
+	} : ps;
 	function y() {
 		o.stop(), d = [], f = [], r._s.delete(e);
 	}
 	let b = (t, n = "") => {
-		if (ys in t) return t[bs] = n, t;
+		if (_s in t) return t[vs] = n, t;
 		let i = function() {
-			Xo(r);
+			Jo(r);
 			let n = Array.from(arguments), a = [], o = [];
 			function s(e) {
 				a.push(e);
@@ -3132,9 +3126,9 @@ function Ds(e, t, n = {}, r, i, a) {
 			function c(e) {
 				o.push(e);
 			}
-			_s(f, {
+			hs(f, {
 				args: n,
-				name: i[bs],
+				name: i[vs],
 				store: x,
 				after: s,
 				onError: c
@@ -3143,44 +3137,44 @@ function Ds(e, t, n = {}, r, i, a) {
 			try {
 				l = t.apply(this && this.$id === e ? this : x, n);
 			} catch (e) {
-				throw _s(o, e), e;
+				throw hs(o, e), e;
 			}
-			return l instanceof Promise ? l.then((e) => (_s(a, e), e)).catch((e) => (_s(o, e), Promise.reject(e))) : (_s(a, l), l);
+			return l instanceof Promise ? l.then((e) => (hs(a, e), e)).catch((e) => (hs(o, e), Promise.reject(e))) : (hs(a, l), l);
 		};
-		return i[ys] = !0, i[bs] = n, i;
+		return i[_s] = !0, i[vs] = n, i;
 	}, x = /* @__PURE__ */ Wt({
 		_p: r,
 		$id: e,
-		$onAction: gs.bind(null, f),
+		$onAction: ms.bind(null, f),
 		$patch: g,
 		$reset: v,
 		$subscribe(t, n = {}) {
-			let i = gs(d, t, n.detached, () => a()), a = o.run(() => Qn(() => r.state.value[e], (r) => {
+			let i = ms(d, t, n.detached, () => a()), a = o.run(() => Zn(() => r.state.value[e], (r) => {
 				(n.flush === "sync" ? u : l) && t({
 					storeId: e,
-					type: es.direct,
+					type: Qo.direct,
 					events: p
 				}, r);
-			}, ws({}, c, n)));
+			}, Ss({}, c, n)));
 			return i;
 		},
 		$dispose: y
 	});
 	r._s.set(e, x);
-	let S = (r._a && r._a.runWithContext || vs)(() => r._e.run(() => (o = Me()).run(() => t({ action: b }))));
+	let S = (r._a && r._a.runWithContext || gs)(() => r._e.run(() => (o = Me()).run(() => t({ action: b }))));
 	for (let t in S) {
 		let n = S[t];
-		/* @__PURE__ */ M(n) && !Ts(n) || /* @__PURE__ */ Jt(n) ? a || (m && Cs(n) && (/* @__PURE__ */ M(n) ? n.value = m[t] : xs(n, m[t])), r.state.value[e][t] = n) : typeof n == "function" && (S[t] = b(n, t), s.actions[t] = n);
+		/* @__PURE__ */ M(n) && !Cs(n) || /* @__PURE__ */ Jt(n) ? a || (m && xs(n) && (/* @__PURE__ */ M(n) ? n.value = m[t] : ys(n, m[t])), r.state.value[e][t] = n) : typeof n == "function" && (S[t] = b(n, t), s.actions[t] = n);
 	}
-	return ws(x, S), ws(/* @__PURE__ */ j(x), S), Object.defineProperty(x, "$state", {
+	return Ss(x, S), Ss(/* @__PURE__ */ j(x), S), Object.defineProperty(x, "$state", {
 		get: () => r.state.value[e],
 		set: (e) => {
 			g((t) => {
-				ws(t, e);
+				Ss(t, e);
 			});
 		}
 	}), r._p.forEach((e) => {
-		ws(x, o.run(() => e({
+		Ss(x, o.run(() => e({
 			store: x,
 			app: r._a,
 			pinia: r,
@@ -3188,12 +3182,12 @@ function Ds(e, t, n = {}, r, i, a) {
 		})));
 	}), m && a && n.hydrate && n.hydrate(x.$state, m), l = !0, u = !0, x;
 }
-function Os(e, t, n) {
+function Es(e, t, n) {
 	let r, i, a = typeof t == "function";
 	typeof e == "string" ? (r = e, i = a ? n : t) : (i = e, r = e.id);
 	function o(e, n) {
-		let o = Jn();
-		return e ||= o ? qn(Qo, null) : null, e && Xo(e), e = Yo, e._s.has(r) || (a ? Ds(r, t, i, e) : Es(r, i, e)), e._s.get(r);
+		let o = qn();
+		return e ||= o ? Kn(Xo, null) : null, e && Jo(e), e = qo, e._s.has(r) || (a ? Ts(r, t, i, e) : ws(r, i, e)), e._s.get(r);
 	}
 	return o.$id = r, o;
 }
@@ -3205,39 +3199,39 @@ function L() {
 	return window;
 }
 // src/character-management-module.ts
-var ks = "th-modern-character-management", As = "th-modern-character-panel", js = "th-modern-character-list", Ms = "th-modern-character-editor", Ns = "th-modern-character-summary", Ps = "th-modern-character-summary-main", Fs = "th-modern-character-summary-identity", Is = "th-modern-character-summary-buttons", Ls = "th-modern-character-summary-fields";
-function Rs(e, t) {
-	e.body.classList.toggle(ks, t), e.querySelector("#right-nav-panel")?.classList.toggle(As, t), e.querySelector("#rm_characters_block")?.classList.toggle(js, t), e.querySelector("#rm_ch_create_block")?.classList.toggle(Ms, t);
+var Ds = "th-modern-character-management", Os = "th-modern-character-panel", ks = "th-modern-character-list", As = "th-modern-character-editor", js = "th-modern-character-summary", Ms = "th-modern-character-summary-main", Ns = "th-modern-character-summary-identity", Ps = "th-modern-character-summary-buttons", Fs = "th-modern-character-summary-fields";
+function Is(e, t) {
+	e.body.classList.toggle(Ds, t), e.querySelector("#right-nav-panel")?.classList.toggle(Os, t), e.querySelector("#rm_characters_block")?.classList.toggle(ks, t), e.querySelector("#rm_ch_create_block")?.classList.toggle(As, t);
 }
-function zs(e, t, n) {
+function Ls(e, t, n) {
 	let r = e.createComment(`th-modern-character-${t.id || t.classList[0] || "node"}`);
 	return t.before(r), n.append(t), {
 		marker: r,
 		node: t
 	};
 }
-function Bs(e) {
+function Rs(e) {
 	e.marker.parentNode?.insertBefore(e.node, e.marker), e.marker.remove();
 }
-function Vs(e) {
-	e && ([...e.moves].reverse().forEach(Bs), e.summary.classList.remove(Ns), e.main.remove(), e.fields.remove());
+function zs(e) {
+	e && ([...e.moves].reverse().forEach(Rs), e.summary.classList.remove(js), e.main.remove(), e.fields.remove());
 }
-function Hs(e) {
+function Bs(e) {
 	let t = e.querySelector("#avatar-and-name-block"), n = e.querySelector("#avatar_div"), r = e.querySelector("#rm_PinAndTabs"), i = e.querySelector("#name_div"), a = e.querySelector("#avatar_controls > .form_create_bottom_buttons_block"), o = e.querySelector("#char-management-dropdown")?.closest("label"), s = e.querySelector("#tags_div");
 	if (!t || !n || !r || !i || !a || !o || !s) return null;
 	let c = e.createElement("div");
-	c.className = Ps;
+	c.className = Ms;
 	let l = e.createElement("div");
-	l.className = Fs;
+	l.className = Ns;
 	let u = e.createElement("div");
-	u.className = Is;
+	u.className = Ps;
 	let d = e.createElement("div");
-	d.className = Ls;
+	d.className = Fs;
 	let f = [];
 	try {
-		f.push(zs(e, n, c)), c.append(l, u), f.push(zs(e, r, l)), f.push(zs(e, i, l)), f.push(zs(e, a, u)), f.push(zs(e, o, d)), f.push(zs(e, s, d)), t.append(c, d), t.classList.add(Ns);
+		f.push(Ls(e, n, c)), c.append(l, u), f.push(Ls(e, r, l)), f.push(Ls(e, i, l)), f.push(Ls(e, a, u)), f.push(Ls(e, o, d)), f.push(Ls(e, s, d)), t.append(c, d), t.classList.add(js);
 	} catch (e) {
-		throw [...f].reverse().forEach(Bs), c.remove(), d.remove(), e;
+		throw [...f].reverse().forEach(Rs), c.remove(), d.remove(), e;
 	}
 	return {
 		buttons: u,
@@ -3253,30 +3247,30 @@ function Hs(e) {
 		tags: s
 	};
 }
-function Us(e, t) {
-	return t.summary.isConnected && t.summary.classList.contains(Ns) && t.main.parentElement === t.summary && t.fields.parentElement === t.summary && t.moves.every((e) => e.marker.isConnected && e.node.isConnected) && e.querySelector("#rm_PinAndTabs") === t.pinAndTabs && t.pinAndTabs.parentElement === t.identity && e.querySelector("#name_div") === t.name && t.name.parentElement === t.identity && t.buttonsBlock.parentElement === t.buttons && e.querySelector("#char-management-dropdown")?.closest("label") === t.dropdown && t.dropdown.parentElement === t.fields && e.querySelector("#tags_div") === t.tags && t.tags.parentElement === t.fields;
+function Vs(e, t) {
+	return t.summary.isConnected && t.summary.classList.contains(js) && t.main.parentElement === t.summary && t.fields.parentElement === t.summary && t.moves.every((e) => e.marker.isConnected && e.node.isConnected) && e.querySelector("#rm_PinAndTabs") === t.pinAndTabs && t.pinAndTabs.parentElement === t.identity && e.querySelector("#name_div") === t.name && t.name.parentElement === t.identity && t.buttonsBlock.parentElement === t.buttons && e.querySelector("#char-management-dropdown")?.closest("label") === t.dropdown && t.dropdown.parentElement === t.fields && e.querySelector("#tags_div") === t.tags && t.tags.parentElement === t.fields;
 }
-function Ws(e) {
+function Hs(e) {
 	return e?.dataset.menuType === "create" || e?.dataset.menuType === "character_edit";
 }
-function Gs(e) {
+function Us(e) {
 	let t = I(), n = L(), r = n.MutationObserver, i = null, a = null, o = null, s = 0, c = () => {
-		Vs(i), i = null;
+		zs(i), i = null;
 	}, l = () => {
-		a &&= (Bs(a), null);
+		a &&= (Rs(a), null);
 	}, u = (e) => {
 		let n = t.querySelector("#rm_button_panel_pin_div"), r = e?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
-		a && a.marker.isConnected && a.node === n && a.node.parentElement === r || (l(), n && r && (a = zs(t, n, r)));
+		a && a.marker.isConnected && a.node === n && a.node.parentElement === r || (l(), n && r && (a = Ls(t, n, r)));
 	}, d = () => {
-		c(), l(), Rs(t, !1);
+		c(), l(), Is(t, !1);
 	}, f = () => {
 		if (s = 0, !(e.is_active && e.settings.modernCharacterManagement)) {
 			h(null), d();
 			return;
 		}
-		Rs(t, !0);
+		Is(t, !0);
 		let n = t.querySelector("#right-nav-panel");
-		h(n), u(n), Ws(n) ? (i && !Us(t, i) && c(), i ??= Hs(t)) : c();
+		h(n), u(n), Hs(n) ? (i && !Vs(t, i) && c(), i ??= Bs(t)) : c();
 	}, p = () => {
 		s ||= n.requestAnimationFrame(f);
 	}, m = new r(p);
@@ -3288,13 +3282,13 @@ function Gs(e) {
 			subtree: !0
 		}));
 	}
-	let g = Qn(() => [e.is_active, e.settings.modernCharacterManagement], p, { immediate: !0 });
+	let g = Zn(() => [e.is_active, e.settings.modernCharacterManagement], p, { immediate: !0 });
 	return { destroy() {
 		g(), m.disconnect(), s &&= (n.cancelAnimationFrame(s), 0), d();
 	} };
 }
 // src/pointer-drag.ts
-function Ks({ target: e, event: t, onMove: n, onStop: r, cursor: i = "col-resize" }) {
+function Ws({ target: e, event: t, onMove: n, onStop: r, cursor: i = "col-resize" }) {
 	let a = e.ownerDocument, o = a.defaultView || (typeof window < "u" ? window : null);
 	if (!o) return r(), () => {};
 	let s = t.pointerId, c = a.createElement("div");
@@ -3322,43 +3316,77 @@ function Ks({ target: e, event: t, onMove: n, onStop: r, cursor: i = "col-resize
 	} catch {}
 	return u;
 }
+// src/native-save-feedback.ts
+async function Gs(e, t) {
+	return await e(), t();
+}
+function Ks(e, t) {
+	return e !== t;
+}
 // src/preset-prompt-model.ts
-function qs(e) {
+function qs(e, t, n, r, i, a, o, s) {
+	return JSON.stringify({
+		order: e.map(({ identifier: e, enabled: t }) => [e, !!t]),
+		groups: t.map((e) => [
+			e.id,
+			e.name,
+			e.parentId ?? null,
+			e.identifiers,
+			!!e.single_select
+		]),
+		prompts: n.map((e) => [
+			e.identifier,
+			e.name,
+			e.role,
+			!!e.marker,
+			!!e.system_prompt,
+			e.injection_position,
+			e.injection_depth,
+			o ? e.content : void 0
+		]),
+		counts: Object.entries(r).sort(([e], [t]) => e.localeCompare(t)),
+		tokenUsage: i,
+		collapsed: [...a.entries()],
+		search: o,
+		onlyEnabled: s
+	});
+}
+function Js(e) {
 	if (!e || typeof e != "object") return !1;
 	let t = e;
 	return typeof t.id == "string" && Array.isArray(t.identifiers);
 }
-function Js(e) {
-	let t = e.extensions?.luker?.prompt_groups;
-	return Array.isArray(t) ? t.filter(qs) : [];
-}
 function Ys(e) {
+	let t = e.extensions?.luker?.prompt_groups;
+	return Array.isArray(t) ? t.filter(Js) : [];
+}
+function Xs(e) {
 	let t = e.extensions ??= {}, n = t.luker ??= {};
 	return Array.isArray(n.prompt_groups) || (n.prompt_groups = []), n.prompt_groups;
 }
-function Xs(e, t) {
+function Zs(e, t) {
 	let n = new Map(e.map((e) => [e.id, e])), r = [], i = n.get(t);
 	for (; i && !r.includes(i) && r.length < 100;) r.unshift(i), i = i.parentId ? n.get(i.parentId) : void 0;
 	return r;
 }
-function Zs(e, t) {
+function Qs(e, t) {
 	let n = [], r = (i) => {
 		for (let a of e) a.parentId === i && !n.includes(a.id) && a.id !== t && (n.push(a.id), r(a.id));
 	};
 	return r(t), n;
 }
-function Qs(e, t) {
+function $s(e, t) {
 	let n = /* @__PURE__ */ new Set();
-	for (let r of [t, ...Zs(e, t)]) e.find((e) => e.id === r)?.identifiers.forEach((e) => n.add(e));
+	for (let r of [t, ...Qs(e, t)]) e.find((e) => e.id === r)?.identifiers.forEach((e) => n.add(e));
 	return [...n];
 }
-function $s(e, t) {
+function ec(e, t) {
 	return e.find((e) => e.identifiers.includes(t)) ?? null;
 }
-function ec(e, t, n) {
+function tc(e, t, n) {
 	let r = [], i = /* @__PURE__ */ new Set(), a = [];
 	for (let o of e) {
-		let e = $s(t, o.identifier), s = e ? Xs(t, e.id) : [], c = 0;
+		let e = ec(t, o.identifier), s = e ? Zs(t, e.id) : [], c = 0;
 		for (; c < a.length && c < s.length && a[c] === s[c];) c += 1;
 		a = a.slice(0, c);
 		for (let e = c; e < s.length; e += 1) {
@@ -3383,11 +3411,11 @@ function ec(e, t, n) {
 	}
 	return r;
 }
-function tc(e, t) {
-	let n = $s(e, t);
+function nc(e, t) {
+	let n = ec(e, t);
 	return n?.single_select ? n.identifiers.filter((e) => e !== t) : [];
 }
-function nc(e, t) {
+function rc(e, t) {
 	for (let n of e) n.identifiers = n.identifiers.filter((e) => t.has(e));
 	let n = !0;
 	for (; n;) {
@@ -3401,13 +3429,13 @@ function nc(e, t) {
 		}
 	}
 }
-function rc(e, t, n) {
+function ic(e, t, n) {
 	let r = new Set(t);
 	for (let t of e) t.identifiers = t.identifiers.filter((e) => !r.has(e));
 	(n ? e.find((e) => e.id === n) : void 0)?.identifiers.push(...t);
 }
-function ic(e, t) {
-	rc(e, t.identifiers, null);
+function ac(e, t) {
+	ic(e, t.identifiers, null);
 	let n = {
 		id: t.id,
 		name: t.name,
@@ -3418,19 +3446,19 @@ function ic(e, t) {
 	};
 	return e.push(n), n;
 }
-function ac(e, t) {
+function oc(e, t) {
 	let n = e.findIndex((e) => e.id === t);
 	if (n === -1) return;
 	let [r] = e.splice(n, 1), i = r.parentId ?? null;
 	for (let n of e) n.parentId === t && (n.parentId = i);
 	(i ? e.find((e) => e.id === i) : void 0)?.identifiers.push(...r.identifiers);
 }
-function oc(e, t, n) {
-	if (n === t || n && Zs(e, t).includes(n)) return !1;
+function sc(e, t, n) {
+	if (n === t || n && Qs(e, t).includes(n)) return !1;
 	let r = e.find((e) => e.id === t);
 	return r ? (r.parentId = n, !0) : !1;
 }
-function sc(e, t, n, r) {
+function cc(e, t, n, r) {
 	if (t.has(n) || !e.some((e) => e.identifier === n)) return null;
 	let i = e.filter((e) => t.has(e.identifier));
 	if (!i.length) return null;
@@ -3441,7 +3469,7 @@ function sc(e, t, n, r) {
 	];
 	return c.every((t, n) => t === e[n]) ? null : c;
 }
-function cc(e, t, n) {
+function lc(e, t, n) {
 	let r = n ? e.findIndex((e) => e.identifier === n) : -1, i = r === -1 ? e.length : r + 1;
 	return [
 		...e.slice(0, i),
@@ -3450,15 +3478,15 @@ function cc(e, t, n) {
 	];
 }
 // src/preset-module.ts
-var lc = "th-modern-preset-enabled", uc = "data-th-preset-tab", dc = "th-modern-preset-pm-section", fc = "th-modern-pm-narrow", pc = "th-modern-pm-detail-open", mc = "th-modern-preset-tab", hc = "th-modern-preset-collapsed:", gc = [
+var uc = "th-modern-preset-enabled", dc = "data-th-preset-tab", fc = "th-modern-preset-pm-section", pc = "th-modern-pm-narrow", mc = "th-modern-pm-detail-open", hc = "th-modern-preset-tab", gc = "th-modern-preset-collapsed:", _c = [
 	"main",
 	"nsfw",
 	"jailbreak"
-], _c = 400, vc = 800, yc = 5e3, bc = 640, xc = 4, Sc = 36, Cc = 1, wc = 450, Tc = 8, Ec = "is-multiselect", Dc = {
+], vc = 400, yc = 800, bc = 5e3, xc = 640, Sc = 4, Cc = 36, wc = 1, Tc = 450, Ec = 8, Dc = "is-multiselect", Oc = {
 	system: "系统",
 	user: "用户",
 	assistant: "AI"
-}, Oc = [
+}, kc = [
 	{
 		id: "params",
 		label: "参数"
@@ -3471,7 +3499,7 @@ var lc = "th-modern-preset-enabled", uc = "data-th-preset-tab", dc = "th-modern-
 		id: "advanced",
 		label: "高级"
 	}
-], kc = {
+], Ac = {
 	"bi-arrow-clockwise": "fa-solid fa-rotate",
 	"bi-arrow-counterclockwise": "fa-solid fa-arrow-rotate-left",
 	"bi-arrow-left": "fa-solid fa-arrow-left",
@@ -3498,17 +3526,17 @@ var lc = "th-modern-preset-enabled", uc = "data-th-preset-tab", dc = "th-modern-
 	"bi-trash3": "fa-solid fa-trash-can",
 	"bi-x-lg": "fa-solid fa-xmark"
 };
-function Ac(e) {
-	return kc[e] ?? (e.startsWith("fa-") ? e : `fa-solid ${e}`);
-}
 function jc(e) {
+	return Ac[e] ?? (e.startsWith("fa-") ? e : `fa-solid ${e}`);
+}
+function Mc(e) {
 	try {
 		return L().localStorage.getItem(e);
 	} catch {
 		return null;
 	}
 }
-function Mc(e, t) {
+function Nc(e, t) {
 	try {
 		let n = L().localStorage;
 		t === null ? n.removeItem(e) : n.setItem(e, t);
@@ -3518,37 +3546,48 @@ function R(e, t, n = "", r = "") {
 	let i = e.createElement(t);
 	return n && (i.className = n), r && (i.textContent = r), i;
 }
-function Nc(e, t, n, r) {
+function Pc(e, t, n, r) {
 	let i = R(e, "button", `th-modern-pm-icon-button ${t}`.trim());
-	return i.type = "button", i.title = n, i.setAttribute("aria-label", n), i.append(R(e, "i", Ac(r))), i;
+	return i.type = "button", i.title = n, i.setAttribute("aria-label", n), i.append(R(e, "i", jc(r))), i;
 }
-function Pc(e, t, n) {
+function Fc(e, t, n) {
 	let r = R(e, "button", "th-modern-pm-toggle");
-	return r.type = "button", r.setAttribute("role", "switch"), r.setAttribute("aria-checked", String(t)), r.title = n, r;
+	return r.type = "button", r.setAttribute("role", "switch"), r.setAttribute("aria-checked", t === "mixed" ? "false" : String(t)), r.toggleAttribute("data-mixed", t === "mixed"), r.setAttribute("aria-label", t === "mixed" ? `${n}（部分开启）` : n), r.title = n, r;
 }
-function Fc(e, t) {
+function Ic(e, t) {
 	let n = e.ownerDocument.createComment("th-modern-preset");
 	return e.before(n), t.append(e), {
 		marker: n,
 		node: e
 	};
 }
-function Ic(e, t) {
+function Lc(e, t) {
 	e && (e.marker.isConnected ? e.marker.replaceWith(e.node) : t && t(e.node), e.marker.remove());
 }
-function Lc(e, t) {
+function Rc(e, t) {
 	return e?.name?.trim() || t;
 }
-async function Rc() {
+async function zc() {
 	let e = L(), t = new URL("scripts/openai.js", I().baseURI || e.location.href).href, n = e.Function("url", "return import(url);");
 	try {
-		let r = await n(t);
-		return { getPromptManager: () => r.promptManager ?? e.promptManager ?? null };
+		let r = await n(t), i = {};
+		try {
+			i = await n(new URL("scripts/preset-manager.js", I().baseURI || e.location.href).href);
+		} catch {}
+		return {
+			getPromptManager: () => r.promptManager ?? e.promptManager ?? null,
+			getPreset: r.getChatCompletionPreset,
+			savePreset: async (e, t) => {
+				let n = i.getPresetManager?.("openai");
+				if (!n?.savePreset) throw Error("宿主未提供预设保存接口");
+				return n.savePreset(e, t);
+			}
+		};
 	} catch {
 		return { getPromptManager: () => e.promptManager ?? null };
 	}
 }
-var zc = class {
+var Bc = class {
 	store;
 	options;
 	document = I();
@@ -3601,11 +3640,18 @@ var zc = class {
 	rows = [];
 	visibleRows = [];
 	groups = [];
+	orderMap = /* @__PURE__ */ new Map();
+	listSignature = "";
 	suppressEditorEvents = !1;
 	applyTimer = 0;
 	dirtyTimer = 0;
 	dirtyInterval = 0;
 	dirty = null;
+	localDirty = !1;
+	editRevision = 0;
+	stopSaveFeedback;
+	presetSelectCleanup;
+	editorApplyPending = !1;
 	stopDrag;
 	autoScrollFrame = 0;
 	multiSelect = !1;
@@ -3617,8 +3663,8 @@ var zc = class {
 	boundHostEvents = [];
 	constructor(e, t = {}) {
 		this.store = e, this.options = t, this.customCheckDirty = t.checkDirty;
-		let n = jc(mc);
-		this.tab = Oc.some((e) => e.id === n) ? n : "params";
+		let n = Mc(hc);
+		this.tab = kc.some((e) => e.id === n) ? n : "params";
 		let r = this.window.MutationObserver;
 		this.observer = new r(() => this.scheduleSync()), this.bindHostEventListeners();
 	}
@@ -3637,7 +3683,19 @@ var zc = class {
 		let e = this.window.eventSource;
 		if (!e || typeof e.on != "function") return;
 		let t = () => {
-			this.isSwitchingPreset = !0, this.activeId = null, this.activeGroupId = null, this.anchorId = null, this.selected.clear(), this.editingId = null, this.editingPrompt = null, this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = this.window.setTimeout(() => {
+			if (!this.flushEditorApply()) {
+				let e = this.promptManager?.configuration?.prefix ?? "completion_", t = this.document.getElementById(`${e}prompt_manager_popup_entry_form_prompt`);
+				if (t) {
+					try {
+						this.window.localStorage.setItem("th-modern-preset-recovery", t.value);
+					} catch {}
+					try {
+						this.window.prompt("切换前内容写回失败，请复制下方内容；它也会保存在本机浏览器中。", t.value);
+					} catch {}
+				}
+				this.editorApplyPending = !1;
+			}
+			this.cancelSaveFeedback(), this.isSwitchingPreset = !0, this.activeId = null, this.activeGroupId = null, this.anchorId = null, this.selected.clear(), this.editingId = null, this.editingPrompt = null, this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = this.window.setTimeout(() => {
 				this.isSwitchingPreset = !1, this.presetSwitchTimer = 0, this.shell?.classList.remove("is-loading-preset");
 			}, 1500), this.shell && this.shell.classList.add("is-loading-preset");
 		}, n = () => {
@@ -3650,7 +3708,7 @@ var zc = class {
 		}, r = () => {
 			this.resetCleanBaseline(), this.shell?.isConnected ? (this.editingPrompt = null, this.renderList(), this.scheduleDirtyCheck(400)) : this.scheduleSync();
 		}, i = () => {
-			this.resetCleanBaseline(), this.shell?.isConnected ? (this.renderList(), this.scheduleDirtyCheck(400)) : this.scheduleSync();
+			this.localDirty || this.resetCleanBaseline(), this.shell?.isConnected ? (this.renderList(), this.scheduleDirtyCheck(400)) : this.scheduleSync();
 		}, a = [
 			["oai_preset_changed_before", t],
 			["oai_preset_changed_after", n],
@@ -3699,10 +3757,10 @@ var zc = class {
 		}
 		if (!e || !r || !t || !n || !i) return;
 		let a = e.classList.contains("openDrawer");
-		this.panel = e, e.classList.add(lc), this.ensurePanelPin(e), this.ensureToolbar(r), this.ensurePromptShell(n), this.applyTab(), a ? (this.renderList(), this.ensureDirtyPolling()) : this.stopDirtyPolling();
+		this.panel = e, e.classList.add(uc), this.ensurePanelPin(e), this.ensureToolbar(r), this.ensurePromptShell(n), this.applyTab(), a ? (this.loadCollapsed(), this.groups = Ys(i.serviceSettings), this.buildListSignature() === this.listSignature ? this.syncEditor() : this.renderList(), this.ensureDirtyPolling()) : this.stopDirtyPolling();
 	}
 	ensureHost() {
-		this.hostLoading || (this.hostLoading = !0, (this.options.loadHost ?? Rc)().then((e) => {
+		this.hostLoading || (this.hostLoading = !0, (this.options.loadHost ?? zc)().then((e) => {
 			this.host = e, this.resetCleanBaseline(), this.scheduleSync();
 		}).catch((e) => {
 			console.warn("[现代化界面] 预设界面无法读取酒馆提示词管理器，已保留原生界面。", e);
@@ -3719,20 +3777,19 @@ var zc = class {
 			attributeFilter: ["style"]
 		}), n && this.observer.observe(n, {
 			childList: !0,
-			subtree: !0,
-			characterData: !0
+			subtree: !0
 		}));
 	}
 	teardown() {
-		this.flushEditorApply(), this.stopDrag?.(), this.stopDrag = void 0, this.stopDirtyPolling(), this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = 0, this.isSwitchingPreset = !1, this.dirtyTimer = 0, this.dirtyInterval = 0, this.resizeObserver?.disconnect(), this.resizeObserver = void 0, this.cancelLongPress(), Ic(this.editAreaMove, (e) => {
+		this.cancelSaveFeedback(), this.flushEditorApply(), this.presetSelectCleanup?.(), this.presetSelectCleanup = void 0, this.stopDrag?.(), this.stopDrag = void 0, this.stopDirtyPolling(), this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = 0, this.isSwitchingPreset = !1, this.dirtyTimer = 0, this.dirtyInterval = 0, this.resizeObserver?.disconnect(), this.resizeObserver = void 0, this.cancelLongPress(), Lc(this.editAreaMove, (e) => {
 			let t = this.document.getElementById("completion_prompt_manager_popup");
 			t && t.append(e);
-		}), this.editAreaMove = void 0, Ic(this.inspectMove, (e) => {
+		}), this.editAreaMove = void 0, Lc(this.inspectMove, (e) => {
 			let t = this.document.getElementById("completion_prompt_manager_popup");
 			t && t.prepend(e);
 		}), this.inspectMove = void 0, this.previewSource = void 0;
 		let e = this.presetsMove?.node ?? this.document.getElementById("respective-presets-block");
-		if (Ic(this.presetsMove, (e) => {
+		if (Lc(this.presetsMove, (e) => {
 			let t = this.document.getElementById("ai_response_configuration");
 			t && t.prepend(e);
 		}), this.presetsMove = void 0, e && (this.toolbar?.contains(e) || !e.isConnected)) {
@@ -3740,18 +3797,18 @@ var zc = class {
 			t && t.prepend(e);
 		}
 		let t = this.pinMove?.node ?? this.document.getElementById("lm_button_panel_pin_div");
-		if (Ic(this.pinMove, (e) => {
+		if (Lc(this.pinMove, (e) => {
 			let t = this.document.getElementById("lm_button_panel_pin_div_parent") ?? this.document.getElementById("left-nav-panel");
 			t && t.prepend(e);
 		}), this.pinMove = void 0, t && (t.parentElement?.classList.contains("th-modern-drawer-actions") || !t.isConnected)) {
 			let e = this.document.getElementById("lm_button_panel_pin_div_parent") ?? this.document.getElementById("left-nav-panel");
 			e && e.prepend(t);
 		}
-		this.toolbar?.remove(), this.toolbar = void 0, this.tabButtons.clear(), this.shell?.remove(), this.shell = void 0, this.list = void 0, this.editingId = null, this.editingPrompt = null, this.promptSection?.classList.remove(dc), this.promptSection = void 0, this.panel?.classList.remove(lc), this.panel?.removeAttribute(uc), this.panel = void 0;
+		this.toolbar?.remove(), this.toolbar = void 0, this.tabButtons.clear(), this.shell?.remove(), this.shell = void 0, this.list = void 0, this.editingId = null, this.editingPrompt = null, this.promptSection?.classList.remove(fc), this.promptSection = void 0, this.panel?.classList.remove(uc), this.panel?.removeAttribute(dc), this.panel = void 0;
 	}
 	ensurePanelPin(e) {
 		let t = this.document.getElementById("lm_button_panel_pin_div"), n = e.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
-		if (!(this.pinMove && this.pinMove.marker.isConnected && this.pinMove.node === t && t?.parentElement === n) && (Ic(this.pinMove), this.pinMove = void 0, t && n)) {
+		if (!(this.pinMove && this.pinMove.marker.isConnected && this.pinMove.node === t && t?.parentElement === n) && (Lc(this.pinMove), this.pinMove = void 0, t && n)) {
 			let e = this.document.createComment("th-modern-preset-pin");
 			t.before(e), n.prepend(t), this.pinMove = {
 				marker: e,
@@ -3762,42 +3819,60 @@ var zc = class {
 	ensureToolbar(e) {
 		if (this.toolbar?.isConnected && e.parentElement === this.toolbar) return;
 		let t = this.document.getElementById("ai_response_configuration");
-		Ic(this.presetsMove, (e) => {
+		Lc(this.presetsMove, (e) => {
 			t && t.prepend(e);
 		}), this.presetsMove = void 0, this.toolbar && this.toolbar.contains(e) && t && t.prepend(e), this.toolbar?.remove();
 		let n = R(this.document, "div", "th-modern-preset-toolbar");
-		e.before(n), this.presetsMove = Fc(e, n);
+		e.before(n), this.presetsMove = Ic(e, n);
 		let r = e.querySelector("#settings_preset_openai");
-		r && !r.dataset.thPresetBound && (r.dataset.thPresetBound = "true", r.addEventListener("change", () => {
-			this.isSwitchingPreset = !0, this.activeId = null, this.activeGroupId = null, this.anchorId = null, this.selected.clear(), this.editingId = null, this.editingPrompt = null, this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = this.window.setTimeout(() => {
-				this.isSwitchingPreset = !1, this.presetSwitchTimer = 0, this.shell?.classList.remove("is-loading-preset");
-			}, 1500), this.shell && this.shell.classList.add("is-loading-preset");
-		}));
+		if (this.presetSelectCleanup?.(), r) {
+			let e = r.value, t = (t) => {
+				this.flushEditorApply() ? (e = r.value, this.isSwitchingPreset = !0, this.activeId = null, this.activeGroupId = null, this.anchorId = null, this.selected.clear(), this.editingId = null, this.editingPrompt = null, this.presetSwitchTimer && this.window.clearTimeout(this.presetSwitchTimer), this.presetSwitchTimer = this.window.setTimeout(() => {
+					this.isSwitchingPreset = !1, this.presetSwitchTimer = 0, this.shell?.classList.remove("is-loading-preset");
+				}, 1500), this.shell && this.shell.classList.add("is-loading-preset")) : (t.stopImmediatePropagation(), r.value = e);
+			};
+			r.addEventListener("change", t, !0), this.presetSelectCleanup = () => r.removeEventListener("change", t, !0);
+		}
 		let i = R(this.document, "div", "th-modern-preset-tabs"), a = R(this.document, "div", "th-modern-preset-tablist");
 		a.setAttribute("role", "tablist"), this.tabButtons.clear();
-		for (let e of Oc) {
+		for (let e of kc) {
 			let t = R(this.document, "button", "th-modern-preset-tab");
 			t.type = "button", t.setAttribute("role", "tab"), t.dataset.tab = e.id, t.append(R(this.document, "span", "", e.label)), e.id === "prompts" && t.append(R(this.document, "span", "th-modern-preset-tab-count")), t.addEventListener("click", () => this.setTab(e.id)), a.append(t), this.tabButtons.set(e.id, t);
 		}
 		let o = R(this.document, "div", "th-modern-preset-status");
-		this.dirtyBadge = R(this.document, "span", "th-modern-preset-dirty"), this.saveButton = R(this.document, "button", "th-modern-preset-save menu_button", "保存预设"), this.saveButton.type = "button", this.saveButton.addEventListener("click", () => {
-			this.flushEditorApply();
-			let e = this.document.getElementById("update_oai_preset");
-			if (e) {
-				e.click();
-				let t = this.window.$;
-				t && t(e).trigger("click"), this.window.toastr?.info?.("正在保存预设...", "", { timeOut: 1200 });
+		this.dirtyBadge = R(this.document, "span", "th-modern-preset-dirty"), this.saveButton = R(this.document, "button", "th-modern-preset-save menu_button", "保存预设"), this.saveButton.type = "button", this.saveButton.addEventListener("click", async () => {
+			if (this.editingId && this.editorView === "edit" && !this.applyEditor()) {
+				this.window.toastr?.error?.("条目内容未能写回，未发起预设保存，请查看控制台错误");
+				return;
 			}
-			this.window.setTimeout(() => {
-				this.resetCleanBaseline(), this.scheduleDirtyCheck(200);
-			}, 800);
+			this.flushEditorApply();
+			let e = this.document.getElementById("settings_preset_openai")?.selectedOptions[0]?.textContent?.trim(), t = this.host?.getPreset?.();
+			if (!e || !t || !this.host?.savePreset) {
+				this.window.toastr?.error?.("宿主预设保存接口不可用，请使用原生保存按钮。");
+				return;
+			}
+			this.cancelSaveFeedback();
+			let n = this.takeSnapshot(), r = this.editRevision, i = !0;
+			this.stopSaveFeedback = () => {
+				i = !1;
+			}, this.saveButton.disabled = !0, this.saveButton.textContent = "保存中…";
+			try {
+				await Gs(() => this.host.savePreset(e, t), () => i && this.document.getElementById("settings_preset_openai")?.selectedOptions[0]?.textContent?.trim() === e) && n && (this.lastCleanSnapshot = n, this.localDirty = Ks(r, this.editRevision), this.runDirtyCheck(), this.window.toastr?.success?.("预设已更新"));
+			} catch (e) {
+				console.error("[现代化预设] 保存失败", e), this.window.toastr?.error?.("预设保存失败，请重试。");
+			} finally {
+				i && this.cancelSaveFeedback();
+			}
 		}), o.append(this.dirtyBadge, this.saveButton), i.append(a, o), n.append(i), this.toolbar = n, this.renderDirty();
 	}
+	cancelSaveFeedback() {
+		this.stopSaveFeedback?.(), this.stopSaveFeedback = void 0, this.saveButton && (this.saveButton.disabled = !1, this.saveButton.textContent = "保存预设");
+	}
 	setTab(e) {
-		this.tab !== e && (this.flushEditorApply(), this.tab = e, Mc(mc, e), this.applyTab(), this.panel?.querySelector(".scrollableInner")?.scrollTo({ top: 0 }));
+		this.tab !== e && this.flushEditorApply() && (this.tab = e, Nc(hc, e), this.applyTab(), this.panel?.querySelector(".scrollableInner")?.scrollTo({ top: 0 }));
 	}
 	applyTab() {
-		this.panel?.setAttribute(uc, this.tab);
+		this.panel?.setAttribute(dc, this.tab);
 		for (let [e, t] of this.tabButtons) {
 			let n = e === this.tab;
 			t.classList.toggle("is-active", n), t.setAttribute("aria-selected", String(n));
@@ -3831,37 +3906,25 @@ var zc = class {
 				marker: !!e.marker,
 				injection_position: e.injection_position ?? 0,
 				injection_depth: e.injection_depth ?? 0
-			})).sort((e, t) => e.identifier.localeCompare(t.identifier)), i = (Js(e.serviceSettings) || []).map((e) => ({
+			})).sort((e, t) => e.identifier.localeCompare(t.identifier)), i = (Ys(e.serviceSettings) || []).map((e) => ({
 				id: e.id,
 				name: e.name,
 				identifiers: [...e.identifiers || []].sort(),
 				parentId: e.parentId || null,
 				single_select: !!e.single_select
-			})).sort((e, t) => e.id.localeCompare(t.id)), a = this.window, o = (a.SillyTavern?.getContext?.() ?? {}).chatCompletionSettings ?? a.oai_settings ?? {}, s = {};
-			for (let e of [
-				"temp",
-				"temperature",
-				"top_p",
-				"frequency_penalty",
-				"presence_penalty",
-				"max_tokens",
-				"openai_max_tokens",
-				"openai_max_context",
-				"model",
-				"streaming"
-			]) o[e] !== void 0 && (s[e] = o[e]);
+			})).sort((e, t) => e.id.localeCompare(t.id)), a = this.host?.getPreset?.() ?? e.serviceSettings;
 			return JSON.stringify({
 				order: n,
 				prompts: r,
 				groups: i,
-				sampleParams: s
+				preset: a
 			});
 		} catch {
 			return "";
 		}
 	}
 	resetCleanBaseline() {
-		this.lastCleanSnapshot = this.takeSnapshot(), this.dirty = !1, this.renderDirty();
+		this.cancelSaveFeedback(), this.lastCleanSnapshot = this.takeSnapshot(), this.localDirty = !1, this.dirty = !this.lastCleanSnapshot && null, this.renderDirty();
 	}
 	checkDirtyState() {
 		if (this.customCheckDirty) return this.customCheckDirty();
@@ -3873,15 +3936,15 @@ var zc = class {
 	}
 	ensureDirtyPolling() {
 		this.dirtyInterval || (this.dirtyInterval = this.window.setInterval(() => {
-			this.panel?.classList.contains("openDrawer") && this.runDirtyCheck();
-		}, yc), this.scheduleDirtyCheck());
+			this.panel?.classList.contains("openDrawer") && (this.runDirtyCheck(), this.scheduleSync());
+		}, bc), this.scheduleDirtyCheck());
 	}
-	scheduleDirtyCheck = (e = vc) => {
+	scheduleDirtyCheck = (e = yc) => {
 		this.toolbar && (this.window.clearTimeout(this.dirtyTimer), this.dirtyTimer = this.window.setTimeout(() => this.runDirtyCheck(), e));
 	};
 	runDirtyCheck() {
 		this.dirtyTimer = 0;
-		let e = this.checkDirtyState();
+		let e = this.localDirty || this.applyTimer ? !0 : this.checkDirtyState();
 		e !== this.dirty && (this.dirty = e, this.renderDirty());
 	}
 	renderDirty() {
@@ -3891,7 +3954,7 @@ var zc = class {
 	}
 	ensurePromptShell(e) {
 		let t = this.findPromptSection(e);
-		if (t !== this.promptSection && (this.promptSection?.classList.remove(dc), this.promptSection = t ?? void 0, this.promptSection?.classList.add(dc)), this.shell?.isConnected) {
+		if (t !== this.promptSection && (this.promptSection?.classList.remove(fc), this.promptSection = t ?? void 0, this.promptSection?.classList.add(fc)), this.shell?.isConnected) {
 			this.shell.previousElementSibling !== e && e.after(this.shell);
 			return;
 		}
@@ -3900,7 +3963,7 @@ var zc = class {
 		let r = R(this.document, "div", "th-modern-pm-body"), i = R(this.document, "div", "th-modern-pm-list");
 		i.setAttribute("role", "listbox"), i.setAttribute("aria-multiselectable", "true"), i.tabIndex = 0, i.addEventListener("click", this.handleListClick), i.addEventListener("pointerdown", this.handleListPointerDown), i.addEventListener("pointerdown", this.handleLongPressStart), i.addEventListener("pointermove", this.handleLongPressMove), i.addEventListener("pointerup", this.cancelLongPress), i.addEventListener("pointercancel", this.cancelLongPress), i.addEventListener("contextmenu", this.handleListContextMenu), i.addEventListener("keydown", this.handleListKeyDown), this.dropLine = R(this.document, "div", "th-modern-pm-drop-line"), this.list = i;
 		let a = R(this.document, "section", "th-modern-pm-editor");
-		this.editorHeader = R(this.document, "div", "th-modern-pm-editor-header"), this.editorExtra = R(this.document, "div", "th-modern-pm-editor-extra"), this.editorBody = R(this.document, "div", "th-modern-pm-editor-body"), this.editorPlaceholder = R(this.document, "div", "th-modern-pm-editor-placeholder"), a.append(this.editorHeader, this.editorExtra, this.editorBody, this.editorPlaceholder), r.append(i, a), n.append(r), n.classList.toggle(Ec, this.multiSelect), this.editingId = null, this.editingPrompt = null;
+		this.editorHeader = R(this.document, "div", "th-modern-pm-editor-header"), this.editorExtra = R(this.document, "div", "th-modern-pm-editor-extra"), this.editorBody = R(this.document, "div", "th-modern-pm-editor-body"), this.editorBody.addEventListener("input", this.handleEditorInput, !0), this.editorBody.addEventListener("change", this.handleEditorInput, !0), this.editorBody.addEventListener("focusout", this.flushEditorApplyOnFocusOut, !0), this.editorBody.addEventListener("click", this.handleEditorClick, !0), this.editorPlaceholder = R(this.document, "div", "th-modern-pm-editor-placeholder"), a.append(this.editorHeader, this.editorExtra, this.editorBody, this.editorPlaceholder), r.append(i, a), n.append(r), n.classList.toggle(Dc, this.multiSelect), this.editingId = null, this.editingPrompt = null;
 		let o = this.window.ResizeObserver;
 		this.resizeObserver?.disconnect(), this.resizeObserver = o ? new o(() => this.updateNarrow()) : void 0, this.resizeObserver?.observe(n), this.updateNarrow();
 	}
@@ -3911,12 +3974,12 @@ var zc = class {
 	}
 	updateNarrow() {
 		if (!this.shell) return;
-		let e = this.shell.getBoundingClientRect().width, t = e > 0 && e < bc;
-		this.shell.classList.toggle(fc, t), this.shell.classList.toggle(pc, t && this.detailOpen);
+		let e = this.shell.getBoundingClientRect().width, t = e > 0 && e < xc;
+		this.shell.classList.toggle(pc, t), this.shell.classList.toggle(mc, t && this.detailOpen);
 	}
 	buildPromptToolbar() {
 		let e = R(this.document, "div", "th-modern-pm-toolbar"), t = R(this.document, "label", "th-modern-pm-search");
-		t.append(R(this.document, "i", Ac("bi-search")));
+		t.append(R(this.document, "i", jc("bi-search")));
 		let n = R(this.document, "input", "text_pole");
 		n.type = "search", n.placeholder = "搜索条目名称或内容", n.value = this.search, n.addEventListener("input", () => {
 			this.search = n.value.trim().toLowerCase(), this.renderList();
@@ -3926,11 +3989,11 @@ var zc = class {
 			this.onlyEnabled = !this.onlyEnabled, r.setAttribute("aria-pressed", String(this.onlyEnabled)), this.renderList();
 		});
 		let i = R(this.document, "button", "th-modern-pm-chip th-modern-pm-multi");
-		i.type = "button", i.title = "多选模式：单击条目即可勾选，手机上也可以长按条目进入", i.append(R(this.document, "i", Ac("bi-check2-square")), R(this.document, "span", "", "多选")), i.setAttribute("aria-pressed", String(this.multiSelect)), i.addEventListener("click", () => this.setMultiSelect(!this.multiSelect)), this.multiButton = i, this.tokenTotal = R(this.document, "span", "th-modern-pm-token-total");
+		i.type = "button", i.title = "多选模式：单击条目即可勾选，手机上也可以长按条目进入", i.append(R(this.document, "i", jc("bi-check2-square")), R(this.document, "span", "", "多选")), i.setAttribute("aria-pressed", String(this.multiSelect)), i.addEventListener("click", () => this.setMultiSelect(!this.multiSelect)), this.multiButton = i, this.tokenTotal = R(this.document, "span", "th-modern-pm-token-total");
 		let a = R(this.document, "button", "th-modern-pm-add menu_button");
-		a.type = "button", a.append(R(this.document, "i", Ac("bi-plus-lg")), R(this.document, "span", "", "新增")), a.title = "在选中条目下方新增条目", a.addEventListener("click", () => this.addPromptEntry());
+		a.type = "button", a.append(R(this.document, "i", jc("bi-plus-lg")), R(this.document, "span", "", "新增")), a.title = "在选中条目下方新增条目", a.addEventListener("click", () => this.addPromptEntry());
 		let o = R(this.document, "details", "th-modern-pm-more"), s = R(this.document, "summary", "th-modern-pm-icon-button");
-		s.title = "更多操作", s.setAttribute("aria-label", "更多操作"), s.append(R(this.document, "i", Ac("bi-three-dots")));
+		s.title = "更多操作", s.setAttribute("aria-label", "更多操作"), s.append(R(this.document, "i", jc("bi-three-dots")));
 		let c = R(this.document, "div", "th-modern-pm-menu"), l = [
 			[
 				"bi-box-arrow-in-down",
@@ -3950,7 +4013,7 @@ var zc = class {
 		];
 		for (let [e, t, n] of l) {
 			let r = R(this.document, "button", "th-modern-pm-menu-item");
-			r.type = "button", r.append(R(this.document, "i", Ac(e)), R(this.document, "span", "", t)), r.addEventListener("click", () => {
+			r.type = "button", r.append(R(this.document, "i", jc(e)), R(this.document, "span", "", t)), r.addEventListener("click", () => {
 				o.open = !1, n();
 			}), c.append(r);
 		}
@@ -3999,7 +4062,7 @@ var zc = class {
 		e.append(this.batchCount);
 		for (let [n, r, i] of t) {
 			let t = R(this.document, "button", "th-modern-pm-batch-button");
-			t.type = "button", t.append(R(this.document, "i", Ac(n)), R(this.document, "span", "", r)), t.addEventListener("click", i), e.append(t);
+			t.type = "button", t.append(R(this.document, "i", jc(n)), R(this.document, "span", "", r)), t.addEventListener("click", i), e.append(t);
 		}
 		return this.batchBar = e, e;
 	}
@@ -4020,11 +4083,11 @@ var zc = class {
 		return e ? this.groups.find((t) => t.id === e) : void 0;
 	}
 	loadCollapsed() {
-		let e = `${hc}${this.document.querySelector("#settings_preset_openai")?.selectedOptions[0]?.textContent ?? ""}`;
+		let e = `${gc}${this.document.querySelector("#settings_preset_openai")?.selectedOptions[0]?.textContent ?? ""}`;
 		if (e !== this.collapsedKey) {
 			this.collapsedKey = e, this.collapsed = /* @__PURE__ */ new Map();
 			try {
-				let t = JSON.parse(jc(e) ?? "{}");
+				let t = JSON.parse(Mc(e) ?? "{}");
 				if (t && typeof t == "object" && !Array.isArray(t)) for (let [e, n] of Object.entries(t)) typeof n == "boolean" && this.collapsed.set(e, n);
 			} catch {}
 		}
@@ -4034,10 +4097,10 @@ var zc = class {
 	}
 	toggleCollapsed(e) {
 		let t = this.getGroup(e);
-		t && (this.collapsed.set(e, !this.isCollapsed(t)), Mc(this.collapsedKey, JSON.stringify(Object.fromEntries(this.collapsed))), this.renderList());
+		t && (this.collapsed.set(e, !this.isCollapsed(t)), Nc(this.collapsedKey, JSON.stringify(Object.fromEntries(this.collapsed))), this.renderList());
 	}
 	matchesFilter(e) {
-		return this.onlyEnabled && !e.enabled ? !1 : !this.search || Lc(e.prompt, e.identifier).toLowerCase().includes(this.search) || (e.prompt?.content ?? "").toLowerCase().includes(this.search);
+		return this.onlyEnabled && !e.enabled ? !1 : !this.search || Rc(e.prompt, e.identifier).toLowerCase().includes(this.search) || (e.prompt?.content ?? "").toLowerCase().includes(this.search);
 	}
 	computeVisibleRows() {
 		if (this.search || this.onlyEnabled) {
@@ -4050,86 +4113,90 @@ var zc = class {
 			return t ? this.isCollapsed(t) : !1;
 		}));
 	}
+	buildListSignature() {
+		let e = this.promptManager;
+		return e ? qs(this.getOrder(), this.groups, e.serviceSettings.prompts || [], e.tokenHandler?.getCounts?.() ?? {}, e.tokenUsage, this.collapsed, this.search, this.onlyEnabled) : "";
+	}
 	renderList() {
 		let e = this.promptManager, t = this.list;
 		if (!e || !t) return;
 		this.loadCollapsed();
 		let n = this.getOrder();
-		this.groups = Js(e.serviceSettings), this.rows = ec(n, this.groups, (e) => this.getPrompt(e));
+		this.orderMap = new Map(n.map((e) => [e.identifier, e])), this.groups = Ys(e.serviceSettings), this.rows = tc(n, this.groups, (e) => this.getPrompt(e));
 		let r = new Set(n.map((e) => e.identifier));
 		for (let e of [...this.selected]) r.has(e) || this.selected.delete(e);
-		this.activeId && !r.has(this.activeId) && !this.getPrompt(this.activeId) && (this.activeId = null), this.activeGroupId && !this.getGroup(this.activeGroupId) && (this.activeGroupId = null), !this.activeId && !this.activeGroupId && n.length && (this.activeId = n[0].identifier, this.selected = /* @__PURE__ */ new Set([this.activeId]), this.anchorId = this.activeId);
+		this.activeId && !r.has(this.activeId) && !this.getPrompt(this.activeId) && (this.activeId = null), this.activeGroupId && !this.getGroup(this.activeGroupId) && (this.activeGroupId = null), !this.activeId && !this.activeGroupId && n.length && (this.activeId = n[0].identifier, this.selected = /* @__PURE__ */ new Set([this.activeId]), this.anchorId = this.activeId, this.openDetail());
 		let i = e.tokenHandler?.getCounts?.() ?? {};
 		t.classList.toggle("has-tokens", n.some((e) => typeof i[e.identifier] == "number"));
 		let a = t.scrollTop, o = this.document.createDocumentFragment();
 		this.visibleRows = this.computeVisibleRows();
-		for (let t of this.visibleRows) o.append(t.kind === "group" ? this.createGroupRow(t, n) : this.createPromptRow(e, t, i[t.identifier]));
+		for (let t of this.visibleRows) o.append(t.kind === "group" ? this.createGroupRow(t) : this.createPromptRow(e, t, i[t.identifier]));
 		this.visibleRows.length || o.append(R(this.document, "div", "th-modern-pm-empty", this.rows.length ? "没有符合条件的条目" : "列表里还没有条目")), o.append(this.createUnusedSection(e, r)), this.dropLine && o.append(this.dropLine), t.replaceChildren(o), t.scrollTop = a;
 		let s = this.tabButtons.get("prompts")?.querySelector(".th-modern-preset-tab-count");
-		s && (s.textContent = String(n.length)), this.tokenTotal && (this.tokenTotal.textContent = e.tokenUsage ? `总 Token：${e.tokenUsage}` : ""), this.renderBatchBar(), this.syncEditor();
+		s && (s.textContent = String(n.length)), this.tokenTotal && (this.tokenTotal.textContent = e.tokenUsage ? `总 Token：${e.tokenUsage}` : ""), this.renderBatchBar(), this.syncEditor(), this.listSignature = this.buildListSignature();
 	}
-	getGroupState(e, t) {
-		let n = Qs(this.groups, e.id);
+	getGroupState(e) {
+		let t = $s(this.groups, e.id);
 		return {
-			enabled: n.filter((e) => t.find((t) => t.identifier === e)?.enabled).length,
-			total: n.length
+			enabled: t.filter((e) => this.orderMap.get(e)?.enabled).length,
+			total: t.length
 		};
 	}
-	createGroupRow(e, t) {
-		let { group: n } = e, r = this.isCollapsed(n), i = this.getGroupState(n, t), a = R(this.document, "div", "th-modern-pm-row is-group-header");
-		a.dataset.groupId = n.id, a.style.setProperty("--th-modern-pm-indent", `${e.depth * Cc}rem`), a.classList.toggle("is-active", n.id === this.activeGroupId), a.classList.toggle("is-disabled", i.enabled === 0), a.classList.toggle("is-continued", e.continued);
-		let o = R(this.document, "span", "th-modern-pm-handle");
-		o.title = "拖动整组", o.append(R(this.document, "i", Ac("bi-grip-vertical")));
-		let s = Nc(this.document, "th-modern-pm-collapse", r ? "展开分组" : "折叠分组", r ? "bi-chevron-right" : "bi-chevron-down");
-		s.setAttribute("aria-expanded", String(!r)), s.addEventListener("click", (e) => {
-			e.stopPropagation(), this.toggleCollapsed(n.id);
+	createGroupRow(e) {
+		let { group: t } = e, n = this.isCollapsed(t), r = this.getGroupState(t), i = R(this.document, "div", "th-modern-pm-row is-group-header");
+		i.dataset.groupId = t.id, i.style.setProperty("--th-modern-pm-indent", `${e.depth * wc}rem`), i.classList.toggle("is-active", t.id === this.activeGroupId), i.classList.toggle("is-disabled", r.enabled === 0), i.classList.toggle("is-continued", e.continued);
+		let a = R(this.document, "span", "th-modern-pm-handle");
+		a.title = "拖动整组", a.append(R(this.document, "i", jc("bi-grip-vertical")));
+		let o = Pc(this.document, "th-modern-pm-collapse", n ? "展开分组" : "折叠分组", n ? "bi-chevron-right" : "bi-chevron-down");
+		o.setAttribute("aria-expanded", String(!n)), o.addEventListener("click", (e) => {
+			e.stopPropagation(), this.toggleCollapsed(t.id);
 		});
-		let c = R(this.document, "span", "th-modern-pm-main");
-		c.append(R(this.document, "i", `th-modern-pm-kind ${Ac(r ? "bi-folder" : "bi-folder2-open")}`), R(this.document, "span", "th-modern-pm-name", n.name || "未命名分组"), R(this.document, "span", "th-modern-pm-group-count", `${i.enabled}/${i.total}`)), n.single_select && c.append(R(this.document, "span", "th-modern-pm-badge is-mode", "单选")), e.continued && c.append(R(this.document, "span", "th-modern-pm-badge", "续"));
-		let l = n.single_select ? i.enabled > 0 : i.enabled === i.total ? !0 : i.enabled ? "mixed" : !1, u = Pc(this.document, l, n.single_select ? "单选组：有选项开启时点击全部关闭，否则开启第一项" : "开启或关闭组内全部条目");
-		u.disabled = !i.total;
-		let d = (e) => {
-			e.stopPropagation(), e.preventDefault(), this.toggleGroup(n.id);
+		let s = R(this.document, "span", "th-modern-pm-main");
+		s.append(R(this.document, "i", `th-modern-pm-kind ${jc(n ? "bi-folder" : "bi-folder2-open")}`), R(this.document, "span", "th-modern-pm-name", t.name || "未命名分组"), R(this.document, "span", "th-modern-pm-group-count", `${r.enabled}/${r.total}`)), t.single_select && s.append(R(this.document, "span", "th-modern-pm-badge is-mode", "单选")), e.continued && s.append(R(this.document, "span", "th-modern-pm-badge", "续"));
+		let c = t.single_select ? r.enabled > 0 : r.enabled === r.total ? !0 : r.enabled ? "mixed" : !1, l = Fc(this.document, c, t.single_select ? "单选组：有选项开启时点击全部关闭，否则开启第一项" : "开启或关闭组内全部条目");
+		l.disabled = !r.total;
+		let u = (e) => {
+			e.stopPropagation(), e.preventDefault(), this.toggleGroup(t.id);
 		};
-		u.addEventListener("click", d), u.addEventListener("pointerup", (e) => {
-			e.button === 0 && d(e);
+		l.addEventListener("click", u), l.addEventListener("pointerup", (e) => {
+			e.button === 0 && u(e);
 		});
-		let f = Qs(this.groups, n.id), p = f.length > 0 && f.every((e) => this.selected.has(e));
-		a.classList.toggle("is-selected", this.multiSelect && p), a.append(o, this.createCheck(p), s, c, u);
-		let m = 0, h = (e) => {
-			e.target?.closest(".th-modern-pm-handle, .th-modern-pm-toggle, .th-modern-pm-collapse, button") || Date.now() - m < 200 || (m = Date.now(), this.handleGroupRowClick(n.id, e));
+		let d = $s(this.groups, t.id), f = d.length > 0 && d.every((e) => this.selected.has(e));
+		i.classList.toggle("is-selected", this.multiSelect && f), i.append(a, this.createCheck(f), o, s, l);
+		let p = 0, m = (e) => {
+			e.target?.closest(".th-modern-pm-handle, .th-modern-pm-toggle, .th-modern-pm-collapse, button") || Date.now() - p < 200 || (p = Date.now(), this.handleGroupRowClick(t.id, e));
 		};
-		return a.addEventListener("click", h), a.addEventListener("pointerup", (e) => {
-			e.pointerType === "mouse" && e.button === 0 && !this.stopDrag && h(e);
-		}), a;
+		return i.addEventListener("click", m), i.addEventListener("pointerup", (e) => {
+			e.pointerType === "mouse" && e.button === 0 && !this.stopDrag && m(e);
+		}), i;
 	}
 	createPromptRow(e, t, n) {
 		let { identifier: r, prompt: i } = t, a = R(this.document, "div", "th-modern-pm-row");
-		a.dataset.id = r, a.style.setProperty("--th-modern-pm-indent", `${t.depth * Cc}rem`), a.setAttribute("role", "option"), a.setAttribute("aria-selected", String(this.selected.has(r))), a.classList.toggle("is-disabled", !t.enabled), a.classList.toggle("is-active", r === this.activeId && !this.activeGroupId), a.classList.toggle("is-selected", this.selected.has(r)), a.classList.toggle("is-marker", !!i?.marker), a.classList.toggle("is-grouped", t.depth > 0), a.classList.toggle("is-missing", !i);
+		a.dataset.id = r, a.style.setProperty("--th-modern-pm-indent", `${t.depth * wc}rem`), a.setAttribute("role", "option"), a.setAttribute("aria-selected", String(this.selected.has(r))), a.classList.toggle("is-disabled", !t.enabled), a.classList.toggle("is-active", r === this.activeId && !this.activeGroupId), a.classList.toggle("is-selected", this.selected.has(r)), a.classList.toggle("is-marker", !!i?.marker), a.classList.toggle("is-grouped", t.depth > 0), a.classList.toggle("is-missing", !i);
 		let o = R(this.document, "span", "th-modern-pm-handle");
-		if (o.title = "拖动排序；选中多项后可一起拖动", o.append(R(this.document, "i", Ac("bi-grip-vertical"))), a.append(o, this.createCheck(this.selected.has(r))), i?.marker) {
-			let e = R(this.document, "i", `th-modern-pm-kind ${Ac("bi-pin-angle-fill")}`);
+		if (o.title = "拖动排序；选中多项后可一起拖动", o.append(R(this.document, "i", jc("bi-grip-vertical"))), a.append(o, this.createCheck(this.selected.has(r))), i?.marker) {
+			let e = R(this.document, "i", `th-modern-pm-kind ${jc("bi-pin-angle-fill")}`);
 			e.title = "占位条目：内容由酒馆在生成时填入", a.append(e);
 		}
 		let s = R(this.document, "span", "th-modern-pm-main");
-		s.append(R(this.document, "span", "th-modern-pm-name", Lc(i, r))), a.append(s);
+		s.append(R(this.document, "span", "th-modern-pm-name", Rc(i, r))), a.append(s);
 		let c = R(this.document, "span", "th-modern-pm-badges");
-		i && !i.marker && i.role && c.append(R(this.document, "span", `th-modern-pm-badge is-role-${i.role}`, Dc[i.role] ?? i.role)), i?.injection_position === 1 && c.append(R(this.document, "span", "th-modern-pm-badge is-depth", `@${i.injection_depth ?? 4}`)), i || c.append(R(this.document, "span", "th-modern-pm-badge is-warning", "缺失")), a.append(c), a.append(R(this.document, "span", "th-modern-pm-tokens", typeof n == "number" ? String(n) : ""));
+		i && !i.marker && i.role && c.append(R(this.document, "span", `th-modern-pm-badge is-role-${i.role}`, Oc[i.role] ?? i.role)), i?.injection_position === 1 && c.append(R(this.document, "span", "th-modern-pm-badge is-depth", `@${i.injection_depth ?? 4}`)), i || c.append(R(this.document, "span", "th-modern-pm-badge is-warning", "缺失")), a.append(c), a.append(R(this.document, "span", "th-modern-pm-tokens", typeof n == "number" ? String(n) : ""));
 		let l = R(this.document, "span", "th-modern-pm-actions");
 		if (i && !i.marker) {
-			let e = Nc(this.document, "th-modern-pm-copy", "复制条目", "bi-files");
+			let e = Pc(this.document, "th-modern-pm-copy", "复制条目", "bi-files");
 			e.addEventListener("click", (e) => {
 				e.stopPropagation(), this.copyEntries([r]);
 			}), l.append(e);
 		}
 		if (i) {
-			let t = e.isPromptDeletionAllowed(i), n = Nc(this.document, "th-modern-pm-delete", t ? "删除条目" : "移出列表（内置条目不能删除）", t ? "bi-trash3" : "bi-box-arrow-right");
+			let t = e.isPromptDeletionAllowed(i), n = Pc(this.document, "th-modern-pm-delete", t ? "删除条目" : "移出列表（内置条目不能删除）", t ? "bi-trash3" : "bi-box-arrow-right");
 			n.addEventListener("click", (e) => {
 				e.stopPropagation(), this.deleteEntries([r]);
 			}), l.append(n);
 		}
 		a.append(l);
-		let u = Pc(this.document, t.enabled, t.enabled ? "已启用，点击关闭" : "已关闭，点击启用");
+		let u = Fc(this.document, t.enabled, t.enabled ? "已启用，点击关闭" : "已关闭，点击启用");
 		u.disabled = !i || !e.isPromptToggleAllowed(i);
 		let d = (e) => {
 			e.stopPropagation(), e.preventDefault(), this.toggleEntry(r);
@@ -4151,7 +4218,7 @@ var zc = class {
 		}), r.append(R(this.document, "summary", "", `未加入列表的条目（${n.length}）`));
 		for (let e of n) {
 			let t = R(this.document, "div", "th-modern-pm-unused-item");
-			t.append(R(this.document, "span", "th-modern-pm-name", Lc(e, e.identifier)));
+			t.append(R(this.document, "span", "th-modern-pm-name", Rc(e, e.identifier)));
 			let n = R(this.document, "button", "th-modern-pm-unused-add menu_button", "加入");
 			n.type = "button", n.title = "加入到选中条目下方", n.addEventListener("click", () => this.attachEntry(e.identifier)), t.append(n), r.append(t);
 		}
@@ -4161,7 +4228,11 @@ var zc = class {
 		this.batchBar && this.batchCount && (this.batchBar.hidden = !this.multiSelect && this.selected.size < 2, this.batchCount.textContent = `已选 ${this.selected.size} 项`);
 	}
 	handleGroupRowClick(e, t) {
-		this.multiSelect ? this.toggleGroupSelection(e) : (this.flushEditorApply(), this.activeGroupId = e, this.selected.clear(), this.openDetail(), this.renderList());
+		if (this.multiSelect) this.toggleGroupSelection(e);
+		else {
+			if (!this.flushEditorApply()) return;
+			this.activeGroupId = e, this.selected.clear(), this.openDetail(), this.renderList();
+		}
 	}
 	handlePromptRowClick(e, t) {
 		if (this.suppressNextClick) this.suppressNextClick = !1;
@@ -4222,20 +4293,20 @@ var zc = class {
 		e ? (this.multiSelect = !0, this.applyMultiSelectState(), this.renderList()) : this.clearSelection();
 	}
 	applyMultiSelectState() {
-		this.shell?.classList.toggle(Ec, this.multiSelect), this.multiButton?.setAttribute("aria-pressed", String(this.multiSelect));
+		this.shell?.classList.toggle(Dc, this.multiSelect), this.multiButton?.setAttribute("aria-pressed", String(this.multiSelect));
 	}
 	selectAllVisible() {
 		let e = this.visibleRows.flatMap((e) => e.kind === "prompt" ? [e.identifier] : []), t = e.length > 0 && e.every((e) => this.selected.has(e));
 		this.selected = t ? /* @__PURE__ */ new Set() : new Set(e), this.multiSelect = !0, this.applyMultiSelectState(), this.renderList();
 	}
 	toggleGroupSelection(e) {
-		let t = Qs(this.groups, e), n = t.every((e) => this.selected.has(e));
+		let t = $s(this.groups, e), n = t.every((e) => this.selected.has(e));
 		for (let e of t) n ? this.selected.delete(e) : this.selected.add(e);
 		this.renderList();
 	}
 	createCheck(e) {
 		let t = R(this.document, "span", "th-modern-pm-check");
-		return t.setAttribute("aria-hidden", "true"), e && t.append(R(this.document, "i", Ac("bi-check-lg"))), t;
+		return t.setAttribute("aria-hidden", "true"), e && t.append(R(this.document, "i", jc("bi-check-lg"))), t;
 	}
 	handleLongPressStart = (e) => {
 		if (e.pointerType === "mouse" || e.button !== 0) return;
@@ -4244,7 +4315,7 @@ var zc = class {
 		this.cancelLongPress();
 		let r = this.window.setTimeout(() => {
 			this.longPress = void 0, this.suppressNextClick = !0, this.multiSelect = !0, n.dataset.groupId ? this.toggleGroupSelection(n.dataset.groupId) : n.dataset.id && (this.selected.add(n.dataset.id), this.anchorId = n.dataset.id), this.applyMultiSelectState(), this.renderList(), this.window.navigator.vibrate?.(15);
-		}, wc);
+		}, Tc);
 		this.longPress = {
 			timer: r,
 			x: e.clientX,
@@ -4254,7 +4325,7 @@ var zc = class {
 	};
 	handleLongPressMove = (e) => {
 		let t = this.longPress;
-		t && t.pointerId === e.pointerId && Math.hypot(e.clientX - t.x, e.clientY - t.y) > Tc && this.cancelLongPress();
+		t && t.pointerId === e.pointerId && Math.hypot(e.clientX - t.x, e.clientY - t.y) > Ec && this.cancelLongPress();
 	};
 	cancelLongPress = () => {
 		this.longPress &&= (this.window.clearTimeout(this.longPress.timer), void 0);
@@ -4266,15 +4337,15 @@ var zc = class {
 		this.detailOpen = !0, this.updateNarrow();
 	}
 	select(e) {
-		this.flushEditorApply(), this.activeId = e, this.activeGroupId = null, this.anchorId = e, this.selected = /* @__PURE__ */ new Set([e]), this.openDetail();
+		this.flushEditorApply() && (this.activeId = e, this.activeGroupId = null, this.anchorId = e, this.selected = /* @__PURE__ */ new Set([e]), this.openDetail());
 	}
 	isInternalCommitting = !1;
-	commit(e = !0) {
-		let t = this.promptManager;
-		if (t) {
+	commit(e = !0, t = !0) {
+		let n = this.promptManager;
+		if (n) {
 			this.isInternalCommitting = !0;
 			try {
-				Promise.resolve(t.saveServiceSettings()).catch((e) => console.error("[现代化界面] 保存提示词设置失败", e)), t.render(!1), e && this.renderList(), this.scheduleDirtyCheck();
+				Promise.resolve(n.saveServiceSettings()).catch((e) => console.error("[现代化界面] 保存提示词设置失败", e)), t && n.render(!1), e && this.renderList(), this.localDirty = !0, this.editRevision++, this.dirty = !0, this.renderDirty();
 			} finally {
 				this.window.setTimeout(() => {
 					this.isInternalCommitting = !1;
@@ -4290,7 +4361,7 @@ var zc = class {
 	}
 	cleanupGroupData() {
 		let e = this.promptManager;
-		e && Js(e.serviceSettings).length && nc(Ys(e.serviceSettings), new Set(this.getOrder().map((e) => e.identifier)));
+		e && Ys(e.serviceSettings).length && rc(Xs(e.serviceSettings), new Set(this.getOrder().map((e) => e.identifier)));
 	}
 	resetTokenCount(e) {
 		let t = this.promptManager?.tokenHandler?.getCounts?.();
@@ -4315,7 +4386,7 @@ var zc = class {
 		let r = this.getOrder(), i = !1;
 		for (let a of e) {
 			let e = r.find((e) => e.identifier === a), o = this.getPrompt(a);
-			if (e && o && n.isPromptToggleAllowed(o) && e.enabled !== t && (e.enabled = t, this.resetTokenCount(a), i = !0, t)) for (let e of tc(this.groups, a)) {
+			if (e && o && n.isPromptToggleAllowed(o) && e.enabled !== t && (e.enabled = t, this.resetTokenCount(a), i = !0, t)) for (let e of nc(this.groups, a)) {
 				let t = r.find((t) => t.identifier === e);
 				t?.enabled && (t.enabled = !1, this.resetTokenCount(e));
 			}
@@ -4335,7 +4406,7 @@ var zc = class {
 			}
 			return;
 		}
-		let r = Qs(this.groups, e), i = r.every((e) => n.find((t) => t.identifier === e)?.enabled);
+		let r = $s(this.groups, e), i = r.every((e) => n.find((t) => t.identifier === e)?.enabled);
 		this.setEnabled(r, !i);
 	}
 	createIdentifier() {
@@ -4345,21 +4416,20 @@ var zc = class {
 	insertNear(e, t) {
 		let n = this.promptManager;
 		if (!n) return;
-		this.replaceOrder(cc(this.getOrder(), e, t));
-		let r = t ? $s(this.groups, t) : null;
-		r && rc(Ys(n.serviceSettings), e.map((e) => e.identifier), r.id);
+		this.replaceOrder(lc(this.getOrder(), e, t));
+		let r = t ? ec(this.groups, t) : null;
+		r && ic(Xs(n.serviceSettings), e.map((e) => e.identifier), r.id);
 	}
 	getInsertAnchor() {
 		if (this.activeGroupId) {
-			let e = Qs(this.groups, this.activeGroupId);
+			let e = $s(this.groups, this.activeGroupId);
 			return [...this.getOrder()].reverse().find((t) => e.includes(t.identifier))?.identifier ?? null;
 		}
 		return this.activeId;
 	}
 	addPromptEntry() {
 		let e = this.promptManager;
-		if (!e) return;
-		this.flushEditorApply();
+		if (!e || !this.flushEditorApply()) return;
 		let t = this.createIdentifier();
 		e.addPrompt({
 			name: "新条目",
@@ -4384,8 +4454,7 @@ var zc = class {
 	}
 	copyEntries(e) {
 		let t = this.promptManager;
-		if (!t) return;
-		this.flushEditorApply();
+		if (!t || !this.flushEditorApply()) return;
 		let n = this.getOrder().filter((t) => e.includes(t.identifier)), r = null;
 		for (let e of n) {
 			let n = this.getPrompt(e.identifier);
@@ -4394,7 +4463,7 @@ var zc = class {
 			t.serviceSettings.prompts.push({
 				...a,
 				identifier: i,
-				name: `${Lc(n, e.identifier)} 副本`,
+				name: `${Rc(n, e.identifier)} 副本`,
 				system_prompt: !1,
 				marker: !1
 			}), this.insertNear([{
@@ -4440,12 +4509,11 @@ var zc = class {
 	}
 	async deleteEntries(e) {
 		let t = this.promptManager;
-		if (!t || !e.length) return;
-		this.flushEditorApply();
+		if (!t || !e.length || !this.flushEditorApply()) return;
 		let n = e.map((e) => this.getPrompt(e)), r = e.filter((e, r) => {
 			let i = n[r];
 			return !i || t.isPromptDeletionAllowed(i);
-		}), i = e.filter((e) => !r.includes(e)), a = e.slice(0, 3).map((e, t) => Lc(n[t], e)), o = e.length === 1 ? `「${a[0]}」` : `${a.join("、")}${e.length > 3 ? " 等" : ""} ${e.length} 个条目`, s = i.length ? `\n其中 ${i.length} 个是酒馆内置条目，只会移出列表，可在列表底部重新加入。` : "";
+		}), i = e.filter((e) => !r.includes(e)), a = e.slice(0, 3).map((e, t) => Rc(n[t], e)), o = e.length === 1 ? `「${a[0]}」` : `${a.join("、")}${e.length > 3 ? " 等" : ""} ${e.length} 个条目`, s = i.length ? `\n其中 ${i.length} 个是酒馆内置条目，只会移出列表，可在列表底部重新加入。` : "";
 		if (!await this.confirm(`确定要删除${o}吗？${s}`)) return;
 		let c = new Set(r), l = new Set(i), u = this.getOrder(), d = this.rows.flatMap((e) => e.kind === "prompt" ? [e.identifier] : []);
 		for (let e of t.serviceSettings.prompt_order ?? []) {
@@ -4480,8 +4548,7 @@ var zc = class {
 	}
 	async createGroupFromSelection(e = [...this.selected]) {
 		let t = this.promptManager;
-		if (!t || !e.length) return;
-		this.flushEditorApply();
+		if (!t || !e.length || !this.flushEditorApply()) return;
 		let n = await this.askGroupName();
 		if (!n) return;
 		let r = this.getOrder(), i = new Set(e), a = r.findIndex((e) => i.has(e.identifier));
@@ -4492,7 +4559,7 @@ var zc = class {
 			...o,
 			...s.slice(c)
 		]);
-		let l = Ys(t.serviceSettings), u = new Set(o.map((e) => $s(l, e.identifier)?.id ?? null)), d = u.size === 1 ? [...u][0] : null, f = ic(l, {
+		let l = Xs(t.serviceSettings), u = new Set(o.map((e) => ec(l, e.identifier)?.id ?? null)), d = u.size === 1 ? [...u][0] : null, f = ac(l, {
 			id: `grp_${this.createIdentifier()}`,
 			name: n,
 			identifiers: o.map((e) => e.identifier),
@@ -4506,7 +4573,7 @@ var zc = class {
 	}
 	async dissolveGroup(e) {
 		let t = this.promptManager, n = this.getGroup(e);
-		t && n && await this.confirm(`解散分组「${n.name}」？组内条目会保留，只是不再归组。`) && (ac(Ys(t.serviceSettings), e), this.cleanupGroupData(), this.activeGroupId = null, this.activeId = n.identifiers[0] ?? this.activeId, this.commit());
+		t && n && await this.confirm(`解散分组「${n.name}」？组内条目会保留，只是不再归组。`) && (oc(Xs(t.serviceSettings), e), this.cleanupGroupData(), this.activeGroupId = null, this.activeId = n.identifiers[0] ?? this.activeId, this.commit());
 	}
 	handleListPointerDown = (e) => {
 		if (e.button !== 0) return;
@@ -4514,23 +4581,23 @@ var zc = class {
 		if (!t || !n || !this.list) return;
 		e.preventDefault();
 		let r = n.dataset.groupId ?? null, i = n.dataset.id, a, o = /* @__PURE__ */ new Set();
-		if (r) a = new Set(Qs(this.groups, r)), o = /* @__PURE__ */ new Set([r, ...Zs(this.groups, r)]);
+		if (r) a = new Set($s(this.groups, r)), o = /* @__PURE__ */ new Set([r, ...Qs(this.groups, r)]);
 		else if (i) a = this.selected.has(i) ? new Set(this.selected) : /* @__PURE__ */ new Set([i]);
 		else return;
 		if (!a.size) return;
 		let s = e.clientY, c = !1, l = null, u = e.clientY, d = R(this.document, "div", "th-modern-pm-drag-ghost", r ? `移动分组（${a.size} 项）` : `移动 ${a.size} 项`), f = (e) => e.dataset.groupId ? o.has(e.dataset.groupId) : a.has(e.dataset.id ?? ""), p = () => {
 			if (this.autoScrollFrame = 0, !c || !this.list) return;
 			let e = this.list.getBoundingClientRect(), t = 0;
-			u < e.top + Sc && (t = -Math.ceil((e.top + Sc - u) / 3)), u > e.bottom - Sc && (t = Math.ceil((u - e.bottom + Sc) / 3)), t && (this.list.scrollTop += t, l = this.updateDropTarget(u, f, a, o), this.autoScrollFrame = this.window.requestAnimationFrame(p));
+			u < e.top + Cc && (t = -Math.ceil((e.top + Cc - u) / 3)), u > e.bottom - Cc && (t = Math.ceil((u - e.bottom + Cc) / 3)), t && (this.list.scrollTop += t, l = this.updateDropTarget(u, f, a, o), this.autoScrollFrame = this.window.requestAnimationFrame(p));
 		};
-		this.stopDrag?.(), this.stopDrag = Ks({
+		this.stopDrag?.(), this.stopDrag = Ws({
 			target: t,
 			event: e,
 			cursor: "grabbing",
 			onMove: (e) => {
 				if (u = e.clientY, !c) {
-					if (Math.abs(e.clientY - s) < xc) return;
-					c = !0, this.flushEditorApply(), this.document.body.append(d), this.list?.querySelectorAll(".th-modern-pm-row").forEach((e) => {
+					if (Math.abs(e.clientY - s) < Sc || !this.flushEditorApply()) return;
+					c = !0, this.document.body.append(d), this.list?.querySelectorAll(".th-modern-pm-row").forEach((e) => {
 						e.classList.toggle("is-dragging", f(e));
 					});
 				}
@@ -4544,15 +4611,15 @@ var zc = class {
 	applyDrop(e, t, n) {
 		let r = this.promptManager;
 		if (!r) return;
-		let i = this.getOrder(), a = sc(i, t, e.anchorId, e.placement), o = !1;
+		let i = this.getOrder(), a = cc(i, t, e.anchorId, e.placement), o = !1;
 		if (n) {
 			if ((this.getGroup(n)?.parentId ?? null) !== e.groupId) {
-				if (!oc(Ys(r.serviceSettings), n, e.groupId)) return;
+				if (!sc(Xs(r.serviceSettings), n, e.groupId)) return;
 				o = !0;
 			}
-		} else if ([...t].some((t) => ($s(this.groups, t)?.id ?? null) !== e.groupId) && (e.groupId || this.groups.length)) {
+		} else if ([...t].some((t) => (ec(this.groups, t)?.id ?? null) !== e.groupId) && (e.groupId || this.groups.length)) {
 			let n = (a ?? i).filter((e) => t.has(e.identifier)).map((e) => e.identifier);
-			rc(Ys(r.serviceSettings), n, e.groupId), o = !0;
+			ic(Xs(r.serviceSettings), n, e.groupId), o = !0;
 		}
 		(a || o) && (a && this.replaceOrder(a), this.cleanupGroupData(), this.commit());
 	}
@@ -4573,7 +4640,7 @@ var zc = class {
 		if (f) {
 			let e = this.getGroup(f);
 			if (!e) return null;
-			let t = Qs(this.groups, f), n = e.parentId ?? null;
+			let t = $s(this.groups, f), n = e.parentId ?? null;
 			if (c === "before") {
 				let e = u(t);
 				d = e ? {
@@ -4602,7 +4669,7 @@ var zc = class {
 			d = {
 				anchorId: e,
 				placement: c,
-				groupId: $s(this.groups, e)?.id ?? null
+				groupId: ec(this.groups, e)?.id ?? null
 			};
 		}
 		return d ? (a.style.top = `${c === "before" ? s.offsetTop - 1 : s.offsetTop + s.offsetHeight - 1}px`, a.classList.add("is-visible"), d) : (a.classList.remove("is-visible"), null);
@@ -4614,12 +4681,17 @@ var zc = class {
 	syncEditor() {
 		if (!this.editorBody) return;
 		if (this.activeGroupId) {
-			this.flushEditorApply(), this.editingId = null, this.editingPrompt = null, this.renderGroupEditor(this.activeGroupId);
+			if (!this.flushEditorApply()) return;
+			this.editingId = null, this.editingPrompt = null, this.renderGroupEditor(this.activeGroupId);
 			return;
 		}
 		let e = this.activeId, t = e ? this.getPrompt(e) : null, n = this.getEditArea(), r = n ? n.parentElement !== this.editorBody : !1, i = n ? n.style.display === "none" || r : !1;
 		try {
-			e !== this.editingId || t !== this.editingPrompt || t && this.isEditable(t) && i ? (this.flushEditorApply(), this.editingId = e, this.editingPrompt = t, this.loadPromptEditor()) : t && (this.editorView === "preview" || !this.isEditable(t)) && this.renderPreview(), this.renderPromptEditorHeader();
+			if (e !== this.editingId || t !== this.editingPrompt || t && this.isEditable(t) && i) {
+				if (!this.flushEditorApply()) return;
+				this.editingId = e, this.editingPrompt = t, this.loadPromptEditor();
+			} else t && (this.editorView === "preview" || !this.isEditable(t)) && this.renderPreview();
+			this.renderPromptEditorHeader();
 		} catch (e) {
 			console.error("[现代化预设] 同步编辑器区域异常：", e);
 		}
@@ -4641,19 +4713,19 @@ var zc = class {
 	renderPreview(e = !1) {
 		let t = this.promptManager, n = this.editingId, r = this.getInspectArea();
 		if (!t || !n || !this.editorBody) return;
-		r && (this.inspectMove ? r.parentElement !== this.editorBody && this.editorBody.append(r) : this.inspectMove = Fc(r, this.editorBody));
+		r && (this.inspectMove ? r.parentElement !== this.editorBody && this.editorBody.append(r) : this.inspectMove = Ic(r, this.editorBody));
 		let i = this.getEditArea();
 		i && (i.style.display = "none");
 		let a = t.messages?.hasItemWithIdentifier(n) ? t.messages.getItemByIdentifier(n) : null;
 		(e || a !== this.previewSource) && (this.previewSource = a, !r || !a || !t.loadMessagesIntoInspectForm ? (r && (r.style.display = "none"), this.editorBody.hidden = !0, this.setPlaceholder("还没有可查看的内容。打开一个聊天后，酒馆在计算 Token 时会生成每个条目实际发送的消息；也可以点上方的刷新按钮重新计算。")) : (t.clearInspectForm?.(), t.loadMessagesIntoInspectForm(a), r.style.display = "", this.editorBody.hidden = !1, this.setPlaceholder("")));
 	}
 	setEditorView(e) {
-		this.editorView !== e && (this.flushEditorApply(), this.editorView = e, this.loadPromptEditor(), this.renderPromptEditorHeader());
+		this.editorView !== e && this.flushEditorApply() && (this.editorView = e, this.loadPromptEditor(), this.renderPromptEditorHeader());
 	}
 	loadPromptEditor() {
 		let e = this.promptManager, t = this.editingId, n = this.getEditArea();
 		if (!e || !this.editorBody) return;
-		n && (this.editAreaMove ? n.parentElement !== this.editorBody && this.editorBody.append(n) : (this.editAreaMove = Fc(n, this.editorBody), n.addEventListener("input", this.handleEditorInput), n.addEventListener("change", this.handleEditorInput), n.addEventListener("focusout", () => this.flushEditorApply()), n.addEventListener("click", this.handleEditorClick)));
+		n && (this.editAreaMove ? n.parentElement !== this.editorBody && this.editorBody.append(n) : this.editAreaMove = Ic(n, this.editorBody));
 		let r = this.editingPrompt;
 		if (r && (this.editorView === "preview" || !this.isEditable(r))) this.renderPreview(!0);
 		else if (n && r && e.isPromptEditAllowed(r)) {
@@ -4692,39 +4764,39 @@ var zc = class {
 				r.type = "button", r.setAttribute("aria-pressed", String(c === (t === "preview"))), r.disabled = t === "edit" && !s, r.title = t === "edit" ? s ? "编辑模式：修改此条目的内容与参数" : "占位条目的内容由酒馆在生成时填入，不能直接编辑" : "查看模式：查看最近一次实际发送的内容", r.setAttribute("aria-label", r.title), r.addEventListener("click", () => this.setEditorView(t)), e.append(r);
 			}
 			if (o.append(e), c) {
-				let e = Nc(this.document, "", "重新计算实际内容", "bi-arrow-clockwise");
+				let e = Pc(this.document, "", "重新计算实际内容", "bi-arrow-clockwise");
 				e.addEventListener("click", () => {
 					this.previewSource = void 0, this.promptManager?.render();
 				}), o.append(e);
 			}
 		}
 		if (a && i) {
-			let e = Pc(this.document, a.enabled, a.enabled ? "条目状态：已启用（点击关闭）" : "条目状态：已关闭（点击启用）");
+			let e = Fc(this.document, a.enabled, a.enabled ? "条目状态：已启用（点击关闭）" : "条目状态：已关闭（点击启用）");
 			e.disabled = !n.isPromptToggleAllowed(i), e.addEventListener("click", (e) => {
 				e.stopPropagation(), this.toggleEntry(r);
 			}), o.append(e);
 		}
 		if (a) {
-			let e = Nc(this.document, "", "将此条目放入新分组", "bi-folder-plus");
+			let e = Pc(this.document, "", "将此条目放入新分组", "bi-folder-plus");
 			e.addEventListener("click", () => void this.createGroupFromSelection([r])), o.append(e);
 		}
 		if (i && !i.marker) {
-			let e = Nc(this.document, "", "复制此条目生成副本", "bi-files");
+			let e = Pc(this.document, "", "复制此条目生成副本", "bi-files");
 			e.addEventListener("click", () => this.copyEntries([r])), o.append(e);
 		}
 		if (i && a) {
-			let e = n.isPromptDeletionAllowed(i), t = Nc(this.document, "is-danger", e ? "删除此条目" : "移出列表（内置条目不能删除）", e ? "bi-trash3" : "bi-box-arrow-right");
+			let e = n.isPromptDeletionAllowed(i), t = Pc(this.document, "is-danger", e ? "删除此条目" : "移出列表（内置条目不能删除）", e ? "bi-trash3" : "bi-box-arrow-right");
 			t.addEventListener("click", () => void this.deleteEntries([r])), o.append(t);
 		}
-		e.append(this.createBackButton(), R(this.document, "div", "th-modern-pm-editor-title", Lc(i, r)), o);
-		let l = $s(this.groups, r);
+		e.append(this.createBackButton(), R(this.document, "div", "th-modern-pm-editor-title", Rc(i, r)), o);
+		let l = ec(this.groups, r);
 		if (l) {
 			let e = R(this.document, "div", "th-modern-pm-editor-path");
-			e.append(R(this.document, "i", Ac("bi-folder2-open"))), e.append(R(this.document, "span", "", l.name || "未命名分组")), l.single_select && e.append(R(this.document, "span", "th-modern-pm-badge is-mode", "单选")), t.append(e);
+			e.append(R(this.document, "i", jc("bi-folder2-open"))), e.append(R(this.document, "span", "", l.name || "未命名分组")), l.single_select && e.append(R(this.document, "span", "th-modern-pm-badge is-mode", "单选")), t.append(e);
 		}
 	}
 	createBackButton() {
-		let e = Nc(this.document, "th-modern-pm-back", "返回列表", "bi-arrow-left");
+		let e = Pc(this.document, "th-modern-pm-back", "返回列表", "bi-arrow-left");
 		return e.addEventListener("click", () => {
 			this.detailOpen = !1, this.updateNarrow();
 		}), e;
@@ -4733,32 +4805,32 @@ var zc = class {
 		let t = this.editorHeader, n = this.editorExtra, r = this.getGroup(e);
 		if (!t || !n || !r) return;
 		this.showEditArea(!1), t.replaceChildren(), n.replaceChildren();
-		let i = this.getOrder(), a = this.getGroupState(r, i), o = R(this.document, "div", "th-modern-pm-editor-actions"), s = Nc(this.document, "is-danger", "解散分组", "bi-folder-x");
-		s.addEventListener("click", () => void this.dissolveGroup(e)), o.append(s), t.append(this.createBackButton(), R(this.document, "div", "th-modern-pm-editor-title", r.name || "未命名分组"), o);
-		let c = R(this.document, "div", "th-modern-pm-group-form"), l = R(this.document, "label", "th-modern-pm-field");
-		l.append(R(this.document, "span", "", "分组名称"));
-		let u = R(this.document, "input", "text_pole");
-		u.value = r.name, u.addEventListener("change", () => {
-			let t = u.value.trim();
+		let i = this.getGroupState(r), a = R(this.document, "div", "th-modern-pm-editor-actions"), o = Pc(this.document, "is-danger", "解散分组", "bi-folder-x");
+		o.addEventListener("click", () => void this.dissolveGroup(e)), a.append(o), t.append(this.createBackButton(), R(this.document, "div", "th-modern-pm-editor-title", r.name || "未命名分组"), a);
+		let s = R(this.document, "div", "th-modern-pm-group-form"), c = R(this.document, "label", "th-modern-pm-field");
+		c.append(R(this.document, "span", "", "分组名称"));
+		let l = R(this.document, "input", "text_pole");
+		l.value = r.name, l.addEventListener("change", () => {
+			let t = l.value.trim();
 			t && t !== r.name && this.updateGroup(e, (e) => e.name = t);
-		}), l.append(u);
-		let d = R(this.document, "label", "th-modern-pm-field");
-		d.append(R(this.document, "span", "", "选择方式"));
-		let f = R(this.document, "select", "text_pole");
+		}), c.append(l);
+		let u = R(this.document, "label", "th-modern-pm-field");
+		u.append(R(this.document, "span", "", "选择方式"));
+		let d = R(this.document, "select", "text_pole");
 		for (let [e, t] of [["multi", "可多选"], ["single", "单选：开启一项时关闭同组其它项"]]) {
 			let n = R(this.document, "option", "", t);
-			n.value = e, f.append(n);
+			n.value = e, d.append(n);
 		}
-		f.value = r.single_select ? "single" : "multi", f.addEventListener("change", () => {
+		d.value = r.single_select ? "single" : "multi", d.addEventListener("change", () => {
 			this.updateGroup(e, (e) => {
-				f.value === "single" ? e.single_select = !0 : delete e.single_select;
+				d.value === "single" ? e.single_select = !0 : delete e.single_select;
 			});
-		}), d.append(f);
-		let p = R(this.document, "p", "th-modern-pm-group-summary", `共 ${a.total} 个条目，已开启 ${a.enabled} 个。拖动组标题可以整组移动；把条目拖进或拖出分组即可调整成员。`), m = R(this.document, "small", "th-modern-pm-meta-hint", "分组保存在预设的 Luker 分组数据里，Luker 原生界面也能识别；单选设置只在现代化界面中生效。");
-		c.append(l, d, p, m), n.append(c);
+		}), u.append(d);
+		let f = R(this.document, "p", "th-modern-pm-group-summary", `共 ${i.total} 个条目，已开启 ${i.enabled} 个。拖动组标题可以整组移动；把条目拖进或拖出分组即可调整成员。`), p = R(this.document, "small", "th-modern-pm-meta-hint", "分组保存在预设的 Luker 分组数据里，Luker 原生界面也能识别；单选设置只在现代化界面中生效。");
+		s.append(c, u, f, p), n.append(s);
 	}
 	handleEditorInput = () => {
-		!this.suppressEditorEvents && this.editingId && (this.dirty = !0, this.renderDirty(), this.window.clearTimeout(this.applyTimer), this.applyTimer = this.window.setTimeout(() => this.applyEditor(), _c));
+		!this.suppressEditorEvents && this.editingId && (this.localDirty = !0, this.editorApplyPending = !0, this.editRevision++, this.dirty = !0, this.renderDirty(), this.window.clearTimeout(this.applyTimer), this.applyTimer = this.window.setTimeout(() => this.applyEditor(), vc));
 	};
 	handleEditorClick = (e) => {
 		let t = this.promptManager?.configuration.prefix ?? "completion_";
@@ -4766,99 +4838,114 @@ var zc = class {
 			this.editingId = null, this.editingPrompt = null, this.syncEditor(), this.scheduleDirtyCheck();
 		}, 50);
 	};
+	flushEditorApplyOnFocusOut = () => {
+		this.flushEditorApply();
+	};
 	flushEditorApply() {
-		this.applyTimer && this.applyEditor();
+		return !this.editorApplyPending || this.applyEditor() ? !0 : (this.window.toastr?.error?.("条目内容未能写回，请保留当前内容并重试。"), !1);
 	}
 	applyEditor() {
 		this.window.clearTimeout(this.applyTimer), this.applyTimer = 0;
 		let e = this.promptManager, t = this.editingId, n = t ? this.getPrompt(t) : null;
-		if (e && t && n) {
-			try {
-				if (e.isPromptEditAllowed(n)) e.updatePromptWithPromptEditForm(n);
-				else {
-					let t = e.configuration?.prefix ?? "completion_", r = this.document.getElementById(`${t}prompt_manager_popup_entry_form_prompt`);
-					r && !r.disabled && n.content !== r.value && (n.content = r.value);
-				}
-			} catch (e) {
-				console.warn("[现代化预设] 保存表单到条目异常：", e);
+		if (!e || !t || !n) return !1;
+		let r = JSON.stringify([
+			n.name,
+			n.role,
+			n.marker,
+			n.system_prompt,
+			n.injection_position,
+			n.injection_depth
+		]);
+		try {
+			if (e.isPromptEditAllowed(n)) e.updatePromptWithPromptEditForm(n);
+			else {
+				let t = e.configuration?.prefix ?? "completion_", r = this.document.getElementById(`${t}prompt_manager_popup_entry_form_prompt`);
+				r && !r.disabled && n.content !== r.value && (n.content = r.value);
 			}
-			gc.includes(t) && e.updateQuickEdit?.(t, n), this.resetTokenCount(t), this.commit(!1);
+		} catch (e) {
+			return console.error("[现代化预设] 保存表单到条目异常：", e), !1;
 		}
+		_c.includes(t) && e.updateQuickEdit?.(t, n), this.resetTokenCount(t);
+		let i = r !== JSON.stringify([
+			n.name,
+			n.role,
+			n.marker,
+			n.system_prompt,
+			n.injection_position,
+			n.injection_depth
+		]);
+		return this.commit(i, i), this.editorApplyPending = !1, !0;
 	}
 	focusEditorName() {
 		let e = this.promptManager?.configuration.prefix ?? "completion_", t = this.document.getElementById(`${e}prompt_manager_popup_entry_form_name`);
 		t?.focus(), t?.select();
 	}
 };
-function Bc(e, t = {}) {
-	let n = new zc(e, t), r = I(), i = (e) => {
-		e.target?.closest?.("#left-nav-panel") && n.scheduleDirtyCheck();
-	};
-	r.addEventListener("input", i, !0), r.addEventListener("change", i, !0);
-	let a = Qn(() => [e.is_active, e.settings.modernPresetEditor], () => n.scheduleSync(), { immediate: !0 });
+function Vc(e, t = {}) {
+	let n = new Bc(e, t), r = Zn(() => [e.is_active, e.settings.modernPresetEditor], () => n.scheduleSync(), { immediate: !0 });
 	return {
 		scheduleSync() {
 			n.scheduleSync();
 		},
 		destroy() {
-			a(), r.removeEventListener("input", i, !0), r.removeEventListener("change", i, !0), n.destroy();
+			r(), n.destroy();
 		}
 	};
 }
 // src/extension-settings-module.ts
-var Vc = "th-modern-extension-settings", Hc = "th-modern-extension-panel", Uc = "th-modern-extension-layout", Wc = "th-modern-extension-nav", Gc = "th-modern-extension-nav-list", Kc = "th-modern-extension-nav-count", qc = "th-modern-extension-nav-item", Jc = "is-active", Yc = "th-modern-extension-column", Xc = "is-active", Zc = "th-modern-extension-host-hidden", Qc = "th-modern-extension-host-active", $c = "th-modern-extension-drawer", el = "th-modern-extension-drawer-active", tl = "th-modern-extension-mobile-accordion", nl = 440, rl = "TavernHelper.modernLayout.selectedExtensionSettings";
-function il(e) {
+var Hc = "th-modern-extension-settings", Uc = "th-modern-extension-panel", Wc = "th-modern-extension-layout", Gc = "th-modern-extension-nav", Kc = "th-modern-extension-nav-list", qc = "th-modern-extension-nav-count", Jc = "th-modern-extension-nav-item", Yc = "is-active", Xc = "th-modern-extension-column", Zc = "is-active", Qc = "th-modern-extension-host-hidden", $c = "th-modern-extension-host-active", el = "th-modern-extension-drawer", tl = "th-modern-extension-drawer-active", nl = "th-modern-extension-mobile-accordion", rl = 440, il = "TavernHelper.modernLayout.selectedExtensionSettings";
+function al(e) {
 	return (e ?? "").replace(/\s+/g, " ").trim();
 }
-function al(e) {
+function ol(e) {
 	return e.matches(".inline-drawer") ? [e] : Array.from(e.querySelectorAll(".inline-drawer")).filter((t) => {
 		let n = t.parentElement?.closest(".inline-drawer");
 		return !n || !e.contains(n);
 	});
 }
-function ol(e, t) {
+function sl(e, t) {
 	let n = t;
 	for (; n.parentElement && n.parentElement !== e;) n = n.parentElement;
 	return n;
 }
-function sl(e, t) {
+function cl(e, t) {
 	let n = t?.querySelector(":scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle"), r = n?.querySelector("b, strong, h3, h4") ?? n ?? e.querySelector("h3, h4, .standoutHeader");
 	if (!r) return {
-		title: il(e.id.replace(/_container$/i, "").replaceAll("_", " ")) || "未命名扩展",
+		title: al(e.id.replace(/_container$/i, "").replaceAll("_", " ")) || "未命名扩展",
 		badge: null
 	};
 	let i = r.cloneNode(!0);
 	i.querySelectorAll("a, button, .notes-link, i, svg, .inline-drawer-icon").forEach((e) => e.remove());
 	let a = null, o = Array.from(i.querySelectorAll("span, small, em")).find((e) => {
-		let t = il(e.textContent), n = e.classList.contains("text-red-500") || e.classList.contains("badge") || e.classList.contains("th-text-xs"), r = /^new!?$/i.test(t);
+		let t = al(e.textContent), n = e.classList.contains("text-red-500") || e.classList.contains("badge") || e.classList.contains("th-text-xs"), r = /^new!?$/i.test(t);
 		return (n || r) && t.length > 0;
 	});
-	o && (a = il(o.textContent) || null, o.remove());
-	let s = il(i.textContent);
-	return !s && a && (s = a, a = null), s ||= il(e.id.replace(/_container$/i, "").replaceAll("_", " ")) || "未命名扩展", {
+	o && (a = al(o.textContent) || null, o.remove());
+	let s = al(i.textContent);
+	return !s && a && (s = a, a = null), s ||= al(e.id.replace(/_container$/i, "").replaceAll("_", " ")) || "未命名扩展", {
 		title: s,
 		badge: a
 	};
 }
-function cl(e) {
-	let t = I(), n = L(), r = null, i = null, a = null, o = null, s = null, c = [], l = [], u = S(), d = "", f = 0, p = 0, m = null, h = null, g = null, v = null, y = () => n.matchMedia("(max-width: 899.98px)").matches, b = y() || n.matchMedia(`(max-width: ${nl}px)`).matches, x = () => {
+function ll(e) {
+	let t = I(), n = L(), r = null, i = null, a = null, o = null, s = null, c = [], l = [], u = S(), d = "", f = 0, p = 0, m = null, h = null, g = null, v = null, y = () => n.matchMedia("(max-width: 899.98px)").matches, b = y() || n.matchMedia(`(max-width: ${rl}px)`).matches, x = () => {
 		r && ae(r.getBoundingClientRect().width);
 	};
 	function S() {
 		try {
-			return n.sessionStorage.getItem(rl);
+			return n.sessionStorage.getItem(il);
 		} catch {
 			return null;
 		}
 	}
 	function C(e) {
 		try {
-			e ? n.sessionStorage.setItem(rl, e) : n.sessionStorage.removeItem(rl);
+			e ? n.sessionStorage.setItem(il, e) : n.sessionStorage.removeItem(il);
 		} catch {}
 	}
 	function w() {
 		let e = /* @__PURE__ */ new Map(), t = [], r = (n, r, i, a, o) => {
-			let { title: s, badge: c } = sl(i, a), l = i.getAttribute("script_id") ?? a?.getAttribute("script_id") ?? r.getAttribute("script_id"), u = o ?? (i.id ? `id:${i.id}` : a?.id ? `id:${a.id}` : l ? `script:${l}` : `column:${n.id}:title:${s}`), d = e.get(u) ?? 0;
+			let { title: s, badge: c } = cl(i, a), l = i.getAttribute("script_id") ?? a?.getAttribute("script_id") ?? r.getAttribute("script_id"), u = o ?? (i.id ? `id:${i.id}` : a?.id ? `id:${a.id}` : l ? `script:${l}` : `column:${n.id}:title:${s}`), d = e.get(u) ?? 0;
 			e.set(u, d + 1);
 			let f = d === 0 ? u : `${u}:${d}`, p = a?.querySelector(":scope > .inline-drawer-toggle.inline-drawer-header, :scope > .inline-drawer-toggle") ?? null, m = a?.querySelector(":scope > .inline-drawer-content") ?? null;
 			t.push({
@@ -4875,14 +4962,14 @@ function cl(e) {
 		};
 		return c.forEach((e) => {
 			Array.from(e.children).forEach((t) => {
-				if (!(t instanceof n.HTMLElement) || t === a || t.classList.contains("mc3-hidden") || t.classList.contains("displayNone") || t.hidden || t.style.display === "none" && !t.classList.contains(Zc)) return;
-				let i = al(t).filter((e) => !e.classList.contains("mc3-hidden") && !e.classList.contains("displayNone") && !e.hidden && e.style.display !== "none"), o = t.childElementCount > 0 && il(t.textContent).length > 0;
+				if (!(t instanceof n.HTMLElement) || t === a || t.classList.contains("mc3-hidden") || t.classList.contains("displayNone") || t.hidden || t.style.display === "none" && !t.classList.contains(Qc)) return;
+				let i = ol(t).filter((e) => !e.classList.contains("mc3-hidden") && !e.classList.contains("displayNone") && !e.hidden && e.style.display !== "none"), o = t.childElementCount > 0 && al(t.textContent).length > 0;
 				if (i.length === 0 && !o) return;
 				if (i.length <= 1) {
 					r(e, t, t, i[0] ?? null);
 					return;
 				}
-				let s = i.map((e) => ol(t, e)), c = /* @__PURE__ */ new Map();
+				let s = i.map((e) => sl(t, e)), c = /* @__PURE__ */ new Map();
 				s.forEach((e) => c.set(e, (c.get(e) ?? 0) + 1));
 				let l = t.id ? `id:${t.id}` : t.getAttribute("script_id") ? `script:${t.getAttribute("script_id")}` : void 0;
 				i.forEach((n, i) => {
@@ -4896,9 +4983,9 @@ function cl(e) {
 		return !e.content || e.drawer?.classList.contains("open") || e.content.classList.contains("open") || e.header?.querySelector(".inline-drawer-icon")?.classList.contains("up") ? !0 : e.content.style.display ? e.content.style.display !== "none" : !1;
 	}
 	function ee() {
-		o?.querySelectorAll(`.${qc}`).forEach((e) => {
+		o?.querySelectorAll(`.${Jc}`).forEach((e) => {
 			let t = e.dataset.extensionKey === u;
-			e.classList.toggle(Jc, t), e.setAttribute("aria-current", t ? "page" : "false");
+			e.classList.toggle(Yc, t), e.setAttribute("aria-current", t ? "page" : "false");
 		});
 	}
 	function te() {
@@ -4906,7 +4993,7 @@ function cl(e) {
 		let e = t.createDocumentFragment();
 		l.forEach((n) => {
 			let r = t.createElement("button");
-			r.type = "button", r.className = qc, r.dataset.extensionKey = n.key, r.title = n.badge ? `${n.title} (${n.badge})` : n.title;
+			r.type = "button", r.className = Jc, r.dataset.extensionKey = n.key, r.title = n.badge ? `${n.title} (${n.badge})` : n.title;
 			let i = t.createElement("span");
 			if (i.className = "th-modern-extension-nav-label", i.textContent = n.title, r.append(i), n.badge) {
 				let e = t.createElement("span");
@@ -4918,10 +5005,10 @@ function cl(e) {
 	function ne() {
 		if (b) {
 			l.forEach((e) => {
-				e.host.classList.remove(Zc, Qc), e.drawer?.classList.remove(el);
+				e.host.classList.remove(Qc, $c), e.drawer?.classList.remove(tl);
 			}), c.forEach((e) => {
-				e.classList.remove(Xc), Array.from(e.children).forEach((e) => {
-					e instanceof n.HTMLElement && e !== a && e.classList.remove(Zc, Qc);
+				e.classList.remove(Zc), Array.from(e.children).forEach((e) => {
+					e instanceof n.HTMLElement && e !== a && e.classList.remove(Qc, $c);
 				});
 			}), ee();
 			return;
@@ -4929,13 +5016,13 @@ function cl(e) {
 		let e = l.find((e) => e.key === u) ?? null;
 		l.forEach((t) => {
 			let n = t === e;
-			t.host.classList.toggle(Zc, !n), t.host.classList.toggle(Qc, n), t.drawer?.classList.toggle(el, n), t.content && (t.content.classList.toggle("open", n), n && t.content.style.display === "none" && t.content.style.removeProperty("display"));
+			t.host.classList.toggle(Qc, !n), t.host.classList.toggle($c, n), t.drawer?.classList.toggle(tl, n), t.content && (t.content.classList.toggle("open", n), n && t.content.style.display === "none" && t.content.style.removeProperty("display"));
 		}), c.forEach((t) => {
 			let r = e?.column === t;
-			t.classList.toggle(Xc, r), Array.from(t.children).forEach((t) => {
+			t.classList.toggle(Zc, r), Array.from(t.children).forEach((t) => {
 				if (t instanceof n.HTMLElement && t !== a) {
 					let n = r && e ? t === e.sourceHost || t === e.host || t.contains(e.host) : !1;
-					t.classList.toggle(Zc, !n);
+					t.classList.toggle(Qc, !n);
 				}
 			});
 		}), ee();
@@ -4952,15 +5039,15 @@ function cl(e) {
 		l.some((t) => t.key === e) && (u = e, C(u), ne(), E());
 	}
 	function ae(e) {
-		let t = y() || e > 0 && e < nl;
-		r?.classList.toggle(tl, t), b !== t && (b = t, ne(), b || E());
+		let t = y() || e > 0 && e < rl;
+		r?.classList.toggle(nl, t), b !== t && (b = t, ne(), b || E());
 	}
 	function oe() {
 		if (f = 0, !i?.isConnected) return;
 		let e = w();
 		l.forEach((e) => {
-			e.host.classList.remove(Zc, Qc), e.drawer?.classList.remove($c, el);
-		}), l = e, l.forEach((e) => e.drawer?.classList.add($c)), l.some((e) => e.key === u) || (u = l.find(T)?.key ?? l[0]?.key ?? null, C(u));
+			e.host.classList.remove(Qc, $c), e.drawer?.classList.remove(el, tl);
+		}), l = e, l.forEach((e) => e.drawer?.classList.add(el)), l.some((e) => e.key === u) || (u = l.find(T)?.key ?? l[0]?.key ?? null, C(u));
 		let t = l.map((e) => `${e.key}\u0000${e.title}\u0000${e.badge ?? ""}`).join("");
 		t !== d && (d = t, te()), ne(), D(), E();
 	}
@@ -4989,22 +5076,22 @@ function cl(e) {
 		}));
 	}
 	function le(e) {
-		let t = (e.target instanceof n.Element ? e.target : null)?.closest(`.${qc}`);
+		let t = (e.target instanceof n.Element ? e.target : null)?.closest(`.${Jc}`);
 		if (!t || !a?.contains(t)) return;
 		let r = t.dataset.extensionKey;
 		r && ie(r);
 	}
 	function ue() {
 		let e = t.createElement("nav");
-		e.className = Wc, e.setAttribute("aria-label", "扩展程序设置");
+		e.className = Gc, e.setAttribute("aria-label", "扩展程序设置");
 		let n = t.createElement("div");
 		n.className = "th-modern-extension-nav-header";
 		let r = t.createElement("span");
 		r.textContent = "扩展设置";
 		let i = t.createElement("span");
-		i.className = Kc, n.append(r, i);
+		i.className = qc, n.append(r, i);
 		let a = t.createElement("div");
-		return a.className = Gc, e.append(n, a), e.addEventListener("click", le), o = a, s = i, e;
+		return a.className = Kc, e.append(n, a), e.addEventListener("click", le), o = a, s = i, e;
 	}
 	function de() {
 		if (i?.isConnected) {
@@ -5015,9 +5102,9 @@ function cl(e) {
 			r = null, i = null, c = [];
 			return;
 		}
-		t.body.classList.add(Vc), r.classList.add(Hc), i.classList.add(Uc), c.forEach((e) => e.classList.add(Yc));
+		t.body.classList.add(Hc), r.classList.add(Uc), i.classList.add(Wc), c.forEach((e) => e.classList.add(Xc));
 		let e = r.getBoundingClientRect().width;
-		b = y() || e > 0 && e < nl, r.classList.toggle(tl, b), a = ue(), c[0].before(a), v = n.matchMedia("(max-width: 899.98px)"), v.addEventListener?.("change", x), m = new n.MutationObserver(ce), D(), h = new n.MutationObserver(() => E()), h.observe(r, {
+		b = y() || e > 0 && e < rl, r.classList.toggle(nl, b), a = ue(), c[0].before(a), v = n.matchMedia("(max-width: 899.98px)"), v.addEventListener?.("change", x), m = new n.MutationObserver(ce), D(), h = new n.MutationObserver(() => E()), h.observe(r, {
 			attributes: !0,
 			attributeFilter: ["class"]
 		}), g = new n.ResizeObserver((e) => {
@@ -5027,12 +5114,12 @@ function cl(e) {
 	}
 	function fe() {
 		v?.removeEventListener?.("change", x), v = null, m?.disconnect(), m = null, h?.disconnect(), h = null, g?.disconnect(), g = null, f !== 0 && (n.cancelAnimationFrame(f), f = 0), p !== 0 && (n.cancelAnimationFrame(p), p = 0), a?.removeEventListener("click", le), a?.remove(), l.forEach((e) => {
-			e.host.classList.remove(Zc, Qc), e.drawer?.classList.remove($c, el);
+			e.host.classList.remove(Qc, $c), e.drawer?.classList.remove(el, tl);
 		}), c.forEach((e) => {
-			e.classList.remove(Yc, Xc), e.querySelectorAll(`.${el}`).forEach((e) => e.classList.remove(el)), Array.from(e.children).forEach((e) => e.classList.remove(Zc, Qc));
-		}), i?.classList.remove(Uc), r?.classList.remove(Hc, tl), t.body.classList.remove(Vc), r = null, i = null, a = null, o = null, s = null, c = [], l = [], d = "";
+			e.classList.remove(Xc, Zc), e.querySelectorAll(`.${tl}`).forEach((e) => e.classList.remove(tl)), Array.from(e.children).forEach((e) => e.classList.remove(Qc, $c));
+		}), i?.classList.remove(Wc), r?.classList.remove(Uc, nl), t.body.classList.remove(Hc), r = null, i = null, a = null, o = null, s = null, c = [], l = [], d = "";
 	}
-	let pe = Qn(() => [e.is_active, e.settings.modernExtensionSettings], ([e, t]) => {
+	let pe = Zn(() => [e.is_active, e.settings.modernExtensionSettings], ([e, t]) => {
 		e && t ? de() : fe();
 	}, { immediate: !0 });
 	return { destroy() {
@@ -5070,13 +5157,13 @@ var z;
 	}
 	e.joinValues = r, e.jsonStringifyReplacer = (e, t) => typeof t == "bigint" ? t.toString() : t;
 })(z ||= {});
-var ll;
+var ul;
 (function(e) {
 	e.mergeShapes = (e, t) => ({
 		...e,
 		...t
 	});
-})(ll ||= {});
+})(ul ||= {});
 var B = z.arrayToEnum([
 	"string",
 	"nan",
@@ -5098,7 +5185,7 @@ var B = z.arrayToEnum([
 	"never",
 	"map",
 	"set"
-]), ul = (e) => {
+]), dl = (e) => {
 	switch (typeof e) {
 		case "undefined": return B.undefined;
 		case "string": return B.string;
@@ -5127,7 +5214,7 @@ var B = z.arrayToEnum([
 	"invalid_intersection_types",
 	"not_multiple_of",
 	"not_finite"
-]), dl = class e extends Error {
+]), fl = class e extends Error {
 	get errors() {
 		return this.issues;
 	}
@@ -5185,9 +5272,9 @@ var B = z.arrayToEnum([
 		return this.flatten();
 	}
 };
-dl.create = (e) => new dl(e);
+fl.create = (e) => new fl(e);
 // node_modules/zod/v3/locales/en.js
-var fl = (e, t) => {
+var pl = (e, t) => {
 	let n;
 	switch (e.code) {
 		case V.invalid_type:
@@ -5241,12 +5328,12 @@ var fl = (e, t) => {
 		default: n = t.defaultError, z.assertNever(e);
 	}
 	return { message: n };
-}, pl = fl;
-function ml() {
-	return pl;
+}, ml = pl;
+function hl() {
+	return ml;
 }
 // node_modules/zod/v3/helpers/parseUtil.js
-var hl = (e) => {
+var gl = (e) => {
 	let { data: t, path: n, errorMaps: r, issueData: i } = e, a = [...n, ...i.path || []], o = {
 		...i,
 		path: a
@@ -5268,7 +5355,7 @@ var hl = (e) => {
 	};
 };
 function H(e, t) {
-	let n = ml(), r = hl({
+	let n = hl(), r = gl({
 		issueData: t,
 		data: e.data,
 		path: e.path,
@@ -5276,12 +5363,12 @@ function H(e, t) {
 			e.common.contextualErrorMap,
 			e.schemaErrorMap,
 			n,
-			n === fl ? void 0 : fl
+			n === pl ? void 0 : pl
 		].filter((e) => !!e)
 	});
 	e.common.issues.push(r);
 }
-var gl = class e {
+var _l = class e {
 	constructor() {
 		this.value = "valid";
 	}
@@ -5325,26 +5412,26 @@ var gl = class e {
 			value: n
 		};
 	}
-}, U = Object.freeze({ status: "aborted" }), _l = (e) => ({
+}, U = Object.freeze({ status: "aborted" }), vl = (e) => ({
 	status: "dirty",
 	value: e
-}), vl = (e) => ({
+}), yl = (e) => ({
 	status: "valid",
 	value: e
-}), yl = (e) => e.status === "aborted", bl = (e) => e.status === "dirty", xl = (e) => e.status === "valid", Sl = (e) => typeof Promise < "u" && e instanceof Promise, W;
+}), bl = (e) => e.status === "aborted", xl = (e) => e.status === "dirty", Sl = (e) => e.status === "valid", Cl = (e) => typeof Promise < "u" && e instanceof Promise, W;
 (function(e) {
 	e.errToObj = (e) => typeof e == "string" ? { message: e } : e || {}, e.toString = (e) => typeof e == "string" ? e : e?.message;
 })(W ||= {});
 // node_modules/zod/v3/types.js
-var Cl = class {
+var wl = class {
 	constructor(e, t, n, r) {
 		this._cachedPath = [], this.parent = e, this.data = t, this._path = n, this._key = r;
 	}
 	get path() {
 		return this._cachedPath.length || (Array.isArray(this._key) ? this._cachedPath.push(...this._path, ...this._key) : this._cachedPath.push(...this._path, this._key)), this._cachedPath;
 	}
-}, wl = (e, t) => {
-	if (xl(t)) return {
+}, Tl = (e, t) => {
+	if (Sl(t)) return {
 		success: !0,
 		data: t.value
 	};
@@ -5353,7 +5440,7 @@ var Cl = class {
 		success: !1,
 		get error() {
 			if (this._error) return this._error;
-			let t = new dl(e.common.issues);
+			let t = new fl(e.common.issues);
 			return this._error = t, this._error;
 		}
 	};
@@ -5378,13 +5465,13 @@ var K = class {
 		return this._def.description;
 	}
 	_getType(e) {
-		return ul(e.data);
+		return dl(e.data);
 	}
 	_getOrReturnCtx(e, t) {
 		return t || {
 			common: e.parent.common,
 			data: e.data,
-			parsedType: ul(e.data),
+			parsedType: dl(e.data),
 			schemaErrorMap: this._def.errorMap,
 			path: e.path,
 			parent: e.parent
@@ -5392,11 +5479,11 @@ var K = class {
 	}
 	_processInputParams(e) {
 		return {
-			status: new gl(),
+			status: new _l(),
 			ctx: {
 				common: e.parent.common,
 				data: e.data,
-				parsedType: ul(e.data),
+				parsedType: dl(e.data),
 				schemaErrorMap: this._def.errorMap,
 				path: e.path,
 				parent: e.parent
@@ -5405,7 +5492,7 @@ var K = class {
 	}
 	_parseSync(e) {
 		let t = this._parse(e);
-		if (Sl(t)) throw Error("Synchronous parse encountered promise.");
+		if (Cl(t)) throw Error("Synchronous parse encountered promise.");
 		return t;
 	}
 	_parseAsync(e) {
@@ -5428,9 +5515,9 @@ var K = class {
 			schemaErrorMap: this._def.errorMap,
 			parent: null,
 			data: e,
-			parsedType: ul(e)
+			parsedType: dl(e)
 		};
-		return wl(n, this._parseSync({
+		return Tl(n, this._parseSync({
 			data: e,
 			path: n.path,
 			parent: n
@@ -5446,7 +5533,7 @@ var K = class {
 			schemaErrorMap: this._def.errorMap,
 			parent: null,
 			data: e,
-			parsedType: ul(e)
+			parsedType: dl(e)
 		};
 		if (!this["~standard"].async) try {
 			let n = this._parseSync({
@@ -5454,7 +5541,7 @@ var K = class {
 				path: [],
 				parent: t
 			});
-			return xl(n) ? { value: n.value } : { issues: t.common.issues };
+			return Sl(n) ? { value: n.value } : { issues: t.common.issues };
 		} catch (e) {
 			e?.message?.toLowerCase()?.includes("encountered") && (this["~standard"].async = !0), t.common = {
 				issues: [],
@@ -5465,7 +5552,7 @@ var K = class {
 			data: e,
 			path: [],
 			parent: t
-		}).then((e) => xl(e) ? { value: e.value } : { issues: t.common.issues });
+		}).then((e) => Sl(e) ? { value: e.value } : { issues: t.common.issues });
 	}
 	async parseAsync(e, t) {
 		let n = await this.safeParseAsync(e, t);
@@ -5483,13 +5570,13 @@ var K = class {
 			schemaErrorMap: this._def.errorMap,
 			parent: null,
 			data: e,
-			parsedType: ul(e)
+			parsedType: dl(e)
 		}, r = this._parse({
 			data: e,
 			path: n.path,
 			parent: n
 		});
-		return wl(n, await (Sl(r) ? r : Promise.resolve(r)));
+		return Tl(n, await (Cl(r) ? r : Promise.resolve(r)));
 	}
 	refine(e, t) {
 		let n = (e) => typeof t == "string" || t === void 0 ? { message: t } : typeof t == "function" ? t(e) : t;
@@ -5505,7 +5592,7 @@ var K = class {
 		return this._refinement((n, r) => e(n) ? !0 : (r.addIssue(typeof t == "function" ? t(n, r) : t), !1));
 	}
 	_refinement(e) {
-		return new Du({
+		return new Ou({
 			schema: this,
 			typeName: q.ZodEffects,
 			effect: {
@@ -5525,28 +5612,28 @@ var K = class {
 		};
 	}
 	optional() {
-		return Ou.create(this, this._def);
+		return ku.create(this, this._def);
 	}
 	nullable() {
-		return ku.create(this, this._def);
+		return Au.create(this, this._def);
 	}
 	nullish() {
 		return this.nullable().optional();
 	}
 	array() {
-		return cu.create(this);
+		return lu.create(this);
 	}
 	promise() {
-		return Eu.create(this, this._def);
+		return Du.create(this, this._def);
 	}
 	or(e) {
-		return du.create([this, e], this._def);
+		return fu.create([this, e], this._def);
 	}
 	and(e) {
-		return hu.create(this, e, this._def);
+		return gu.create(this, e, this._def);
 	}
 	transform(e) {
-		return new Du({
+		return new Ou({
 			...G(this._def),
 			schema: this,
 			typeName: q.ZodEffects,
@@ -5558,7 +5645,7 @@ var K = class {
 	}
 	default(e) {
 		let t = typeof e == "function" ? e : () => e;
-		return new Au({
+		return new ju({
 			...G(this._def),
 			innerType: this,
 			defaultValue: t,
@@ -5566,7 +5653,7 @@ var K = class {
 		});
 	}
 	brand() {
-		return new Nu({
+		return new Pu({
 			typeName: q.ZodBranded,
 			type: this,
 			...G(this._def)
@@ -5574,7 +5661,7 @@ var K = class {
 	}
 	catch(e) {
 		let t = typeof e == "function" ? e : () => e;
-		return new ju({
+		return new Mu({
 			...G(this._def),
 			innerType: this,
 			catchValue: t,
@@ -5589,10 +5676,10 @@ var K = class {
 		});
 	}
 	pipe(e) {
-		return Pu.create(this, e);
+		return Fu.create(this, e);
 	}
 	readonly() {
-		return Fu.create(this);
+		return Iu.create(this);
 	}
 	isOptional() {
 		return this.safeParse(void 0).success;
@@ -5600,25 +5687,25 @@ var K = class {
 	isNullable() {
 		return this.safeParse(null).success;
 	}
-}, Tl = /^c[^\s-]{8,}$/i, El = /^[0-9a-z]+$/, Dl = /^[0-9A-HJKMNP-TV-Z]{26}$/i, Ol = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i, kl = /^[a-z0-9_-]{21}$/i, Al = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/, jl = /^[-+]?P(?!$)(?:(?:[-+]?\d+Y)|(?:[-+]?\d+[.,]\d+Y$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:(?:[-+]?\d+W)|(?:[-+]?\d+[.,]\d+W$))?(?:(?:[-+]?\d+D)|(?:[-+]?\d+[.,]\d+D$))?(?:T(?=[\d+-])(?:(?:[-+]?\d+H)|(?:[-+]?\d+[.,]\d+H$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:[-+]?\d+(?:[.,]\d+)?S)?)??$/, Ml = /^(?!\.)(?!.*\.\.)([A-Z0-9_'+\-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i, Nl = "^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$", Pl, Fl = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/, Il = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/(3[0-2]|[12]?[0-9])$/, Ll = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/, Rl = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/, zl = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/, Bl = /^([0-9a-zA-Z-_]{4})*(([0-9a-zA-Z-_]{2}(==)?)|([0-9a-zA-Z-_]{3}(=)?))?$/, Vl = "((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))", Hl = RegExp(`^${Vl}$`);
-function Ul(e) {
+}, El = /^c[^\s-]{8,}$/i, Dl = /^[0-9a-z]+$/, Ol = /^[0-9A-HJKMNP-TV-Z]{26}$/i, kl = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i, Al = /^[a-z0-9_-]{21}$/i, jl = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/, Ml = /^[-+]?P(?!$)(?:(?:[-+]?\d+Y)|(?:[-+]?\d+[.,]\d+Y$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:(?:[-+]?\d+W)|(?:[-+]?\d+[.,]\d+W$))?(?:(?:[-+]?\d+D)|(?:[-+]?\d+[.,]\d+D$))?(?:T(?=[\d+-])(?:(?:[-+]?\d+H)|(?:[-+]?\d+[.,]\d+H$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:[-+]?\d+(?:[.,]\d+)?S)?)??$/, Nl = /^(?!\.)(?!.*\.\.)([A-Z0-9_'+\-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i, Pl = "^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$", Fl, Il = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/, Ll = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\/(3[0-2]|[12]?[0-9])$/, Rl = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/, zl = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$/, Bl = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/, Vl = /^([0-9a-zA-Z-_]{4})*(([0-9a-zA-Z-_]{2}(==)?)|([0-9a-zA-Z-_]{3}(=)?))?$/, Hl = "((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))", Ul = RegExp(`^${Hl}$`);
+function Wl(e) {
 	let t = "[0-5]\\d";
 	e.precision ? t = `${t}\\.\\d{${e.precision}}` : e.precision ?? (t = `${t}(\\.\\d+)?`);
 	let n = e.precision ? "+" : "?";
 	return `([01]\\d|2[0-3]):[0-5]\\d(:${t})${n}`;
 }
-function Wl(e) {
-	return RegExp(`^${Ul(e)}$`);
-}
 function Gl(e) {
-	let t = `${Vl}T${Ul(e)}`, n = [];
+	return RegExp(`^${Wl(e)}$`);
+}
+function Kl(e) {
+	let t = `${Hl}T${Wl(e)}`, n = [];
 	return n.push(e.local ? "Z?" : "Z"), e.offset && n.push("([+-]\\d{2}:?\\d{2})"), t = `${t}(${n.join("|")})`, RegExp(`^${t}$`);
 }
-function Kl(e, t) {
-	return !((t !== "v4" && t || !Fl.test(e)) && (t !== "v6" && t || !Ll.test(e)));
-}
 function ql(e, t) {
-	if (!Al.test(e)) return !1;
+	return !((t !== "v4" && t || !Il.test(e)) && (t !== "v6" && t || !Rl.test(e)));
+}
+function Jl(e, t) {
+	if (!jl.test(e)) return !1;
 	try {
 		let [n] = e.split(".");
 		if (!n) return !1;
@@ -5628,10 +5715,10 @@ function ql(e, t) {
 		return !1;
 	}
 }
-function Jl(e, t) {
-	return !((t !== "v4" && t || !Il.test(e)) && (t !== "v6" && t || !Rl.test(e)));
+function Yl(e, t) {
+	return !((t !== "v4" && t || !Ll.test(e)) && (t !== "v6" && t || !zl.test(e)));
 }
-var Yl = class e extends K {
+var Xl = class e extends K {
 	_parse(e) {
 		if (this._def.coerce && (e.data = String(e.data)), this._getType(e) !== B.string) {
 			let t = this._getOrReturnCtx(e);
@@ -5641,7 +5728,7 @@ var Yl = class e extends K {
 				received: t.parsedType
 			}), U;
 		}
-		let t = new gl(), n;
+		let t = new _l(), n;
 		for (let r of this._def.checks) if (r.kind === "min") e.data.length < r.value && (n = this._getOrReturnCtx(e, n), H(n, {
 			code: V.too_small,
 			minimum: r.value,
@@ -5675,37 +5762,37 @@ var Yl = class e extends K {
 				exact: !0,
 				message: r.message
 			}), t.dirty());
-		} else if (r.kind === "email") Ml.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		} else if (r.kind === "email") Nl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "email",
 			code: V.invalid_string,
 			message: r.message
 		}), t.dirty());
-		else if (r.kind === "emoji") Pl ||= new RegExp(Nl, "u"), Pl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		else if (r.kind === "emoji") Fl ||= new RegExp(Pl, "u"), Fl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "emoji",
 			code: V.invalid_string,
 			message: r.message
 		}), t.dirty());
-		else if (r.kind === "uuid") Ol.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		else if (r.kind === "uuid") kl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "uuid",
 			code: V.invalid_string,
 			message: r.message
 		}), t.dirty());
-		else if (r.kind === "nanoid") kl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		else if (r.kind === "nanoid") Al.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "nanoid",
 			code: V.invalid_string,
 			message: r.message
 		}), t.dirty());
-		else if (r.kind === "cuid") Tl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		else if (r.kind === "cuid") El.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "cuid",
 			code: V.invalid_string,
 			message: r.message
 		}), t.dirty());
-		else if (r.kind === "cuid2") El.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		else if (r.kind === "cuid2") Dl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "cuid2",
 			code: V.invalid_string,
 			message: r.message
 		}), t.dirty());
-		else if (r.kind === "ulid") Dl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		else if (r.kind === "ulid") Ol.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "ulid",
 			code: V.invalid_string,
 			message: r.message
@@ -5738,39 +5825,39 @@ var Yl = class e extends K {
 			code: V.invalid_string,
 			validation: { endsWith: r.value },
 			message: r.message
-		}), t.dirty()) : r.kind === "datetime" ? Gl(r).test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "datetime" ? Kl(r).test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			code: V.invalid_string,
 			validation: "datetime",
 			message: r.message
-		}), t.dirty()) : r.kind === "date" ? Hl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "date" ? Ul.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			code: V.invalid_string,
 			validation: "date",
 			message: r.message
-		}), t.dirty()) : r.kind === "time" ? Wl(r).test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "time" ? Gl(r).test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			code: V.invalid_string,
 			validation: "time",
 			message: r.message
-		}), t.dirty()) : r.kind === "duration" ? jl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "duration" ? Ml.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "duration",
 			code: V.invalid_string,
 			message: r.message
-		}), t.dirty()) : r.kind === "ip" ? Kl(e.data, r.version) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "ip" ? ql(e.data, r.version) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "ip",
 			code: V.invalid_string,
 			message: r.message
-		}), t.dirty()) : r.kind === "jwt" ? ql(e.data, r.alg) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "jwt" ? Jl(e.data, r.alg) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "jwt",
 			code: V.invalid_string,
 			message: r.message
-		}), t.dirty()) : r.kind === "cidr" ? Jl(e.data, r.version) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "cidr" ? Yl(e.data, r.version) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "cidr",
 			code: V.invalid_string,
 			message: r.message
-		}), t.dirty()) : r.kind === "base64" ? zl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "base64" ? Bl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "base64",
 			code: V.invalid_string,
 			message: r.message
-		}), t.dirty()) : r.kind === "base64url" ? Bl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
+		}), t.dirty()) : r.kind === "base64url" ? Vl.test(e.data) || (n = this._getOrReturnCtx(e, n), H(n, {
 			validation: "base64url",
 			code: V.invalid_string,
 			message: r.message
@@ -6039,17 +6126,17 @@ var Yl = class e extends K {
 		return e;
 	}
 };
-Yl.create = (e) => new Yl({
+Xl.create = (e) => new Xl({
 	checks: [],
 	typeName: q.ZodString,
 	coerce: e?.coerce ?? !1,
 	...G(e)
 });
-function Xl(e, t) {
+function Zl(e, t) {
 	let n = (e.toString().split(".")[1] || "").length, r = (t.toString().split(".")[1] || "").length, i = n > r ? n : r;
 	return Number.parseInt(e.toFixed(i).replace(".", "")) % Number.parseInt(t.toFixed(i).replace(".", "")) / 10 ** i;
 }
-var Zl = class e extends K {
+var Ql = class e extends K {
 	constructor() {
 		super(...arguments), this.min = this.gte, this.max = this.lte, this.step = this.multipleOf;
 	}
@@ -6062,7 +6149,7 @@ var Zl = class e extends K {
 				received: t.parsedType
 			}), U;
 		}
-		let t, n = new gl();
+		let t, n = new _l();
 		for (let r of this._def.checks) r.kind === "int" ? z.isInteger(e.data) || (t = this._getOrReturnCtx(e, t), H(t, {
 			code: V.invalid_type,
 			expected: "integer",
@@ -6082,7 +6169,7 @@ var Zl = class e extends K {
 			inclusive: r.inclusive,
 			exact: !1,
 			message: r.message
-		}), n.dirty()) : r.kind === "multipleOf" ? Xl(e.data, r.value) !== 0 && (t = this._getOrReturnCtx(e, t), H(t, {
+		}), n.dirty()) : r.kind === "multipleOf" ? Zl(e.data, r.value) !== 0 && (t = this._getOrReturnCtx(e, t), H(t, {
 			code: V.not_multiple_of,
 			multipleOf: r.value,
 			message: r.message
@@ -6208,13 +6295,13 @@ var Zl = class e extends K {
 		return Number.isFinite(t) && Number.isFinite(e);
 	}
 };
-Zl.create = (e) => new Zl({
+Ql.create = (e) => new Ql({
 	checks: [],
 	typeName: q.ZodNumber,
 	coerce: e?.coerce || !1,
 	...G(e)
 });
-var Ql = class e extends K {
+var $l = class e extends K {
 	constructor() {
 		super(...arguments), this.min = this.gte, this.max = this.lte;
 	}
@@ -6225,7 +6312,7 @@ var Ql = class e extends K {
 			return this._getInvalidInput(e);
 		}
 		if (this._getType(e) !== B.bigint) return this._getInvalidInput(e);
-		let t, n = new gl();
+		let t, n = new _l();
 		for (let r of this._def.checks) r.kind === "min" ? (r.inclusive ? e.data < r.value : e.data <= r.value) && (t = this._getOrReturnCtx(e, t), H(t, {
 			code: V.too_small,
 			type: "bigint",
@@ -6335,13 +6422,13 @@ var Ql = class e extends K {
 		return e;
 	}
 };
-Ql.create = (e) => new Ql({
+$l.create = (e) => new $l({
 	checks: [],
 	typeName: q.ZodBigInt,
 	coerce: e?.coerce ?? !1,
 	...G(e)
 });
-var $l = class extends K {
+var eu = class extends K {
 	_parse(e) {
 		if (this._def.coerce && (e.data = !!e.data), this._getType(e) !== B.boolean) {
 			let t = this._getOrReturnCtx(e);
@@ -6351,15 +6438,15 @@ var $l = class extends K {
 				received: t.parsedType
 			}), U;
 		}
-		return vl(e.data);
+		return yl(e.data);
 	}
 };
-$l.create = (e) => new $l({
+eu.create = (e) => new eu({
 	typeName: q.ZodBoolean,
 	coerce: e?.coerce || !1,
 	...G(e)
 });
-var eu = class e extends K {
+var tu = class e extends K {
 	_parse(e) {
 		if (this._def.coerce && (e.data = new Date(e.data)), this._getType(e) !== B.date) {
 			let t = this._getOrReturnCtx(e);
@@ -6370,7 +6457,7 @@ var eu = class e extends K {
 			}), U;
 		}
 		if (Number.isNaN(e.data.getTime())) return H(this._getOrReturnCtx(e), { code: V.invalid_date }), U;
-		let t = new gl(), n;
+		let t = new _l(), n;
 		for (let r of this._def.checks) r.kind === "min" ? e.data.getTime() < r.value && (n = this._getOrReturnCtx(e, n), H(n, {
 			code: V.too_small,
 			message: r.message,
@@ -6422,13 +6509,13 @@ var eu = class e extends K {
 		return e == null ? null : new Date(e);
 	}
 };
-eu.create = (e) => new eu({
+tu.create = (e) => new tu({
 	checks: [],
 	coerce: e?.coerce || !1,
 	typeName: q.ZodDate,
 	...G(e)
 });
-var tu = class extends K {
+var nu = class extends K {
 	_parse(e) {
 		if (this._getType(e) !== B.symbol) {
 			let t = this._getOrReturnCtx(e);
@@ -6438,14 +6525,14 @@ var tu = class extends K {
 				received: t.parsedType
 			}), U;
 		}
-		return vl(e.data);
+		return yl(e.data);
 	}
 };
-tu.create = (e) => new tu({
+nu.create = (e) => new nu({
 	typeName: q.ZodSymbol,
 	...G(e)
 });
-var nu = class extends K {
+var ru = class extends K {
 	_parse(e) {
 		if (this._getType(e) !== B.undefined) {
 			let t = this._getOrReturnCtx(e);
@@ -6455,14 +6542,14 @@ var nu = class extends K {
 				received: t.parsedType
 			}), U;
 		}
-		return vl(e.data);
+		return yl(e.data);
 	}
 };
-nu.create = (e) => new nu({
+ru.create = (e) => new ru({
 	typeName: q.ZodUndefined,
 	...G(e)
 });
-var ru = class extends K {
+var iu = class extends K {
 	_parse(e) {
 		if (this._getType(e) !== B.null) {
 			let t = this._getOrReturnCtx(e);
@@ -6472,38 +6559,38 @@ var ru = class extends K {
 				received: t.parsedType
 			}), U;
 		}
-		return vl(e.data);
-	}
-};
-ru.create = (e) => new ru({
-	typeName: q.ZodNull,
-	...G(e)
-});
-var iu = class extends K {
-	constructor() {
-		super(...arguments), this._any = !0;
-	}
-	_parse(e) {
-		return vl(e.data);
+		return yl(e.data);
 	}
 };
 iu.create = (e) => new iu({
-	typeName: q.ZodAny,
+	typeName: q.ZodNull,
 	...G(e)
 });
 var au = class extends K {
 	constructor() {
-		super(...arguments), this._unknown = !0;
+		super(...arguments), this._any = !0;
 	}
 	_parse(e) {
-		return vl(e.data);
+		return yl(e.data);
 	}
 };
 au.create = (e) => new au({
-	typeName: q.ZodUnknown,
+	typeName: q.ZodAny,
 	...G(e)
 });
 var ou = class extends K {
+	constructor() {
+		super(...arguments), this._unknown = !0;
+	}
+	_parse(e) {
+		return yl(e.data);
+	}
+};
+ou.create = (e) => new ou({
+	typeName: q.ZodUnknown,
+	...G(e)
+});
+var su = class extends K {
 	_parse(e) {
 		let t = this._getOrReturnCtx(e);
 		return H(t, {
@@ -6513,11 +6600,11 @@ var ou = class extends K {
 		}), U;
 	}
 };
-ou.create = (e) => new ou({
+su.create = (e) => new su({
 	typeName: q.ZodNever,
 	...G(e)
 });
-var su = class extends K {
+var cu = class extends K {
 	_parse(e) {
 		if (this._getType(e) !== B.undefined) {
 			let t = this._getOrReturnCtx(e);
@@ -6527,14 +6614,14 @@ var su = class extends K {
 				received: t.parsedType
 			}), U;
 		}
-		return vl(e.data);
+		return yl(e.data);
 	}
 };
-su.create = (e) => new su({
+cu.create = (e) => new cu({
 	typeName: q.ZodVoid,
 	...G(e)
 });
-var cu = class e extends K {
+var lu = class e extends K {
 	_parse(e) {
 		let { ctx: t, status: n } = this._processInputParams(e), r = this._def;
 		if (t.parsedType !== B.array) return H(t, {
@@ -6568,9 +6655,9 @@ var cu = class e extends K {
 			inclusive: !0,
 			exact: !1,
 			message: r.maxLength.message
-		}), n.dirty()), t.common.async) return Promise.all([...t.data].map((e, n) => r.type._parseAsync(new Cl(t, e, t.path, n)))).then((e) => gl.mergeArray(n, e));
-		let i = [...t.data].map((e, n) => r.type._parseSync(new Cl(t, e, t.path, n)));
-		return gl.mergeArray(n, i);
+		}), n.dirty()), t.common.async) return Promise.all([...t.data].map((e, n) => r.type._parseAsync(new wl(t, e, t.path, n)))).then((e) => _l.mergeArray(n, e));
+		let i = [...t.data].map((e, n) => r.type._parseSync(new wl(t, e, t.path, n)));
+		return _l.mergeArray(n, i);
 	}
 	get element() {
 		return this._def.type;
@@ -6606,7 +6693,7 @@ var cu = class e extends K {
 		return this.min(1, e);
 	}
 };
-cu.create = (e, t) => new cu({
+lu.create = (e, t) => new lu({
 	type: e,
 	minLength: null,
 	maxLength: null,
@@ -6614,24 +6701,24 @@ cu.create = (e, t) => new cu({
 	typeName: q.ZodArray,
 	...G(t)
 });
-function lu(e) {
-	if (e instanceof uu) {
+function uu(e) {
+	if (e instanceof du) {
 		let t = {};
 		for (let n in e.shape) {
 			let r = e.shape[n];
-			t[n] = Ou.create(lu(r));
+			t[n] = ku.create(uu(r));
 		}
-		return new uu({
+		return new du({
 			...e._def,
 			shape: () => t
 		});
 	}
-	return e instanceof cu ? new cu({
+	return e instanceof lu ? new lu({
 		...e._def,
-		type: lu(e.element)
-	}) : e instanceof Ou ? Ou.create(lu(e.unwrap())) : e instanceof ku ? ku.create(lu(e.unwrap())) : e instanceof gu ? gu.create(e.items.map((e) => lu(e))) : e;
+		type: uu(e.element)
+	}) : e instanceof ku ? ku.create(uu(e.unwrap())) : e instanceof Au ? Au.create(uu(e.unwrap())) : e instanceof _u ? _u.create(e.items.map((e) => uu(e))) : e;
 }
-var uu = class e extends K {
+var du = class e extends K {
 	constructor() {
 		super(...arguments), this._cached = null, this.nonstrict = this.passthrough, this.augment = this.extend;
 	}
@@ -6653,7 +6740,7 @@ var uu = class e extends K {
 			}), U;
 		}
 		let { status: t, ctx: n } = this._processInputParams(e), { shape: r, keys: i } = this._getCached(), a = [];
-		if (!(this._def.catchall instanceof ou && this._def.unknownKeys === "strip")) for (let e in n.data) i.includes(e) || a.push(e);
+		if (!(this._def.catchall instanceof su && this._def.unknownKeys === "strip")) for (let e in n.data) i.includes(e) || a.push(e);
 		let o = [];
 		for (let e of i) {
 			let t = r[e], i = n.data[e];
@@ -6662,11 +6749,11 @@ var uu = class e extends K {
 					status: "valid",
 					value: e
 				},
-				value: t._parse(new Cl(n, i, n.path, e)),
+				value: t._parse(new wl(n, i, n.path, e)),
 				alwaysSet: e in n.data
 			});
 		}
-		if (this._def.catchall instanceof ou) {
+		if (this._def.catchall instanceof su) {
 			let e = this._def.unknownKeys;
 			if (e === "passthrough") for (let e of a) o.push({
 				key: {
@@ -6692,7 +6779,7 @@ var uu = class e extends K {
 						status: "valid",
 						value: t
 					},
-					value: e._parse(new Cl(n, r, n.path, t)),
+					value: e._parse(new wl(n, r, n.path, t)),
 					alwaysSet: t in n.data
 				});
 			}
@@ -6708,7 +6795,7 @@ var uu = class e extends K {
 				});
 			}
 			return e;
-		}).then((e) => gl.mergeObjectSync(t, e)) : gl.mergeObjectSync(t, o);
+		}).then((e) => _l.mergeObjectSync(t, e)) : _l.mergeObjectSync(t, o);
 	}
 	get shape() {
 		return this._def.shape();
@@ -6781,7 +6868,7 @@ var uu = class e extends K {
 		});
 	}
 	deepPartial() {
-		return lu(this);
+		return uu(this);
 	}
 	partial(t) {
 		let n = {};
@@ -6799,7 +6886,7 @@ var uu = class e extends K {
 		for (let e of z.objectKeys(this.shape)) if (t && !t[e]) n[e] = this.shape[e];
 		else {
 			let t = this.shape[e];
-			for (; t instanceof Ou;) t = t._def.innerType;
+			for (; t instanceof ku;) t = t._def.innerType;
 			n[e] = t;
 		}
 		return new e({
@@ -6808,35 +6895,35 @@ var uu = class e extends K {
 		});
 	}
 	keyof() {
-		return Cu(z.objectKeys(this.shape));
+		return wu(z.objectKeys(this.shape));
 	}
 };
-uu.create = (e, t) => new uu({
+du.create = (e, t) => new du({
 	shape: () => e,
 	unknownKeys: "strip",
-	catchall: ou.create(),
+	catchall: su.create(),
 	typeName: q.ZodObject,
 	...G(t)
-}), uu.strictCreate = (e, t) => new uu({
+}), du.strictCreate = (e, t) => new du({
 	shape: () => e,
 	unknownKeys: "strict",
-	catchall: ou.create(),
+	catchall: su.create(),
 	typeName: q.ZodObject,
 	...G(t)
-}), uu.lazycreate = (e, t) => new uu({
+}), du.lazycreate = (e, t) => new du({
 	shape: e,
 	unknownKeys: "strip",
-	catchall: ou.create(),
+	catchall: su.create(),
 	typeName: q.ZodObject,
 	...G(t)
 });
-var du = class extends K {
+var fu = class extends K {
 	_parse(e) {
 		let { ctx: t } = this._processInputParams(e), n = this._def.options;
 		function r(e) {
 			for (let t of e) if (t.result.status === "valid") return t.result;
 			for (let n of e) if (n.result.status === "dirty") return t.common.issues.push(...n.ctx.common.issues), n.result;
-			let n = e.map((e) => new dl(e.ctx.common.issues));
+			let n = e.map((e) => new fl(e.ctx.common.issues));
 			return H(t, {
 				code: V.invalid_union,
 				unionErrors: n
@@ -6882,7 +6969,7 @@ var du = class extends K {
 				}), n.common.issues.length && r.push(n.common.issues);
 			}
 			if (e) return t.common.issues.push(...e.ctx.common.issues), e.result;
-			let i = r.map((e) => new dl(e));
+			let i = r.map((e) => new fl(e));
 			return H(t, {
 				code: V.invalid_union,
 				unionErrors: i
@@ -6893,12 +6980,12 @@ var du = class extends K {
 		return this._def.options;
 	}
 };
-du.create = (e, t) => new du({
+fu.create = (e, t) => new fu({
 	options: e,
 	typeName: q.ZodUnion,
 	...G(t)
 });
-var fu = (e) => e instanceof xu ? fu(e.schema) : e instanceof Du ? fu(e.innerType()) : e instanceof Su ? [e.value] : e instanceof wu ? e.options : e instanceof Tu ? z.objectValues(e.enum) : e instanceof Au ? fu(e._def.innerType) : e instanceof nu ? [void 0] : e instanceof ru ? [null] : e instanceof Ou ? [void 0, ...fu(e.unwrap())] : e instanceof ku ? [null, ...fu(e.unwrap())] : e instanceof Nu || e instanceof Fu ? fu(e.unwrap()) : e instanceof ju ? fu(e._def.innerType) : [], pu = class e extends K {
+var pu = (e) => e instanceof Su ? pu(e.schema) : e instanceof Ou ? pu(e.innerType()) : e instanceof Cu ? [e.value] : e instanceof Tu ? e.options : e instanceof Eu ? z.objectValues(e.enum) : e instanceof ju ? pu(e._def.innerType) : e instanceof ru ? [void 0] : e instanceof iu ? [null] : e instanceof ku ? [void 0, ...pu(e.unwrap())] : e instanceof Au ? [null, ...pu(e.unwrap())] : e instanceof Pu || e instanceof Iu ? pu(e.unwrap()) : e instanceof Mu ? pu(e._def.innerType) : [], mu = class e extends K {
 	_parse(e) {
 		let { ctx: t } = this._processInputParams(e);
 		if (t.parsedType !== B.object) return H(t, {
@@ -6933,7 +7020,7 @@ var fu = (e) => e instanceof xu ? fu(e.schema) : e instanceof Du ? fu(e.innerTyp
 	static create(t, n, r) {
 		let i = /* @__PURE__ */ new Map();
 		for (let e of n) {
-			let n = fu(e.shape[t]);
+			let n = pu(e.shape[t]);
 			if (!n.length) throw Error(`A discriminator value for key \`${t}\` could not be extracted from all schema options`);
 			for (let r of n) {
 				if (i.has(r)) throw Error(`Discriminator property ${String(t)} has duplicate value ${String(r)}`);
@@ -6949,8 +7036,8 @@ var fu = (e) => e instanceof xu ? fu(e.schema) : e instanceof Du ? fu(e.innerTyp
 		});
 	}
 };
-function mu(e, t) {
-	let n = ul(e), r = ul(t);
+function hu(e, t) {
+	let n = dl(e), r = dl(t);
 	if (e === t) return {
 		valid: !0,
 		data: e
@@ -6961,7 +7048,7 @@ function mu(e, t) {
 			...t
 		};
 		for (let n of r) {
-			let r = mu(e[n], t[n]);
+			let r = hu(e[n], t[n]);
 			if (!r.valid) return { valid: !1 };
 			i[n] = r.data;
 		}
@@ -6974,7 +7061,7 @@ function mu(e, t) {
 		if (e.length !== t.length) return { valid: !1 };
 		let n = [];
 		for (let r = 0; r < e.length; r++) {
-			let i = e[r], a = t[r], o = mu(i, a);
+			let i = e[r], a = t[r], o = hu(i, a);
 			if (!o.valid) return { valid: !1 };
 			n.push(o.data);
 		}
@@ -6988,12 +7075,12 @@ function mu(e, t) {
 		data: e
 	} : { valid: !1 };
 }
-var hu = class extends K {
+var gu = class extends K {
 	_parse(e) {
 		let { status: t, ctx: n } = this._processInputParams(e), r = (e, r) => {
-			if (yl(e) || yl(r)) return U;
-			let i = mu(e.value, r.value);
-			return i.valid ? ((bl(e) || bl(r)) && t.dirty(), {
+			if (bl(e) || bl(r)) return U;
+			let i = hu(e.value, r.value);
+			return i.valid ? ((xl(e) || xl(r)) && t.dirty(), {
 				status: t.value,
 				value: i.data
 			}) : (H(n, { code: V.invalid_intersection_types }), U);
@@ -7017,13 +7104,13 @@ var hu = class extends K {
 		}));
 	}
 };
-hu.create = (e, t, n) => new hu({
+gu.create = (e, t, n) => new gu({
 	left: e,
 	right: t,
 	typeName: q.ZodIntersection,
 	...G(n)
 });
-var gu = class e extends K {
+var _u = class e extends K {
 	_parse(e) {
 		let { status: t, ctx: n } = this._processInputParams(e);
 		if (n.parsedType !== B.array) return H(n, {
@@ -7047,9 +7134,9 @@ var gu = class e extends K {
 		}), t.dirty());
 		let r = [...n.data].map((e, t) => {
 			let r = this._def.items[t] || this._def.rest;
-			return r ? r._parse(new Cl(n, e, n.path, t)) : null;
+			return r ? r._parse(new wl(n, e, n.path, t)) : null;
 		}).filter((e) => !!e);
-		return n.common.async ? Promise.all(r).then((e) => gl.mergeArray(t, e)) : gl.mergeArray(t, r);
+		return n.common.async ? Promise.all(r).then((e) => _l.mergeArray(t, e)) : _l.mergeArray(t, r);
 	}
 	get items() {
 		return this._def.items;
@@ -7061,16 +7148,16 @@ var gu = class e extends K {
 		});
 	}
 };
-gu.create = (e, t) => {
+_u.create = (e, t) => {
 	if (!Array.isArray(e)) throw Error("You must pass an array of schemas to z.tuple([ ... ])");
-	return new gu({
+	return new _u({
 		items: e,
 		typeName: q.ZodTuple,
 		rest: null,
 		...G(t)
 	});
 };
-var _u = class e extends K {
+var vu = class e extends K {
 	get keySchema() {
 		return this._def.keyType;
 	}
@@ -7086,11 +7173,11 @@ var _u = class e extends K {
 		}), U;
 		let r = [], i = this._def.keyType, a = this._def.valueType;
 		for (let e in n.data) r.push({
-			key: i._parse(new Cl(n, e, n.path, e)),
-			value: a._parse(new Cl(n, n.data[e], n.path, e)),
+			key: i._parse(new wl(n, e, n.path, e)),
+			value: a._parse(new wl(n, n.data[e], n.path, e)),
 			alwaysSet: e in n.data
 		});
-		return n.common.async ? gl.mergeObjectAsync(t, r) : gl.mergeObjectSync(t, r);
+		return n.common.async ? _l.mergeObjectAsync(t, r) : _l.mergeObjectSync(t, r);
 	}
 	get element() {
 		return this._def.valueType;
@@ -7102,13 +7189,13 @@ var _u = class e extends K {
 			typeName: q.ZodRecord,
 			...G(r)
 		}) : new e({
-			keyType: Yl.create(),
+			keyType: Xl.create(),
 			valueType: t,
 			typeName: q.ZodRecord,
 			...G(n)
 		});
 	}
-}, vu = class extends K {
+}, yu = class extends K {
 	get keySchema() {
 		return this._def.keyType;
 	}
@@ -7123,8 +7210,8 @@ var _u = class e extends K {
 			received: n.parsedType
 		}), U;
 		let r = this._def.keyType, i = this._def.valueType, a = [...n.data.entries()].map(([e, t], a) => ({
-			key: r._parse(new Cl(n, e, n.path, [a, "key"])),
-			value: i._parse(new Cl(n, t, n.path, [a, "value"]))
+			key: r._parse(new wl(n, e, n.path, [a, "key"])),
+			value: i._parse(new wl(n, t, n.path, [a, "value"]))
 		}));
 		if (n.common.async) {
 			let e = /* @__PURE__ */ new Map();
@@ -7154,13 +7241,13 @@ var _u = class e extends K {
 		}
 	}
 };
-vu.create = (e, t, n) => new vu({
+yu.create = (e, t, n) => new yu({
 	valueType: t,
 	keyType: e,
 	typeName: q.ZodMap,
 	...G(n)
 });
-var yu = class e extends K {
+var bu = class e extends K {
 	_parse(e) {
 		let { status: t, ctx: n } = this._processInputParams(e);
 		if (n.parsedType !== B.set) return H(n, {
@@ -7196,7 +7283,7 @@ var yu = class e extends K {
 				value: n
 			};
 		}
-		let o = [...n.data.values()].map((e, t) => i._parse(new Cl(n, e, n.path, t)));
+		let o = [...n.data.values()].map((e, t) => i._parse(new wl(n, e, n.path, t)));
 		return n.common.async ? Promise.all(o).then((e) => a(e)) : a(o);
 	}
 	min(t, n) {
@@ -7224,14 +7311,14 @@ var yu = class e extends K {
 		return this.min(1, e);
 	}
 };
-yu.create = (e, t) => new yu({
+bu.create = (e, t) => new bu({
 	valueType: e,
 	minSize: null,
 	maxSize: null,
 	typeName: q.ZodSet,
 	...G(t)
 });
-var bu = class e extends K {
+var xu = class e extends K {
 	constructor() {
 		super(...arguments), this.validate = this.implement;
 	}
@@ -7243,14 +7330,14 @@ var bu = class e extends K {
 			received: t.parsedType
 		}), U;
 		function n(e, n) {
-			return hl({
+			return gl({
 				data: e,
 				path: t.path,
 				errorMaps: [
 					t.common.contextualErrorMap,
 					t.schemaErrorMap,
-					ml(),
-					fl
+					hl(),
+					pl
 				].filter((e) => !!e),
 				issueData: {
 					code: V.invalid_arguments,
@@ -7259,14 +7346,14 @@ var bu = class e extends K {
 			});
 		}
 		function r(e, n) {
-			return hl({
+			return gl({
 				data: e,
 				path: t.path,
 				errorMaps: [
 					t.common.contextualErrorMap,
 					t.schemaErrorMap,
-					ml(),
-					fl
+					hl(),
+					pl
 				].filter((e) => !!e),
 				issueData: {
 					code: V.invalid_return_type,
@@ -7275,10 +7362,10 @@ var bu = class e extends K {
 			});
 		}
 		let i = { errorMap: t.common.contextualErrorMap }, a = t.data;
-		if (this._def.returns instanceof Eu) {
+		if (this._def.returns instanceof Du) {
 			let e = this;
-			return vl(async function(...t) {
-				let o = new dl([]), s = await e._def.args.parseAsync(t, i).catch((e) => {
+			return yl(async function(...t) {
+				let o = new fl([]), s = await e._def.args.parseAsync(t, i).catch((e) => {
 					throw o.addIssue(n(t, e)), o;
 				}), c = await Reflect.apply(a, this, s);
 				return await e._def.returns._def.type.parseAsync(c, i).catch((e) => {
@@ -7288,11 +7375,11 @@ var bu = class e extends K {
 		}
 		{
 			let e = this;
-			return vl(function(...t) {
+			return yl(function(...t) {
 				let o = e._def.args.safeParse(t, i);
-				if (!o.success) throw new dl([n(t, o.error)]);
+				if (!o.success) throw new fl([n(t, o.error)]);
 				let s = Reflect.apply(a, this, o.data), c = e._def.returns.safeParse(s, i);
-				if (!c.success) throw new dl([r(s, c.error)]);
+				if (!c.success) throw new fl([r(s, c.error)]);
 				return c.data;
 			});
 		}
@@ -7306,7 +7393,7 @@ var bu = class e extends K {
 	args(...t) {
 		return new e({
 			...this._def,
-			args: gu.create(t).rest(au.create())
+			args: _u.create(t).rest(ou.create())
 		});
 	}
 	returns(t) {
@@ -7323,13 +7410,13 @@ var bu = class e extends K {
 	}
 	static create(t, n, r) {
 		return new e({
-			args: t || gu.create([]).rest(au.create()),
-			returns: n || au.create(),
+			args: t || _u.create([]).rest(ou.create()),
+			returns: n || ou.create(),
 			typeName: q.ZodFunction,
 			...G(r)
 		});
 	}
-}, xu = class extends K {
+}, Su = class extends K {
 	get schema() {
 		return this._def.getter();
 	}
@@ -7342,12 +7429,12 @@ var bu = class e extends K {
 		});
 	}
 };
-xu.create = (e, t) => new xu({
+Su.create = (e, t) => new Su({
 	getter: e,
 	typeName: q.ZodLazy,
 	...G(t)
 });
-var Su = class extends K {
+var Cu = class extends K {
 	_parse(e) {
 		if (e.data !== this._def.value) {
 			let t = this._getOrReturnCtx(e);
@@ -7366,19 +7453,19 @@ var Su = class extends K {
 		return this._def.value;
 	}
 };
-Su.create = (e, t) => new Su({
+Cu.create = (e, t) => new Cu({
 	value: e,
 	typeName: q.ZodLiteral,
 	...G(t)
 });
-function Cu(e, t) {
-	return new wu({
+function wu(e, t) {
+	return new Tu({
 		values: e,
 		typeName: q.ZodEnum,
 		...G(t)
 	});
 }
-var wu = class e extends K {
+var Tu = class e extends K {
 	_parse(e) {
 		if (typeof e.data != "string") {
 			let t = this._getOrReturnCtx(e), n = this._def.values;
@@ -7396,7 +7483,7 @@ var wu = class e extends K {
 				options: n
 			}), U;
 		}
-		return vl(e.data);
+		return yl(e.data);
 	}
 	get options() {
 		return this._def.values;
@@ -7429,8 +7516,8 @@ var wu = class e extends K {
 		});
 	}
 };
-wu.create = Cu;
-var Tu = class extends K {
+Tu.create = wu;
+var Eu = class extends K {
 	_parse(e) {
 		let t = z.getValidEnumValues(this._def.values), n = this._getOrReturnCtx(e);
 		if (n.parsedType !== B.string && n.parsedType !== B.number) {
@@ -7449,18 +7536,18 @@ var Tu = class extends K {
 				options: e
 			}), U;
 		}
-		return vl(e.data);
+		return yl(e.data);
 	}
 	get enum() {
 		return this._def.values;
 	}
 };
-Tu.create = (e, t) => new Tu({
+Eu.create = (e, t) => new Eu({
 	values: e,
 	typeName: q.ZodNativeEnum,
 	...G(t)
 });
-var Eu = class extends K {
+var Du = class extends K {
 	unwrap() {
 		return this._def.type;
 	}
@@ -7470,18 +7557,18 @@ var Eu = class extends K {
 			code: V.invalid_type,
 			expected: B.promise,
 			received: t.parsedType
-		}), U) : vl((t.parsedType === B.promise ? t.data : Promise.resolve(t.data)).then((e) => this._def.type.parseAsync(e, {
+		}), U) : yl((t.parsedType === B.promise ? t.data : Promise.resolve(t.data)).then((e) => this._def.type.parseAsync(e, {
 			path: t.path,
 			errorMap: t.common.contextualErrorMap
 		})));
 	}
 };
-Eu.create = (e, t) => new Eu({
+Du.create = (e, t) => new Du({
 	type: e,
 	typeName: q.ZodPromise,
 	...G(t)
 });
-var Du = class extends K {
+var Ou = class extends K {
 	innerType() {
 		return this._def.schema;
 	}
@@ -7506,7 +7593,7 @@ var Du = class extends K {
 					path: n.path,
 					parent: n
 				});
-				return r.status === "aborted" ? U : r.status === "dirty" || t.value === "dirty" ? _l(r.value) : r;
+				return r.status === "aborted" ? U : r.status === "dirty" || t.value === "dirty" ? vl(r.value) : r;
 			});
 			{
 				if (t.value === "aborted") return U;
@@ -7515,7 +7602,7 @@ var Du = class extends K {
 					path: n.path,
 					parent: n
 				});
-				return r.status === "aborted" ? U : r.status === "dirty" || t.value === "dirty" ? _l(r.value) : r;
+				return r.status === "aborted" ? U : r.status === "dirty" || t.value === "dirty" ? vl(r.value) : r;
 			}
 		}
 		if (r.type === "refinement") {
@@ -7552,7 +7639,7 @@ var Du = class extends K {
 					path: n.path,
 					parent: n
 				});
-				if (!xl(e)) return U;
+				if (!Sl(e)) return U;
 				let a = r.transform(e.value, i);
 				if (a instanceof Promise) throw Error("Asynchronous transform encountered during synchronous parse operation. Use .parseAsync instead.");
 				return {
@@ -7564,7 +7651,7 @@ var Du = class extends K {
 				data: n.data,
 				path: n.path,
 				parent: n
-			}).then((e) => xl(e) ? Promise.resolve(r.transform(e.value, i)).then((e) => ({
+			}).then((e) => Sl(e) ? Promise.resolve(r.transform(e.value, i)).then((e) => ({
 				status: t.value,
 				value: e
 			})) : U);
@@ -7572,12 +7659,12 @@ var Du = class extends K {
 		z.assertNever(r);
 	}
 };
-Du.create = (e, t, n) => new Du({
+Ou.create = (e, t, n) => new Ou({
 	schema: e,
 	typeName: q.ZodEffects,
 	effect: t,
 	...G(n)
-}), Du.createWithPreprocess = (e, t, n) => new Du({
+}), Ou.createWithPreprocess = (e, t, n) => new Ou({
 	schema: t,
 	effect: {
 		type: "preprocess",
@@ -7586,22 +7673,9 @@ Du.create = (e, t, n) => new Du({
 	typeName: q.ZodEffects,
 	...G(n)
 });
-var Ou = class extends K {
-	_parse(e) {
-		return this._getType(e) === B.undefined ? vl(void 0) : this._def.innerType._parse(e);
-	}
-	unwrap() {
-		return this._def.innerType;
-	}
-};
-Ou.create = (e, t) => new Ou({
-	innerType: e,
-	typeName: q.ZodOptional,
-	...G(t)
-});
 var ku = class extends K {
 	_parse(e) {
-		return this._getType(e) === B.null ? vl(null) : this._def.innerType._parse(e);
+		return this._getType(e) === B.undefined ? yl(void 0) : this._def.innerType._parse(e);
 	}
 	unwrap() {
 		return this._def.innerType;
@@ -7609,10 +7683,23 @@ var ku = class extends K {
 };
 ku.create = (e, t) => new ku({
 	innerType: e,
-	typeName: q.ZodNullable,
+	typeName: q.ZodOptional,
 	...G(t)
 });
 var Au = class extends K {
+	_parse(e) {
+		return this._getType(e) === B.null ? yl(null) : this._def.innerType._parse(e);
+	}
+	unwrap() {
+		return this._def.innerType;
+	}
+};
+Au.create = (e, t) => new Au({
+	innerType: e,
+	typeName: q.ZodNullable,
+	...G(t)
+});
+var ju = class extends K {
 	_parse(e) {
 		let { ctx: t } = this._processInputParams(e), n = t.data;
 		return t.parsedType === B.undefined && (n = this._def.defaultValue()), this._def.innerType._parse({
@@ -7625,13 +7712,13 @@ var Au = class extends K {
 		return this._def.innerType;
 	}
 };
-Au.create = (e, t) => new Au({
+ju.create = (e, t) => new ju({
 	innerType: e,
 	typeName: q.ZodDefault,
 	defaultValue: typeof t.default == "function" ? t.default : () => t.default,
 	...G(t)
 });
-var ju = class extends K {
+var Mu = class extends K {
 	_parse(e) {
 		let { ctx: t } = this._processInputParams(e), n = {
 			...t,
@@ -7644,11 +7731,11 @@ var ju = class extends K {
 			path: n.path,
 			parent: { ...n }
 		});
-		return Sl(r) ? r.then((e) => ({
+		return Cl(r) ? r.then((e) => ({
 			status: "valid",
 			value: e.status === "valid" ? e.value : this._def.catchValue({
 				get error() {
-					return new dl(n.common.issues);
+					return new fl(n.common.issues);
 				},
 				input: n.data
 			})
@@ -7656,7 +7743,7 @@ var ju = class extends K {
 			status: "valid",
 			value: r.status === "valid" ? r.value : this._def.catchValue({
 				get error() {
-					return new dl(n.common.issues);
+					return new fl(n.common.issues);
 				},
 				input: n.data
 			})
@@ -7666,13 +7753,13 @@ var ju = class extends K {
 		return this._def.innerType;
 	}
 };
-ju.create = (e, t) => new ju({
+Mu.create = (e, t) => new Mu({
 	innerType: e,
 	typeName: q.ZodCatch,
 	catchValue: typeof t.catch == "function" ? t.catch : () => t.catch,
 	...G(t)
 });
-var Mu = class extends K {
+var Nu = class extends K {
 	_parse(e) {
 		if (this._getType(e) !== B.nan) {
 			let t = this._getOrReturnCtx(e);
@@ -7688,11 +7775,11 @@ var Mu = class extends K {
 		};
 	}
 };
-Mu.create = (e) => new Mu({
+Nu.create = (e) => new Nu({
 	typeName: q.ZodNaN,
 	...G(e)
 });
-var Nu = class extends K {
+var Pu = class extends K {
 	_parse(e) {
 		let { ctx: t } = this._processInputParams(e), n = t.data;
 		return this._def.type._parse({
@@ -7704,7 +7791,7 @@ var Nu = class extends K {
 	unwrap() {
 		return this._def.type;
 	}
-}, Pu = class e extends K {
+}, Fu = class e extends K {
 	_parse(e) {
 		let { status: t, ctx: n } = this._processInputParams(e);
 		if (n.common.async) return (async () => {
@@ -7713,7 +7800,7 @@ var Nu = class extends K {
 				path: n.path,
 				parent: n
 			});
-			return e.status === "aborted" ? U : e.status === "dirty" ? (t.dirty(), _l(e.value)) : this._def.out._parseAsync({
+			return e.status === "aborted" ? U : e.status === "dirty" ? (t.dirty(), vl(e.value)) : this._def.out._parseAsync({
 				data: e.value,
 				path: n.path,
 				parent: n
@@ -7742,165 +7829,165 @@ var Nu = class extends K {
 			typeName: q.ZodPipeline
 		});
 	}
-}, Fu = class extends K {
+}, Iu = class extends K {
 	_parse(e) {
-		let t = this._def.innerType._parse(e), n = (e) => (xl(e) && (e.value = Object.freeze(e.value)), e);
-		return Sl(t) ? t.then((e) => n(e)) : n(t);
+		let t = this._def.innerType._parse(e), n = (e) => (Sl(e) && (e.value = Object.freeze(e.value)), e);
+		return Cl(t) ? t.then((e) => n(e)) : n(t);
 	}
 	unwrap() {
 		return this._def.innerType;
 	}
 };
-Fu.create = (e, t) => new Fu({
+Iu.create = (e, t) => new Iu({
 	innerType: e,
 	typeName: q.ZodReadonly,
 	...G(t)
-}), uu.lazycreate;
+}), du.lazycreate;
 var q;
 (function(e) {
 	e.ZodString = "ZodString", e.ZodNumber = "ZodNumber", e.ZodNaN = "ZodNaN", e.ZodBigInt = "ZodBigInt", e.ZodBoolean = "ZodBoolean", e.ZodDate = "ZodDate", e.ZodSymbol = "ZodSymbol", e.ZodUndefined = "ZodUndefined", e.ZodNull = "ZodNull", e.ZodAny = "ZodAny", e.ZodUnknown = "ZodUnknown", e.ZodNever = "ZodNever", e.ZodVoid = "ZodVoid", e.ZodArray = "ZodArray", e.ZodObject = "ZodObject", e.ZodUnion = "ZodUnion", e.ZodDiscriminatedUnion = "ZodDiscriminatedUnion", e.ZodIntersection = "ZodIntersection", e.ZodTuple = "ZodTuple", e.ZodRecord = "ZodRecord", e.ZodMap = "ZodMap", e.ZodSet = "ZodSet", e.ZodFunction = "ZodFunction", e.ZodLazy = "ZodLazy", e.ZodLiteral = "ZodLiteral", e.ZodEnum = "ZodEnum", e.ZodEffects = "ZodEffects", e.ZodNativeEnum = "ZodNativeEnum", e.ZodOptional = "ZodOptional", e.ZodNullable = "ZodNullable", e.ZodDefault = "ZodDefault", e.ZodCatch = "ZodCatch", e.ZodPromise = "ZodPromise", e.ZodBranded = "ZodBranded", e.ZodPipeline = "ZodPipeline", e.ZodReadonly = "ZodReadonly";
-})(q ||= {}), Yl.create;
-var Iu = Zl.create;
-Mu.create, Ql.create;
-var Lu = $l.create;
-eu.create, tu.create, nu.create, ru.create, iu.create, au.create, ou.create, su.create, cu.create;
-var Ru = uu.create;
-uu.strictCreate, du.create, pu.create, hu.create, gu.create, _u.create, vu.create, yu.create, bu.create, xu.create, Su.create, wu.create, Tu.create, Eu.create, Du.create, Ou.create, ku.create, Du.createWithPreprocess, Pu.create;
+})(q ||= {}), Xl.create;
+var Lu = Ql.create;
+Nu.create, $l.create;
+var Ru = eu.create;
+tu.create, nu.create, ru.create, iu.create, au.create, ou.create, su.create, cu.create, lu.create;
+var zu = du.create;
+du.strictCreate, fu.create, mu.create, gu.create, _u.create, vu.create, yu.create, bu.create, xu.create, Su.create, Cu.create, Tu.create, Eu.create, Du.create, Ou.create, ku.create, Au.create, Ou.createWithPreprocess, Fu.create;
 // src/store.ts
-var zu = "现代化界面", Bu = "modern_ui", Vu = 340, Hu = Ru({
-	enabled: Lu().default(!0).catch(!0),
-	desktopTwoColumn: Lu().default(!0).catch(!0),
-	desktopDockedDrawer: Lu().default(!1).catch(!1),
-	leftSidebarWidth: Iu().min(320).max(460).default(360).catch(360),
-	overlayPanelWidth: Iu().min(720).default(960).catch(960),
-	mainChatMaxWidth: Iu().min(0).default(960).catch(960),
-	floatingChatInput: Lu().default(!0).catch(!0),
-	singleLineChatInput: Lu().default(!1).catch(!1),
-	inputBottomGap: Iu().min(0).max(120).default(15).catch(15),
-	inputSideGap: Iu().min(0).max(80).default(16).catch(16),
-	quickReplyCollapsed: Lu().default(!1).catch(!1),
-	reduceMotion: Lu().default(!1).catch(!1),
-	reduceAdvancedEffects: Lu().default(!1).catch(!1),
-	modernWorldInfoEditor: Lu().default(!0).catch(!0),
-	modernWorldSelect: Lu().default(!0).catch(!0),
-	modernCharacterManagement: Lu().default(!0).catch(!0),
-	modernPresetEditor: Lu().default(!1).catch(!1),
-	modernExtensionSettings: Lu().default(!0).catch(!0)
+var Bu = "现代化界面", Vu = "modern_ui", Hu = 340, Uu = zu({
+	enabled: Ru().default(!0).catch(!0),
+	desktopTwoColumn: Ru().default(!0).catch(!0),
+	desktopDockedDrawer: Ru().default(!1).catch(!1),
+	leftSidebarWidth: Lu().min(320).max(460).default(360).catch(360),
+	overlayPanelWidth: Lu().min(720).default(960).catch(960),
+	mainChatMaxWidth: Lu().min(0).default(960).catch(960),
+	floatingChatInput: Ru().default(!0).catch(!0),
+	singleLineChatInput: Ru().default(!1).catch(!1),
+	inputBottomGap: Lu().min(0).max(120).default(15).catch(15),
+	inputSideGap: Lu().min(0).max(80).default(16).catch(16),
+	quickReplyCollapsed: Ru().default(!1).catch(!1),
+	reduceMotion: Ru().default(!1).catch(!1),
+	reduceAdvancedEffects: Ru().default(!1).catch(!1),
+	modernWorldInfoEditor: Ru().default(!0).catch(!0),
+	modernWorldSelect: Ru().default(!0).catch(!0),
+	modernCharacterManagement: Ru().default(!0).catch(!0),
+	modernPersonaManagement: Ru().default(!0).catch(!0),
+	modernPresetEditor: Ru().default(!1).catch(!1),
+	modernExtensionSettings: Ru().default(!0).catch(!0)
 }).default({});
-function Uu() {
+function Wu() {
 	return typeof window < "u" ? window : globalThis;
 }
-function Wu() {
-	return Uu().SillyTavern?.getContext?.() || {};
-}
 function Gu() {
-	let e = Uu(), t = Wu();
-	return !e.extension_settings && t.extensionSettings && (e.extension_settings = t.extensionSettings), e.extension_settings = e.extension_settings || {}, e.extension_settings;
+	return Wu().SillyTavern?.getContext?.() || {};
 }
 function Ku() {
-	let t = Gu()[Bu];
-	t = !t || typeof t != "object" ? {} : e(t), t.desktopTwoColumn === void 0 && typeof t.desktopThreeColumn == "boolean" && (t.desktopTwoColumn = t.desktopThreeColumn), t.overlayPanelWidth === void 0 && t.leftSidebarWidth === Vu && (t.leftSidebarWidth = 360);
-	let n = Hu.safeParse(t);
-	return n.success ? n.data : (console.warn(`[${zu}] 设置读取失败，已使用默认设置。`, n.error), Hu.parse({}));
+	let e = Wu(), t = Gu();
+	return !e.extension_settings && t.extensionSettings && (e.extension_settings = t.extensionSettings), e.extension_settings = e.extension_settings || {}, e.extension_settings;
 }
-function qu(t) {
-	let n = Gu(), r = n[Bu];
-	n[Bu] = {
+function qu() {
+	let t = Ku()[Vu];
+	t = !t || typeof t != "object" ? {} : e(t), t.desktopTwoColumn === void 0 && typeof t.desktopThreeColumn == "boolean" && (t.desktopTwoColumn = t.desktopThreeColumn), t.overlayPanelWidth === void 0 && t.leftSidebarWidth === Hu && (t.leftSidebarWidth = 360);
+	let n = Uu.safeParse(t);
+	return n.success ? n.data : (console.warn(`[${Bu}] 设置读取失败，已使用默认设置。`, n.error), Uu.parse({}));
+}
+function Ju(t) {
+	let n = Ku(), r = n[Vu];
+	n[Vu] = {
 		...typeof r == "object" && r ? r : {},
 		...e(t)
 	};
-	let i = Uu(), a = Wu();
+	let i = Wu(), a = Gu();
 	typeof i.saveSettingsDebounced == "function" ? i.saveSettingsDebounced() : typeof a.saveSettingsDebounced == "function" && a.saveSettingsDebounced();
 }
-var Ju = Os(zu, () => {
-	let t = Uu(), n = /* @__PURE__ */ tn(Ku()), r = /* @__PURE__ */ tn(!0), i = t.eventSource ?? t.SillyTavern?.getContext?.()?.eventSource, a = () => {
-		n.value = Ku();
+var Yu = Es(Bu, () => {
+	let t = Wu(), n = /* @__PURE__ */ tn(qu()), r = t.eventSource ?? t.SillyTavern?.getContext?.()?.eventSource, i = () => {
+		n.value = qu();
 	};
-	i?.on?.("settings_loaded", a);
-	let o = Va(() => r.value && n.value.enabled), s = Va(() => o.value && n.value.desktopTwoColumn);
-	Zn(() => {
-		qu(Hu.parse(e(n.value)));
+	r?.on?.("settings_loaded", i);
+	let a = za(() => n.value.enabled), o = za(() => a.value && n.value.desktopTwoColumn);
+	Xn(() => {
+		Ju(Uu.parse(e(n.value)));
 	});
-	function c() {
-		n.value = Hu.parse({});
+	function s() {
+		n.value = Uu.parse({});
 	}
-	function l() {
+	function c() {
 		n.value = {
 			...n.value,
 			enabled: !1
 		};
 	}
-	function u(e = {}) {
-		typeof i?.removeListener == "function" ? i.removeListener("settings_loaded", a) : typeof i?.off == "function" && i.off("settings_loaded", a);
+	function l() {
+		typeof r?.removeListener == "function" ? r.removeListener("settings_loaded", i) : typeof r?.off == "function" && r.off("settings_loaded", i);
 	}
 	return {
 		settings: n,
-		should_enable: r,
-		is_active: o,
-		should_use_two_column: s,
-		resetSettings: c,
-		disableModernLayout: l,
-		destroy: u
+		is_active: a,
+		should_use_two_column: o,
+		resetSettings: s,
+		disableModernLayout: c,
+		destroy: l
 	};
-}), Yu = {
-	key: 0,
-	class: "inline-drawer"
-}, Xu = { class: "inline-drawer-toggle inline-drawer-header" }, Zu = { class: "inline-drawer-content" }, Qu = {
+}), Xu = { class: "inline-drawer" }, Zu = { class: "inline-drawer-toggle inline-drawer-header" }, Qu = { class: "inline-drawer-content" }, $u = {
 	class: "checkbox_label",
 	for: "th_modern_enabled"
-}, $u = {
+}, ed = {
 	class: "checkbox_label",
 	for: "th_modern_two_column"
-}, ed = ["disabled"], td = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, nd = { class: "flex-container alignitemscenter" }, rd = ["value"], id = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, ad = { class: "flex-container alignitemscenter" }, od = ["value"], sd = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, cd = { class: "flex-container alignitemscenter" }, ld = ["value"], ud = {
+}, td = ["disabled"], nd = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, rd = { class: "flex-container alignitemscenter" }, id = ["value"], ad = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, od = { class: "flex-container alignitemscenter" }, sd = ["value"], cd = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, ld = { class: "flex-container alignitemscenter" }, ud = ["value"], dd = {
 	class: "checkbox_label",
 	for: "th_modern_floating_input"
-}, dd = {
+}, fd = {
 	class: "checkbox_label m-t-0_5",
 	for: "th_modern_single_line_input"
-}, fd = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, pd = { class: "flex-container alignitemscenter" }, md = { class: "notes m-r-0_5" }, hd = { class: "flex-container alignitemscenter m-t-0_5" }, gd = { class: "range-block-range flex1" }, _d = [
+}, pd = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, md = { class: "flex-container alignitemscenter" }, hd = { class: "notes m-r-0_5" }, gd = { class: "flex-container alignitemscenter m-t-0_5" }, _d = { class: "range-block-range flex1" }, vd = [
 	"min",
 	"max",
 	"disabled"
-], vd = { class: "range-block-counter m-l-0_5" }, yd = [
+], yd = { class: "range-block-counter m-l-0_5" }, bd = [
 	"value",
 	"min",
 	"max",
 	"disabled"
-], bd = { class: "notes" }, xd = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, Sd = { class: "flex-container alignitemscenter" }, Cd = { class: "notes m-r-0_5" }, wd = { class: "flex-container alignitemscenter m-t-0_5" }, Td = { class: "range-block-range flex1" }, Ed = [
+], xd = { class: "notes" }, Sd = { class: "flex-container justifySpaceBetween alignitemscenter m-t-0_5" }, Cd = { class: "flex-container alignitemscenter" }, wd = { class: "notes m-r-0_5" }, Td = { class: "flex-container alignitemscenter m-t-0_5" }, Ed = { class: "range-block-range flex1" }, Dd = [
 	"min",
 	"max",
 	"disabled"
-], Dd = { class: "range-block-counter m-l-0_5" }, Od = [
+], Od = { class: "range-block-counter m-l-0_5" }, kd = [
 	"value",
 	"min",
 	"max",
 	"disabled"
-], kd = { class: "notes" }, Ad = {
+], Ad = { class: "notes" }, jd = {
 	class: "checkbox_label",
 	for: "th_modern_wi_editor"
-}, jd = ["disabled"], Md = {
+}, Md = ["disabled"], Nd = {
 	class: "checkbox_label",
 	for: "th_modern_cm"
-}, Nd = {
-	class: "checkbox_label",
-	for: "th_modern_preset_editor"
 }, Pd = {
 	class: "checkbox_label",
-	for: "th_modern_ext_settings"
+	for: "th_modern_persona"
 }, Fd = {
 	class: "checkbox_label",
-	for: "th_modern_reduce_motion"
+	for: "th_modern_preset_editor"
 }, Id = {
 	class: "checkbox_label",
+	for: "th_modern_ext_settings"
+}, Ld = {
+	class: "checkbox_label",
+	for: "th_modern_reduce_motion"
+}, Rd = {
+	class: "checkbox_label",
 	for: "th_modern_reduce_effects"
-}, Ld = /*#__PURE__*/ ((e, t) => {
+}, zd = /*#__PURE__*/ ((e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
-})(/* @__PURE__ */ lr({
+})(/* @__PURE__ */ cr({
 	__name: "Panel",
 	setup(e) {
-		let t = Ju();
+		let t = Yu();
 		function n(e, n, r, i = Infinity) {
 			let a = e.currentTarget, o = t.settings[n], s = a.valueAsNumber;
 			if (!Number.isFinite(s)) {
@@ -7912,38 +7999,38 @@ var Ju = Os(zu, () => {
 		}
 		async function r() {
 			let e = window.SillyTavern?.POPUP_TYPE?.CONFIRM ?? "confirm", n = await window.SillyTavern?.callGenericPopup?.("确定将现代化界面设置重置为默认值吗？", e);
-			(n === !0 || n === window.SillyTavern?.POPUP_RESULT?.AFFIRMATIVE) && (t.resetSettings(), window.toastr !== void 0 && window.toastr.info("已恢复现代化界面默认设置。", zu));
+			(n === !0 || n === window.SillyTavern?.POPUP_RESULT?.AFFIRMATIVE) && (t.resetSettings(), window.toastr !== void 0 && window.toastr.info("已恢复现代化界面默认设置。", Bu));
 		}
-		return (e, i) => N(t).should_enable ? (ea(), aa("div", Yu, [P("div", Xu, [P("b", null, [P("span", null, Oe(N(zu)), 1), P("a", {
+		return (e, i) => ($i(), ia("div", Xu, [F("div", Zu, [F("b", null, [F("span", null, Oe(N(Bu)), 1), F("a", {
 			class: "notes-link",
 			title: "恢复默认设置",
-			onClick: Ho(r, ["stop"])
-		}, [...i[24] ||= [P("i", { class: "fa-solid fa-rotate-left" }, null, -1)]])]), i[25] ||= P("div", { class: "inline-drawer-icon fa-solid fa-circle-chevron-down down" }, null, -1)]), P("div", Zu, [
-			P("label", Qu, [Wn(P("input", {
+			onClick: Bo(r, ["stop"])
+		}, [...i[25] ||= [F("i", { class: "fa-solid fa-rotate-left" }, null, -1)]])]), i[26] ||= F("div", { class: "inline-drawer-icon fa-solid fa-circle-chevron-down down" }, null, -1)]), F("div", Qu, [
+			F("label", $u, [Un(F("input", {
 				id: "th_modern_enabled",
 				"onUpdate:modelValue": i[0] ||= (e) => N(t).settings.enabled = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.enabled]]), i[26] ||= P("span", null, "启用现代化界面", -1)]),
-			i[47] ||= P("small", { class: "notes" }, "全面应用毛玻璃、常驻侧边栏与现代布局排版", -1),
-			i[48] ||= P("hr", null, null, -1),
-			i[49] ||= P("h4", null, "分栏与排版", -1),
-			P("label", $u, [Wn(P("input", {
+			}, null, 512), [[Po, N(t).settings.enabled]]), i[27] ||= F("span", null, "启用现代化界面", -1)]),
+			i[49] ||= F("small", { class: "notes" }, "全面应用毛玻璃、常驻侧边栏与现代布局排版", -1),
+			i[50] ||= F("hr", null, null, -1),
+			i[51] ||= F("h4", null, "分栏与排版", -1),
+			F("label", ed, [Un(F("input", {
 				id: "th_modern_two_column",
 				"onUpdate:modelValue": i[1] ||= (e) => N(t).settings.desktopTwoColumn = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.desktopTwoColumn]]), i[27] ||= P("span", null, "宽屏两栏与滑出面板", -1)]),
-			i[50] ||= P("small", { class: "notes" }, "屏幕 ≥900px 时将左侧抽屉转为常驻侧边栏", -1),
-			P("label", {
+			}, null, 512), [[Po, N(t).settings.desktopTwoColumn]]), i[28] ||= F("span", null, "宽屏两栏与滑出面板", -1)]),
+			i[52] ||= F("small", { class: "notes" }, "屏幕 ≥900px 时将左侧抽屉转为常驻侧边栏", -1),
+			F("label", {
 				class: ve(["checkbox_label", { "is-disabled": !N(t).settings.desktopTwoColumn }]),
 				for: "th_modern_docked_drawer"
-			}, [Wn(P("input", {
+			}, [Un(F("input", {
 				id: "th_modern_docked_drawer",
 				"onUpdate:modelValue": i[2] ||= (e) => N(t).settings.desktopDockedDrawer = e,
 				type: "checkbox",
 				disabled: !N(t).settings.desktopTwoColumn
-			}, null, 8, ed), [[Io, N(t).settings.desktopDockedDrawer]]), i[28] ||= P("span", null, "固定三栏排版", -1)], 2),
-			i[51] ||= P("small", { class: "notes" }, "空间足够时固定右侧设置抽屉；窄屏自动降级为滑出面板", -1),
-			P("div", td, [i[30] ||= P("span", null, "左侧栏宽度", -1), P("div", nd, [P("input", {
+			}, null, 8, td), [[Po, N(t).settings.desktopDockedDrawer]]), i[29] ||= F("span", null, "固定三栏排版", -1)], 2),
+			i[53] ||= F("small", { class: "notes" }, "空间足够时固定右侧设置抽屉；窄屏自动降级为滑出面板", -1),
+			F("div", nd, [i[31] ||= F("span", null, "左侧栏宽度", -1), F("div", rd, [F("input", {
 				value: N(t).settings.leftSidebarWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
@@ -7952,43 +8039,45 @@ var Ju = Os(zu, () => {
 				step: "4",
 				onChange: i[3] ||= (e) => n(e, "leftSidebarWidth", 320, 460),
 				onBlur: i[4] ||= (e) => n(e, "leftSidebarWidth", 320, 460)
-			}, null, 40, rd), i[29] ||= P("span", { class: "m-l-0_5" }, "px", -1)])]),
-			P("div", id, [i[32] ||= P("span", null, "滑出面板偏好宽度", -1), P("div", ad, [P("input", {
+			}, null, 40, id), i[30] ||= F("span", { class: "m-l-0_5" }, "px", -1)])]),
+			F("div", ad, [i[33] ||= F("span", null, "滑出面板偏好宽度", -1), F("div", od, [F("input", {
 				value: N(t).settings.overlayPanelWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
 				min: "720",
+				max: "2000",
 				step: "20",
-				onChange: i[5] ||= (e) => n(e, "overlayPanelWidth", 720),
-				onBlur: i[6] ||= (e) => n(e, "overlayPanelWidth", 720)
-			}, null, 40, od), i[31] ||= P("span", { class: "m-l-0_5" }, "px", -1)])]),
-			P("div", sd, [i[34] ||= P("span", null, "主聊天最小宽度", -1), P("div", cd, [P("input", {
+				onChange: i[5] ||= (e) => n(e, "overlayPanelWidth", 720, 2e3),
+				onBlur: i[6] ||= (e) => n(e, "overlayPanelWidth", 720, 2e3)
+			}, null, 40, sd), i[32] ||= F("span", { class: "m-l-0_5" }, "px", -1)])]),
+			F("div", cd, [i[35] ||= F("span", null, "主聊天最小宽度", -1), F("div", ld, [F("input", {
 				value: N(t).settings.mainChatMaxWidth,
 				class: "text_pole width100px text-right",
 				type: "number",
 				min: "0",
+				max: "4000",
 				step: "20",
-				onChange: i[7] ||= (e) => n(e, "mainChatMaxWidth", 0),
-				onBlur: i[8] ||= (e) => n(e, "mainChatMaxWidth", 0)
-			}, null, 40, ld), i[33] ||= P("span", { class: "m-l-0_5" }, "px", -1)])]),
-			i[52] ||= P("small", { class: "notes" }, "0 表示跟随酒馆宽度比例始终铺满可用空间。", -1),
-			i[53] ||= P("hr", null, null, -1),
-			i[54] ||= P("h4", null, "输入框设置", -1),
-			P("label", ud, [Wn(P("input", {
+				onChange: i[7] ||= (e) => n(e, "mainChatMaxWidth", 0, 4e3),
+				onBlur: i[8] ||= (e) => n(e, "mainChatMaxWidth", 0, 4e3)
+			}, null, 40, ud), i[34] ||= F("span", { class: "m-l-0_5" }, "px", -1)])]),
+			i[54] ||= F("small", { class: "notes" }, "0 表示跟随酒馆宽度比例始终铺满可用空间。", -1),
+			i[55] ||= F("hr", null, null, -1),
+			i[56] ||= F("h4", null, "输入框设置", -1),
+			F("label", dd, [Un(F("input", {
 				id: "th_modern_floating_input",
 				"onUpdate:modelValue": i[9] ||= (e) => N(t).settings.floatingChatInput = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.floatingChatInput]]), i[35] ||= P("span", null, "悬浮输入框", -1)]),
-			i[55] ||= P("small", { class: "notes" }, "开启时输入框以毛玻璃胶囊形态悬浮于聊天区上方；关闭时与原版 SillyTavern 一样固定置底铺满。", -1),
-			P("label", dd, [Wn(P("input", {
+			}, null, 512), [[Po, N(t).settings.floatingChatInput]]), i[36] ||= F("span", null, "悬浮输入框", -1)]),
+			i[57] ||= F("small", { class: "notes" }, "开启时输入框以毛玻璃胶囊形态悬浮于聊天区上方；关闭时与原版 SillyTavern 一样固定置底铺满。", -1),
+			F("label", fd, [Un(F("input", {
 				id: "th_modern_single_line_input",
 				"onUpdate:modelValue": i[10] ||= (e) => N(t).settings.singleLineChatInput = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.singleLineChatInput]]), i[36] ||= P("span", null, "单行输入框", -1)]),
-			i[56] ||= P("small", { class: "notes" }, "开启后输入框采用紧凑单行排版（发送与操作按钮置于输入框两侧）；关闭时保持双行排版（上方输入文本、下方操作按钮）。", -1),
-			P("div", { class: ve({ "is-disabled": !N(t).settings.floatingChatInput }) }, [
-				P("div", fd, [i[37] ||= P("span", null, "底部留白边距", -1), P("div", pd, [P("span", md, Oe(N(t).settings.inputBottomGap) + " px", 1)])]),
-				P("div", hd, [P("div", gd, [Wn(P("input", {
+			}, null, 512), [[Po, N(t).settings.singleLineChatInput]]), i[37] ||= F("span", null, "单行输入框", -1)]),
+			i[58] ||= F("small", { class: "notes" }, "开启后输入框采用紧凑单行排版（发送与操作按钮置于输入框两侧）；关闭时保持双行排版（上方输入文本、下方操作按钮）。", -1),
+			F("div", { class: ve({ "is-disabled": !N(t).settings.floatingChatInput }) }, [
+				F("div", pd, [i[38] ||= F("span", null, "底部留白边距", -1), F("div", md, [F("span", hd, Oe(N(t).settings.inputBottomGap) + " px", 1)])]),
+				F("div", gd, [F("div", _d, [Un(F("input", {
 					"onUpdate:modelValue": i[11] ||= (e) => N(t).settings.inputBottomGap = e,
 					type: "range",
 					class: "range_slider",
@@ -7996,12 +8085,12 @@ var Ju = Os(zu, () => {
 					max: N(120),
 					step: "1",
 					disabled: !N(t).settings.floatingChatInput
-				}, null, 8, _d), [[
-					Fo,
+				}, null, 8, vd), [[
+					No,
 					N(t).settings.inputBottomGap,
 					void 0,
 					{ number: !0 }
-				]])]), P("div", vd, [P("input", {
+				]])]), F("div", yd, [F("input", {
 					value: N(t).settings.inputBottomGap,
 					class: "text_pole width60px text-center",
 					type: "number",
@@ -8011,10 +8100,10 @@ var Ju = Os(zu, () => {
 					disabled: !N(t).settings.floatingChatInput,
 					onChange: i[12] ||= (e) => n(e, "inputBottomGap", N(0), N(120)),
 					onBlur: i[13] ||= (e) => n(e, "inputBottomGap", N(0), N(120))
-				}, null, 40, yd)])]),
-				P("small", bd, "调整悬浮输入框与窗口底边的间距（" + Oe(N(t).settings.inputBottomGap) + " px）。", 1),
-				P("div", xd, [i[38] ||= P("span", null, "两侧留白边距", -1), P("div", Sd, [P("span", Cd, Oe(N(t).settings.inputSideGap) + " px", 1)])]),
-				P("div", wd, [P("div", Td, [Wn(P("input", {
+				}, null, 40, bd)])]),
+				F("small", xd, "调整悬浮输入框与窗口底边的间距（" + Oe(N(t).settings.inputBottomGap) + " px）。", 1),
+				F("div", Sd, [i[39] ||= F("span", null, "两侧留白边距", -1), F("div", Cd, [F("span", wd, Oe(N(t).settings.inputSideGap) + " px", 1)])]),
+				F("div", Td, [F("div", Ed, [Un(F("input", {
 					"onUpdate:modelValue": i[14] ||= (e) => N(t).settings.inputSideGap = e,
 					type: "range",
 					class: "range_slider",
@@ -8022,12 +8111,12 @@ var Ju = Os(zu, () => {
 					max: N(80),
 					step: "1",
 					disabled: !N(t).settings.floatingChatInput
-				}, null, 8, Ed), [[
-					Fo,
+				}, null, 8, Dd), [[
+					No,
 					N(t).settings.inputSideGap,
 					void 0,
 					{ number: !0 }
-				]])]), P("div", Dd, [P("input", {
+				]])]), F("div", Od, [F("input", {
 					value: N(t).settings.inputSideGap,
 					class: "text_pole width60px text-center",
 					type: "number",
@@ -8037,78 +8126,84 @@ var Ju = Os(zu, () => {
 					disabled: !N(t).settings.floatingChatInput,
 					onChange: i[15] ||= (e) => n(e, "inputSideGap", N(0), N(80)),
 					onBlur: i[16] ||= (e) => n(e, "inputSideGap", N(0), N(80))
-				}, null, 40, Od)])]),
-				P("small", kd, "调整悬浮输入框左右两侧的留白边距（" + Oe(N(t).settings.inputSideGap) + " px）。", 1)
+				}, null, 40, kd)])]),
+				F("small", Ad, "调整悬浮输入框左右两侧的留白边距（" + Oe(N(t).settings.inputSideGap) + " px）。", 1)
 			], 2),
-			i[57] ||= P("hr", null, null, -1),
-			i[58] ||= P("h4", null, "增强子模块", -1),
-			P("label", Ad, [Wn(P("input", {
+			i[59] ||= F("hr", null, null, -1),
+			i[60] ||= F("h4", null, "增强子模块", -1),
+			F("label", jd, [Un(F("input", {
 				id: "th_modern_wi_editor",
 				"onUpdate:modelValue": i[17] ||= (e) => N(t).settings.modernWorldInfoEditor = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.modernWorldInfoEditor]]), i[39] ||= P("span", null, "现代世界书管理", -1)]),
-			i[59] ||= P("small", { class: "notes" }, "优化世界书条目卡片瀑布流与条目编辑网格", -1),
-			P("label", {
+			}, null, 512), [[Po, N(t).settings.modernWorldInfoEditor]]), i[40] ||= F("span", null, "现代世界书管理", -1)]),
+			i[61] ||= F("small", { class: "notes" }, "优化世界书条目卡片瀑布流与条目编辑网格", -1),
+			F("label", {
 				class: ve(["checkbox_label", { "is-disabled": !N(t).settings.modernWorldInfoEditor }]),
 				for: "th_modern_wi_select"
-			}, [Wn(P("input", {
+			}, [Un(F("input", {
 				id: "th_modern_wi_select",
 				"onUpdate:modelValue": i[18] ||= (e) => N(t).settings.modernWorldSelect = e,
 				type: "checkbox",
 				disabled: !N(t).settings.modernWorldInfoEditor
-			}, null, 8, jd), [[Io, N(t).settings.modernWorldSelect]]), i[40] ||= P("span", null, "现代世界书选择器", -1)], 2),
-			i[60] ||= P("small", { class: "notes" }, "多端卡片式世界书下拉选择面板与收藏置顶", -1),
-			P("label", Md, [Wn(P("input", {
+			}, null, 8, Md), [[Po, N(t).settings.modernWorldSelect]]), i[41] ||= F("span", null, "现代世界书选择器", -1)], 2),
+			i[62] ||= F("small", { class: "notes" }, "多端卡片式世界书下拉选择面板与收藏置顶", -1),
+			F("label", Nd, [Un(F("input", {
 				id: "th_modern_cm",
 				"onUpdate:modelValue": i[19] ||= (e) => N(t).settings.modernCharacterManagement = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.modernCharacterManagement]]), i[41] ||= P("span", null, "现代角色管理界面", -1)]),
-			i[61] ||= P("small", { class: "notes" }, "美化角色卡片列表、头部操作栏与角色编辑抽屉", -1),
-			P("label", Nd, [Wn(P("input", {
-				id: "th_modern_preset_editor",
-				"onUpdate:modelValue": i[20] ||= (e) => N(t).settings.modernPresetEditor = e,
+			}, null, 512), [[Po, N(t).settings.modernCharacterManagement]]), i[42] ||= F("span", null, "现代角色管理界面", -1)]),
+			i[63] ||= F("small", { class: "notes" }, "美化角色卡片列表、头部操作栏与角色编辑抽屉", -1),
+			F("label", Pd, [Un(F("input", {
+				id: "th_modern_persona",
+				"onUpdate:modelValue": i[20] ||= (e) => N(t).settings.modernPersonaManagement = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.modernPresetEditor]]), i[42] ||= P("span", null, [ha("现代化预设编辑器 "), P("small", { style: {
+			}, null, 512), [[Po, N(t).settings.modernPersonaManagement]]), i[43] ||= F("span", null, "现代用户设定界面", -1)]),
+			i[64] ||= F("small", { class: "notes" }, "优化人设卡片、选中状态、操作按钮与描述表单", -1),
+			F("label", Fd, [Un(F("input", {
+				id: "th_modern_preset_editor",
+				"onUpdate:modelValue": i[21] ||= (e) => N(t).settings.modernPresetEditor = e,
+				type: "checkbox"
+			}, null, 512), [[Po, N(t).settings.modernPresetEditor]]), i[44] ||= F("span", null, [pa("现代化预设编辑器 "), F("small", { style: {
 				color: "#e5a04b",
 				"font-weight": "bold",
 				"margin-left": "4px"
 			} }, "(实验性)")], -1)]),
-			i[62] ||= P("small", { class: "notes" }, "优化预设提示词顺序列表、支持多选拖拽、分组折叠与单选互斥（大型预设调优中，默认关闭）", -1),
-			P("label", Pd, [Wn(P("input", {
+			i[65] ||= F("small", { class: "notes" }, "优化预设提示词顺序列表、支持多选拖拽、分组折叠与单选互斥（大型预设调优中，默认关闭）", -1),
+			F("label", Id, [Un(F("input", {
 				id: "th_modern_ext_settings",
-				"onUpdate:modelValue": i[21] ||= (e) => N(t).settings.modernExtensionSettings = e,
+				"onUpdate:modelValue": i[22] ||= (e) => N(t).settings.modernExtensionSettings = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.modernExtensionSettings]]), i[43] ||= P("span", null, "现代扩展设置抽屉", -1)]),
-			i[63] ||= P("small", { class: "notes" }, "将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展", -1),
-			i[64] ||= P("hr", null, null, -1),
-			i[65] ||= P("h4", null, "视觉与性能", -1),
-			P("label", Fd, [Wn(P("input", {
+			}, null, 512), [[Po, N(t).settings.modernExtensionSettings]]), i[45] ||= F("span", null, "现代扩展设置抽屉", -1)]),
+			i[66] ||= F("small", { class: "notes" }, "将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展", -1),
+			i[67] ||= F("hr", null, null, -1),
+			i[68] ||= F("h4", null, "视觉与性能", -1),
+			F("label", Ld, [Un(F("input", {
 				id: "th_modern_reduce_motion",
-				"onUpdate:modelValue": i[22] ||= (e) => N(t).settings.reduceMotion = e,
+				"onUpdate:modelValue": i[23] ||= (e) => N(t).settings.reduceMotion = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.reduceMotion]]), i[44] ||= P("span", null, "减弱动态效果", -1)]),
-			i[66] ||= P("small", { class: "notes" }, "最小化过渡与缩放动画，降低能耗并提升响应", -1),
-			P("label", Id, [Wn(P("input", {
+			}, null, 512), [[Po, N(t).settings.reduceMotion]]), i[46] ||= F("span", null, "减弱动态效果", -1)]),
+			i[69] ||= F("small", { class: "notes" }, "最小化过渡与缩放动画，降低能耗并提升响应", -1),
+			F("label", Rd, [Un(F("input", {
 				id: "th_modern_reduce_effects",
-				"onUpdate:modelValue": i[23] ||= (e) => N(t).settings.reduceAdvancedEffects = e,
+				"onUpdate:modelValue": i[24] ||= (e) => N(t).settings.reduceAdvancedEffects = e,
 				type: "checkbox"
-			}, null, 512), [[Io, N(t).settings.reduceAdvancedEffects]]), i[45] ||= P("span", null, "精简高级特效", -1)]),
-			i[67] ||= P("small", { class: "notes" }, "关闭深度阴影与高强度发光滤镜", -1),
-			i[68] ||= P("hr", null, null, -1),
-			P("div", { class: "flex-container justifyEnd m-t-1" }, [P("div", {
+			}, null, 512), [[Po, N(t).settings.reduceAdvancedEffects]]), i[47] ||= F("span", null, "精简高级特效", -1)]),
+			i[70] ||= F("small", { class: "notes" }, "关闭深度阴影与高强度发光滤镜", -1),
+			i[71] ||= F("hr", null, null, -1),
+			F("div", { class: "flex-container justifyEnd m-t-1" }, [F("div", {
 				class: "menu_button menu_button_icon reset-button",
 				title: "重置现代化界面设置",
 				onClick: r
-			}, [...i[46] ||= [P("i", { class: "fa-solid fa-rotate-left" }, null, -1), P("span", null, "恢复默认设置", -1)]])])
-		])])) : ga("", !0);
+			}, [...i[48] ||= [F("i", { class: "fa-solid fa-rotate-left" }, null, -1), F("span", null, "恢复默认设置", -1)]])])
+		])]));
 	}
-}), [["__scopeId", "data-v-088c9e36"]]), Rd = "th-modern-panel-root";
-function zd(e) {
-	$(`.${Rd}`).remove();
+}), [["__scopeId", "data-v-b8b4c929"]]), Bd = "th-modern-panel-root";
+function Vd(e) {
+	$(`.${Bd}`).remove();
 	let t = !1, n, r = document.getElementById("modern-ui-reborn_container"), i = !1, a = () => {
 		if (t || n) return;
 		let a = document.getElementById("extensions_settings");
-		a && (n = Ko(Ld).use(e), r ? (r.classList.add(Rd), $(r).empty()) : (r = $("<div>").attr("id", "modern-ui-reborn_container").addClass(Rd).appendTo(a)[0], i = !0), n.mount(r));
+		a && (n = Wo(zd).use(e), r ? (r.classList.add(Bd), $(r).empty()) : (r = $("<div>").attr("id", "modern-ui-reborn_container").addClass(Bd).appendTo(a)[0], i = !0), n.mount(r));
 	};
 	a();
 	let o;
@@ -8118,11 +8213,11 @@ function zd(e) {
 		childList: !0,
 		subtree: !0
 	})), { destroy: () => {
-		t = !0, o?.disconnect(), n?.unmount(), i && r ? $(r).remove() : r && $(r).empty().removeClass(Rd);
+		t = !0, o?.disconnect(), n?.unmount(), i && r ? $(r).remove() : r && $(r).empty().removeClass(Bd);
 	} };
 }
 // src/mobile-world-select-module.ts
-var Bd = "(min-width: 1200px)", Vd = "(max-width: 560px)", Hd = "th-modern-mobile-world-source", Ud = "th-modern-mobile-world-source-native", Wd = "th-modern-mobile-world-select2-source", Gd = "th-modern-mobile-world-control", Kd = "th-modern-mobile-world-picker", qd = "th-modern-world-select-custom", Jd = "th_modern_world_book_favorites", Yd = 3e4, Xd = 90, Zd = [
+var Hd = "(min-width: 1200px)", Ud = "(max-width: 560px)", Wd = "th-modern-mobile-world-source", Gd = "th-modern-mobile-world-source-native", Kd = "th-modern-mobile-world-select2-source", qd = "th-modern-mobile-world-control", Jd = "th-modern-mobile-world-picker", Yd = "th-modern-world-select-custom", Xd = "th_modern_world_book_favorites", Zd = 3e4, Qd = 90, $d = [
 	{
 		key: "global",
 		selector: "#world_info",
@@ -8158,7 +8253,7 @@ var Bd = "(min-width: 1200px)", Vd = "(max-width: 560px)", Hd = "th-modern-mobil
 		placeholder: "未绑定人设世界书",
 		multiple: !1
 	}
-], Qd = {
+], ef = {
 	all: "全部",
 	enabled: "已启用",
 	favorites: "收藏"
@@ -8167,21 +8262,21 @@ function J(e, t, n) {
 	let r = e.createElement(t);
 	return n && (r.className = n), r;
 }
-function $d(e, t) {
+function tf(e, t) {
 	let n = J(e, "i", t);
 	return n.setAttribute("aria-hidden", "true"), n;
 }
-function ef(e) {
+function nf(e) {
 	return e.normalize("NFKC").toLocaleLowerCase().trim();
 }
-function tf(e) {
+function rf(e) {
 	return Array.isArray(e) ? Array.from(new Set(e.filter((e) => typeof e == "string").map((e) => e.trim()).filter(Boolean))) : [];
 }
-function nf(e) {
+function af(e) {
 	let t = e;
 	return t ? typeof t.closest == "function" ? t : t.nodeType === 3 ? t.parentElement ?? null : null : null;
 }
-var rf = class {
+var of = class {
 	document;
 	window;
 	options;
@@ -8208,10 +8303,10 @@ var rf = class {
 		}), this.documentObserver.observe(this.document.body, {
 			childList: !0,
 			subtree: !0
-		}), this.document.addEventListener("click", this.captureRenameIntent, !0), this.favorites = this.readFavorites(), this.mountControllers(), this.applyEnabledState();
+		}), this.document.addEventListener("click", this.captureRenameIntent, !0), this.favorites = this.readFavorites(), this.applyEnabledState();
 	}
 	destroy() {
-		this.panelObserver.disconnect(), this.documentObserver.disconnect(), this.controllerRefreshFrame &&= (this.window.cancelAnimationFrame(this.controllerRefreshFrame), 0), this.document.removeEventListener("click", this.captureRenameIntent, !0), this.clearRenameIntent(), this.closePicker(), this.unmountControllers(), this.document.querySelector("#WorldInfo")?.classList.remove(qd);
+		this.panelObserver.disconnect(), this.documentObserver.disconnect(), this.controllerRefreshFrame &&= (this.window.cancelAnimationFrame(this.controllerRefreshFrame), 0), this.document.removeEventListener("click", this.captureRenameIntent, !0), this.clearRenameIntent(), this.closePicker(), this.unmountControllers(), this.document.querySelector("#WorldInfo")?.classList.remove(Yd);
 	}
 	setEnabled(e) {
 		this.enabled === e || (this.enabled = e, this.closePicker()), this.applyEnabledState();
@@ -8220,7 +8315,7 @@ var rf = class {
 		this.setEnabled(e), this.options.onEnabledChange(e);
 	}
 	openPicker(e) {
-		this.enabled && (this.closePicker(), this.refreshFavoritesAndCleanInvalid(), this.picker = new of(this, e, () => {
+		this.enabled && (this.closePicker(), this.refreshFavoritesAndCleanInvalid(), this.picker = new cf(this, e, () => {
 			this.picker = void 0;
 		}), this.picker.mount());
 	}
@@ -8252,18 +8347,23 @@ var rf = class {
 		return t ? this.favorites.add(e) : this.favorites.delete(e), this.writeFavorites(), t;
 	}
 	applyEnabledState() {
-		this.document.querySelector("#WorldInfo")?.classList.toggle(qd, this.enabled);
-		for (let e of this.controllers) e.setNativeMode(!this.enabled);
+		if (this.document.querySelector("#WorldInfo")?.classList.toggle(Yd, this.enabled), !this.enabled) this.unmountControllers();
+		else {
+			this.mountControllers();
+			for (let e of this.controllers) e.setNativeMode(!1);
+		}
 	}
 	mountControllers() {
-		for (let e = this.controllers.length - 1; e >= 0; --e) {
-			let t = this.controllers[e];
-			t.source.isConnected ? t.syncSelect2Container() : (this.isPickerFor(t) && this.closePicker(), t.destroy(), this.controllers.splice(e, 1));
-		}
-		for (let e of Zd) for (let t of this.document.querySelectorAll(e.selector)) {
-			if (t.closest(".template_element") || this.controllers.some((e) => e.source === t)) continue;
-			let n = new af(this, t, e);
-			n.mount(), n.setNativeMode(!this.enabled), this.controllers.push(n);
+		if (this.enabled) {
+			for (let e = this.controllers.length - 1; e >= 0; --e) {
+				let t = this.controllers[e];
+				t.source.isConnected ? t.syncSelect2Container() : (this.isPickerFor(t) && this.closePicker(), t.destroy(), this.controllers.splice(e, 1));
+			}
+			for (let e of $d) for (let t of this.document.querySelectorAll(e.selector)) {
+				if (t.closest(".template_element") || this.controllers.some((e) => e.source === t)) continue;
+				let n = new sf(this, t, e);
+				n.mount(), n.setNativeMode(!this.enabled), this.controllers.push(n);
+			}
 		}
 	}
 	unmountControllers() {
@@ -8275,9 +8375,9 @@ var rf = class {
 	readFavorites() {
 		try {
 			let e = window.extension_settings?.modern_ui;
-			if (e && e[Jd]) return new Set(tf(e[Jd]));
-			let t = localStorage.getItem(Jd);
-			return new Set(tf(t ? JSON.parse(t) : []));
+			if (e && e[Xd]) return new Set(rf(e[Xd]));
+			let t = localStorage.getItem(Xd);
+			return new Set(rf(t ? JSON.parse(t) : []));
 		} catch (e) {
 			return console.warn("[现代化界面] 读取世界书收藏失败。", e), /* @__PURE__ */ new Set();
 		}
@@ -8285,17 +8385,13 @@ var rf = class {
 	writeFavorites() {
 		try {
 			let e = [...this.favorites];
-			localStorage.setItem(Jd, JSON.stringify(e)), window.extension_settings?.modern_ui && (window.extension_settings.modern_ui[Jd] = e, typeof window.saveSettingsDebounced == "function" && window.saveSettingsDebounced()), this.variableWriteErrorNotified = !1;
+			localStorage.setItem(Xd, JSON.stringify(e)), window.extension_settings?.modern_ui && (window.extension_settings.modern_ui[Xd] = e, typeof window.saveSettingsDebounced == "function" && window.saveSettingsDebounced()), this.variableWriteErrorNotified = !1;
 		} catch (e) {
 			console.error("[现代化界面] 写入世界书收藏失败。", e), this.variableWriteErrorNotified ||= (toastr.error("世界书收藏保存失败，请稍后重试", "现代化界面"), !0);
 		}
 	}
 	refreshFavoritesAndCleanInvalid() {
 		this.favorites = this.readFavorites();
-		let e = this.getAvailableWorldNames();
-		if (e.size === 0) return;
-		let t = new Set([...this.favorites].filter((t) => e.has(t)));
-		t.size !== this.favorites.size && (this.favorites = t, this.writeFavorites());
 	}
 	migrateFavorite(e, t) {
 		this.favorites.has(e) && t && e !== t && (this.favorites.delete(e), this.favorites.add(t), this.writeFavorites());
@@ -8309,11 +8405,11 @@ var rf = class {
 		this.pendingRename &&= (this.window.clearTimeout(this.pendingRename.timeout), void 0);
 	}
 	captureRenameIntent = (e) => {
-		if (!nf(e.target)?.closest("#world_popup_name_button")) return;
+		if (!af(e.target)?.closest("#world_popup_name_button")) return;
 		let t = this.document.querySelector("#world_editor_select")?.selectedOptions[0]?.label.trim() ?? "";
 		if (!t) return;
 		this.clearRenameIntent();
-		let n = this.window.setTimeout(() => this.clearRenameIntent(), Yd);
+		let n = this.window.setTimeout(() => this.clearRenameIntent(), Zd);
 		this.pendingRename = {
 			oldName: t,
 			timeout: n
@@ -8324,7 +8420,7 @@ var rf = class {
 			this.controllerRefreshFrame = 0, this.mountControllers();
 		});
 	};
-}, af = class {
+}, sf = class {
 	config;
 	document;
 	source;
@@ -8344,22 +8440,23 @@ var rf = class {
 	nativeChangeHandler;
 	syncFrame = 0;
 	nativeMode = !1;
+	nativeSourceAttributes;
 	constructor(e, t, n) {
 		this.manager = e, this.source = t, this.config = n, this.document = t.ownerDocument, this.window = this.document.defaultView ?? L(), this.namespace = `.thModernWorldSelect_${t.id || n.key}`;
 	}
 	mount() {
 		if (this.wrapper) return;
-		this.source.classList.add(Hd), this.surface = this.source.closest("#WorldInfo, .character_world, .persona_world") ?? this.source.parentElement ?? void 0, this.select2Container = this.findSelect2Container(), this.select2Container?.classList.add(Wd);
-		let e = J(this.document, "div", Gd);
+		this.source.classList.add(Wd), this.surface = this.source.closest("#WorldInfo, .character_world, .persona_world") ?? this.source.parentElement ?? void 0, this.select2Container = this.findSelect2Container(), this.select2Container?.classList.add(Kd);
+		let e = J(this.document, "div", qd);
 		e.dataset.source = this.source.id || this.config.key;
 		let t = J(this.document, "button", "menu_button th-modern-mobile-world-trigger");
-		t.type = "button", t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-expanded", "false"), t.append($d(this.document, this.config.multiple ? "fa-solid fa-layer-group" : "fa-solid fa-book-open"));
+		t.type = "button", t.setAttribute("aria-haspopup", "dialog"), t.setAttribute("aria-expanded", "false"), t.append(tf(this.document, this.config.multiple ? "fa-solid fa-layer-group" : "fa-solid fa-book-open"));
 		let n = J(this.document, "span", "th-modern-mobile-world-trigger-text"), r = J(this.document, "span", "th-modern-mobile-world-trigger-primary"), i = J(this.document, "span", "th-modern-mobile-world-trigger-secondary");
 		n.append(r, i);
 		let a = J(this.document, "span", "th-modern-mobile-world-trigger-count");
-		t.append(n, a, $d(this.document, "fa-solid fa-chevron-down th-modern-mobile-world-trigger-chevron"));
+		t.append(n, a, tf(this.document, "fa-solid fa-chevron-down th-modern-mobile-world-trigger-chevron"));
 		let o = J(this.document, "button", "menu_button menu_button_icon th-modern-mobile-world-native-return");
-		o.type = "button", o.title = "使用现代世界书选择器", o.append($d(this.document, "fa-solid fa-list-check"), J(this.document, "span")), o.lastElementChild.textContent = "现代选择", t.addEventListener("click", this.openPicker), o.addEventListener("click", this.returnToCustomMode), e.append(t, o), (this.select2Container ?? this.source).insertAdjacentElement("afterend", e), this.wrapper = e, this.trigger = t, this.primaryText = r, this.secondaryText = i, this.countBadge = a, this.nativeReturn = o, typeof this.window.$ == "function" ? (this.$source = this.window.$(this.source), this.$source.on(`change${this.namespace}`, this.onSourceChange)) : (this.nativeChangeHandler = this.onSourceChange, this.source.addEventListener("change", this.nativeChangeHandler)), this.observer = new this.window.MutationObserver(this.scheduleSync), this.observer.observe(this.source, {
+		o.type = "button", o.title = "使用现代世界书选择器", o.append(tf(this.document, "fa-solid fa-list-check"), J(this.document, "span")), o.lastElementChild.textContent = "现代选择", t.addEventListener("click", this.openPicker), o.addEventListener("click", this.returnToCustomMode), e.append(t, o), (this.select2Container ?? this.source).insertAdjacentElement("afterend", e), this.wrapper = e, this.trigger = t, this.primaryText = r, this.secondaryText = i, this.countBadge = a, this.nativeReturn = o, typeof this.window.$ == "function" ? (this.$source = this.window.$(this.source), this.$source.on(`change${this.namespace}`, this.onSourceChange)) : (this.nativeChangeHandler = this.onSourceChange, this.source.addEventListener("change", this.nativeChangeHandler)), this.observer = new this.window.MutationObserver(this.scheduleSync), this.observer.observe(this.source, {
 			attributes: !0,
 			attributeFilter: ["disabled"],
 			childList: !0,
@@ -8367,7 +8464,7 @@ var rf = class {
 		}), this.syncTrigger();
 	}
 	destroy() {
-		this.syncFrame &&= (this.window.cancelAnimationFrame(this.syncFrame), 0), this.observer?.disconnect(), this.observer = void 0, this.$source?.off(`change${this.namespace}`, this.onSourceChange), this.$source = void 0, this.nativeChangeHandler &&= (this.source.removeEventListener("change", this.nativeChangeHandler), void 0), this.trigger?.removeEventListener("click", this.openPicker), this.nativeReturn?.removeEventListener("click", this.returnToCustomMode), this.wrapper?.remove(), this.wrapper = void 0, this.trigger = void 0, this.primaryText = void 0, this.secondaryText = void 0, this.countBadge = void 0, this.nativeReturn = void 0, this.source.classList.remove(Hd, Ud), this.select2Container?.classList.remove(Wd), this.select2Container = void 0, this.surface = void 0, this.nativeMode = !1;
+		this.syncFrame &&= (this.window.cancelAnimationFrame(this.syncFrame), 0), this.observer?.disconnect(), this.observer = void 0, this.$source?.off(`change${this.namespace}`, this.onSourceChange), this.$source = void 0, this.nativeChangeHandler &&= (this.source.removeEventListener("change", this.nativeChangeHandler), void 0), this.trigger?.removeEventListener("click", this.openPicker), this.nativeReturn?.removeEventListener("click", this.returnToCustomMode), this.wrapper?.remove(), this.wrapper = void 0, this.trigger = void 0, this.primaryText = void 0, this.secondaryText = void 0, this.countBadge = void 0, this.nativeReturn = void 0, this.restoreNativeSourceAttributes(), this.source.classList.remove(Wd, Gd), this.select2Container?.classList.remove(Kd), this.select2Container = void 0, this.surface?.classList.remove(Yd), this.surface = void 0, this.nativeMode = !1;
 	}
 	getOptions() {
 		let e = Array.from(this.source.options).map((e, t) => {
@@ -8376,7 +8473,7 @@ var rf = class {
 				disabled: e.disabled,
 				favoriteKey: e.value ? n : "",
 				label: n,
-				searchText: ef(n),
+				searchText: nf(n),
 				selected: e.selected,
 				sourceIndex: t,
 				value: e.value
@@ -8405,11 +8502,22 @@ var rf = class {
 		t ? this.triggerSourceChange() : this.syncTrigger();
 	}
 	setNativeMode(e) {
-		this.nativeMode = e, this.surface?.classList.toggle(qd, !e), this.source.classList.toggle(Ud, e), this.wrapper?.classList.toggle("is-native", e), this.syncTrigger();
+		this.nativeMode = e;
+		let t = e && !this.select2Container;
+		t ? (this.nativeSourceAttributes ??= {
+			tabIndex: this.source.getAttribute("tabindex"),
+			ariaHidden: this.source.getAttribute("aria-hidden")
+		}, this.source.removeAttribute("tabindex"), this.source.removeAttribute("aria-hidden")) : this.restoreNativeSourceAttributes(), this.surface?.classList.toggle(Yd, !e), this.source.classList.toggle(Gd, t), this.wrapper?.classList.toggle("is-native", e), this.syncTrigger();
+	}
+	restoreNativeSourceAttributes() {
+		if (this.nativeSourceAttributes) {
+			for (let [e, t] of [["tabindex", this.nativeSourceAttributes.tabIndex], ["aria-hidden", this.nativeSourceAttributes.ariaHidden]]) t === null ? this.source.removeAttribute(e) : this.source.setAttribute(e, t);
+			this.nativeSourceAttributes = void 0;
+		}
 	}
 	syncSelect2Container() {
 		let e = this.findSelect2Container();
-		e !== this.select2Container && (this.select2Container?.classList.remove(Wd), this.select2Container = e, this.select2Container?.classList.add(Wd), this.wrapper && (this.select2Container ?? this.source).insertAdjacentElement("afterend", this.wrapper));
+		e !== this.select2Container && (this.select2Container?.classList.remove(Kd), this.select2Container = e, this.select2Container?.classList.add(Kd), this.wrapper && (this.select2Container ?? this.source).insertAdjacentElement("afterend", this.wrapper), this.setNativeMode(this.nativeMode));
 	}
 	syncTrigger() {
 		if (!this.trigger || !this.primaryText || !this.secondaryText || !this.countBadge) return;
@@ -8442,7 +8550,7 @@ var rf = class {
 			this.syncFrame = 0, this.manager.notifySourceChanged(this);
 		});
 	};
-}, of = class {
+}, cf = class {
 	manager;
 	controller;
 	document;
@@ -8478,30 +8586,30 @@ var rf = class {
 	}
 	mount() {
 		this.previousFocus = this.document.activeElement, this.options = this.controller.getOptions(), this.selectedValues = this.controller.getSelectedValues(), this.enabledSnapshot = new Set(this.selectedValues), this.favoriteSnapshot = this.manager.getFavorites();
-		let e = J(this.document, "dialog", Kd), t = `th-modern-mobile-world-picker-title-${this.controller.source.id}`;
+		let e = J(this.document, "dialog", Jd), t = `th-modern-mobile-world-picker-title-${this.controller.source.id}`;
 		e.setAttribute("role", "dialog"), e.setAttribute("aria-labelledby", t), e.tabIndex = -1;
 		let n = J(this.document, "section", "th-modern-mobile-world-picker-sheet"), r = J(this.document, "span", "th-modern-mobile-world-picker-handle");
 		r.setAttribute("aria-hidden", "true");
 		let i = J(this.document, "header", "th-modern-mobile-world-picker-header"), a = J(this.document, "div", "th-modern-mobile-world-picker-heading"), o = J(this.document, "strong");
 		o.id = t, o.textContent = this.controller.config.title, a.append(o);
 		let s = J(this.document, "div", "th-modern-mobile-world-picker-header-actions"), c = J(this.document, "button", "menu_button th-modern-mobile-world-picker-native");
-		c.type = "button", c.append($d(this.document, "fa-solid fa-arrow-rotate-left"), this.document.createTextNode("原生界面")), c.addEventListener("click", this.useNativeMode);
+		c.type = "button", c.append(tf(this.document, "fa-solid fa-arrow-rotate-left"), this.document.createTextNode("原生界面")), c.addEventListener("click", this.useNativeMode);
 		let l = J(this.document, "button", "menu_button th-modern-mobile-world-picker-close");
-		l.type = "button", l.title = "关闭世界书选择", l.setAttribute("aria-label", "关闭世界书选择"), l.append($d(this.document, "fa-solid fa-xmark")), l.addEventListener("click", this.close), s.append(c, l), i.append(a, s);
+		l.type = "button", l.title = "关闭世界书选择", l.setAttribute("aria-label", "关闭世界书选择"), l.append(tf(this.document, "fa-solid fa-xmark")), l.addEventListener("click", this.close), s.append(c, l), i.append(a, s);
 		let u = J(this.document, "nav", "th-modern-mobile-world-picker-tabs");
 		u.setAttribute("role", "tablist"), u.setAttribute("aria-label", "世界书筛选"), u.addEventListener("click", this.onTabClick);
 		let d = J(this.document, "label", "th-modern-mobile-world-picker-search");
-		d.append($d(this.document, "fa-solid fa-magnifying-glass"));
+		d.append(tf(this.document, "fa-solid fa-magnifying-glass"));
 		let f = J(this.document, "input");
 		f.type = "search", f.placeholder = "搜索世界书名称…", f.autocomplete = "off", f.spellcheck = !1, f.setAttribute("enterkeyhint", "search"), f.addEventListener("input", this.onSearchInput), f.addEventListener("keydown", this.onSearchKeyDown);
 		let p = J(this.document, "button", "th-modern-mobile-world-picker-search-clear");
-		p.type = "button", p.title = "清空搜索", p.setAttribute("aria-label", "清空搜索"), p.append($d(this.document, "fa-solid fa-circle-xmark")), p.addEventListener("click", this.clearSearch), d.append(f, p);
+		p.type = "button", p.title = "清空搜索", p.setAttribute("aria-label", "清空搜索"), p.append(tf(this.document, "fa-solid fa-circle-xmark")), p.addEventListener("click", this.clearSearch), d.append(f, p);
 		let m = J(this.document, "div", "th-modern-mobile-world-picker-status");
 		m.setAttribute("aria-live", "polite");
 		let h = J(this.document, "div", "th-modern-mobile-world-picker-viewport");
 		h.tabIndex = 0, h.setAttribute("role", "listbox"), this.controller.config.multiple && h.setAttribute("aria-multiselectable", "true");
 		let g = J(this.document, "div", "th-modern-mobile-world-picker-rows"), v = J(this.document, "div", "th-modern-mobile-world-picker-empty"), y = this.document.createTextNode("没有找到匹配的世界书");
-		v.append($d(this.document, "fa-regular fa-folder-open"), y), h.append(g, v), n.append(r, i, u, d, m, h), e.append(n), e.addEventListener("touchstart", this.stopDrawerAutoClose, { passive: !0 }), e.addEventListener("mousedown", this.stopDrawerAutoClose), e.addEventListener("click", this.onOverlayClick), e.addEventListener("keydown", this.onKeyDown), this.window.addEventListener("resize", this.syncLayout, { passive: !0 }), this.overlay = e, this.sheet = n, this.tabs = u, this.searchInput = f, this.clearSearchButton = p, this.resultStatus = m, this.viewport = h, this.rows = g, this.emptyState = v, this.emptyStateText = y, this.renderTabs(), this.filterOptions(), this.document.body.append(e), e.showModal(), this.syncLayout(), this.controller.syncTrigger(), this.window.requestAnimationFrame(() => {
+		v.append(tf(this.document, "fa-regular fa-folder-open"), y), h.append(g, v), n.append(r, i, u, d, m, h), e.append(n), e.addEventListener("touchstart", this.stopDrawerAutoClose, { passive: !0 }), e.addEventListener("mousedown", this.stopDrawerAutoClose), e.addEventListener("click", this.onOverlayClick), e.addEventListener("keydown", this.onKeyDown), this.window.addEventListener("resize", this.syncLayout, { passive: !0 }), this.overlay = e, this.sheet = n, this.tabs = u, this.searchInput = f, this.clearSearchButton = p, this.resultStatus = m, this.viewport = h, this.rows = g, this.emptyState = v, this.emptyStateText = y, this.renderTabs(), this.filterOptions(), this.document.body.append(e), e.showModal(), this.syncLayout(), this.controller.syncTrigger(), this.window.requestAnimationFrame(() => {
 			this.layout === "wide" ? this.searchInput?.focus({ preventScroll: !0 }) : e.focus({ preventScroll: !0 });
 		});
 	}
@@ -8527,12 +8635,12 @@ var rf = class {
 			let n = J(this.document, "button", "th-modern-mobile-world-picker-tab");
 			n.type = "button", n.dataset.tab = t, n.setAttribute("role", "tab"), n.setAttribute("aria-selected", String(this.activeTab === t)), n.classList.toggle("is-active", this.activeTab === t);
 			let r = t === "all" ? this.options.length : t === "enabled" ? this.selectedValues.size : this.manager.getFavorites().size;
-			n.append(this.document.createTextNode(Qd[t]), J(this.document, "span")), n.lastElementChild.textContent = String(r), e.append(n);
+			n.append(this.document.createTextNode(ef[t]), J(this.document, "span")), n.lastElementChild.textContent = String(r), e.append(n);
 		}
 		this.tabs.replaceChildren(e);
 	}
 	filterOptions() {
-		let e = ef(this.query), t = this.options;
+		let e = nf(this.query), t = this.options;
 		this.activeTab === "enabled" ? t = t.filter((e) => this.enabledSnapshot.has(e.value)) : this.activeTab === "favorites" && (t = t.filter((e) => this.favoriteSnapshot.has(e.favoriteKey))), this.filteredOptions = e ? t.filter((t) => t.searchText.includes(e)) : [...t], this.viewport && (this.viewport.scrollTop = 0), this.updateStatus(t.length), this.renderRows();
 	}
 	renderRows() {
@@ -8556,14 +8664,14 @@ var rf = class {
 			let n = J(this.document, "button", "th-modern-mobile-world-picker-row-select");
 			n.type = "button", n.addEventListener("click", this.onRowClick);
 			let r = J(this.document, "span", this.controller.config.multiple ? "th-modern-mobile-world-picker-checkbox" : "th-modern-mobile-world-picker-radio");
-			r.append($d(this.document, this.controller.config.multiple ? "fa-solid fa-check" : "fa-solid fa-circle"));
+			r.append(tf(this.document, this.controller.config.multiple ? "fa-solid fa-check" : "fa-solid fa-circle"));
 			let i = J(this.document, "span", "th-modern-mobile-world-picker-row-label"), a = this.document.createTextNode("");
 			i.append(a);
-			let o = $d(this.document, "fa-solid fa-check th-modern-mobile-world-picker-row-check");
+			let o = tf(this.document, "fa-solid fa-check th-modern-mobile-world-picker-row-check");
 			o.hidden = !0, n.append(r, i, o);
 			let s = J(this.document, "button", "th-modern-mobile-world-picker-favorite");
 			s.type = "button", s.addEventListener("click", this.onRowClick);
-			let c = $d(this.document, "fa-solid fa-star"), l = $d(this.document, "fa-regular fa-star");
+			let c = tf(this.document, "fa-solid fa-star"), l = tf(this.document, "fa-regular fa-star");
 			c.hidden = !0, s.append(c, l), e.append(n, s), t.append(e), this.rowPool.push({
 				favoriteButton: s,
 				favoriteOffIcon: l,
@@ -8588,7 +8696,7 @@ var rf = class {
 		this.clearSearchButton && (this.clearSearchButton.hidden = this.query.length === 0), this.emptyStateText && (this.emptyStateText.data = this.query ? "没有找到匹配的世界书" : this.activeTab === "favorites" ? "还没有收藏世界书" : this.activeTab === "enabled" ? "当前没有已启用的世界书" : "没有可选择的世界书");
 	}
 	getLayout() {
-		return this.window.matchMedia(Bd).matches ? "wide" : this.window.matchMedia(Vd).matches ? "phone" : "narrow";
+		return this.window.matchMedia(Hd).matches ? "wide" : this.window.matchMedia(Ud).matches ? "phone" : "narrow";
 	}
 	positionWideSheet() {
 		if (!this.sheet) return;
@@ -8609,13 +8717,13 @@ var rf = class {
 		this.layout = this.getLayout(), this.overlay && this.sheet && (this.overlay.dataset.layout = this.layout, this.overlay.setAttribute("aria-modal", String(this.layout !== "wide")), this.sheet.removeAttribute("style"), this.layout === "wide" && this.positionWideSheet());
 	};
 	onTabClick = (e) => {
-		let t = (nf(e.target)?.closest(".th-modern-mobile-world-picker-tab"))?.dataset.tab;
+		let t = (af(e.target)?.closest(".th-modern-mobile-world-picker-tab"))?.dataset.tab;
 		t && t !== this.activeTab && this.getAvailableTabs().includes(t) && (this.activeTab = t, this.manager.rememberTab(this.controller, t), this.renderTabs(), this.filterOptions());
 	};
 	onSearchInput = () => {
 		this.searchTimer && this.window.clearTimeout(this.searchTimer), this.searchTimer = this.window.setTimeout(() => {
 			this.searchTimer = 0, this.query = this.searchInput?.value ?? "", this.filterOptions();
-		}, Xd);
+		}, Qd);
 	};
 	onSearchKeyDown = (e) => {
 		e.key === "ArrowDown" && (e.preventDefault(), this.focusFilteredIndex(0));
@@ -8624,7 +8732,7 @@ var rf = class {
 		this.searchInput && (this.searchInput.value = "", this.query = "", this.filterOptions(), this.searchInput.focus({ preventScroll: !0 }));
 	};
 	onRowClick = (e) => {
-		let t = nf(e.target), n = t?.closest(".th-modern-mobile-world-picker-row");
+		let t = af(e.target), n = t?.closest(".th-modern-mobile-world-picker-row");
 		if (!n) return;
 		let r = Number(n.dataset.sourceIndex), i = this.options.find((e) => e.sourceIndex === r);
 		if (!i) return;
@@ -8652,21 +8760,25 @@ var rf = class {
 			e.preventDefault(), this.close();
 			return;
 		}
-		let t = nf(e.target)?.closest(".th-modern-mobile-world-picker-row");
+		let t = af(e.target)?.closest(".th-modern-mobile-world-picker-row");
 		if (!t || e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
 		let n = Number(t.dataset.sourceIndex), r = this.filteredOptions.findIndex((e) => e.sourceIndex === n);
 		r < 0 || (e.preventDefault(), this.focusFilteredIndex(r + (e.key === "ArrowDown" ? 1 : -1)));
 	};
 };
-function sf(e) {
-	let t = new rf(e);
+function lf(e) {
+	let t = new of(e);
 	return t.mount(), {
 		destroy: () => t.destroy(),
 		setEnabled: (e) => t.setEnabled(e)
 	};
 }
+// src/world-info-concurrency.ts
+function uf(e, t, n) {
+	return JSON.stringify(t) !== e || JSON.stringify(n) !== e;
+}
 // src/world-info-module.ts
-var cf = "th-modern-wi-enabled", lf = "th-modern-wi-native", uf = "th-modern-wi-selected", df = "th-modern-wi-row-checked", ff = "th-modern-wi-multiselect", pf = "th-modern-wi-narrow", mf = "th-modern-wi-detail-open", hf = "th-modern-wi-mobile-detail-open", gf = "th-modern-wi-native-editor-loading", _f = "thModernTabsReady", vf = "thModernSummaryReady", yf = "2026-07-18-compact-v2", bf = "thModernConditionalReady", xf = "thModernShortcutSyncReady", Sf = "2026-07-08-tabs-v4", Cf = /* @__PURE__ */ new Map(), wf = [
+var df = "th-modern-wi-enabled", ff = "th-modern-wi-native", pf = "th-modern-wi-selected", mf = "th-modern-wi-row-checked", hf = "th-modern-wi-multiselect", gf = "th-modern-wi-narrow", _f = "th-modern-wi-detail-open", vf = "th-modern-wi-mobile-detail-open", yf = "th-modern-wi-native-editor-loading", bf = "thModernTabsReady", xf = "thModernSummaryReady", Sf = "2026-07-18-compact-v2", Cf = "thModernConditionalReady", wf = "thModernShortcutSyncReady", Tf = "2026-07-08-tabs-v4", Ef = /* @__PURE__ */ new Map(), Df = [
 	["th-modern-wi-position-field", "select[name=\"position\"]"],
 	["th-modern-wi-depth-field", "input[name=\"depth\"]"],
 	["th-modern-wi-outlet-field", "input[name=\"outletName\"]"],
@@ -8674,50 +8786,50 @@ var cf = "th-modern-wi-enabled", lf = "th-modern-wi-native", uf = "th-modern-wi-
 	["th-modern-wi-no-recursion-field", "input[name=\"excludeRecursion\"]"],
 	["th-modern-wi-prevent-recursion-field", "input[name=\"preventRecursion\"]"]
 ];
-function Tf(e) {
+function Of(e) {
 	let t = e.getAttribute("uid") ?? e.dataset.uid, n = Number(t);
 	return Number.isFinite(n) ? n : void 0;
 }
-function Ef(e) {
+function kf(e) {
 	let t = e.querySelector("#world_editor_select");
 	return !t || t.value === "" ? "" : t.selectedOptions[0]?.textContent?.trim() ?? "";
 }
-function Df(e) {
+function Af(e) {
 	return typeof e == "object" && !!e && !Array.isArray(e);
 }
-function Of(e) {
-	return Df(e) && typeof e.message == "string" ? e.message : String(e);
+function jf(e) {
+	return Af(e) && typeof e.message == "string" ? e.message : String(e);
 }
-function kf(e, t, n) {
+function Mf(e, t, n) {
 	let r = n.structuredClone(e);
-	if (!Df(r) || !Df(r.entries)) throw Error("世界书数据缺少 entries 对象");
+	if (!Af(r) || !Af(r.entries)) throw Error("世界书数据缺少 entries 对象");
 	let i = 0;
 	for (let [e, n] of Object.entries(r.entries)) {
-		let a = Number(Df(n) && n.uid !== void 0 ? n.uid : e);
+		let a = Number(Af(n) && n.uid !== void 0 ? n.uid : e);
 		Number.isFinite(a) && t.has(a) && (delete r.entries[e], i += 1);
 	}
 	if (i !== t.size) throw Error(`仅找到 ${i}/${t.size} 个待删除条目`);
-	return Df(r.originalData) && Array.isArray(r.originalData.entries) && (r.originalData.entries = r.originalData.entries.filter((e) => {
-		let n = Number(Df(e) ? e.uid ?? e.id : void 0);
+	return Af(r.originalData) && Array.isArray(r.originalData.entries) && (r.originalData.entries = r.originalData.entries.filter((e) => {
+		let n = Number(Af(e) ? e.uid ?? e.id : void 0);
 		return !Number.isFinite(n) || !t.has(n);
 	})), r;
 }
-function Af(e) {
+function Nf(e) {
 	let t = e;
 	return t ? typeof t.closest == "function" ? t : t.nodeType === 3 ? t.parentElement ?? null : null : null;
 }
-function jf(e) {
-	return Af(e)?.closest(".world_entry") ?? null;
+function Pf(e) {
+	return Nf(e)?.closest(".world_entry") ?? null;
 }
-function Mf(e) {
-	let t = Af(e);
+function Ff(e) {
+	let t = Nf(e);
 	return t ? !!t.closest(".th-modern-wi-tab,.th-modern-wi-editor-surface,.th-modern-wi-editor-actions,.th-modern-wi-toolbar,.drag-handle,.inline-drawer-toggle,.move_entry_button,.duplicate_entry_button,.delete_entry_button,input,select,textarea,button,a,label,.menu_button,.select2,.select2-container") : !1;
 }
-function Nf(e) {
-	let t = Af(e);
-	return !t || !t.closest("#world_popup_entries_list") || Mf(t) ? null : jf(t);
+function If(e) {
+	let t = Nf(e);
+	return !t || !t.closest("#world_popup_entries_list") || Ff(t) ? null : Pf(t);
 }
-function Pf(e, t, n, r) {
+function Lf(e, t, n, r) {
 	if (e.parentNode === t) {
 		r && e.nextSibling !== r && t.insertBefore(e, r);
 		return;
@@ -8734,7 +8846,7 @@ function Pf(e, t, n, r) {
 		node: e
 	});
 }
-function Ff(e) {
+function Rf(e) {
 	for (let t of [...e].reverse()) {
 		let e = t.marker.parentNode;
 		e && (e.insertBefore(t.node, t.marker), t.marker.remove());
@@ -8745,71 +8857,71 @@ function Y(e, t, n, r) {
 	let i = e.createElement(t);
 	return n && (i.className = n), r !== void 0 && (i.textContent = r), i;
 }
-function If(e, t, n, r) {
+function zf(e, t, n, r) {
 	let i = Y(e, "button", t);
 	return i.type = "button", i.title = n, i.setAttribute("aria-label", n), i.innerHTML = `<i class="${r}" aria-hidden="true"></i>`, i;
 }
-function Lf(e, t, n, r = !1) {
+function Bf(e, t, n, r = !1) {
 	let i = Y(e, "label", `th-modern-wi-field${r ? " th-modern-wi-field-wide" : ""}`);
 	i.classList.add("th-modern-wi-labeled-field");
 	let a = Y(e, "span", "th-modern-wi-field-label", n);
 	return i.append(a, t), i;
 }
-function Rf(e, t, n, r = "") {
+function Vf(e, t, n, r = "") {
 	t.append(Y(e, "div", `th-modern-wi-section-title${r ? ` ${r}` : ""}`, n));
 }
-function zf(e) {
+function Hf(e) {
 	return e ? e.closest(".world_entry_form_control,.range-block,.checkbox_label,label.checkbox,label,.flex-container") ?? e.parentElement : null;
 }
 function X(e, t, n, r, i, a = !1, o = "") {
-	let s = n.querySelector(r), c = zf(s);
+	let s = n.querySelector(r), c = Hf(s);
 	if (c && !c.closest(".th-modern-wi-panel")) {
 		if (i && c === s) {
-			let n = Lf(e, c, i, a);
+			let n = Bf(e, c, i, a);
 			o && n.classList.add(o), t.append(n);
 		} else c.classList.add("th-modern-wi-native-field"), i && (c.classList.add("th-modern-wi-labeled-field"), c.querySelector(":scope > .th-modern-wi-field-label") || c.prepend(Y(e, "span", "th-modern-wi-field-label", i))), a && c.classList.add("th-modern-wi-native-field-wide"), o && c.classList.add(o), t.append(c);
 	}
 }
-function Bf(e, t, n, r, i = !1, a = "", o = "") {
+function Uf(e, t, n, r, i = !1, a = "", o = "") {
 	let s = t.querySelector(n)?.closest(r);
 	s && !s.closest(".th-modern-wi-panel") && (s.classList.add("th-modern-wi-native-field"), o && (s.classList.add("th-modern-wi-labeled-field"), s.querySelector(":scope > .th-modern-wi-field-label") || s.prepend(Y(I(), "span", "th-modern-wi-field-label", o))), i && s.classList.add("th-modern-wi-native-field-wide"), a && s.classList.add(a), e.append(s));
 }
-function Vf(e, t, n, r, i, a = !1, o = "") {
+function Wf(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s || s.closest(".th-modern-wi-panel")) return;
-	let c = Lf(e, s, i, a);
+	let c = Bf(e, s, i, a);
 	o && c.classList.add(o), t.append(c);
 }
-function Hf(e) {
+function Gf(e) {
 	let t = e.ownerDocument.defaultView?.Event ?? Event;
 	e.dispatchEvent(new t("input", { bubbles: !0 })), e.dispatchEvent(new t("change", { bubbles: !0 }));
 }
-function Uf(e, t) {
+function Kf(e, t) {
 	let n = e.tagName.toLowerCase(), r = t.tagName.toLowerCase();
 	n === "input" && r === "input" && e.type === "checkbox" ? t.checked = e.checked : n === "select" && r === "select" ? t.selectedIndex = e.selectedIndex : t.value = e.value;
 }
-function Wf(e, t, n) {
+function qf(e, t, n) {
 	let r = [...Array.from(t.querySelectorAll(n)), ...Array.from(e.querySelectorAll(n))];
 	return r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? null;
 }
-function Gf(e) {
-	return wf.find(([t]) => e.classList.contains(t))?.[1];
+function Jf(e) {
+	return Df.find(([t]) => e.classList.contains(t))?.[1];
 }
-function Kf(e, t) {
+function Yf(e, t) {
 	for (let n of t.querySelectorAll(".th-modern-wi-shortcut-field")) {
-		let r = Gf(n);
+		let r = Jf(n);
 		if (!r) continue;
-		let i = n.querySelector("input, select"), a = Wf(e, t, r);
-		if (!i || !a || i === a || i.dataset[xf] === "true") continue;
+		let i = n.querySelector("input, select"), a = qf(e, t, r);
+		if (!i || !a || i === a || i.dataset[wf] === "true") continue;
 		let o = () => {
-			Uf(i, a), Hf(a);
+			Kf(i, a), Gf(a);
 		}, s = () => {
-			Uf(a, i), i.disabled = a.disabled;
+			Kf(a, i), i.disabled = a.disabled;
 		};
-		i.addEventListener("input", o), i.addEventListener("change", o), a.addEventListener("input", s), a.addEventListener("change", s), i.dataset[xf] = "true", s();
+		i.addEventListener("input", o), i.addEventListener("change", o), a.addEventListener("input", s), a.addEventListener("change", s), i.dataset[wf] = "true", s();
 	}
 }
-function qf(e, t, n, r, i, a = !1, o = "") {
+function Xf(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s) return;
 	let c = s.tagName.toLowerCase() === "select", l = !c && s.type === "checkbox", u = c ? Y(e, "select") : Y(e, "input");
@@ -8827,25 +8939,25 @@ function qf(e, t, n, r, i, a = !1, o = "") {
 	}
 	u.disabled = s.disabled;
 	let d = () => {
-		l ? s.checked = u.checked : c ? s.selectedIndex = u.selectedIndex : s.value = u.value, Hf(s);
+		l ? s.checked = u.checked : c ? s.selectedIndex = u.selectedIndex : s.value = u.value, Gf(s);
 	}, f = () => {
 		l ? u.checked = s.checked : c ? u.selectedIndex = s.selectedIndex : u.value = s.value, u.disabled = s.disabled;
 	};
-	u.addEventListener("input", d), u.addEventListener("change", d), s.addEventListener("input", f), s.addEventListener("change", f), u.dataset[xf] = "true";
-	let p = Lf(e, u, i, a);
+	u.addEventListener("input", d), u.addEventListener("change", d), s.addEventListener("input", f), s.addEventListener("change", f), u.dataset[wf] = "true";
+	let p = Bf(e, u, i, a);
 	p.classList.add("th-modern-wi-shortcut-field"), o && p.classList.add(o), t.append(p);
 }
-function Jf(e, t, n, r, i = !1, a = "") {
+function Zf(e, t, n, r, i = !1, a = "") {
 	let o = Y(e, "div", "th-modern-wi-shared-slot");
 	o.dataset.sharedName = r;
-	let s = Lf(e, o, n, i);
+	let s = Bf(e, o, n, i);
 	return s.classList.add("th-modern-wi-shared-field", a), t.append(s), o;
 }
-function Yf(e, t, n, r) {
-	let i = zf(e.querySelector(t));
+function Qf(e, t, n, r) {
+	let i = Hf(e.querySelector(t));
 	i && !i.closest(".th-modern-wi-panel") && (i.classList.add("th-modern-wi-shared-control"), i.dataset.sharedName = n, r[0]?.append(i));
 }
-function Xf(e, t) {
+function $f(e, t) {
 	let n = [
 		t,
 		t.closest(".inline-drawer-content.inline-drawer-outlet"),
@@ -8854,20 +8966,20 @@ function Xf(e, t) {
 	];
 	return n.filter((e, t) => !!e && n.indexOf(e) === t);
 }
-function Zf(e, t, n, r) {
-	let i = Xf(e, t);
+function ep(e, t, n, r) {
+	let i = $f(e, t);
 	for (let e of i) {
 		let t = e.querySelector(`.th-modern-wi-shared-control[data-shared-name="${r}"]`);
 		if (t) return t;
 	}
 	for (let e of i) {
-		let t = zf(e.querySelector(n));
+		let t = Hf(e.querySelector(n));
 		if (t) return t.classList.add("th-modern-wi-shared-control"), t.dataset.sharedName = r, t;
 	}
 	return null;
 }
-function Qf(e, t, n) {
-	let r = new Set(t.querySelectorAll(".th-modern-wi-shared-control[data-shared-name]")), i = Zf(e, t, ".keyprimary", "primary-key");
+function tp(e, t, n) {
+	let r = new Set(t.querySelectorAll(".th-modern-wi-shared-control[data-shared-name]")), i = ep(e, t, ".keyprimary", "primary-key");
 	i && r.add(i);
 	for (let e of r) {
 		let r = e.dataset.sharedName;
@@ -8876,8 +8988,8 @@ function Qf(e, t, n) {
 		i && e.parentElement !== i && i.append(e);
 	}
 }
-function $f(e, t) {
-	let n = t.querySelector(".th-modern-wi-panel:not([hidden])")?.querySelector(".th-modern-wi-position-field select"), r = Array.from(t.querySelectorAll(".th-modern-wi-position-field select, select[name=\"position\"]")), i = n ?? r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? e.querySelector("select[name=\"position\"]"), a = t.querySelector("input[name=\"delay_until_recursion\"]") ?? e.querySelector("input[name=\"delay_until_recursion\"]"), o = i?.value, s = i?.selectedOptions[0]?.textContent?.trim().toLowerCase() ?? "", c = np(i) ? "depth" : o === "7" || s.includes("outlet") || s.includes("锚点") ? "outlet" : "normal", l = !!a?.checked;
+function np(e, t) {
+	let n = t.querySelector(".th-modern-wi-panel:not([hidden])")?.querySelector(".th-modern-wi-position-field select"), r = Array.from(t.querySelectorAll(".th-modern-wi-position-field select, select[name=\"position\"]")), i = n ?? r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? e.querySelector("select[name=\"position\"]"), a = t.querySelector("input[name=\"delay_until_recursion\"]") ?? e.querySelector("input[name=\"delay_until_recursion\"]"), o = i?.value, s = i?.selectedOptions[0]?.textContent?.trim().toLowerCase() ?? "", c = ap(i) ? "depth" : o === "7" || s.includes("outlet") || s.includes("锚点") ? "outlet" : "normal", l = !!a?.checked;
 	t.dataset.thModernPositionKind = c, t.dataset.thModernRecursionDelay = l ? "true" : "false";
 	for (let e of t.querySelectorAll(".th-modern-wi-depth-field")) {
 		e.hidden = c !== "depth";
@@ -8886,69 +8998,69 @@ function $f(e, t) {
 	for (let e of t.querySelectorAll(".th-modern-wi-outlet-field")) e.hidden = c !== "outlet";
 	for (let e of t.querySelectorAll(".th-modern-wi-recursion-level-field")) e.hidden = !l;
 }
-function ep(e, t) {
-	let n = () => $f(e, t);
-	if (t.dataset[bf] !== "true") {
+function rp(e, t) {
+	let n = () => np(e, t);
+	if (t.dataset[Cf] !== "true") {
 		let e = (e) => {
-			Af(e.target)?.closest(".th-modern-wi-position-field, select[name=\"position\"], .th-modern-wi-delay-recursion-field, input[name=\"delay_until_recursion\"]") && n();
+			Nf(e.target)?.closest(".th-modern-wi-position-field, select[name=\"position\"], .th-modern-wi-delay-recursion-field, input[name=\"delay_until_recursion\"]") && n();
 		};
-		t.addEventListener("input", e), t.addEventListener("change", e), t.dataset[bf] = "true";
+		t.addEventListener("input", e), t.addEventListener("change", e), t.dataset[Cf] = "true";
 	}
 	n();
 }
-function tp(e, t = e) {
+function ip(e, t = e) {
 	let n = t.querySelector("textarea[name=\"comment\"]")?.value.trim();
 	if (n) return e.dataset.thModernTitle = n, n;
 	let r = e === t ? void 0 : e.querySelector("textarea[name=\"comment\"]")?.value.trim();
 	if (r) return e.dataset.thModernTitle = r, r;
-	let i = e.classList.contains(uf) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor textarea[name=\"comment\"]")?.value.trim() : void 0;
-	return i ? (e.dataset.thModernTitle = i, i) : e.dataset.thModernTitle ? e.dataset.thModernTitle : `UID ${Tf(e) ?? ""}`.trim();
+	let i = e.classList.contains(pf) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor textarea[name=\"comment\"]")?.value.trim() : void 0;
+	return i ? (e.dataset.thModernTitle = i, i) : e.dataset.thModernTitle ? e.dataset.thModernTitle : `UID ${Of(e) ?? ""}`.trim();
 }
-function np(e) {
+function ap(e) {
 	let t = e?.selectedOptions[0], n = e?.value, r = t?.dataset.role, i = t?.textContent?.trim().toLowerCase() ?? "";
 	return n === "4" || r === "0" || r === "1" || r === "2" || i.includes("@d") || i.includes("depth") || i.includes("深度");
 }
-function rp(e, t = e) {
-	let n = e.classList.contains(uf) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, r = t.querySelector("select[name=\"position\"]") ?? (e === t ? null : e.querySelector("select[name=\"position\"]")) ?? n?.querySelector("select[name=\"position\"]"), i = t.querySelector("input[name=\"depth\"]") ?? (e === t ? null : e.querySelector("input[name=\"depth\"]")) ?? n?.querySelector("input[name=\"depth\"]"), a = r?.selectedOptions[0]?.textContent?.trim() || "", o = i?.value.trim(), s = np(r) && o ? `${a} ${o}` : a;
+function op(e, t = e) {
+	let n = e.classList.contains(pf) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, r = t.querySelector("select[name=\"position\"]") ?? (e === t ? null : e.querySelector("select[name=\"position\"]")) ?? n?.querySelector("select[name=\"position\"]"), i = t.querySelector("input[name=\"depth\"]") ?? (e === t ? null : e.querySelector("input[name=\"depth\"]")) ?? n?.querySelector("input[name=\"depth\"]"), a = r?.selectedOptions[0]?.textContent?.trim() || "", o = i?.value.trim(), s = ap(r) && o ? `${a} ${o}` : a;
 	return s && (e.dataset.thModernPosition = s), s || e.dataset.thModernPosition || "";
 }
-function ip(e, t = e) {
+function sp(e, t = e) {
 	let n = e.querySelector(".th-modern-wi-row-summary");
 	if (!n) return;
-	let r = e.classList.contains(uf) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, i = t.querySelector("input[name=\"order\"]") ?? (e === t ? null : e.querySelector("input[name=\"order\"]")) ?? r?.querySelector("input[name=\"order\"]"), a = i?.value ?? e.dataset.thModernOrder;
+	let r = e.classList.contains(pf) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, i = t.querySelector("input[name=\"order\"]") ?? (e === t ? null : e.querySelector("input[name=\"order\"]")) ?? r?.querySelector("input[name=\"order\"]"), a = i?.value ?? e.dataset.thModernOrder;
 	i?.value && (e.dataset.thModernOrder = i.value);
 	let o = t.querySelector("select[name=\"entryStateSelector\"]") ?? (e === t ? null : e.querySelector("select[name=\"entryStateSelector\"]")) ?? r?.querySelector("select[name=\"entryStateSelector\"]"), s = o?.value ?? e.dataset.thModernEntryState;
 	o?.value && (e.dataset.thModernEntryState = o.value);
 	let c = n.querySelector(".th-modern-wi-row-title"), l = n.querySelector(".th-modern-wi-row-meta"), u = n.querySelector(".th-modern-wi-row-stats");
-	c && (c.textContent = tp(e, t)), l && (l.textContent = rp(e, t)), u && (u.textContent = a ? `#${a}` : ""), s && (e.dataset.thModernEntryState = s);
+	c && (c.textContent = ip(e, t)), l && (l.textContent = op(e, t)), u && (u.textContent = a ? `#${a}` : ""), s && (e.dataset.thModernEntryState = s);
 }
-function ap(e, t, n) {
+function cp(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-header");
 	if (!r) return;
 	let i = r.querySelector(".th-modern-wi-row-summary");
-	i || (i = Y(e, "div", "th-modern-wi-row-summary"), i.tabIndex = 0, i.setAttribute("role", "button"), i.setAttribute("aria-label", "打开世界书条目"), r.append(i)), i.dataset.layoutVersion !== yf && (i.innerHTML = "<span class=\"th-modern-wi-row-leading\" aria-hidden=\"true\"><span class=\"th-modern-wi-select-dot\"></span><span class=\"th-modern-wi-entry-state-icon\"></span></span><span class=\"th-modern-wi-row-text\"><span class=\"th-modern-wi-row-primary\"><strong class=\"th-modern-wi-row-title\"></strong><span class=\"th-modern-wi-row-stats\"></span></span><small class=\"th-modern-wi-row-meta\"></small></span>", i.dataset.layoutVersion = yf), t.dataset[vf] !== "true" && (t.dataset[vf] = "true", t.addEventListener("input", () => n(t)), t.addEventListener("change", () => n(t))), ip(t);
+	i || (i = Y(e, "div", "th-modern-wi-row-summary"), i.tabIndex = 0, i.setAttribute("role", "button"), i.setAttribute("aria-label", "打开世界书条目"), r.append(i)), i.dataset.layoutVersion !== Sf && (i.innerHTML = "<span class=\"th-modern-wi-row-leading\" aria-hidden=\"true\"><span class=\"th-modern-wi-select-dot\"></span><span class=\"th-modern-wi-entry-state-icon\"></span></span><span class=\"th-modern-wi-row-text\"><span class=\"th-modern-wi-row-primary\"><strong class=\"th-modern-wi-row-title\"></strong><span class=\"th-modern-wi-row-stats\"></span></span><small class=\"th-modern-wi-row-meta\"></small></span>", i.dataset.layoutVersion = Sf), t.dataset[xf] !== "true" && (t.dataset[xf] = "true", t.addEventListener("input", () => n(t)), t.addEventListener("change", () => n(t))), sp(t);
 }
-function op(e, t, n = e) {
+function lp(e, t, n = e) {
 	e.dataset.thModernActiveTab = t;
 	for (let e of n.querySelectorAll(".th-modern-wi-tab")) {
 		let n = e.dataset.panel === t;
 		e.classList.toggle("active", n), e.setAttribute("aria-selected", String(n));
 	}
 	for (let e of n.querySelectorAll(".th-modern-wi-panel")) e.hidden = e.dataset.panel !== t;
-	Qf(e, n, t), $f(e, n), n.querySelector(".th-modern-wi-panels")?.scrollTo({
+	tp(e, n, t), np(e, n), n.querySelector(".th-modern-wi-panels")?.scrollTo({
 		top: 0,
 		left: 0
 	});
 }
-function sp(e) {
-	let t = Tf(e);
+function up(e) {
+	let t = Of(e);
 	if (t !== void 0) {
-		let e = Cf.get(t);
-		if (e) return Cf.delete(t), e;
+		let e = Ef.get(t);
+		if (e) return Ef.delete(t), e;
 	}
 	return e.dataset.thModernActiveTab || "main";
 }
-function cp(e) {
+function dp(e) {
 	let t = e.querySelector("select[name=\"entryStateSelector\"]");
 	if (!t) return;
 	let n = {
@@ -8961,22 +9073,22 @@ function cp(e) {
 		t && (e.textContent = t);
 	}
 }
-function lp(e, t) {
+function fp(e, t) {
 	t.dataset.thModernSwitchCaptureReady !== "true" && (t.addEventListener("click", (t) => {
-		let n = Af(t.target);
+		let n = Nf(t.target);
 		if (!n?.closest(".switch_input_type_icon")) return;
-		let r = Tf(e);
+		let r = Of(e);
 		if (r !== void 0) {
 			let t = n.closest(".th-modern-wi-panel")?.dataset.panel || e.dataset.thModernActiveTab || "keywords";
-			Cf.set(r, t);
+			Ef.set(r, t);
 		}
 	}, !0), t.dataset.thModernSwitchCaptureReady = "true"), t.onclick = (n) => {
 		if (n.defaultPrevented) return;
-		let r = Af(n.target), i = r?.closest(".th-modern-wi-tab");
+		let r = Nf(n.target), i = r?.closest(".th-modern-wi-tab");
 		if (i && t.contains(i)) {
 			let r = i.dataset.panel;
 			if (!r) return;
-			n.preventDefault(), op(e, r, t);
+			n.preventDefault(), lp(e, r, t);
 			return;
 		}
 		let a = r?.closest(".th-modern-wi-action");
@@ -8989,18 +9101,18 @@ function lp(e, t) {
 		o && (n.preventDefault(), e.querySelector(o)?.click());
 	};
 }
-function up(e, t, n) {
+function pp(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet"), i = t.querySelector(".world_entry_edit");
 	if (!r || !i) return !1;
-	if (t.dataset[_f] === "true") {
+	if (t.dataset[bf] === "true") {
 		let e = r.querySelector(":scope > .th-modern-wi-editor-surface");
-		if (e) return e.dataset.thModernLayoutVersion = Sf, cp(t), lp(t, e), Kf(t, e), ep(t, e), op(t, sp(t), e), !0;
-		delete t.dataset[_f];
+		if (e) return e.dataset.thModernLayoutVersion = Tf, dp(t), fp(t, e), Yf(t, e), rp(t, e), lp(t, up(t), e), !0;
+		delete t.dataset[bf];
 	}
-	t.dataset[_f] = "true", ap(e, t, n), cp(t);
+	t.dataset[bf] = "true", cp(e, t, n), dp(t);
 	let a = Y(e, "div", "th-modern-wi-editor-surface");
-	a.dataset.thModernLayoutVersion = Sf;
-	let o = Y(e, "div", "th-modern-wi-editor-top"), s = Y(e, "div", "th-modern-wi-enable-dock"), c = Y(e, "div", "th-modern-wi-editor-actions"), l = If(e, "menu_button th-modern-wi-action", "移动/复制到其他世界书", "fa-solid fa-arrow-right-arrow-left"), u = If(e, "menu_button th-modern-wi-action", "复制条目", "fa-regular fa-copy"), d = If(e, "menu_button th-modern-wi-action danger", "删除条目", "fa-regular fa-trash-can");
+	a.dataset.thModernLayoutVersion = Tf;
+	let o = Y(e, "div", "th-modern-wi-editor-top"), s = Y(e, "div", "th-modern-wi-enable-dock"), c = Y(e, "div", "th-modern-wi-editor-actions"), l = zf(e, "menu_button th-modern-wi-action", "移动/复制到其他世界书", "fa-solid fa-arrow-right-arrow-left"), u = zf(e, "menu_button th-modern-wi-action", "复制条目", "fa-regular fa-copy"), d = zf(e, "menu_button th-modern-wi-action danger", "删除条目", "fa-regular fa-trash-can");
 	l.dataset.action = "move", u.dataset.action = "duplicate", d.dataset.action = "delete", c.append(l, u, d);
 	let f = Y(e, "div", "th-modern-wi-tabs"), p = Y(e, "div", "th-modern-wi-panels"), m = [
 		["main", "主要"],
@@ -9011,25 +9123,25 @@ function up(e, t, n) {
 	for (let [n, r] of m) {
 		let i = Y(e, "button", "th-modern-wi-tab", r);
 		i.type = "button", i.dataset.panel = n, i.addEventListener("click", (e) => {
-			e.preventDefault(), op(t, n, a);
+			e.preventDefault(), lp(t, n, a);
 		}), f.append(i);
 		let o = Y(e, "div", "th-modern-wi-panel");
 		o.classList.add(`th-modern-wi-panel-${n}`), o.dataset.panel = n, p.append(o), h.set(n, o);
 	}
 	let g = Y(e, "div", "th-modern-wi-content-panel");
-	o.append(s, f, c), a.append(o, p, g), r.prepend(a), lp(t, a), Vf(e, s, t, ".killSwitch", "启用", !1, "th-modern-wi-enable-field");
+	o.append(s, f, c), a.append(o, p, g), r.prepend(a), fp(t, a), Wf(e, s, t, ".killSwitch", "启用", !1, "th-modern-wi-enable-field");
 	let v = h.get("main");
-	Vf(e, v, t, "textarea[name=\"comment\"]", "条目标题/备注", !0, "th-modern-wi-title-field"), Vf(e, v, t, "select[name=\"entryStateSelector\"]", "条目状态", !1, "th-modern-wi-state-field"), qf(e, v, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), qf(e, v, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), qf(e, v, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), qf(e, v, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), qf(e, v, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field");
-	let y = Jf(e, v, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
-	qf(e, v, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field");
-	let b = h.get("keywords"), x = Jf(e, b, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
-	X(e, b, t, "select[name=\"entryLogicType\"]", "逻辑", !1, "th-modern-wi-logic-field"), X(e, b, t, ".keysecondary", "可选过滤器", !0, "th-modern-wi-secondary-key-field"), X(e, b, t, "select[name=\"caseSensitive\"]", "区分大小写", !1, "th-modern-wi-case-field"), X(e, b, t, "select[name=\"matchWholeWords\"]", "全词匹配", !1, "th-modern-wi-whole-field"), X(e, b, t, "select[name=\"useGroupScoring\"]", "组评分", !1, "th-modern-wi-group-scoring-field"), X(e, b, t, "input[name=\"scanDepth\"]", "扫描深度", !1, "th-modern-wi-scan-field"), X(e, b, t, "input[name=\"automationId\"]", "自动化 ID", !1, "th-modern-wi-automation-field"), Yf(t, ".keyprimary", "primary-key", [y, x]);
+	Wf(e, v, t, "textarea[name=\"comment\"]", "条目标题/备注", !0, "th-modern-wi-title-field"), Wf(e, v, t, "select[name=\"entryStateSelector\"]", "条目状态", !1, "th-modern-wi-state-field"), Xf(e, v, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Xf(e, v, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), Xf(e, v, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Xf(e, v, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Xf(e, v, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field");
+	let y = Zf(e, v, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
+	Xf(e, v, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field");
+	let b = h.get("keywords"), x = Zf(e, b, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
+	X(e, b, t, "select[name=\"entryLogicType\"]", "逻辑", !1, "th-modern-wi-logic-field"), X(e, b, t, ".keysecondary", "可选过滤器", !0, "th-modern-wi-secondary-key-field"), X(e, b, t, "select[name=\"caseSensitive\"]", "区分大小写", !1, "th-modern-wi-case-field"), X(e, b, t, "select[name=\"matchWholeWords\"]", "全词匹配", !1, "th-modern-wi-whole-field"), X(e, b, t, "select[name=\"useGroupScoring\"]", "组评分", !1, "th-modern-wi-group-scoring-field"), X(e, b, t, "input[name=\"scanDepth\"]", "扫描深度", !1, "th-modern-wi-scan-field"), X(e, b, t, "input[name=\"automationId\"]", "自动化 ID", !1, "th-modern-wi-automation-field"), Qf(t, ".keyprimary", "primary-key", [y, x]);
 	let S = h.get("insert");
-	Vf(e, S, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Vf(e, S, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), X(e, S, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Vf(e, S, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Vf(e, S, t, "input[name=\"probability\"]", "触发概率", !1, "th-modern-wi-probability-field"), X(e, S, t, "input[name=\"useProbability\"]", "使用概率", !1, "th-modern-wi-use-probability-field"), X(e, S, t, "input[name=\"group\"]", "包含组", !0, "th-modern-wi-group-field"), X(e, S, t, "input[name=\"groupWeight\"]", "分组权重", !1, "th-modern-wi-group-weight-field"), X(e, S, t, "input[name=\"sticky\"]", "黏附", !1, "th-modern-wi-sticky-field"), X(e, S, t, "input[name=\"cooldown\"]", "冷却", !1, "th-modern-wi-cooldown-field"), X(e, S, t, "input[name=\"delay\"]", "延迟", !1, "th-modern-wi-delay-field"), Bf(S, t, "select[name=\"characterFilter\"]", ".flex4", !0, "th-modern-wi-character-filter-field", "绑定到角色或标签"), Bf(S, t, "select[name=\"triggers\"]", ".flex4", !0, "th-modern-wi-generation-trigger-field", "筛选生成触发器"), X(e, S, t, "input[name=\"delayUntilRecursionLevel\"]", "递归等级", !1, "th-modern-wi-recursion-level-field"), X(e, S, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field"), X(e, S, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field"), X(e, S, t, "input[name=\"delay_until_recursion\"]", "延迟到递归", !1, "th-modern-wi-delay-recursion-field"), X(e, S, t, "input[name=\"ignoreBudget\"]", "无视回复限额", !1, "th-modern-wi-budget-field");
+	Wf(e, S, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Wf(e, S, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), X(e, S, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Wf(e, S, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Wf(e, S, t, "input[name=\"probability\"]", "触发概率", !1, "th-modern-wi-probability-field"), X(e, S, t, "input[name=\"useProbability\"]", "使用概率", !1, "th-modern-wi-use-probability-field"), X(e, S, t, "input[name=\"group\"]", "包含组", !0, "th-modern-wi-group-field"), X(e, S, t, "input[name=\"groupWeight\"]", "分组权重", !1, "th-modern-wi-group-weight-field"), X(e, S, t, "input[name=\"sticky\"]", "黏附", !1, "th-modern-wi-sticky-field"), X(e, S, t, "input[name=\"cooldown\"]", "冷却", !1, "th-modern-wi-cooldown-field"), X(e, S, t, "input[name=\"delay\"]", "延迟", !1, "th-modern-wi-delay-field"), Uf(S, t, "select[name=\"characterFilter\"]", ".flex4", !0, "th-modern-wi-character-filter-field", "绑定到角色或标签"), Uf(S, t, "select[name=\"triggers\"]", ".flex4", !0, "th-modern-wi-generation-trigger-field", "筛选生成触发器"), X(e, S, t, "input[name=\"delayUntilRecursionLevel\"]", "递归等级", !1, "th-modern-wi-recursion-level-field"), X(e, S, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field"), X(e, S, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field"), X(e, S, t, "input[name=\"delay_until_recursion\"]", "延迟到递归", !1, "th-modern-wi-delay-recursion-field"), X(e, S, t, "input[name=\"ignoreBudget\"]", "无视回复限额", !1, "th-modern-wi-budget-field");
 	let C = h.get("trigger");
-	return Rf(e, C, "额外匹配来源", "th-modern-wi-match-source-title"), X(e, C, t, "input[name=\"matchCharacterDescription\"]", "角色描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterPersonality\"]", "角色性格", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchScenario\"]", "情景", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchPersonaDescription\"]", "用户设定描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterDepthPrompt\"]", "角色备注", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCreatorNotes\"]", "创作者的注释", !1, "th-modern-wi-match-source-field"), X(e, g, t, "textarea[name=\"content\"]", "正文", !0), Kf(t, a), ep(t, a), op(t, sp(t), a), !0;
+	return Vf(e, C, "额外匹配来源", "th-modern-wi-match-source-title"), X(e, C, t, "input[name=\"matchCharacterDescription\"]", "角色描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterPersonality\"]", "角色性格", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchScenario\"]", "情景", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchPersonaDescription\"]", "用户设定描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterDepthPrompt\"]", "角色备注", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCreatorNotes\"]", "创作者的注释", !1, "th-modern-wi-match-source-field"), X(e, g, t, "textarea[name=\"content\"]", "正文", !0), Yf(t, a), rp(t, a), lp(t, up(t), a), !0;
 }
-var dp = class {
+var mp = class {
 	document;
 	window;
 	moved = [];
@@ -9076,7 +9188,7 @@ var dp = class {
 	scheduleSummaryUpdate = (e) => {
 		if (!this.mounted || this.pendingSummaryUpdates.has(e)) return;
 		let t = this.window.requestAnimationFrame(() => {
-			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && ip(e, this.selectedEntry === e && this.editorPane && this.editorPane.childElementCount > 0 ? this.editorPane : e);
+			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && sp(e, this.selectedEntry === e && this.editorPane && this.editorPane.childElementCount > 0 ? this.editorPane : e);
 		});
 		this.pendingSummaryUpdates.set(e, t);
 	};
@@ -9086,16 +9198,16 @@ var dp = class {
 			return;
 		}
 		let e = this.findWorldInfo(), t = this.findWorldPopup(), n = this.findEntriesList();
-		e && t && n && (this.mounted = !0, this.selectedWorldName = Ef(this.document), e.classList.add(lf), this.ensureLayout(t), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
+		e && t && n && (this.mounted = !0, this.selectedWorldName = kf(this.document), e.classList.add(ff), this.ensureLayout(t), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
 	}
 	isMounted() {
 		return this.mounted;
 	}
 	destroy() {
 		let e = this.mounted;
-		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(lf, ff, hf), this.observer?.disconnect(), this.observer = void 0, this.popupObserver?.disconnect(), this.popupObserver = void 0, this.observedPopup = void 0, this.pendingReconcileFrame &&= (this.window.cancelAnimationFrame(this.pendingReconcileFrame), 0), this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), Cf.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
-		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(uf, df, gf);
-		return this.observedList = void 0, Ff(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
+		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(ff, hf, vf), this.observer?.disconnect(), this.observer = void 0, this.popupObserver?.disconnect(), this.popupObserver = void 0, this.observedPopup = void 0, this.pendingReconcileFrame &&= (this.window.cancelAnimationFrame(this.pendingReconcileFrame), 0), this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), Ef.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
+		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(pf, mf, yf);
+		return this.observedList = void 0, Rf(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
 	}
 	bindResponsiveMode() {
 		this.narrowQuery = this.window.matchMedia("(max-width: 899.98px)"), this.narrowQueryHandler = () => this.syncResponsiveMode(), this.narrowQuery.addEventListener("change", this.narrowQueryHandler), this.syncResponsiveMode();
@@ -9105,7 +9217,7 @@ var dp = class {
 	}
 	syncResponsiveMode() {
 		let e = this.isNarrowMode(), t = e && this.mobileDetailOpen && !!this.selectedEntry;
-		this.shell?.classList.toggle(pf, e), this.findWorldInfo()?.classList.toggle(hf, t), e ? this.shell?.classList.toggle(mf, t) : (this.mobileDetailOpen = !1, this.shell?.classList.remove(mf), this.selectFirstEntry());
+		this.shell?.classList.toggle(gf, e), this.findWorldInfo()?.classList.toggle(vf, t), e ? this.shell?.classList.toggle(_f, t) : (this.mobileDetailOpen = !1, this.shell?.classList.remove(_f), this.selectFirstEntry());
 	}
 	openMobileDetail() {
 		if (!this.isNarrowMode()) return;
@@ -9136,12 +9248,12 @@ var dp = class {
 		return this.document.querySelector("#world_popup_entries_list");
 	}
 	ensureToolbarButtons(e, t) {
-		if (this.multiButton && this.multiButton.isConnected || (this.multiButton = If(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.multiButton.addEventListener("click", () => this.toggleMultiSelect())), this.deleteSelectedButton && this.deleteSelectedButton.isConnected || (this.deleteSelectedButton = If(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = this.selectedUids.size === 0, this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries())), !this.moreMenu || !this.moreMenu.isConnected) {
+		if (this.multiButton && this.multiButton.isConnected || (this.multiButton = zf(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.multiButton.addEventListener("click", () => this.toggleMultiSelect())), this.deleteSelectedButton && this.deleteSelectedButton.isConnected || (this.deleteSelectedButton = zf(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = this.selectedUids.size === 0, this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries())), !this.moreMenu || !this.moreMenu.isConnected) {
 			let e = Y(this.document, "details", "th-modern-wi-more-menu"), t = Y(this.document, "summary", "menu_button th-modern-wi-more-toggle");
 			t.title = "更多条目操作", t.setAttribute("aria-label", "更多条目操作"), t.innerHTML = "<i class=\"fa-solid fa-ellipsis\" aria-hidden=\"true\"></i>";
 			let n = Y(this.document, "div", "th-modern-wi-more-popover");
 			e.append(t, n), e.addEventListener("click", (t) => {
-				Af(t.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (e.open = !1);
+				Nf(t.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (e.open = !1);
 			}), this.moreMenu = e;
 		}
 		let n = this.moreMenu.querySelector(".th-modern-wi-more-popover");
@@ -9152,7 +9264,7 @@ var dp = class {
 			"#world_apply_current_sorting"
 		]) {
 			let i = t.querySelector(r) ?? e.querySelector(r);
-			i && i.parentElement !== n && Pf(i, n, this.moved);
+			i && i.parentElement !== n && Lf(i, n, this.moved);
 		}
 		this.multiButton.parentElement !== e && e.append(this.multiButton), this.deleteSelectedButton.parentElement !== e && e.append(this.deleteSelectedButton), this.moreMenu.parentElement !== e && e.append(this.moreMenu);
 	}
@@ -9185,17 +9297,17 @@ var dp = class {
 			for (let e of u) this.shell.append(e);
 			n = !0;
 		}
-		(s.firstElementChild !== l || s.lastElementChild !== c) && (s.append(l, c), n = !0), r && r.parentElement !== l && (Pf(r, l, this.moved), n = !0);
+		(s.firstElementChild !== l || s.lastElementChild !== c) && (s.append(l, c), n = !0), r && r.parentElement !== l && (Lf(r, l, this.moved), n = !0);
 		let f = t.querySelector("#world_create_button")?.closest(".flex-container");
-		f && f.parentElement !== a && (Pf(f, a, this.moved), n = !0);
+		f && f.parentElement !== a && (Lf(f, a, this.moved), n = !0);
 		let p = t.querySelector("#world_info_search")?.closest(".flex-container");
-		p && p.parentElement !== o && (Pf(p, o, this.moved), n = !0), this.ensureToolbarButtons(o, t);
+		p && p.parentElement !== o && (Lf(p, o, this.moved), n = !0), this.ensureToolbarButtons(o, t);
 		let m = this.findWorldInfo()?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
 		if (m) {
 			let e = m.firstElementChild;
 			for (let t of ["#WI_panel_pin_div", "#WorldInfoheader + .flex-container .notes-link"]) {
 				let n = this.findWorldInfo()?.querySelector(t);
-				n && n.parentElement !== m && Pf(n, m, this.moved, e);
+				n && n.parentElement !== m && Lf(n, m, this.moved, e);
 			}
 		}
 		return this.isNarrowMode() || this.multiSelect || c.childElementCount || (this.selectedEntry && this.selectedEntry.isConnected ? this.ensureEntryEditor(this.selectedEntry) : this.selectFirstEntry()), this.syncResponsiveMode(), this.observePopup(), n;
@@ -9223,10 +9335,10 @@ var dp = class {
 	}
 	bindEvents() {
 		this.documentClickHandler = (e) => {
-			let t = Af(e.target);
-			this.moreMenu?.open && t && !this.moreMenu.contains(t) && (this.moreMenu.open = !1), Nf(e.target) && this.onEntryClick(e);
+			let t = Nf(e.target);
+			this.moreMenu?.open && t && !this.moreMenu.contains(t) && (this.moreMenu.open = !1), If(e.target) && this.onEntryClick(e);
 		}, this.documentKeyDownHandler = (e) => this.onEntryKeyDown(e), this.documentChangeHandler = (e) => {
-			Af(e.target)?.matches("#world_editor_select") && this.syncSelectedWorld();
+			Nf(e.target)?.matches("#world_editor_select") && this.syncSelectedWorld();
 		}, this.document.addEventListener("click", this.documentClickHandler, !0), this.document.addEventListener("keydown", this.documentKeyDownHandler, !0), this.document.addEventListener("change", this.documentChangeHandler, !0);
 		let e = this.document.querySelector("#world_editor_select");
 		if (e) {
@@ -9251,9 +9363,9 @@ var dp = class {
 		this.observeCurrentList();
 		let e = this.findEntriesList();
 		if (e) {
-			for (let t of e.querySelectorAll(":scope > .world_entry")) if (ap(this.document, t, this.scheduleSummaryUpdate), this.multiSelect || this.selectedUids.size > 0) {
-				let e = Tf(t);
-				t.classList.toggle(df, e !== void 0 && this.selectedUids.has(e));
+			for (let t of e.querySelectorAll(":scope > .world_entry")) if (cp(this.document, t, this.scheduleSummaryUpdate), this.multiSelect || this.selectedUids.size > 0) {
+				let e = Of(t);
+				t.classList.toggle(mf, e !== void 0 && this.selectedUids.has(e));
 			}
 		}
 	}
@@ -9261,23 +9373,23 @@ var dp = class {
 		this.selectedEntry?.isConnected || (this.clearSelection(), this.mobileDetailOpen = !1, this.syncResponsiveMode(), this.isNarrowMode() || this.selectFirstEntry());
 	}
 	syncSelectedWorld() {
-		let e = Ef(this.document);
+		let e = kf(this.document);
 		if (e !== this.selectedWorldName) {
-			this.selectedWorldName = e, this.worldRevision += 1, this.clearSelection(), this.cancelPendingSummaryUpdates(), this.selectedUids.clear(), Cf.clear();
-			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(df);
+			this.selectedWorldName = e, this.worldRevision += 1, this.clearSelection(), this.cancelPendingSummaryUpdates(), this.selectedUids.clear(), Ef.clear();
+			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(mf);
 			this.updateDeleteSelectedButton();
 		}
 	}
 	onEntryKeyDown(e) {
 		if (this.deleteBusy || e.repeat || e.key !== "Enter" && e.key !== " ") return;
-		let t = Af(e.target)?.closest(".th-modern-wi-row-summary"), n = t ? Nf(t) : null;
+		let t = Nf(e.target)?.closest(".th-modern-wi-row-summary"), n = t ? If(t) : null;
 		n && (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.multiSelect ? this.toggleEntrySelected(n) : this.selectEntry(n));
 	}
 	onEntryClick(e) {
 		if (this.deleteBusy) return;
-		let t = Nf(e.target);
+		let t = If(e.target);
 		if (!t) return;
-		let n = Af(e.target);
+		let n = Nf(e.target);
 		this.nativeEditorToggleEntry === t && n?.closest(".inline-drawer-toggle") || (this.multiSelect ? (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.toggleEntrySelected(t)) : (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.selectEntry(t)));
 	}
 	selectFirstEntry() {
@@ -9286,14 +9398,14 @@ var dp = class {
 		e && this.selectEntry(e);
 	}
 	clearSelection() {
-		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(gf), this.detachEntryEditor(), this.selectedEntry?.classList.remove(uf), this.selectedEntry = void 0;
+		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(yf), this.detachEntryEditor(), this.selectedEntry?.classList.remove(pf), this.selectedEntry = void 0;
 	}
 	selectEntry(e) {
-		this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(uf), this.ensureEntryEditor(e), this.openMobileDetail());
+		this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(pf), this.ensureEntryEditor(e), this.openMobileDetail());
 	}
 	ensureEntryEditor(e) {
-		if (e.classList.contains(gf)) return;
-		if (this.cancelPendingEditorRetry(), ap(this.document, e, this.scheduleSummaryUpdate), up(this.document, e, this.scheduleSummaryUpdate)) {
+		if (e.classList.contains(yf)) return;
+		if (this.cancelPendingEditorRetry(), cp(this.document, e, this.scheduleSummaryUpdate), pp(this.document, e, this.scheduleSummaryUpdate)) {
 			this.attachEntryEditor(e);
 			return;
 		}
@@ -9305,10 +9417,10 @@ var dp = class {
 			} finally {
 				this.nativeEditorToggleEntry = void 0;
 			}
-			e.classList.add(gf);
+			e.classList.add(yf);
 		}
 		let r = 0, i = this.editorRetryRevision, a = () => {
-			this.mounted && this.selectedEntry === e && i === this.editorRetryRevision && (r += 1, up(this.document, e, this.scheduleSummaryUpdate) ? (e.classList.remove(gf), this.attachEntryEditor(e)) : r > 20 ? e.classList.remove(gf) : this.pendingEditorRetry = this.window.setTimeout(() => {
+			this.mounted && this.selectedEntry === e && i === this.editorRetryRevision && (r += 1, pp(this.document, e, this.scheduleSummaryUpdate) ? (e.classList.remove(yf), this.attachEntryEditor(e)) : r > 20 ? e.classList.remove(yf) : this.pendingEditorRetry = this.window.setTimeout(() => {
 				this.pendingEditorRetry = 0, a();
 			}, 50));
 		};
@@ -9329,34 +9441,34 @@ var dp = class {
 	detachEntryEditor() {
 		let e = this.selectedEntry;
 		for (let e of this.editorMoved) e.node.nodeType === 1 && e.node.classList.remove("th-modern-wi-active-editor-content");
-		Ff(this.editorMoved), e && ip(e), this.editorPane?.replaceChildren();
+		Rf(this.editorMoved), e && sp(e), this.editorPane?.replaceChildren();
 	}
 	attachEntryEditor(e) {
 		if (!this.editorPane || this.selectedEntry !== e) return;
 		let t = e.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet");
 		if (!t || t.closest(".th-modern-wi-native-editor")) return;
 		this.detachEntryEditor();
-		let n = If(this.document, "menu_button th-modern-wi-mobile-back", "返回世界书条目列表", "fa-solid fa-arrow-left");
+		let n = zf(this.document, "menu_button th-modern-wi-mobile-back", "返回世界书条目列表", "fa-solid fa-arrow-left");
 		n.append(Y(this.document, "span", "", "返回条目列表")), n.addEventListener("click", (e) => {
 			e.preventDefault(), this.closeMobileDetail();
 		});
 		let r = Y(this.document, "div", `${e.className} th-modern-wi-editor-entry-host`);
 		for (let t of Array.from(e.attributes)) t.name !== "class" && r.setAttribute(t.name, t.value);
-		let i = Y(this.document, "form", "world_entry_form"), a = Y(this.document, "div", "inline-drawer"), o = () => ip(e, r);
-		r.addEventListener("input", o), r.addEventListener("change", o), i.append(a), r.append(i), this.editorPane.replaceChildren(n, r), t.classList.add("th-modern-wi-active-editor-content"), Pf(t, a, this.editorMoved), ip(e, r);
+		let i = Y(this.document, "form", "world_entry_form"), a = Y(this.document, "div", "inline-drawer"), o = () => sp(e, r);
+		r.addEventListener("input", o), r.addEventListener("change", o), i.append(a), r.append(i), this.editorPane.replaceChildren(n, r), t.classList.add("th-modern-wi-active-editor-content"), Lf(t, a, this.editorMoved), sp(e, r);
 	}
 	toggleMultiSelect() {
 		if (!this.deleteBusy) {
-			if (this.multiSelect = !this.multiSelect, this.findWorldInfo()?.classList.toggle(ff, this.multiSelect), this.multiButton?.classList.toggle("active", this.multiSelect), !this.multiSelect) {
+			if (this.multiSelect = !this.multiSelect, this.findWorldInfo()?.classList.toggle(hf, this.multiSelect), this.multiButton?.classList.toggle("active", this.multiSelect), !this.multiSelect) {
 				this.selectedUids.clear();
-				for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(df);
+				for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(mf);
 			}
 			this.updateDeleteSelectedButton();
 		}
 	}
 	toggleEntrySelected(e) {
-		let t = Tf(e);
-		t !== void 0 && (this.selectedUids.has(t) ? (this.selectedUids.delete(t), e.classList.remove(df)) : (this.selectedUids.add(t), e.classList.add(df)), this.updateDeleteSelectedButton());
+		let t = Of(e);
+		t !== void 0 && (this.selectedUids.has(t) ? (this.selectedUids.delete(t), e.classList.remove(mf)) : (this.selectedUids.add(t), e.classList.add(mf)), this.updateDeleteSelectedButton());
 	}
 	updateDeleteSelectedButton() {
 		if (!this.deleteSelectedButton) return;
@@ -9373,41 +9485,46 @@ var dp = class {
 		} else this.lockedWorldSelect &&= (this.lockedWorldSelect.element.disabled = this.lockedWorldSelect.wasDisabled, void 0);
 	}
 	isDeleteContextCurrent(e, t) {
-		return this.mounted && this.worldRevision === t && Ef(this.document) === e;
+		return this.mounted && this.worldRevision === t && kf(this.document) === e;
 	}
 	async deleteSelectedEntries() {
 		if (this.deleteBusy) return;
 		let e = Array.from(this.selectedUids);
 		if (!e.length) return;
-		let t = Ef(this.document);
+		let t = kf(this.document);
 		if (!t) {
 			toastr.error("无法确定当前正在编辑的世界书");
 			return;
 		}
-		let n = this.worldRevision, r = e.map((e) => this.document.querySelector(`.world_entry[uid="${e}"]`)).filter((e) => !!e).map((e) => tp(e)).slice(0, 5).join("、"), i = e.length > 5 ? ` 等 ${e.length} 项` : "", a = `确认删除 ${e.length} 个世界书条目？\n${r}${i}`;
+		let n = this.worldRevision, r = e.map((e) => this.document.querySelector(`.world_entry[uid="${e}"]`)).filter((e) => !!e).map((e) => ip(e)).slice(0, 5).join("、"), i = e.length > 5 ? ` 等 ${e.length} 项` : "", a = `确认删除 ${e.length} 个世界书条目？\n${r}${i}`;
 		if (!this.window.confirm(a) || !this.isDeleteContextCurrent(t, n)) return;
 		let o = new Set(e);
 		this.setDeleteBusy(!0);
-		let s, c = !1;
+		let s;
 		try {
 			if (s = await SillyTavern.loadWorldInfo(t), !this.isDeleteContextCurrent(t, n)) return;
 			if (!s) throw Error(`无法读取世界书“${t}”`);
-			let e = kf(s, o, this.window);
-			if (!this.isDeleteContextCurrent(t, n) || (c = !0, await SillyTavern.saveWorldInfo(t, e, !0), !this.isDeleteContextCurrent(t, n))) return;
+			let e = JSON.stringify(s), r = this.window.SillyTavern?.getContext?.()?.getRequestHeaders?.();
+			if (!r) throw Error("宿主不支持验证世界书版本，请使用原生删除功能");
+			let i = await this.window.fetch("/api/worldinfo/get", {
+				method: "POST",
+				headers: r,
+				body: JSON.stringify({ name: t }),
+				cache: "no-cache"
+			});
+			if (!i.ok) throw Error("无法验证世界书是否被其他窗口修改");
+			if (uf(e, await i.json(), s)) throw Error("世界书已更改，请检查并刷新后重试");
+			let a = Mf(s, o, this.window);
+			if (!this.isDeleteContextCurrent(t, n) || (await SillyTavern.saveWorldInfo(t, a, !0), !this.isDeleteContextCurrent(t, n))) return;
 		} catch (e) {
-			if (c && s) try {
-				await SillyTavern.saveWorldInfo(t, s, !0);
-			} catch (e) {
-				console.error("[现代化界面] 恢复世界书缓存失败", e), toastr.error(`恢复世界书原数据失败：${Of(e)}`);
-			}
-			console.error("[现代化界面] 世界书批量删除失败", e), toastr.error(`删除世界书条目失败：${Of(e)}`);
+			console.error("[现代化界面] 世界书批量删除失败", e), toastr.error(`删除世界书条目失败：${jf(e)}`);
 			return;
 		} finally {
 			this.setDeleteBusy(!1);
 		}
 		if (this.isDeleteContextCurrent(t, n)) {
 			this.clearSelection(), this.selectedUids.clear();
-			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(df);
+			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(mf);
 			this.updateDeleteSelectedButton();
 			try {
 				await SillyTavern.reloadWorldInfoEditor(t, !0);
@@ -9417,17 +9534,17 @@ var dp = class {
 		}
 	}
 };
-function fp(e) {
+function hp(e) {
 	let t = I(), n = L(), r, i, a = null, o = 0, s = () => t.querySelector("#WorldInfo"), c = () => {
 		let e = r?.destroy() ?? !1;
 		return r = void 0, e;
 	}, l = (t, n) => {
-		t ? i ? i.setEnabled(n) : i = sf({
+		!t || !n ? (i?.destroy(), i = void 0) : i ? i.setEnabled(n) : i = lf({
 			enabled: n,
 			onEnabledChange: (t) => {
 				e.settings.modernWorldSelect = t;
 			}
-		}) : (i?.destroy(), i = void 0);
+		});
 	}, u = () => {
 		o = 0;
 		let n = e.is_active && e.settings.modernWorldInfoEditor;
@@ -9435,9 +9552,9 @@ function fp(e) {
 		let i = s();
 		m(i);
 		let a = i?.classList.contains("openDrawer") ?? !1;
-		i?.classList.toggle(cf, n && (a || !!r)), n && a ? (r ??= new dp(), r.mount(), r.ensureLayout()) : !n && c() && pp(t);
+		i?.classList.toggle(df, n && (a || !!r)), n && a ? (r ??= new mp(), r.mount(), r.ensureLayout()) : !n && c() && gp(t);
 	}, d = (e) => {
-		Af(e.target)?.closest("#WIDrawerIcon, .drawer-toggle, [data-target=\"WorldInfo\"]") && (n.requestAnimationFrame(() => {
+		Nf(e.target)?.closest("#WIDrawerIcon, .drawer-toggle, [data-target=\"WorldInfo\"]") && (n.requestAnimationFrame(() => {
 			r?.isMounted() && r.ensureLayout();
 		}), n.setTimeout(() => {
 			r?.isMounted() && r.ensureLayout();
@@ -9453,17 +9570,17 @@ function fp(e) {
 			attributeFilter: ["class"]
 		}));
 	}
-	let h = Qn(() => [
+	let h = Zn(() => [
 		e.is_active,
 		e.settings.modernWorldInfoEditor,
 		e.settings.modernWorldSelect
 	], f, { immediate: !0 });
 	return { destroy() {
-		h(), p?.disconnect(), t.removeEventListener("click", d, !0), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(cf), i?.destroy(), i = void 0, c() && pp(t);
+		h(), p?.disconnect(), t.removeEventListener("click", d, !0), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(df), i?.destroy(), i = void 0, c() && gp(t);
 	} };
 }
-function pp(e) {
-	let t = Ef(e);
+function gp(e) {
+	let t = kf(e);
 	if (t) try {
 		SillyTavern.reloadWorldInfoEditor(t, !0);
 	} catch (e) {
@@ -9471,46 +9588,46 @@ function pp(e) {
 	}
 }
 // src/index.ts
-var mp = "th-modern-enabled", hp = "th-modern-two-column", gp = "th-modern-three-column", _p = "th-modern-docked-drawer", vp = "th-modern-main-fill", yp = "th-modern-floating-input", bp = "th-modern-single-line-input", xp = "th-modern-reduce-motion", Sp = "th-modern-reduce-advanced-effects", Cp = "th-modern-sidebar-collapsed", wp = "th-modern-auto-collapse", Tp = "th-modern-sidebar-temp-expanded", Ep = "th-modern-resizing", Dp = "th-modern-drawer-fullscreen", Op = "th-modern-drawer-open", kp = "th-modern-drawer-switching", Ap = "th-modern-quick-replies-collapsed", jp = "th-modern-sidebar", Mp = "th-modern-sidebar-resize-handle", Np = "th-modern-overlay-resize-handle", Pp = "th-modern-quick-reply-toggle", Fp = "th-modern-topbar-label", Ip = "th-modern-drawer-titlebar", Lp = "th-modern-drawer-title", Rp = "th-modern-drawer-actions", zp = "th-modern-drawer-close", Bp = "th-modern-drawer-fullscreen-toggle", Vp = "th-modern-drawer-fullscreen-content", Hp = "th-modern-drawer-active", Up = "thModernFullscreenPinned", Wp = "thModernFullscreenWasPinned", Gp = "thModernDockedPinned", Kp = "thModernDockedWasPinned", qp = "th-modern-api-source-group", Jp = "th-modern-api-footer", Yp = "th-reset", Xp = "th-modern-failsafe-shortcut", Zp = "SillyTavern", Qp = "TavernHelper.modernLayout.dispose", $p = "TavernHelper.modernLayout.runtimes", em = "TavernHelper.modernLayout.sidebarCollapsed", tm = "TavernHelper.modernLayout.recentCollapsed", nm = 15, rm = "(min-width: 900px) and (max-width: 1199.98px)", im = "(min-width: 900px)", am = 320, om = 460, sm = 720, cm = 24, lm = 480, um = 1e3, dm = "--th-modern-left-nav-height", fm = "--th-modern-input-height", pm = "--th-modern-input-stack-offset", mm = "--th-modern-quick-reply-max-height", hm = "--th-modern-quick-reply-reserve-height", gm = 66, _m = 240, vm = 44, ym = 12, bm = "modern-ui", xm = "1.0.0", Sm = !1;
-function Cm(e, t, n, r) {
+var _p = "th-modern-enabled", vp = "th-modern-persona-management", yp = "th-modern-two-column", bp = "th-modern-three-column", xp = "th-modern-docked-drawer", Sp = "th-modern-main-fill", Cp = "th-modern-floating-input", wp = "th-modern-single-line-input", Tp = "th-modern-reduce-motion", Ep = "th-modern-reduce-advanced-effects", Dp = "th-modern-sidebar-collapsed", Op = "th-modern-auto-collapse", kp = "th-modern-sidebar-temp-expanded", Ap = "th-modern-resizing", jp = "th-modern-drawer-fullscreen", Mp = "th-modern-drawer-open", Np = "th-modern-drawer-switching", Pp = "th-modern-quick-replies-collapsed", Fp = "th-modern-sidebar", Ip = "th-modern-sidebar-resize-handle", Lp = "th-modern-overlay-resize-handle", Rp = "th-modern-quick-reply-toggle", zp = "th-modern-topbar-label", Bp = "th-modern-drawer-titlebar", Vp = "th-modern-drawer-title", Hp = "th-modern-drawer-actions", Up = "th-modern-drawer-close", Wp = "th-modern-drawer-fullscreen-toggle", Gp = "th-modern-drawer-fullscreen-content", Kp = "th-modern-drawer-active", qp = "thModernFullscreenPinned", Jp = "thModernFullscreenWasPinned", Yp = "thModernDockedPinned", Xp = "thModernDockedWasPinned", Zp = "th-modern-api-source-group", Qp = "th-modern-api-footer", $p = "th-reset", em = "th-modern-failsafe-shortcut", tm = "SillyTavern", nm = "TavernHelper.modernLayout.dispose", rm = "TavernHelper.modernLayout.runtimes", im = "TavernHelper.modernLayout.sidebarCollapsed", am = "TavernHelper.modernLayout.recentCollapsed", om = 15, sm = "(min-width: 900px) and (max-width: 1199.98px)", cm = "(min-width: 900px)", lm = 320, um = 460, dm = 720, fm = 24, pm = 480, mm = 1e3, hm = "--th-modern-left-nav-height", gm = "--th-modern-input-height", _m = "--th-modern-input-stack-offset", vm = "--th-modern-quick-reply-max-height", ym = "--th-modern-quick-reply-reserve-height", bm = 66, xm = 240, Sm = 44, Cm = 12, wm = "modern-ui", Tm = "1.0.0", Em = !1;
+function Dm(e, t, n, r) {
 	return typeof e != "number" || !Number.isFinite(e) ? r : Math.min(Math.max(e, t), n);
 }
-function wm() {
+function Om() {
 	let e = I();
 	return e.body ? [e.documentElement, e.body] : [e.documentElement];
 }
-function Tm() {
+function km() {
 	return L().localStorage;
 }
-function Em(e) {
+function Am(e) {
 	try {
-		return Tm()?.getItem(e) === "true";
+		return km()?.getItem(e) === "true";
 	} catch (e) {
-		return console.warn(`[${zu}] 读取浏览器状态失败。`, e), !1;
+		return console.warn(`[${Bu}] 读取浏览器状态失败。`, e), !1;
 	}
 }
-function Dm(e, t) {
+function jm(e, t) {
 	try {
-		Tm()?.setItem(e, String(t));
+		km()?.setItem(e, String(t));
 	} catch (e) {
-		console.warn(`[${zu}] 保存浏览器状态失败。`, e);
+		console.warn(`[${Bu}] 保存浏览器状态失败。`, e);
 	}
 }
-function Om(e, t) {
-	wm().forEach((n) => {
+function Mm(e, t) {
+	Om().forEach((n) => {
 		n.style.getPropertyValue(e) !== t && n.style.setProperty(e, t);
 	});
 }
 function Z(e) {
-	wm().forEach((t) => {
+	Om().forEach((t) => {
 		t.style.getPropertyValue(e) && t.style.removeProperty(e);
 	});
 }
-function km(e, t) {
+function Nm(e, t) {
 	let n = Number.parseFloat(e);
 	return Number.isFinite(n) ? n : t;
 }
-function Am(e, t, n) {
+function Pm(e, t, n) {
 	e.forEach((e) => {
 		e.style.getPropertyValue(t) !== n && e.style.setProperty(t, n);
 	});
@@ -9522,9 +9639,9 @@ function Q() {
 	} catch {
 		n = void 0;
 	}
-	return n && typeof n == "object" || (n = t ?? e), Array.isArray(n.characters) || (n.characters = Pm()), Array.isArray(n.groups) || (n.groups = Fm()), n.characterId === void 0 && (n.characterId = e.this_chid ?? e.characterId), n.groupId === void 0 && (n.groupId = e.selected_group ?? e.groupId), typeof n.getCurrentChatId != "function" && (n.getCurrentChatId = () => e.getCurrentChatId?.() ?? e.selected_and_active_chat), n;
+	return n && typeof n == "object" || (n = t ?? e), Array.isArray(n.characters) || (n.characters = Rm()), Array.isArray(n.groups) || (n.groups = zm()), n.characterId === void 0 && (n.characterId = e.this_chid ?? e.characterId), n.groupId === void 0 && (n.groupId = e.selected_group ?? e.groupId), typeof n.getCurrentChatId != "function" && (n.getCurrentChatId = () => e.getCurrentChatId?.() ?? e.selected_and_active_chat), n;
 }
-function jm() {
+function Fm() {
 	let e, t = !1, n = async () => {
 		let e = L(), n = I().baseURI || e.location.href, r = new URL("script.js", n).href, i = new URL("scripts/group-chats.js", n).href, a = e.Function, [o, s] = await a("mainModuleUrl", "groupModuleUrl", "return Promise.all([import(mainModuleUrl), import(groupModuleUrl)]);")(r, i), c = o, l = s;
 		if (typeof c.selectCharacterById != "function" || typeof c.isGenerating != "function" || typeof c.isChatSaving != "boolean" || typeof c.setActiveCharacter != "function" || typeof c.setActiveGroup != "function" || typeof l.openGroupChat != "function" || typeof l.openGroupById != "function") throw Error("当前 SillyTavern 缺少最近聊天所需的导航能力。");
@@ -9552,34 +9669,34 @@ function jm() {
 		}
 	};
 }
-function Mm(e) {
+function Im(e) {
 	return e instanceof DOMException && e.name === "AbortError";
 }
-function Nm() {
+function Lm() {
 	let e = window.SillyTavern?.getContext?.(), t = (window.SillyTavern?.accountStorage ?? e?.accountStorage ?? window.accountStorage ?? localStorage)?.getItem?.("pinnedChats");
 	if (typeof t != "string") return [];
 	try {
 		let e = JSON.parse(t);
 		return !e || typeof e != "object" ? [] : Object.values(e).filter((e) => !e || typeof e != "object" ? !1 : typeof e.file_name == "string");
 	} catch (e) {
-		return console.warn(`[${zu}] 读取最近聊天置顶状态失败。`, e), [];
+		return console.warn(`[${Bu}] 读取最近聊天置顶状态失败。`, e), [];
 	}
 }
-function Pm() {
+function Rm() {
 	let e = L?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n = t?.getContext?.();
 	return Array.isArray(n?.characters) ? n.characters : Array.isArray(e.characters) ? e.characters : Array.isArray(t?.characters) ? t.characters : Array.isArray(window.characters) ? window.characters : [];
 }
-function Fm() {
+function zm() {
 	let e = L?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n = t?.getContext?.();
 	return Array.isArray(n?.groups) ? n.groups : Array.isArray(e.groups) ? e.groups : Array.isArray(t?.groups) ? t.groups : Array.isArray(window.groups) ? window.groups : [];
 }
-function Im(e) {
-	if (e) return Pm().find((t) => t?.avatar === e);
+function Bm(e) {
+	if (e) return Rm().find((t) => t?.avatar === e);
 }
-function Lm(e) {
-	if (e) return Fm().find((t) => t?.id === e);
+function Vm(e) {
+	if (e) return zm().find((t) => t?.id === e);
 }
-function Rm(e) {
+function Hm(e) {
 	if (!e) return;
 	let t = window.SillyTavern?.getContext?.(), n = window.SillyTavern?.timestampToMoment ?? t?.timestampToMoment;
 	if (typeof n == "function") try {
@@ -9590,7 +9707,7 @@ function Rm(e) {
 		return r(e);
 	} catch {}
 }
-function zm(e, t) {
+function Um(e, t) {
 	if (!t) return "img/groupchat.png";
 	let n = window.SillyTavern?.getContext?.(), r = window.SillyTavern?.getThumbnailUrl ?? n?.getThumbnailUrl ?? window.getThumbnailUrl;
 	if (typeof r == "function") try {
@@ -9598,10 +9715,10 @@ function zm(e, t) {
 	} catch {}
 	return t.startsWith("http://") || t.startsWith("https://") || t.startsWith("/") ? t : `/characters/${encodeURIComponent(t)}`;
 }
-function Bm(e) {
-	let t = Im(e.avatar), n = Lm(e.group);
+function Wm(e) {
+	let t = Bm(e.avatar), n = Vm(e.group);
 	if (!t && !n) return;
-	let r = e.chat_name ?? e.file_name.replace(/\.jsonl$/i, ""), i = Rm(e.last_mes), a = "", o = "";
+	let r = e.chat_name ?? e.file_name.replace(/\.jsonl$/i, ""), i = Hm(e.last_mes), a = "", o = "";
 	if (i?.format) try {
 		a = i.format("l"), o = i.format("LL LT");
 	} catch {}
@@ -9613,7 +9730,7 @@ function Bm(e) {
 		...e,
 		chat_name: r,
 		char_name: t?.name ?? String(n?.name ?? ""),
-		char_thumbnail: t ? zm("avatar", t.avatar) : "img/groupchat.png",
+		char_thumbnail: t ? Um("avatar", t.avatar) : "img/groupchat.png",
 		date_short: a,
 		date_long: o,
 		is_group: !!n,
@@ -9626,35 +9743,35 @@ function Bm(e) {
 		last_mes: e.last_mes ?? ""
 	};
 }
-function Vm() {
+function Gm() {
 	let e = window.SillyTavern?.getContext?.();
 	return typeof window.SillyTavern?.getRequestHeaders == "function" ? window.SillyTavern.getRequestHeaders() : typeof e?.getRequestHeaders == "function" ? e.getRequestHeaders() : typeof window.getRequestHeaders == "function" ? window.getRequestHeaders() : {
 		"Content-Type": "application/json",
 		"X-CSRF-Token": window.token || ""
 	};
 }
-async function Hm(e) {
+async function Km(e) {
 	let t = await fetch("/api/chats/recent", {
 		method: "POST",
-		headers: Vm(),
+		headers: Gm(),
 		body: JSON.stringify({
-			max: nm,
-			pinned: Nm()
+			max: om,
+			pinned: Lm()
 		}),
 		cache: "no-cache",
 		signal: e
 	});
 	if (!t.ok) throw Error(`HTTP ${t.status}`);
 	let n = await t.json();
-	return Array.isArray(n) ? n.map((e) => Bm(e)).filter((e) => e !== void 0).slice(0, nm) : [];
+	return Array.isArray(n) ? n.map((e) => Wm(e)).filter((e) => e !== void 0).slice(0, om) : [];
 }
-function Um(e) {
+function qm(e) {
 	return (e ?? "").replace(/\.jsonl$/i, "");
 }
-async function Wm(e, t) {
+async function Jm(e, t) {
 	let n = await fetch("/api/characters/chats", {
 		method: "POST",
-		headers: Vm(),
+		headers: Gm(),
 		body: JSON.stringify({
 			avatar_url: e,
 			simple: !0
@@ -9666,22 +9783,22 @@ async function Wm(e, t) {
 	return !r || typeof r != "object" ? !1 : (Array.isArray(r) ? r : Object.values(r)).some((e) => {
 		if (!e || typeof e != "object") return !1;
 		let n = e, r = typeof n.file_id == "string" ? n.file_id : void 0, i = typeof n.file_name == "string" ? n.file_name : void 0;
-		return Um(r ?? i) === t;
+		return qm(r ?? i) === t;
 	});
 }
-function Gm(e) {
-	let t = Q(), n = Um(e.chat_name ?? e.file_name);
-	if (!n || Um(t.getCurrentChatId?.()) !== n) return !1;
+function Ym(e) {
+	let t = Q(), n = qm(e.chat_name ?? e.file_name);
+	if (!n || qm(t.getCurrentChatId?.()) !== n) return !1;
 	if (e.is_group && e.group) return String(t.groupId ?? "") === e.group;
 	if (!e.avatar || t.groupId) return !1;
-	let r = (Array.isArray(t.characters) ? t.characters : Pm()).findIndex((t) => t?.avatar === e.avatar);
+	let r = (Array.isArray(t.characters) ? t.characters : Rm()).findIndex((t) => t?.avatar === e.avatar);
 	return r !== -1 && String(t.characterId) === String(r);
 }
-function Km(e, t) {
+function Xm(e, t) {
 	let n = $("<button>").attr({
 		type: "button",
 		title: e.date_long ? `${e.char_name} - ${e.chat_name}\n${e.date_long}` : `${e.char_name} - ${e.chat_name}`
-	}).addClass("th-modern-recent-chat").toggleClass("is-current", Gm(e)).on("click", () => t(e)), r = $("<span>").addClass("th-modern-recent-avatar");
+	}).addClass("th-modern-recent-chat").toggleClass("is-current", Ym(e)).on("click", () => t(e)), r = $("<span>").addClass("th-modern-recent-avatar");
 	$("<img>").attr({
 		src: e.char_thumbnail || "img/ai4.png",
 		alt: e.char_name || "聊天头像"
@@ -9691,39 +9808,39 @@ function Km(e, t) {
 	let a = $("<span>").addClass("th-modern-recent-meta");
 	return $("<span>").text(e.date_short ?? "").appendTo(a), $("<span>").text(`${e.chat_items ?? 0} 条`).appendTo(a), n.append(r, i, a);
 }
-async function qm(e, t, n) {
-	let r = Um(e.chat_name ?? e.file_name);
+async function Zm(e, t, n) {
+	let r = qm(e.chat_name ?? e.file_name);
 	if (!r) throw Error("最近聊天缺少聊天文件名。");
 	let i = L?.() ?? window, a = Q(), o = i.SillyTavern?.saveSettingsDebounced ?? a?.saveSettingsDebounced ?? i.saveSettingsDebounced, s = i.SillyTavern?.openGroupChat ?? a?.openGroupChat ?? i.openGroupChat, c = i.SillyTavern?.selectCharacterById ?? a?.selectCharacterById ?? i.selectCharacterById, l = i.SillyTavern?.openCharacterChat ?? a?.openCharacterChat ?? i.openCharacterChat;
 	if (e.is_group && e.group) {
-		if (!Lm(e.group)) throw Error("未找到对应群组。");
+		if (!Vm(e.group)) throw Error("未找到对应群组。");
 		if (String(Q().groupId ?? "") !== e.group) {
 			let r = await t.openGroupById(e.group);
 			if (n(), !r && String(Q().groupId ?? "") !== e.group) throw Error("群组切换被聊天保存或生成状态阻止。");
 		}
 		if (String(Q().groupId ?? "") !== e.group) throw Error("群组未能正确激活。");
-		if (t.setActiveGroup(e.group), o?.(), Um(Q().getCurrentChatId?.()) !== r && (await s?.(e.group, r), n()), String(Q().groupId ?? "") !== e.group || Um(Q().getCurrentChatId?.()) !== r) throw Error("群组聊天不存在或未能正确打开。");
+		if (t.setActiveGroup(e.group), o?.(), qm(Q().getCurrentChatId?.()) !== r && (await s?.(e.group, r), n()), String(Q().groupId ?? "") !== e.group || qm(Q().getCurrentChatId?.()) !== r) throw Error("群组聊天不存在或未能正确打开。");
 	} else if (e.avatar) {
 		let i = () => {
 			let e = Q().characters;
-			return Array.isArray(e) ? e : Pm();
+			return Array.isArray(e) ? e : Rm();
 		}, a = i().findIndex((t) => t?.avatar === e.avatar);
 		if (a === -1) throw Error("未找到对应角色。");
-		if (!await Wm(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
+		if (!await Jm(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
 		if (n(), a = i().findIndex((t) => t?.avatar === e.avatar), a === -1) throw Error("角色已不存在。");
 		await c?.(a), n();
 		let s = i()[Number(Q().characterId)];
 		if (Q().groupId || s?.avatar !== e.avatar) throw Error("角色切换被聊天保存或生成状态阻止。");
-		if (t.setActiveCharacter(e.avatar), o?.(), Um(Q().getCurrentChatId?.()) !== r) {
-			if (!await Wm(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
+		if (t.setActiveCharacter(e.avatar), o?.(), qm(Q().getCurrentChatId?.()) !== r) {
+			if (!await Jm(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
 			if (n(), Q().groupId || i()[Number(Q().characterId)]?.avatar !== e.avatar) throw Error("角色已不再处于激活状态。");
 			t.setActiveCharacter(e.avatar), await l?.(r), n();
 		}
 		let u = i()[Number(Q().characterId)];
-		if (Q().groupId || u?.avatar !== e.avatar || Um(Q().getCurrentChatId?.()) !== r) throw Error("角色聊天未能正确打开。");
+		if (Q().groupId || u?.avatar !== e.avatar || qm(Q().getCurrentChatId?.()) !== r) throw Error("角色聊天未能正确打开。");
 	} else throw Error("最近聊天缺少角色或群组标识。");
 }
-function Jm(e, t) {
+function Qm(e, t) {
 	let n = String(e ?? "").replace(/\s+/g, " ").trim();
 	if (n) {
 		if (t === "version") {
@@ -9734,20 +9851,20 @@ function Jm(e, t) {
 		if (!(!n || n.length > 64 || n.includes("://"))) return n;
 	}
 }
-function Ym(e = I()) {
+function $m(e = I()) {
 	for (let t of [
 		".welcomeHeaderVersionDisplay",
 		"#version_display_welcome",
 		"#version_display"
 	]) {
-		let n = Jm(e.querySelector(t)?.textContent, "version");
+		let n = Qm(e.querySelector(t)?.textContent, "version");
 		if (n) return n;
 	}
-	return Jm(e.querySelector("meta[name=\"application-name\"]")?.content, "plain") || Jm(e.querySelector(".welcomePanel .welcomeHeaderLogo")?.alt, "logo") || (Jm(e.title, "plain") ?? Zp);
+	return Qm(e.querySelector("meta[name=\"application-name\"]")?.content, "plain") || Qm(e.querySelector(".welcomePanel .welcomeHeaderLogo")?.alt, "logo") || (Qm(e.title, "plain") ?? tm);
 }
-function Xm(e) {
-	let t = L(), n = I(), r = $("<div>").attr("id", jp).addClass("th-modern-sidebar recentChat"), i = $("<div>").addClass("th-modern-sidebar-brand"), a = $("<span>").addClass("th-modern-brand-main").appendTo(i), o = $("<img>").addClass("th-modern-brand-logo welcomeHeaderLogo").attr("src", "img/logo.png").appendTo(a), s = $("<span>").addClass("th-modern-brand-name").appendTo(a), c = () => {
-		let e = Ym(n);
+function eh(e) {
+	let t = L(), n = I(), r = $("<div>").attr("id", Fp).addClass("th-modern-sidebar recentChat"), i = $("<div>").addClass("th-modern-sidebar-brand"), a = $("<span>").addClass("th-modern-brand-main").appendTo(i), o = $("<img>").addClass("th-modern-brand-logo welcomeHeaderLogo").attr("src", "img/logo.png").appendTo(a), s = $("<span>").addClass("th-modern-brand-name").appendTo(a), c = () => {
+		let e = $m(n);
 		s.text(e), o.attr("alt", `${e} Logo`);
 	};
 	c();
@@ -9768,7 +9885,7 @@ function Xm(e) {
 		type: "button",
 		title: "折叠侧边栏",
 		"aria-pressed": "false"
-	}).addClass("th-modern-icon-button th-modern-sidebar-toggle fa-solid fa-chevron-left").appendTo(i), d = $("<section>").addClass("th-modern-recent-section"), f = `${jp}-recent-list`, p = $("<div>").addClass("th-modern-section-header"), m = $("<span>").addClass("th-modern-section-actions"), h = $("<button>").attr({
+	}).addClass("th-modern-icon-button th-modern-sidebar-toggle fa-solid fa-chevron-left").appendTo(i), d = $("<section>").addClass("th-modern-recent-section"), f = `${Fp}-recent-list`, p = $("<div>").addClass("th-modern-section-header"), m = $("<span>").addClass("th-modern-section-actions"), h = $("<button>").attr({
 		type: "button",
 		title: "折叠最近聊天",
 		"aria-controls": f,
@@ -9776,9 +9893,9 @@ function Xm(e) {
 	}).addClass("th-modern-section-title th-modern-recent-toggle"), g = $("<span>").attr("aria-hidden", "true").addClass("th-modern-icon-button th-modern-recent-collapse fa-solid fa-chevron-up").appendTo(h);
 	$("<span>").addClass("th-modern-section-label").text("最近聊天").appendTo(h);
 	let v = (e, t = !0) => {
-		$(I().body).toggleClass(Cp, e), $(I().body).removeClass(Tp), r.toggleClass("is-collapsed", e), y(), t && Dm(em, e);
+		$(I().body).toggleClass(Dp, e), $(I().body).removeClass(kp), r.toggleClass("is-collapsed", e), y(), t && jm(im, e);
 	}, y = () => {
-		let e = I().body, t = e.classList.contains(Cp), n = e.classList.contains(wp) && !e.classList.contains(Tp), r = t || n;
+		let e = I().body, t = e.classList.contains(Dp), n = e.classList.contains(Op) && !e.classList.contains(kp), r = t || n;
 		u.toggleClass("fa-chevron-left", !r).toggleClass("fa-chevron-right", r).attr({
 			title: r ? "展开侧边栏" : "折叠侧边栏",
 			"aria-pressed": String(r)
@@ -9788,14 +9905,14 @@ function Xm(e) {
 		d.toggleClass("is-collapsed", e), h.attr({
 			title: n,
 			"aria-expanded": String(!e)
-		}), g.toggleClass("fa-chevron-up", !e).toggleClass("fa-chevron-down", e), t && Dm(tm, e);
+		}), g.toggleClass("fa-chevron-up", !e).toggleClass("fa-chevron-down", e), t && jm(am, e);
 	}, x = () => {
 		b(!d.hasClass("is-collapsed"));
 	};
 	u.on("click", (e) => {
 		e.preventDefault(), e.stopPropagation();
 		let t = I().body;
-		t.classList.contains(wp) && !t.classList.contains(Cp) ? (t.classList.toggle(Tp), y()) : v(!t.classList.contains(Cp));
+		t.classList.contains(Op) && !t.classList.contains(Dp) ? (t.classList.toggle(kp), y()) : v(!t.classList.contains(Dp));
 	}), h.on("click", (e) => {
 		e.preventDefault(), x();
 	});
@@ -9812,34 +9929,34 @@ function Xm(e) {
 	return w.observe(I().body, {
 		attributes: !0,
 		attributeFilter: ["class"]
-	}), v(Em(em), !1), b(Em(tm), !1), y(), {
+	}), v(Am(im), !1), b(Am(am), !1), y(), {
 		$list: C,
 		destroy: () => {
-			w.disconnect(), l.disconnect(), $(I().body).removeClass(Cp), r.remove();
+			w.disconnect(), l.disconnect(), $(I().body).removeClass(Dp), r.remove();
 		}
 	};
 }
-function Zm(e) {
+function th(e) {
 	e.empty().append($("<div>").addClass("th-modern-recent-state").text("正在读取最近聊天..."));
 }
-function Qm(e, t) {
+function nh(e, t) {
 	let n = t instanceof Error ? t.message : String(t);
 	e.empty().append($("<div>").addClass("th-modern-recent-state").text(`读取失败：${n}`));
 }
-function $m(e) {
-	let t = jm(), n, r = 0, i = 0, a = !1, o = !1, s = (t) => {
+function rh(e) {
+	let t = Fm(), n, r = 0, i = 0, a = !1, o = !1, s = (t) => {
 		a = t, e.toggleClass("is-navigating", t).attr("aria-busy", String(t)), e.find("button").prop("disabled", t);
 	}, c = (e) => {
-		if (o || a || Gm(e)) return;
+		if (o || a || Ym(e)) return;
 		let n = ++i, r = () => {
 			if (o || n !== i) throw new DOMException("导航已取消。", "AbortError");
 		};
 		s(!0), t.get().then(async (t) => {
-			r(), await qm(e, t, r);
+			r(), await Zm(e, t, r);
 		}).catch((e) => {
-			if (Mm(e)) return;
+			if (Im(e)) return;
 			let t = e instanceof Error ? e.message : String(e);
-			toastr.error(`打开最近聊天失败：${t}`, zu), console.error(`[${zu}] 打开最近聊天失败。`, e);
+			toastr.error(`打开最近聊天失败：${t}`, Bu), console.error(`[${Bu}] 打开最近聊天失败。`, e);
 		}).finally(() => {
 			!o && n === i && s(!1);
 		});
@@ -9849,12 +9966,12 @@ function $m(e) {
 			if (o) return;
 			n?.abort(), n = new AbortController();
 			let t = ++r;
-			Zm(e), Hm(n.signal).then((n) => {
+			th(e), Km(n.signal).then((n) => {
 				o || t !== r || (e.empty(), n.length === 0 ? e.append($("<div>").addClass("th-modern-recent-state").text("暂无最近聊天")) : (n.forEach((t) => {
-					e.append(Km(t, c));
+					e.append(Xm(t, c));
 				}), a && s(!0)));
 			}).catch((n) => {
-				o || t !== r || Mm(n) || Qm(e, n);
+				o || t !== r || Im(n) || nh(e, n);
 			});
 		},
 		destroy: () => {
@@ -9862,113 +9979,113 @@ function $m(e) {
 		}
 	};
 }
-function eh(e) {
+function ih(e) {
 	let t = e.children(".drawer-icon").first();
 	return String(t.attr("title") || e.attr("title") || e.text()).trim();
 }
-function th() {
-	return I().querySelector(`#top-settings-holder > .drawer > .drawer-content.${Vp}`) ?? void 0;
+function ah() {
+	return I().querySelector(`#top-settings-holder > .drawer > .drawer-content.${Gp}`) ?? void 0;
 }
-function nh() {
-	let e = th();
-	$(`.${Bp}`, I()).each((t, n) => {
-		let r = Sm && !!(e && $(n).closest(".drawer-content")[0] === e);
+function oh() {
+	let e = ah();
+	$(`.${Wp}`, I()).each((t, n) => {
+		let r = Em && !!(e && $(n).closest(".drawer-content")[0] === e);
 		$(n).toggleClass("is-fullscreen", r).toggleClass("fa-expand", !r).toggleClass("fa-compress", r).attr({
 			title: r ? "恢复面板宽度" : "全屏显示面板",
 			"aria-label": r ? "恢复面板宽度" : "全屏显示面板"
 		});
 	});
 }
-function rh(e) {
+function sh(e) {
 	let t = I(), n = e === void 0 ? !!t.querySelector("#top-settings-holder > .drawer > .drawer-content.openDrawer") : e.length > 0;
-	t.body.classList.contains(Op) !== n && t.body.classList.toggle(Op, n);
+	t.body.classList.contains(Mp) !== n && t.body.classList.toggle(Mp, n);
 }
-function ih(e) {
-	if (e.dataset[Kp] === void 0) {
+function ch(e) {
+	if (e.dataset[Xp] === void 0) {
 		let t = e.classList.contains("pinnedOpen");
-		e.dataset[Kp] = String(t), t || (e.dataset[Gp] = "true");
+		e.dataset[Xp] = String(t), t || (e.dataset[Yp] = "true");
 	}
 	e.classList.add("pinnedOpen");
 }
-function ah(e) {
-	if (e.dataset[Kp] === void 0) return;
-	let t = e.dataset[Kp] === "true";
-	e.dataset[Gp] === "true" ? e.classList.remove("pinnedOpen") : t && e.classList.add("pinnedOpen"), delete e.dataset[Gp], delete e.dataset[Kp];
+function lh(e) {
+	if (e.dataset[Xp] === void 0) return;
+	let t = e.dataset[Xp] === "true";
+	e.dataset[Yp] === "true" ? e.classList.remove("pinnedOpen") : t && e.classList.add("pinnedOpen"), delete e.dataset[Yp], delete e.dataset[Xp];
 }
-function oh(e) {
-	let t = I(), n = t.body.classList.contains(_p), r = new Set(e);
+function uh(e) {
+	let t = I(), n = t.body.classList.contains(xp), r = new Set(e);
 	t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
-		n && r.has(e) ? ih(e) : e.classList.contains(Vp) || ah(e);
+		n && r.has(e) ? ch(e) : e.classList.contains(Gp) || lh(e);
 	});
 }
-function sh() {
-	let e = th();
+function dh() {
+	let e = ah();
 	if (e) {
-		let t = e.dataset[Wp] === "true", n = e.dataset[Wp] === void 0 || !t;
-		$(e).removeClass(Vp), n ? $(e).removeClass("pinnedOpen") : t && $(e).addClass("pinnedOpen"), delete e.dataset[Up], delete e.dataset[Wp];
+		let t = e.dataset[Jp] === "true", n = e.dataset[Jp] === void 0 || !t;
+		$(e).removeClass(Gp), n ? $(e).removeClass("pinnedOpen") : t && $(e).addClass("pinnedOpen"), delete e.dataset[qp], delete e.dataset[Jp];
 	}
-	I().body.classList.remove(Dp), rh();
+	I().body.classList.remove(jp), sh();
 }
-function ch() {
-	Sm = !1, sh(), nh();
+function fh() {
+	Em = !1, dh(), oh();
 }
-function lh(e) {
-	let t = th();
-	if (t && t !== e && sh(), !(e instanceof (I().defaultView ?? window).HTMLElement)) return;
+function ph(e) {
+	let t = ah();
+	if (t && t !== e && dh(), !(e instanceof (I().defaultView ?? window).HTMLElement)) return;
 	let n = I().body, r = $(e);
-	if (e.dataset[Wp] === void 0) {
+	if (e.dataset[Jp] === void 0) {
 		let t = r.hasClass("pinnedOpen");
-		e.dataset[Wp] = String(t), t || (e.dataset[Up] = "true");
+		e.dataset[Jp] = String(t), t || (e.dataset[qp] = "true");
 	}
-	r.addClass(`${Vp} pinnedOpen openDrawer`).removeClass("closedDrawer");
+	r.addClass(`${Gp} pinnedOpen openDrawer`).removeClass("closedDrawer");
 	let i = r.closest(".drawer").find(".drawer-icon").first();
-	i.hasClass("closedIcon") && i.removeClass("closedIcon").addClass("openIcon"), n.classList.add(Dp), rh([e]), n.classList.contains(wp) && !n.classList.contains(Cp) && n.classList.add(Tp), nh();
+	i.hasClass("closedIcon") && i.removeClass("closedIcon").addClass("openIcon"), n.classList.add(jp), sh([e]), n.classList.contains(Op) && !n.classList.contains(Dp) && n.classList.add(kp), oh();
 }
-function uh(e, t) {
-	Sm = t, t ? lh(e) : ch();
+function mh(e, t) {
+	Em = t, t ? ph(e) : fh();
 }
-function dh(e) {
-	th() === e && sh();
+function hh(e) {
+	ah() === e && dh();
 	let t = $(e);
 	if (!t.hasClass("openDrawer")) return;
-	ah(e), t.removeClass("openDrawer pinnedOpen").addClass("closedDrawer");
+	lh(e), t.removeClass("openDrawer pinnedOpen").addClass("closedDrawer");
 	let n = t.closest(".drawer").find(".drawer-icon").first();
-	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), rh();
+	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), sh();
 }
-function fh(e) {
+function gh(e) {
 	let t = I(), n = t.defaultView ?? window, r = /* @__PURE__ */ new Map(), i = 0, a, o = 0, s, c = (e, n) => {
 		n?.classList.contains("openDrawer") ? s = n : s?.isConnected && s.classList.contains("openDrawer") || (s = e[e.length - 1]);
 		let r = e.length > 1;
-		t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(Hp, r && e === s));
+		t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(Kp, r && e === s));
 	}, l = () => {
-		o !== 0 && (n.clearTimeout(o), o = 0), a = void 0, t.body.classList.remove(kp);
+		o !== 0 && (n.clearTimeout(o), o = 0), a = void 0, t.body.classList.remove(Np);
 	}, u = (e) => {
-		a = e, t.body.classList.add(kp), o !== 0 && n.clearTimeout(o), o = n.setTimeout(() => {
-			o = 0, a = void 0, t.body.classList.remove(kp), rh();
-		}, um);
+		a = e, t.body.classList.add(Np), o !== 0 && n.clearTimeout(o), o = n.setTimeout(() => {
+			o = 0, a = void 0, t.body.classList.remove(Np), sh();
+		}, mm);
 	}, d = () => {
 		i === 0 && (i = n.requestAnimationFrame(() => {
 			i = 0, f();
 		}));
 	}, f = () => {
-		let e = th(), n = Array.from(t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
-		if (c(n), oh(n), rh(n), a && (!a.isConnected || a.classList.contains("openDrawer")) && l(), !e) {
-			if (t.body.classList.contains(Dp) && t.body.classList.remove(Dp), Sm && n[0]) {
-				lh(n[0]);
+		let e = ah(), n = Array.from(t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
+		if (c(n), uh(n), sh(n), a && (!a.isConnected || a.classList.contains("openDrawer")) && l(), !e) {
+			if (t.body.classList.contains(jp) && t.body.classList.remove(jp), Em && n[0]) {
+				ph(n[0]);
 				return;
 			}
-			nh();
+			oh();
 			return;
 		}
 		if (!e.isConnected || !e.classList.contains("openDrawer")) {
-			sh(), Sm && n[0] ? lh(n[0]) : nh();
+			dh(), Em && n[0] ? ph(n[0]) : oh();
 			return;
 		}
 		let r = n.find((t) => t !== e);
-		r && (sh(), dh(e), Sm ? lh(r) : nh());
+		r && (dh(), hh(e), Em ? ph(r) : oh());
 	}, p = () => {
 		$("#top-settings-holder .drawer-toggle").each((e, t) => {
-			let n = $(t), i = eh(n);
+			let n = $(t), i = ih(n);
 			if (i) {
 				let e = t, a = r.get(e);
 				a ? a.written = i : r.set(e, {
@@ -9980,18 +10097,18 @@ function fh(e) {
 					"aria-label": i
 				});
 			}
-			n.children(`.${Fp}`).length > 0 || i && $("<span>").addClass(Fp).text(i).appendTo(n);
+			n.children(`.${zp}`).length > 0 || i && $("<span>").addClass(zp).text(i).appendTo(n);
 		});
 		let e = ".notes-link, .help_button, .help-button, a:has(.note-link-span), a[href*=\"docs.sillytavern.app\"], .note-link-span, [title*=\"帮助\"], [title*=\"Help\"]", t = (t) => {
-			let n = t.find(e).not(`.${Ip} *`);
+			let n = t.find(e).not(`.${Bp} *`);
 			if (n.length === 0) return $();
 			let r = n.first(), i = r.closest("a, button, .notes-link, .help_button");
 			return i.length > 0 ? i : r;
 		};
 		$("#top-settings-holder .drawer-content").each((n, r) => {
-			let i = $(r), a = i.attr("id"), o = a !== "WorldInfo" && a !== "rm_extensions_block", s = i.children(`.${Ip}`), c = s.first();
+			let i = $(r), a = i.attr("id"), o = a !== "WorldInfo" && a !== "rm_extensions_block", s = i.children(`.${Bp}`), c = s.first();
 			if (s.slice(1).remove(), c.length > 0) {
-				let n = c.find(`.${Rp}`).first();
+				let n = c.find(`.${Hp}`).first();
 				if (!o) n.find(e).remove();
 				else if (!(n.find(e).length > 0)) {
 					let e = t(i);
@@ -9999,9 +10116,9 @@ function fh(e) {
 				}
 				return;
 			}
-			let l = eh(i.closest(".drawer").children(".drawer-toggle").first()), u = $("<div>").addClass(Ip);
-			$("<span>").addClass(Lp).text(l || "菜单").appendTo(u);
-			let d = $("<div>").addClass(Rp).appendTo(u);
+			let l = ih(i.closest(".drawer").children(".drawer-toggle").first()), u = $("<div>").addClass(Bp);
+			$("<span>").addClass(Vp).text(l || "菜单").appendTo(u);
+			let d = $("<div>").addClass(Hp).appendTo(u);
 			if (o) {
 				let e = t(i);
 				e.length > 0 && d.append(e);
@@ -10010,29 +10127,29 @@ function fh(e) {
 				type: "button",
 				title: "全屏显示面板",
 				"aria-label": "全屏显示面板"
-			}).addClass(`${Bp} fa-solid fa-expand`).appendTo(d), $("<button>").attr({
+			}).addClass(`${Wp} fa-solid fa-expand`).appendTo(d), $("<button>").attr({
 				type: "button",
 				title: "关闭面板"
-			}).addClass(`${zp} fa-solid fa-xmark`).appendTo(d), i.prepend(u);
-		}), nh(), f();
+			}).addClass(`${Up} fa-solid fa-xmark`).appendTo(d), i.prepend(u);
+		}), oh(), f();
 	}, m = (e) => {
 		let r = e.target instanceof n.Element ? e.target : null, i = r?.closest("#top-settings-holder > .drawer > .drawer-toggle, #top-settings-holder .drawer-toggle"), a = r?.closest(".drawer-opener");
 		if (i || a) {
 			let e = i?.closest(".drawer") ?? i?.parentElement ?? (a?.dataset.target ? t.getElementById(a.dataset.target) : null), n = e?.querySelector(":scope > .drawer-content") ?? e?.querySelector(".drawer-content"), r = !!n?.classList.contains("openDrawer");
-			if (t.body.classList.contains(_p)) {
+			if (t.body.classList.contains(xp)) {
 				let e = Array.from(t.querySelectorAll("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"));
 				n && !r && e.length > 0 && u(n), e.forEach((e) => {
-					e !== n && ah(e);
+					e !== n && lh(e);
 				});
 			}
 		}
-		let o = r?.closest(`.${Bp}, .${zp}`);
+		let o = r?.closest(`.${Wp}, .${Up}`);
 		if (!o) {
 			i && d();
 			return;
 		}
 		let s = o.closest("#top-settings-holder > .drawer > .drawer-content");
-		s && (e.preventDefault(), e.stopPropagation(), o.classList.contains(Bp) ? uh(s, th() !== s) : (dh(s), d()));
+		s && (e.preventDefault(), e.stopPropagation(), o.classList.contains(Wp) ? mh(s, ah() !== s) : (hh(s), d()));
 	}, h = t.getElementById("top-settings-holder"), g = h instanceof n.HTMLElement ? new n.MutationObserver((r) => {
 		let i = r.find((e) => e.target instanceof n.HTMLElement && !(e.oldValue?.split(/\s+/).includes("openDrawer") ?? !1) && e.target.classList.contains("openDrawer"))?.target;
 		if (i instanceof n.HTMLElement) {
@@ -10064,42 +10181,42 @@ function fh(e) {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), t.addEventListener("click", m, !0), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), l(), b?.disconnect(), g?.disconnect(), x.disconnect(), t.removeEventListener("click", m, !0), ch(), t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
-			ah(e), e.classList.remove(Hp);
-		}), s = void 0, $(`.${Fp}`).remove(), $(`.${Ip}`).remove(), r.forEach((e, t) => {
+		i !== 0 && n.cancelAnimationFrame(i), l(), b?.disconnect(), g?.disconnect(), x.disconnect(), t.removeEventListener("click", m, !0), fh(), t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
+			lh(e), e.classList.remove(Kp);
+		}), s = void 0, $(`.${zp}`).remove(), $(`.${Bp}`).remove(), r.forEach((e, t) => {
 			t.getAttribute("title") === e.written && (e.title === null ? t.removeAttribute("title") : t.setAttribute("title", e.title)), t.getAttribute("aria-label") === e.written && (e.ariaLabel === null ? t.removeAttribute("aria-label") : t.setAttribute("aria-label", e.ariaLabel));
 		}), r.clear();
 	} };
 }
-async function ph(e) {
+async function _h(e) {
 	let t = L(), n = t.SillyTavern, r = n?.POPUP_TYPE, i = n?.POPUP_RESULT;
 	if (typeof n?.callGenericPopup != "function") {
-		t.confirm("将立即还原原始布局，确认继续？") && (e.disableModernLayout(), toastr.warning("已关闭现代化界面。", zu));
+		t.confirm("将立即还原原始布局，确认继续？") && (e.disableModernLayout(), toastr.warning("已关闭现代化界面。", Bu));
 		return;
 	}
-	let a = await n.callGenericPopup(`将立即还原 ${Ym(I())} 原始布局，并保持关闭状态。之后可在酒馆助手设置里重新启用。`, r?.CONFIRM ?? "confirm", void 0, {
+	let a = await n.callGenericPopup(`将立即还原 ${$m(I())} 原始布局，并保持关闭状态。之后可在酒馆助手设置里重新启用。`, r?.CONFIRM ?? "confirm", void 0, {
 		okButton: "关闭并还原",
 		cancelButton: "取消"
 	});
-	(a === !0 || a === (i?.AFFIRMATIVE ?? 1)) && (e.disableModernLayout(), toastr.warning("已关闭现代化界面。", zu));
+	(a === !0 || a === (i?.AFFIRMATIVE ?? 1)) && (e.disableModernLayout(), toastr.warning("已关闭现代化界面。", Bu));
 }
-function mh(e) {
+function vh(e) {
 	let t = I(), n = L(), r = "", i = !1, a = async () => {
 		if (!i && e.is_active) {
 			i = !0;
 			try {
-				await ph(e);
+				await _h(e);
 			} finally {
 				i = !1;
 			}
 		}
 	}, o = (e) => {
-		e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || (r = `${r}${e.key.toLowerCase()}`.slice(-8), r === Yp && (r = "", a()));
+		e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || (r = `${r}${e.key.toLowerCase()}`.slice(-8), r === $p && (r = "", a()));
 	}, s = (e) => {
 		let n = e.querySelector(".welcomeShortcuts");
-		if (!n || n.querySelector(`.${Xp}`)) return;
+		if (!n || n.querySelector(`.${em}`)) return;
 		let r = t.createElement("button");
-		r.type = "button", r.className = `menu_button menu_button_icon ${Xp}`, r.title = "关闭现代化界面并还原原始布局", r.setAttribute("aria-label", "重置界面");
+		r.type = "button", r.className = `menu_button menu_button_icon ${em}`, r.title = "关闭现代化界面并还原原始布局", r.setAttribute("aria-label", "重置界面");
 		let i = t.createElement("i");
 		i.className = "fa-solid fa-arrow-rotate-left", i.setAttribute("aria-hidden", "true");
 		let a = t.createElement("span");
@@ -10107,7 +10224,7 @@ function mh(e) {
 	}, c = (e) => {
 		e instanceof n.Element && e.matches(".welcomePanel") && s(e), e.querySelectorAll(".welcomePanel").forEach(s);
 	}, l = (e) => {
-		(e.target instanceof n.Element ? e.target : null)?.closest(`.${Xp}`) && (e.preventDefault(), e.stopPropagation(), a());
+		(e.target instanceof n.Element ? e.target : null)?.closest(`.${em}`) && (e.preventDefault(), e.stopPropagation(), a());
 	};
 	c(t);
 	let u = new n.MutationObserver((e) => {
@@ -10121,10 +10238,10 @@ function mh(e) {
 		childList: !0,
 		subtree: !0
 	}), t.addEventListener("keydown", o, !0), t.addEventListener("click", l, !0), { destroy: () => {
-		u.disconnect(), t.removeEventListener("keydown", o, !0), t.removeEventListener("click", l, !0), t.querySelectorAll(`.${Xp}`).forEach((e) => e.remove());
+		u.disconnect(), t.removeEventListener("keydown", o, !0), t.removeEventListener("click", l, !0), t.querySelectorAll(`.${em}`).forEach((e) => e.remove());
 	} };
 }
-function hh(e, t, n, r) {
+function yh(e, t, n, r) {
 	let i = r.get(e);
 	i ? i.applied[t] !== void 0 && e.style[t] !== i.applied[t] && (i.original[t] = e.style[t]) : (i = {
 		original: {
@@ -10136,31 +10253,31 @@ function hh(e, t, n, r) {
 		applied: {}
 	}, r.set(e, i)), e.style[t] !== n && (e.style[t] = n), i.applied[t] = n;
 }
-function gh(e, t) {
+function bh(e, t) {
 	let n = e.ownerDocument.defaultView ?? L(), r = n.getComputedStyle(e);
 	if (r.display === "none" || r.visibility === "hidden" || r.position !== "absolute" && r.position !== "fixed") return;
 	let i = e.getBoundingClientRect();
 	if (i.width < 8 || i.height < 8) return;
 	let a = Math.max(160, n.innerWidth - 16), o = Math.max(120, n.innerHeight - 16), s = `${a}px`, c = `${o}px`, l = Math.min(Math.max(i.left, 8), n.innerWidth - Math.min(i.width, a) - 8), u = Math.min(Math.max(i.top, 8), n.innerHeight - Math.min(i.height, o) - 8), d = Math.abs(l - i.left) > 1, f = Math.abs(u - i.top) > 1, p = (d || f) && r.position === "absolute" ? e.offsetParent : null, m = p?.getBoundingClientRect(), h, g;
 	if (d) {
-		let e = km(r.marginLeft, 0);
+		let e = Nm(r.marginLeft, 0);
 		h = `${r.position === "fixed" ? l : p && m ? l - m.left - p.clientLeft + p.scrollLeft - e : l + n.scrollX - e}px`;
 	}
 	if (f) {
-		let e = km(r.marginTop, 0);
+		let e = Nm(r.marginTop, 0);
 		g = `${r.position === "fixed" ? u : p && m ? u - m.top - p.clientTop + p.scrollTop - e : u + n.scrollY - e}px`;
 	}
-	hh(e, "maxWidth", s, t), hh(e, "maxHeight", c, t), h !== void 0 && hh(e, "left", h, t), g !== void 0 && hh(e, "top", g, t);
+	yh(e, "maxWidth", s, t), yh(e, "maxHeight", c, t), h !== void 0 && yh(e, "left", h, t), g !== void 0 && yh(e, "top", g, t);
 }
-function _h() {
+function xh() {
 	let e = I(), t = e.defaultView ?? window, n = ".select2-container--open, .select2-dropdown, .ui-autocomplete, .list-group, #export_format_popup, #rawPromptPopup", r = /* @__PURE__ */ new Map(), i = 0, a = () => {
 		i = 0, r.forEach((e, t) => {
 			t.isConnected || r.delete(t);
 		}), e.querySelectorAll(n).forEach((e) => {
-			gh(e, r);
+			bh(e, r);
 		});
 	}, o = () => {
-		e.body.classList.contains(Ep) || i === 0 && (i = t.requestAnimationFrame(a));
+		e.body.classList.contains(Ap) || i === 0 && (i = t.requestAnimationFrame(a));
 	}, s = (e) => e instanceof t.Element && (e.matches(n) || !!e.querySelector(n)), c = new t.MutationObserver((e) => {
 		e.some((e) => [...e.addedNodes].some(s)) && o();
 	});
@@ -10176,9 +10293,9 @@ function _h() {
 		}), r.clear();
 	} };
 }
-function vh(e) {
+function Sh(e) {
 	let t = I(), n = t.defaultView ?? window, r = t.createElement("button");
-	r.id = Pp, r.type = "button", r.className = "menu_button fa-solid", r.setAttribute("aria-controls", "qr--bar"), r.hidden = !0;
+	r.id = Rp, r.type = "button", r.className = "menu_button fa-solid", r.setAttribute("aria-controls", "qr--bar"), r.hidden = !0;
 	let i = 0, a, o = new n.ResizeObserver(() => p()), s = new n.MutationObserver(p), c = () => {
 		a &&= (a.element.toggleAttribute("inert", a.inert), a.ariaHidden === null ? a.element.removeAttribute("aria-hidden") : a.element.setAttribute("aria-hidden", a.ariaHidden), void 0);
 	}, l = (e) => {
@@ -10218,20 +10335,20 @@ function vh(e) {
 				"style"
 			]
 		}), l(h), !p || !h) {
-			r.remove(), r.hidden = !0, Z(fm), Z(pm), Z(mm), Z(hm);
+			r.remove(), r.hidden = !0, Z(gm), Z(_m), Z(vm), Z(ym);
 			return;
 		}
 		r.parentElement !== p && p.append(r);
-		let g = t.body.classList.contains(Ap), v = d(h);
+		let g = t.body.classList.contains(Pp), v = d(h);
 		r.hidden = !v, r.classList.toggle("fa-chevron-down", v && !g), r.classList.toggle("fa-chevron-up", v && g), r.setAttribute("aria-expanded", String(v && !g)), r.setAttribute("aria-label", g ? "展开快速回复栏" : "收起快速回复栏"), r.title = g ? "展开快速回复栏" : "收起快速回复栏", h.toggleAttribute("inert", g || a?.inert === !0), g ? h.setAttribute("aria-hidden", "true") : a?.ariaHidden === null ? h.removeAttribute("aria-hidden") : a && h.setAttribute("aria-hidden", a.ariaHidden);
 		let y = Math.ceil(m?.getBoundingClientRect().height ?? p.getBoundingClientRect().height);
-		Om(fm, `${Math.max(0, y)}px`);
+		Mm(gm, `${Math.max(0, y)}px`);
 		let b = p.getBoundingClientRect();
-		Om(pm, `${Math.max(0, Math.ceil(b.bottom - u(p)))}px`);
+		Mm(_m, `${Math.max(0, Math.ceil(b.bottom - u(p)))}px`);
 		let x = v ? Math.max(0, Math.ceil(h.scrollHeight)) : 0;
-		Om(mm, `${x}px`);
+		Mm(vm, `${x}px`);
 		let S = r.hidden ? 0 : Math.ceil(r.getBoundingClientRect().height || 26), C = Math.ceil(h.getBoundingClientRect().height), w = g || !g && x > 1 && C <= 1 ? 0 : x;
-		Om(hm, `${v ? Math.max(S + 6, w + 10) : 0}px`);
+		Mm(ym, `${v ? Math.max(S + 6, w + 10) : 0}px`);
 	};
 	function p() {
 		i === 0 && (i = n.requestAnimationFrame(f));
@@ -10252,46 +10369,46 @@ function vh(e) {
 		t.preventDefault(), t.stopPropagation(), e.settings.quickReplyCollapsed = !e.settings.quickReplyCollapsed;
 	};
 	return r.addEventListener("click", v), n.addEventListener("resize", p), p(), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), h.disconnect(), g.disconnect(), s.disconnect(), o.disconnect(), r.removeEventListener("click", v), r.remove(), c(), n.removeEventListener("resize", p), Z(fm), Z(pm), Z(mm), Z(hm);
+		i !== 0 && n.cancelAnimationFrame(i), h.disconnect(), g.disconnect(), s.disconnect(), o.disconnect(), r.removeEventListener("click", v), r.remove(), c(), n.removeEventListener("resize", p), Z(gm), Z(_m), Z(vm), Z(ym);
 	} };
 }
-function yh(e) {
-	let t = I(), n = t.defaultView ?? window, r = n.matchMedia(rm), i = 0, a = () => {
-		Eh(e.settings, e.is_active, e.should_use_two_column);
+function Ch(e) {
+	let t = I(), n = t.defaultView ?? window, r = n.matchMedia(sm), i = 0, a = () => {
+		Ah(e.settings, e.is_active, e.should_use_two_column);
 	}, o = () => {
 		i === 0 && (i = n.requestAnimationFrame(() => {
 			i = 0, a();
 		}));
 	}, s = (e) => {
 		let r = t.body;
-		if (!r.classList.contains(wp) || r.classList.contains(Cp)) return;
-		let i = !!(e.target instanceof n.Element ? e.target : null)?.closest(`#${jp}, #top-settings-holder`);
-		r.classList.contains(Dp) ? r.classList.add(Tp) : r.classList.contains(Tp) && !i && r.classList.remove(Tp);
+		if (!r.classList.contains(Op) || r.classList.contains(Dp)) return;
+		let i = !!(e.target instanceof n.Element ? e.target : null)?.closest(`#${Fp}, #top-settings-holder`);
+		r.classList.contains(jp) ? r.classList.add(kp) : r.classList.contains(kp) && !i && r.classList.remove(kp);
 	};
 	return r.addEventListener("change", o), n.addEventListener("resize", o), t.addEventListener("pointerdown", s, !0), a(), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), r.removeEventListener("change", o), n.removeEventListener("resize", o), t.removeEventListener("pointerdown", s, !0), t.body.classList.remove(wp, Tp);
+		i !== 0 && n.cancelAnimationFrame(i), r.removeEventListener("change", o), n.removeEventListener("resize", o), t.removeEventListener("pointerdown", s, !0), t.body.classList.remove(Op, kp);
 	} };
 }
-function bh() {
+function wh() {
 	let e = I(), t = e.defaultView ?? window, n = e.getElementById("top-settings-holder"), r = 0, i = () => {
 		if (r = 0, !(n instanceof t.HTMLElement)) {
-			Z(dm);
+			Z(hm);
 			return;
 		}
 		let i = e.body;
-		if (!i.classList.contains(mp) || !i.classList.contains(hp)) {
-			Z(dm);
+		if (!i.classList.contains(_p) || !i.classList.contains(yp)) {
+			Z(hm);
 			return;
 		}
-		let a = t.getComputedStyle(i), o = km(a.getPropertyValue("--th-modern-left-nav-top"), gm), s = km(a.getPropertyValue("--th-modern-left-nav-min-height"), _m), c = km(a.getPropertyValue("--th-modern-recent-min-height"), vm), l = Math.min(c, 44), u = Math.max(s, t.innerHeight - o - l - ym), d = t.getComputedStyle(n), f = km(d.paddingTop, 0) + km(d.paddingBottom, 0) + Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).map((e) => {
+		let a = t.getComputedStyle(i), o = Nm(a.getPropertyValue("--th-modern-left-nav-top"), bm), s = Nm(a.getPropertyValue("--th-modern-left-nav-min-height"), xm), c = Nm(a.getPropertyValue("--th-modern-recent-min-height"), Sm), l = Math.min(c, 44), u = Math.max(s, t.innerHeight - o - l - Cm), d = t.getComputedStyle(n), f = Nm(d.paddingTop, 0) + Nm(d.paddingBottom, 0) + Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).map((e) => {
 			let n = e.closest(".drawer");
 			if (n?.classList.contains("mc3-hidden") || n?.classList.contains("displayNone") || n?.hidden || e.classList.contains("mc3-hidden") || e.classList.contains("displayNone") || e.hidden) return 0;
 			let r = n ? t.getComputedStyle(n) : null;
 			if (r && (r.display === "none" || r.visibility === "hidden")) return 0;
 			let i = t.getComputedStyle(e);
-			return i.display === "none" || i.visibility === "hidden" ? 0 : e.getBoundingClientRect().height + km(i.marginTop, 0) + km(i.marginBottom, 0);
+			return i.display === "none" || i.visibility === "hidden" ? 0 : e.getBoundingClientRect().height + Nm(i.marginTop, 0) + Nm(i.marginBottom, 0);
 		}).reduce((e, t) => e + t, 0);
-		Om(dm, `${Math.ceil(Math.min(f > 0 ? f : s, u))}px`);
+		Mm(hm, `${Math.ceil(Math.min(f > 0 ? f : s, u))}px`);
 	}, a = () => {
 		r === 0 && (r = t.requestAnimationFrame(i));
 	}, o = n instanceof t.HTMLElement ? new t.ResizeObserver(a) : void 0, s = () => {
@@ -10316,36 +10433,36 @@ function bh() {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), t.addEventListener("resize", a), a(), { destroy: () => {
-		r !== 0 && t.cancelAnimationFrame(r), c?.disconnect(), o?.disconnect(), l.disconnect(), t.removeEventListener("resize", a), Z(dm);
+		r !== 0 && t.cancelAnimationFrame(r), c?.disconnect(), o?.disconnect(), l.disconnect(), t.removeEventListener("resize", a), Z(hm);
 	} };
 }
-function xh(e) {
-	let t = I(), n = t.defaultView ?? window, r = $("<div>").attr("id", Mp).appendTo("body"), i = $("<div>").attr("id", Np).appendTo("body"), a, o = (r, i) => {
+function Th(e) {
+	let t = I(), n = t.defaultView ?? window, r = $("<div>").attr("id", Ip).appendTo("body"), i = $("<div>").attr("id", Lp).appendTo("body"), a, o = (r, i) => {
 		if (r.button !== 0) return;
-		let o = t.body, s = t.getElementById(jp), c = t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer.th-modern-drawer-active, #top-settings-holder .drawer-content.openDrawer.th-modern-drawer-active") ?? t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"), l = o.classList.contains(_p);
-		if (i === "sidebar" && (!s || c && !l || o.classList.contains(Cp) || o.classList.contains(wp)) || i === "overlay" && !c) return;
+		let o = t.body, s = t.getElementById(Fp), c = t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer.th-modern-drawer-active, #top-settings-holder .drawer-content.openDrawer.th-modern-drawer-active") ?? t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"), l = o.classList.contains(xp);
+		if (i === "sidebar" && (!s || c && !l || o.classList.contains(Dp) || o.classList.contains(Op)) || i === "overlay" && !c) return;
 		a?.(), r.preventDefault();
 		let u = r.target;
 		try {
 			u?.setPointerCapture?.(r.pointerId);
 		} catch {}
-		let d = r.clientX, f = i === "sidebar" ? s.getBoundingClientRect().width : c.getBoundingClientRect().width, p = c?.getBoundingClientRect().left ?? 0, m = i === "sidebar" ? "--th-modern-left-width" : "--th-modern-overlay-width", h = wm(), g = Math.round(f), v = 0;
-		o.classList.add(Ep);
+		let d = r.clientX, f = i === "sidebar" ? s.getBoundingClientRect().width : c.getBoundingClientRect().width, p = c?.getBoundingClientRect().left ?? 0, m = i === "sidebar" ? "--th-modern-left-width" : "--th-modern-overlay-width", h = Om(), g = Math.round(f), v = 0;
+		o.classList.add(Ap);
 		let y = () => {
-			v = 0, Am(h, m, `${g}px`);
+			v = 0, Pm(h, m, `${g}px`);
 		}, b = (e) => {
 			e !== g && (g = e, v === 0 && (v = n.requestAnimationFrame(y)));
 		}, x = (e) => {
 			let t = e.clientX - d;
 			if (i === "sidebar") {
-				let e = c ? n.innerWidth - c.getBoundingClientRect().width - lm - 28 : om, r = l ? Math.min(om, e) : om;
-				b(Math.round(Cm(f + t, am, r, 360)));
+				let e = c ? n.innerWidth - c.getBoundingClientRect().width - pm - 28 : um, r = l ? Math.min(um, e) : um;
+				b(Math.round(Dm(f + t, lm, r, 360)));
 				return;
 			}
-			let r = l ? 508 : cm, a = Math.max(sm, n.innerWidth - p - r);
-			b(Math.round(Cm(f + t, sm, a, 960)));
+			let r = l ? 508 : fm, a = Math.max(dm, n.innerWidth - p - r);
+			b(Math.round(Dm(f + t, dm, a, 960)));
 		}, S = () => {
-			v !== 0 && (n.cancelAnimationFrame(v), y()), i === "sidebar" && e.settings.leftSidebarWidth !== g && (e.settings.leftSidebarWidth = g), i === "overlay" && e.settings.overlayPanelWidth !== g && (e.settings.overlayPanelWidth = g), o.classList.remove(Ep);
+			v !== 0 && (n.cancelAnimationFrame(v), y()), i === "sidebar" && e.settings.leftSidebarWidth !== g && (e.settings.leftSidebarWidth = g), i === "overlay" && e.settings.overlayPanelWidth !== g && (e.settings.overlayPanelWidth = g), o.classList.remove(Ap);
 			try {
 				u?.hasPointerCapture?.(r.pointerId) && u.releasePointerCapture(r.pointerId);
 			} catch {}
@@ -10358,34 +10475,34 @@ function xh(e) {
 	}), i.on("pointerdown", (e) => {
 		o(e.originalEvent, "overlay");
 	}), { destroy: () => {
-		a?.(), r.remove(), i.remove(), t.body.classList.remove(Ep);
+		a?.(), r.remove(), i.remove(), t.body.classList.remove(Ap);
 	} };
 }
-function Sh(e, t, n) {
+function Eh(e, t, n) {
 	if (e.parentElement === t) return () => {};
 	let r = e.ownerDocument.createComment(n);
 	return e.before(r), t.append(e), () => {
 		r.parentNode && r.replaceWith(e);
 	};
 }
-function Ch() {
-	let e = I(), t = e.defaultView ?? window, n = t.matchMedia(im), r = [], i = /* @__PURE__ */ new Map(), a, o, s = 0, c = () => n.matches && e.body.classList.contains(hp), l = (e) => {
+function Dh() {
+	let e = I(), t = e.defaultView ?? window, n = t.matchMedia(cm), r = [], i = /* @__PURE__ */ new Map(), a = [], o = /* @__PURE__ */ new Map(), s, c, l = 0, u = () => n.matches && e.body.classList.contains(yp), d = (e) => {
 		if (!i.has(e)) return;
 		let t = i.get(e);
 		t !== void 0 && (t === null ? e.hasAttribute("size") && e.removeAttribute("size") : e.getAttribute("size") !== t && e.setAttribute("size", t));
-	}, u = (t, n) => {
+	}, f = (t, n) => {
 		let r = e.querySelector(t);
 		if (!r) return;
 		if (!n) {
-			l(r);
+			d(r);
 			return;
 		}
 		i.has(r) || i.set(r, r.getAttribute("size"));
 		let a = r.options.length, o;
 		o = t.includes("main_api") ? String(Math.min(6, Math.max(1, a))) : String(Math.min(14, Math.max(4, a))), r.getAttribute("size") !== o && r.setAttribute("size", o);
-	}, d = () => {
-		a?.(), a = void 0, o = void 0;
-	}, f = () => {
+	}, p = () => {
+		s?.(), s = void 0, c = void 0;
+	}, m = () => {
 		switch (e.querySelector("#rm_api_block #main_api")?.value) {
 			case "openai": return {
 				selector: "#rm_api_block #chat_completion_source",
@@ -10401,118 +10518,131 @@ function Ch() {
 			};
 			default: return;
 		}
-	}, p = (t, n) => {
-		let r = f();
-		if (u("#rm_api_block #chat_completion_source", !!(t && r?.selector === "#rm_api_block #chat_completion_source" && n)), u("#rm_api_block #textgen_type", !!(t && r?.selector === "#rm_api_block #textgen_type" && n)), !t) {
-			d();
+	}, h = (t, n) => {
+		let r = m();
+		if (f("#rm_api_block #chat_completion_source", !!(t && r?.selector === "#rm_api_block #chat_completion_source" && n)), f("#rm_api_block #textgen_type", !!(t && r?.selector === "#rm_api_block #textgen_type" && n)), !t) {
+			p();
 			return;
 		}
-		let i = t.querySelector(`.${qp}`);
-		i || (i = e.createElement("div"), i.className = qp, t.append(i));
-		let s = r ? e.querySelector(r.selector) : null;
-		if (!r || !s) d(), i.classList.add("is-empty");
-		else if (i.classList.remove("is-empty"), o !== r.selector || s.parentElement !== i) {
-			d();
-			let t = e.querySelector(r.block_selector), n = (s.previousElementSibling?.matches("h4") ? s.previousElementSibling : t?.querySelector("h4")) ?? null, c = [];
-			n && n.parentElement !== i && c.push(Sh(n, i, r.title_marker)), s.parentElement !== i && c.push(Sh(s, i, r.select_marker)), a = () => {
-				c.reverse().forEach((e) => e());
-			}, o = r.selector;
+		let i = t.querySelector(`.${Zp}`);
+		i || (i = e.createElement("div"), i.className = Zp, t.append(i));
+		let a = r ? e.querySelector(r.selector) : null;
+		if (!r || !a) p(), i.classList.add("is-empty");
+		else if (i.classList.remove("is-empty"), c !== r.selector || a.parentElement !== i) {
+			p();
+			let t = e.querySelector(r.block_selector), n = (a.previousElementSibling?.matches("h4") ? a.previousElementSibling : t?.querySelector("h4")) ?? null, o = [];
+			n && n.parentElement !== i && o.push(Eh(n, i, r.title_marker)), a.parentElement !== i && o.push(Eh(a, i, r.select_marker)), s = () => {
+				o.reverse().forEach((e) => e());
+			}, c = r.selector;
 		}
-	}, m = () => {
-		e.querySelectorAll("#rm_api_block #chat_completion_source, #rm_api_block #textgen_type, #rm_api_block #main_api").forEach((e) => {
-			let t = Array.from(e.querySelectorAll("optgroup"));
-			t.length > 0 && t.forEach((t) => {
-				for (; t.firstChild;) e.insertBefore(t.firstChild, t);
-				t.remove();
-			}), Array.from(e.querySelectorAll("option")).forEach((e) => {
+	}, g = () => {
+		e.querySelectorAll("#rm_api_block #chat_completion_source, #rm_api_block #textgen_type, #rm_api_block #main_api").forEach((n) => {
+			let r = Array.from(n.querySelectorAll("optgroup"));
+			r.length > 0 && r.forEach((r) => {
+				let i = e.createComment("modern-api-group");
+				r.before(i);
+				let o = Array.from(r.childNodes), s = /* @__PURE__ */ new Map();
+				for (let e of o) r.disabled && e instanceof t.HTMLOptionElement && (s.set(e, e.disabled), e.disabled = !0), n.insertBefore(e, r);
+				r.remove(), a.push(() => {
+					if (i.parentNode) {
+						i.before(r);
+						for (let e of o) e.parentNode === n && r.append(e);
+						s.forEach((e, t) => {
+							t.disabled = e;
+						}), i.remove();
+					}
+				});
+			}), Array.from(n.querySelectorAll("option")).forEach((e) => {
 				let t = e.textContent?.trim() ?? "";
-				(!t || /^[-─—_.\s]+$/.test(t)) && (e.style.display = "none");
+				(!t || /^[-─—_.\s]+$/.test(t)) && (o.has(e) || o.set(e, e.style.display), e.style.display = "none");
 			});
 		});
-	}, h = () => {
+	}, v = () => {
 		if (!e.querySelector("#rm_api_block")?.classList.contains("openDrawer")) {
-			u("#rm_api_block #main_api", !1), u("#rm_api_block #chat_completion_source", !1), u("#rm_api_block #textgen_type", !1);
+			f("#rm_api_block #main_api", !1), f("#rm_api_block #chat_completion_source", !1), f("#rm_api_block #textgen_type", !1);
 			return;
 		}
 		let t = e.querySelector("#rm_api_block #main-API-selector-block"), n = e.querySelector("#rm_api_block > .flex-container.flexFlowColumn"), i = Array.from(e.querySelectorAll("#rm_api_block > .flex-container.alignitemscenter.spaceBetween.wide100p")).find((e) => e.textContent?.includes("自动连接到上次的服务器") || e.querySelector("#viewSecrets"));
-		n && i && i.parentElement !== n && (i.classList.add(Jp), r.push(Sh(i, n, "th-modern-api-footer")));
-		let a = c();
-		if (u("#rm_api_block #main_api", a), p(t, a), m(), t && t.querySelectorAll(".th-modern-api-hint-card").forEach((e) => e.remove()), t && a) {
+		n && i && i.parentElement !== n && (i.classList.add(Qp), r.push(Eh(i, n, "th-modern-api-footer")));
+		let a = u();
+		if (f("#rm_api_block #main_api", a), h(t, a), g(), t && t.querySelectorAll(".th-modern-api-hint-card").forEach((e) => e.remove()), t) {
 			let n = t.querySelector(".th-modern-api-main-title");
 			n || (n = e.createElement("h4"), n.className = "th-modern-api-main-title", n.textContent = "接口模式", t.prepend(n));
 		}
-	}, g = () => {
-		s !== 0 && (t.cancelAnimationFrame(s), s = 0);
-	}, v = () => {
-		s === 0 && (s = t.requestAnimationFrame(() => {
-			s = 0, h();
+	}, y = () => {
+		l !== 0 && (t.cancelAnimationFrame(l), l = 0);
+	}, b = () => {
+		l === 0 && (l = t.requestAnimationFrame(() => {
+			l = 0, v();
 		}));
 	};
-	h();
-	let y = e.querySelector("#rm_api_block"), b = y instanceof t.HTMLElement ? new t.MutationObserver(() => {
-		v();
+	v();
+	let x = e.querySelector("#rm_api_block"), S = x instanceof t.HTMLElement ? new t.MutationObserver(() => {
+		b();
 	}) : void 0;
-	y instanceof t.HTMLElement && b?.observe(y, {
+	x instanceof t.HTMLElement && S?.observe(x, {
 		childList: !0,
 		subtree: !0
 	});
-	let x = y instanceof t.HTMLElement ? new t.MutationObserver(() => {
-		v();
+	let C = x instanceof t.HTMLElement ? new t.MutationObserver(() => {
+		b();
 	}) : void 0;
-	x?.observe(y, {
+	C?.observe(x, {
 		attributes: !0,
 		attributeFilter: ["class"]
 	});
-	let S = c(), C = () => {
-		let e = c();
-		e !== S && (S = e, v());
-	}, w = new t.MutationObserver(() => {
-		C();
+	let w = u(), T = () => {
+		let e = u();
+		e !== w && (w = e, b());
+	}, ee = new t.MutationObserver(() => {
+		T();
 	});
-	w.observe(e.body, {
+	ee.observe(e.body, {
 		attributes: !0,
 		attributeFilter: ["class"]
 	});
-	let T = (e) => {
-		e.target instanceof t.HTMLSelectElement && e.target.matches("#rm_api_block #main_api, #rm_api_block #chat_completion_source, #rm_api_block #textgen_type") && v();
+	let te = (e) => {
+		e.target instanceof t.HTMLSelectElement && e.target.matches("#rm_api_block #main_api, #rm_api_block #chat_completion_source, #rm_api_block #textgen_type") && b();
 	};
-	return e.addEventListener("input", T), e.addEventListener("change", T), n.addEventListener("change", C), { destroy: () => {
-		g(), b?.disconnect(), x?.disconnect(), w.disconnect(), e.removeEventListener("input", T), e.removeEventListener("change", T), n.removeEventListener("change", C), d(), r.reverse().forEach((e) => e()), e.querySelectorAll(`.${qp}:empty`).forEach((e) => e.remove()), e.querySelectorAll(`.${Jp}`).forEach((e) => e.classList.remove(Jp)), e.querySelectorAll(".th-modern-api-main-title, .th-modern-api-hint-card").forEach((e) => e.remove()), i.forEach((e, t) => {
+	return e.addEventListener("input", te), e.addEventListener("change", te), n.addEventListener("change", T), { destroy: () => {
+		y(), S?.disconnect(), C?.disconnect(), ee.disconnect(), e.removeEventListener("input", te), e.removeEventListener("change", te), n.removeEventListener("change", T), p(), r.reverse().forEach((e) => e()), e.querySelectorAll(`.${Zp}:empty`).forEach((e) => e.remove()), e.querySelectorAll(`.${Qp}`).forEach((e) => e.classList.remove(Qp)), e.querySelectorAll(".th-modern-api-main-title, .th-modern-api-hint-card").forEach((e) => e.remove()), a.splice(0).reverse().forEach((e) => e()), o.forEach((e, t) => {
+			t.style.display = e;
+		}), o.clear(), i.forEach((e, t) => {
 			e === null ? t.removeAttribute("size") : t.setAttribute("size", e);
 		});
 	} };
 }
-function wh(e, t, n) {
+function Oh(e, t, n) {
 	if (!t || !n || !e.desktopDockedDrawer) return !1;
 	let r = I(), i = L();
-	return i.matchMedia(im).matches ? Math.min(i.innerWidth, r.documentElement.clientWidth || i.innerWidth) >= Cm(e.leftSidebarWidth, am, om, 360) + Cm(e.overlayPanelWidth, sm, 2 ** 53 - 1, 960) + lm + 28 : !1;
+	return i.matchMedia(cm).matches ? Math.min(i.innerWidth, r.documentElement.clientWidth || i.innerWidth) >= Dm(e.leftSidebarWidth, lm, um, 360) + Dm(e.overlayPanelWidth, dm, 2 ** 53 - 1, 960) + pm + 28 : !1;
 }
-var Th;
-function Eh(e, t, n) {
-	let r = I(), i = L(), a = $(r.body), o = t && n && i.matchMedia(rm).matches, s = wh(e, t, n), c = t && e.floatingChatInput, l = t && e.singleLineChatInput;
-	if (a.toggleClass(mp, t).toggleClass(hp, n).toggleClass(_p, s).toggleClass(vp, t && n && e.mainChatMaxWidth === 0).toggleClass(yp, c).toggleClass(bp, l).toggleClass(xp, t && e.reduceMotion).toggleClass(Sp, t && e.reduceAdvancedEffects).toggleClass(Ap, t && e.quickReplyCollapsed).toggleClass(wp, o).removeClass(gp), Th !== void 0 && Th !== l) {
+var kh;
+function Ah(e, t, n) {
+	let r = I(), i = L(), a = $(r.body), o = t && n && i.matchMedia(sm).matches, s = Oh(e, t, n), c = t && e.floatingChatInput, l = t && e.singleLineChatInput;
+	if (a.toggleClass(_p, t).toggleClass(vp, t && e.modernPersonaManagement).toggleClass(yp, n).toggleClass(xp, s).toggleClass(Sp, t && n && e.mainChatMaxWidth === 0).toggleClass(Cp, c).toggleClass(wp, l).toggleClass(Tp, t && e.reduceMotion).toggleClass(Ep, t && e.reduceAdvancedEffects).toggleClass(Pp, t && e.quickReplyCollapsed).toggleClass(Op, o).removeClass(bp), kh !== void 0 && kh !== l) {
 		let e = r.getElementById("send_textarea");
 		e instanceof i.HTMLTextAreaElement && (e.style.height = "", e.dispatchEvent(new i.Event("input", { bubbles: !0 })));
 	}
-	Th = l, (!o || a.hasClass(Cp)) && a.removeClass(Tp), t && n || ch(), Om("--th-modern-left-width", `${Cm(e.leftSidebarWidth, am, om, 360)}px`), Om("--th-modern-overlay-width", `${Cm(e.overlayPanelWidth, sm, 2 ** 53 - 1, 960)}px`), Om("--th-modern-main-min-width", `${Cm(e.mainChatMaxWidth, 0, 2 ** 53 - 1, 960)}px`), Om("--th-modern-input-bottom-gap", `${Cm(e.inputBottomGap, 0, 120, 15)}px`), Om("--th-modern-input-side-gap", `${Cm(e.inputSideGap, 0, 80, 16)}px`);
+	kh = l, (!o || a.hasClass(Dp)) && a.removeClass(kp), t && n || fh(), Mm("--th-modern-left-width", `${Dm(e.leftSidebarWidth, lm, um, 360)}px`), Mm("--th-modern-overlay-width", `${Dm(e.overlayPanelWidth, dm, 2 ** 53 - 1, 960)}px`), Mm("--th-modern-main-min-width", `${Dm(e.mainChatMaxWidth, 0, 2 ** 53 - 1, 960)}px`), Mm("--th-modern-input-bottom-gap", `${Dm(e.inputBottomGap, 0, 120, 15)}px`), Mm("--th-modern-input-side-gap", `${Dm(e.inputSideGap, 0, 80, 16)}px`);
 }
-function Dh() {
-	Th = void 0, $(I().body).removeClass(`${mp} ${hp} ${gp} ${_p} ${vp} ${yp} ${bp} ${xp} ${Sp} ${Ap} ${Cp} ${wp} ${Tp} ${Ep} ${Dp} ${Op} ${kp}`), Z("--th-modern-left-width"), Z("--th-modern-overlay-width"), Z("--th-modern-main-min-width"), Z("--th-modern-input-bottom-gap"), Z("--th-modern-input-side-gap"), Z(fm), Z(pm), Z(mm), Z(hm), Z(dm);
+function jh() {
+	kh = void 0, $(I().body).removeClass(`${_p} ${vp} ${yp} ${bp} ${xp} ${Sp} ${Cp} ${wp} ${Tp} ${Ep} ${Pp} ${Dp} ${Op} ${kp} ${Ap} ${jp} ${Mp} ${Np}`), Z("--th-modern-left-width"), Z("--th-modern-overlay-width"), Z("--th-modern-main-min-width"), Z("--th-modern-input-bottom-gap"), Z("--th-modern-input-side-gap"), Z(gm), Z(_m), Z(vm), Z(ym), Z(hm);
 }
-function Oh(e) {
+function Mh(e) {
 	if (e) try {
 		e();
 	} catch (e) {
-		console.error(`[${zu}] 清理运行时资源失败。`, e);
+		console.error(`[${Bu}] 清理运行时资源失败。`, e);
 	}
 }
-function kh(e) {
-	for (; e.length > 0;) Oh(e.pop());
+function Nh(e) {
+	for (; e.length > 0;) Mh(e.pop());
 }
-function Ah() {
+function Ph() {
 	return window.eventSource ?? window.SillyTavern?.getContext?.()?.eventSource;
 }
-var jh = {
+var Fh = {
 	APP_READY: "app_ready",
 	CHAT_CHANGED: "chat_id_changed",
 	CHAT_CREATED: "chat_created",
@@ -10521,23 +10651,23 @@ var jh = {
 	MESSAGE_RECEIVED: "message_received",
 	CHARACTER_PAGE_LOADED: "character_page_loaded"
 };
-function Mh(e, t) {
-	let n = Ah();
+function Ih(e, t) {
+	let n = Ph();
 	return n && typeof n.on == "function" ? (n.on(e, t), { stop: () => {
 		typeof n.removeListener == "function" ? n.removeListener(e, t) : typeof n.off == "function" && n.off(e, t);
 	} }) : { stop: () => {} };
 }
-function Nh(t) {
-	let n = [Dh], r;
+function Lh(t) {
+	let n = [jh], r;
 	try {
-		let i = Xm(() => r?.refresh());
-		n.push(i.destroy), r = $m(i.$list), n.push(r.destroy);
-		let a = Bc(t);
-		n.push(a.destroy), n.push(fh((e) => {
+		let i = eh(() => r?.refresh());
+		n.push(i.destroy), r = rh(i.$list), n.push(r.destroy);
+		let a = Vc(t);
+		n.push(a.destroy), n.push(gh((e) => {
 			e === "left-nav-panel" && a.scheduleSync();
-		}).destroy), n.push(cl(t).destroy), n.push(bh().destroy), n.push(mh(t).destroy), n.push(_h().destroy), n.push(vh(t).destroy), n.push(yh(t).destroy), n.push(xh(t).destroy), n.push(Ch().destroy), n.push(fp(t).destroy), n.push(Gs(t).destroy);
-		let o = Qn(() => [e(t.settings), t.should_use_two_column], ([e, t]) => {
-			Eh(e, !0, t);
+		}).destroy), n.push(ll(t).destroy), n.push(wh().destroy), n.push(vh(t).destroy), n.push(xh().destroy), n.push(Sh(t).destroy), n.push(Ch(t).destroy), n.push(Th(t).destroy), n.push(Dh().destroy), n.push(hp(t).destroy), n.push(Us(t).destroy);
+		let o = Zn(() => [e(t.settings), t.should_use_two_column], ([e, t]) => {
+			Ah(e, !0, t);
 		}, {
 			immediate: !0,
 			deep: !0,
@@ -10547,57 +10677,57 @@ function Nh(t) {
 		let s = _.debounce(() => r?.refresh(), 500);
 		n.push(s.cancel);
 		let c = [
-			Mh(jh.APP_READY, s),
-			Mh(jh.CHAT_CHANGED, s),
-			Mh(jh.CHAT_CREATED, s),
-			Mh(jh.CHAT_DELETED, s),
-			Mh(jh.MESSAGE_SENT, s),
-			Mh(jh.MESSAGE_RECEIVED, s),
-			Mh(jh.CHARACTER_PAGE_LOADED, s)
+			Ih(Fh.APP_READY, s),
+			Ih(Fh.CHAT_CHANGED, s),
+			Ih(Fh.CHAT_CREATED, s),
+			Ih(Fh.CHAT_DELETED, s),
+			Ih(Fh.MESSAGE_SENT, s),
+			Ih(Fh.MESSAGE_RECEIVED, s),
+			Ih(Fh.CHARACTER_PAGE_LOADED, s)
 		];
-		return n.push(() => c.forEach((e) => e.stop())), s(), { destroy: _.once(() => kh(n)) };
+		return n.push(() => c.forEach((e) => e.stop())), s(), { destroy: _.once(() => Nh(n)) };
 	} catch (e) {
-		throw kh(n), e;
+		throw Nh(n), e;
 	}
 }
-function Ph() {
-	let e = L(), t = _.get(e, $p);
+function Rh() {
+	let e = L(), t = _.get(e, rm);
 	if (t && typeof t.get == "function" && typeof t.set == "function") return t;
 	let n = /* @__PURE__ */ new Map();
-	return _.set(e, $p, n), n;
+	return _.set(e, rm, n), n;
 }
-function Fh() {
-	let e = L(), t = window, n = _.get(e, Qp);
-	typeof n == "function" && (n(), _.unset(e, Qp));
-	let r = "modern-ui", i = Ph();
+function zh() {
+	let e = L(), t = window, n = _.get(e, nm);
+	typeof n == "function" && (n(), _.unset(e, nm));
+	let r = "modern-ui", i = Rh();
 	i.get(r)?.({ unregisterUnique: !1 });
-	let a = Zo() ?? ms();
-	Xo(a);
-	let o = Ju(), s, c, l, u;
+	let a = Yo() ?? fs();
+	Jo(a);
+	let o = Yu(), s, c, l, u;
 	try {
-		s = zd(a).destroy, l = Qn(() => [o.should_enable, o.is_active], () => {
-			o.should_enable && o.is_active ? c ??= Nh(o) : (c?.destroy(), c = void 0);
+		s = Vd(a).destroy, l = Zn(() => o.is_active, () => {
+			o.is_active ? c ??= Lh(o) : (c?.destroy(), c = void 0);
 		}, {
 			immediate: !0,
 			flush: "sync"
 		});
 		let e = () => u?.();
 		return u = _.once((n = {}) => {
-			t.removeEventListener("pagehide", e), Oh(l), l = void 0, Oh(c?.destroy), c = void 0, Oh(s), s = void 0, i.get(r) === u && i.delete(r), o.destroy({ unregisterUnique: n.unregisterUnique });
+			t.removeEventListener("pagehide", e), Mh(l), l = void 0, Mh(c?.destroy), c = void 0, Mh(s), s = void 0, i.get(r) === u && i.delete(r), o.destroy();
 		}), i.set(r, u), t.addEventListener("pagehide", e), { dispose: () => u?.() };
 	} catch (e) {
-		throw Oh(l), Oh(c?.destroy), Oh(s), o.destroy(), e;
+		throw Mh(l), Mh(c?.destroy), Mh(s), o.destroy(), e;
 	}
 }
-async function Ih() {
-	return await new Promise((e) => $(e)), Fh();
+async function Bh() {
+	return await new Promise((e) => $(e)), zh();
 }
 $(() => {
 	try {
-		Ih();
+		Bh();
 	} catch (e) {
-		console.error(`[${zu}] 自动初始化失败:`, e);
+		console.error(`[${Bu}] 自动初始化失败:`, e);
 	}
 });
-var Lh = { activate: Ih };
-export { bm as PLUGIN_ID, xm as PLUGIN_VERSION, Ih as activate, Lh as default };
+var Vh = { activate: Bh };
+export { wm as PLUGIN_ID, Tm as PLUGIN_VERSION, Bh as activate, Vh as default };

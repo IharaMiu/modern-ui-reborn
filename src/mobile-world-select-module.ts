@@ -180,7 +180,6 @@ class MobileWorldSelectManager {
     this.documentObserver.observe(this.document.body, { childList: true, subtree: true });
     this.document.addEventListener('click', this.captureRenameIntent, true);
     this.favorites = this.readFavorites();
-    this.mountControllers();
     this.applyEnabledState();
   }
 
@@ -278,12 +277,18 @@ class MobileWorldSelectManager {
 
   private applyEnabledState(): void {
     this.document.querySelector('#WorldInfo')?.classList.toggle(CUSTOM_MODE_CLASS, this.enabled);
+    if (!this.enabled) {
+      this.unmountControllers();
+      return;
+    }
+    this.mountControllers();
     for (const controller of this.controllers) {
-      controller.setNativeMode(!this.enabled);
+      controller.setNativeMode(false);
     }
   }
 
   private mountControllers(): void {
+    if (!this.enabled) return;
     for (let index = this.controllers.length - 1; index >= 0; index -= 1) {
       const controller = this.controllers[index];
       if (controller.source.isConnected) {
@@ -358,15 +363,7 @@ class MobileWorldSelectManager {
 
   private refreshFavoritesAndCleanInvalid(): void {
     this.favorites = this.readFavorites();
-    const available = this.getAvailableWorldNames();
-    if (available.size === 0) {
-      return;
-    }
-    const cleaned = new Set([...this.favorites].filter(name => available.has(name)));
-    if (cleaned.size !== this.favorites.size) {
-      this.favorites = cleaned;
-      this.writeFavorites();
-    }
+
   }
 
   private migrateFavorite(oldName: string, newName: string): void {
@@ -446,6 +443,7 @@ class MobileWorldSelectController {
   private nativeChangeHandler?: () => void;
   private syncFrame = 0;
   private nativeMode = false;
+  private nativeSourceAttributes?: { tabIndex: string | null; ariaHidden: string | null };
 
   constructor(manager: MobileWorldSelectManager, source: HTMLSelectElement, config: ControllerConfig) {
     this.manager = manager;
@@ -546,9 +544,11 @@ class MobileWorldSelectController {
     this.secondaryText = undefined;
     this.countBadge = undefined;
     this.nativeReturn = undefined;
+    this.restoreNativeSourceAttributes();
     this.source.classList.remove(SOURCE_CLASS, NATIVE_SOURCE_CLASS);
     this.select2Container?.classList.remove(SELECT2_SOURCE_CLASS);
     this.select2Container = undefined;
+    this.surface?.classList.remove(CUSTOM_MODE_CLASS);
     this.surface = undefined;
     this.nativeMode = false;
   }
@@ -610,10 +610,34 @@ class MobileWorldSelectController {
 
   setNativeMode(nativeMode: boolean): void {
     this.nativeMode = nativeMode;
+    // 宿主已有 Select2 时保留其多选下拉，仅在没有 Select2 时显示原生 select。
+    const useNativeSelect = nativeMode && !this.select2Container;
+    if (useNativeSelect) {
+      this.nativeSourceAttributes ??= {
+        tabIndex: this.source.getAttribute('tabindex'),
+        ariaHidden: this.source.getAttribute('aria-hidden'),
+      };
+      this.source.removeAttribute('tabindex');
+      this.source.removeAttribute('aria-hidden');
+    } else {
+      this.restoreNativeSourceAttributes();
+    }
     this.surface?.classList.toggle(CUSTOM_MODE_CLASS, !nativeMode);
-    this.source.classList.toggle(NATIVE_SOURCE_CLASS, nativeMode);
+    this.source.classList.toggle(NATIVE_SOURCE_CLASS, useNativeSelect);
     this.wrapper?.classList.toggle('is-native', nativeMode);
     this.syncTrigger();
+  }
+
+  private restoreNativeSourceAttributes(): void {
+    if (!this.nativeSourceAttributes) return;
+    for (const [name, value] of [
+      ['tabindex', this.nativeSourceAttributes.tabIndex],
+      ['aria-hidden', this.nativeSourceAttributes.ariaHidden],
+    ] as const) {
+      if (value === null) this.source.removeAttribute(name);
+      else this.source.setAttribute(name, value);
+    }
+    this.nativeSourceAttributes = undefined;
   }
 
   syncSelect2Container(): void {
@@ -627,6 +651,7 @@ class MobileWorldSelectController {
     if (this.wrapper) {
       (this.select2Container ?? this.source).insertAdjacentElement('afterend', this.wrapper);
     }
+    this.setNativeMode(this.nativeMode);
   }
 
   syncTrigger(): void {

@@ -2,10 +2,12 @@ import { watch } from 'vue';
 
 import { getHostDocument, getHostWindow } from './host-context';
 import { trackHostPointerDrag } from './pointer-drag';
+import { hasNewerPresetEdits, savePresetAndCheck } from './native-save-feedback';
 import {
   applySingleSelectConstraint,
   assignToGroup,
   buildPromptList,
+  buildPromptListSignature,
   cleanupGroups,
   createGroup,
   ensurePromptGroups,
@@ -64,6 +66,8 @@ export type HostPromptManager = {
 
 export type PresetEditorHost = {
   getPromptManager(): HostPromptManager | null;
+  getPreset?(): unknown;
+  savePreset?(name: string, data: unknown): Promise<unknown>;
 };
 
 export type PresetEditorOptions = {
@@ -188,7 +192,10 @@ function makeSwitch(document: Document, checked: boolean | 'mixed', title: strin
   const toggle = makeElement(document, 'button', 'th-modern-pm-toggle');
   toggle.type = 'button';
   toggle.setAttribute('role', 'switch');
-  toggle.setAttribute('aria-checked', String(checked));
+  // role=switch 只接受 true/false；半开状态用 data-mixed 交给 CSS 表现。
+  toggle.setAttribute('aria-checked', checked === 'mixed' ? 'false' : String(checked));
+  toggle.toggleAttribute('data-mixed', checked === 'mixed');
+  toggle.setAttribute('aria-label', checked === 'mixed' ? `${title}（部分开启）` : title);
   toggle.title = title;
   return toggle;
 }
@@ -223,8 +230,20 @@ async function loadDefaultHost(): Promise<PresetEditorHost> {
   const url = new URL('scripts/openai.js', getHostDocument().baseURI || hostWindow.location.href).href;
   const importModule = hostWindow.Function('url', 'return import(url);') as (url: string) => Promise<unknown>;
   try {
-    const module = (await importModule(url)) as { promptManager?: HostPromptManager | null };
-    return { getPromptManager: () => module.promptManager ?? (hostWindow as any).promptManager ?? null };
+    const module = (await importModule(url)) as { promptManager?: HostPromptManager | null; getChatCompletionPreset?: () => unknown };
+    let presetManager: { getPresetManager?: (api: string) => { savePreset?: (name: string, data: unknown) => Promise<unknown> } | null } = {};
+    try {
+      presetManager = await importModule(new URL('scripts/preset-manager.js', getHostDocument().baseURI || hostWindow.location.href).href) as typeof presetManager;
+    } catch { /* Older hosts retain the native save button. */ }
+    return {
+      getPromptManager: () => module.promptManager ?? (hostWindow as any).promptManager ?? null,
+      getPreset: module.getChatCompletionPreset,
+      savePreset: async (name, data) => {
+        const manager = presetManager.getPresetManager?.('openai');
+        if (!manager?.savePreset) throw new Error('宿主未提供预设保存接口');
+        return manager.savePreset(name, data);
+      },
+    };
   } catch (error) {
     // 降级使用全局挂载
     return { getPromptManager: () => (hostWindow as any).promptManager ?? null };
@@ -287,11 +306,20 @@ export class PresetEditor {
   private rows: ListRow[] = [];
   private visibleRows: ListRow[] = [];
   private groups: PromptGroupData[] = [];
+  private orderMap = new Map<string, PromptOrderEntry>();
+  /** 列表渲染输入签名；没变化时 sync 不重建 DOM。 */
+  private listSignature = '';
   private suppressEditorEvents = false;
   private applyTimer = 0;
   private dirtyTimer = 0;
   private dirtyInterval = 0;
   private dirty: boolean | null = null;
+  // 本地编辑在宿主确认保存或切换预设前不能被快照轮询清除。
+  private localDirty = false;
+  private editRevision = 0;
+  private stopSaveFeedback?: () => void;
+  private presetSelectCleanup?: () => void;
+  private editorApplyPending = false;
   private stopDrag?: () => void;
   private autoScrollFrame = 0;
   private multiSelect = false;
@@ -352,6 +380,16 @@ export class PresetEditor {
     if (!eventSource || typeof eventSource.on !== 'function') return;
 
     const onPresetBefore = () => {
+      if (!this.flushEditorApply()) {
+        const prefix = this.promptManager?.configuration?.prefix ?? 'completion_';
+        const field = this.document.getElementById(`${prefix}prompt_manager_popup_entry_form_prompt`) as HTMLTextAreaElement | null;
+        if (field) {
+          try { this.window.localStorage.setItem('th-modern-preset-recovery', field.value); } catch { /* show the draft below */ }
+          try { this.window.prompt('切换前内容写回失败，请复制下方内容；它也会保存在本机浏览器中。', field.value); } catch { /* Local storage remains available when prompts are blocked. */ }
+        }
+        this.editorApplyPending = false;
+      }
+      this.cancelSaveFeedback();
       this.isSwitchingPreset = true;
       this.activeId = null;
       this.activeGroupId = null;
@@ -408,7 +446,7 @@ export class PresetEditor {
     };
 
     const onChatChanged = () => {
-      this.resetCleanBaseline();
+      if (!this.localDirty) this.resetCleanBaseline();
       if (this.shell?.isConnected) {
         this.renderList();
         this.scheduleDirtyCheck(400);
@@ -502,7 +540,13 @@ export class PresetEditor {
     this.applyTab();
 
     if (isPanelOpen) {
-      this.renderList();
+      this.loadCollapsed();
+      this.groups = getPromptGroups(pm.serviceSettings);
+      if (this.buildListSignature() !== this.listSignature) {
+        this.renderList();
+      } else {
+        this.syncEditor();
+      }
       this.ensureDirtyPolling();
     } else {
       this.stopDirtyPolling();
@@ -549,13 +593,16 @@ export class PresetEditor {
       this.observer.observe(settings, { attributes: true, attributeFilter: ['style'] });
     }
     if (container) {
-      // 原生每次改动都会重绘这个容器，借此得知数据变化。
-      this.observer.observe(container, { childList: true, subtree: true, characterData: true });
+      // 原生每次改动都会重绘这个容器，借此得知数据变化；不监听 characterData，避免 Token/计数文字更新造成抖动。
+      this.observer.observe(container, { childList: true, subtree: true });
     }
   }
 
   private teardown(): void {
+    this.cancelSaveFeedback();
     this.flushEditorApply();
+    this.presetSelectCleanup?.();
+    this.presetSelectCleanup = undefined;
     this.stopDrag?.();
     this.stopDrag = undefined;
     this.stopDirtyPolling();
@@ -658,9 +705,16 @@ export class PresetEditor {
 
     // 监听预设下拉框选择改变，第一时间进入加载保护状态
     const presetSelect = presetsBlock.querySelector<HTMLSelectElement>('#settings_preset_openai');
-    if (presetSelect && !presetSelect.dataset.thPresetBound) {
-      presetSelect.dataset.thPresetBound = 'true';
-      presetSelect.addEventListener('change', () => {
+    this.presetSelectCleanup?.();
+    if (presetSelect) {
+      let previousPreset = presetSelect.value;
+      const onPresetSelectChange = (event: Event) => {
+        if (!this.flushEditorApply()) {
+          event.stopImmediatePropagation();
+          presetSelect.value = previousPreset;
+          return;
+        }
+        previousPreset = presetSelect.value;
         this.isSwitchingPreset = true;
         this.activeId = null;
         this.activeGroupId = null;
@@ -677,7 +731,9 @@ export class PresetEditor {
         if (this.shell) {
           this.shell.classList.add('is-loading-preset');
         }
-      });
+      };
+      presetSelect.addEventListener('change', onPresetSelectChange, true);
+      this.presetSelectCleanup = () => presetSelect.removeEventListener('change', onPresetSelectChange, true);
     }
 
     const tabsRow = makeElement(this.document, 'div', 'th-modern-preset-tabs');
@@ -702,20 +758,41 @@ export class PresetEditor {
     this.dirtyBadge = makeElement(this.document, 'span', 'th-modern-preset-dirty');
     this.saveButton = makeElement(this.document, 'button', 'th-modern-preset-save menu_button', '保存预设');
     this.saveButton.type = 'button';
-    this.saveButton.addEventListener('click', () => {
-      this.flushEditorApply();
-      const saveBtn = this.document.getElementById('update_oai_preset') as HTMLElement | null;
-      if (saveBtn) {
-        saveBtn.click();
-        const $ = (this.window as any).$;
-        if ($) $(saveBtn).trigger('click');
-        (this.window as any).toastr?.info?.('正在保存预设...', '', { timeOut: 1200 });
+    this.saveButton.addEventListener('click', async () => {
+      // CodeMirror 的最新内容可能尚未触发 input，保存前必须主动写回。
+      if (this.editingId && this.editorView === 'edit' && !this.applyEditor()) {
+        (this.window as any).toastr?.error?.('条目内容未能写回，未发起预设保存，请查看控制台错误');
+        return;
       }
-      // 等待原生保存完成后刷新基线
-      this.window.setTimeout(() => {
-        this.resetCleanBaseline();
-        this.scheduleDirtyCheck(200);
-      }, 800);
+      this.flushEditorApply();
+      const preset = (this.document.getElementById('settings_preset_openai') as HTMLSelectElement | null)?.selectedOptions[0]?.textContent?.trim();
+      const presetData = this.host?.getPreset?.();
+      if (!preset || !presetData || !this.host?.savePreset) {
+        (this.window as any).toastr?.error?.('宿主预设保存接口不可用，请使用原生保存按钮。');
+        return;
+      }
+      this.cancelSaveFeedback();
+      const snapshot = this.takeSnapshot();
+      const revision = this.editRevision;
+      let active = true;
+      this.stopSaveFeedback = () => { active = false; };
+      this.saveButton!.disabled = true;
+      this.saveButton!.textContent = '保存中…';
+      try {
+        const saved = await savePresetAndCheck(() => this.host!.savePreset!(preset, presetData), () => active &&
+          (this.document.getElementById('settings_preset_openai') as HTMLSelectElement | null)?.selectedOptions[0]?.textContent?.trim() === preset);
+        if (saved && snapshot) {
+          this.lastCleanSnapshot = snapshot;
+          this.localDirty = hasNewerPresetEdits(revision, this.editRevision);
+          this.runDirtyCheck();
+          (this.window as any).toastr?.success?.('预设已更新');
+        }
+      } catch (error) {
+        console.error('[现代化预设] 保存失败', error);
+        (this.window as any).toastr?.error?.('预设保存失败，请重试。');
+      } finally {
+        if (active) this.cancelSaveFeedback();
+      }
     });
     status.append(this.dirtyBadge, this.saveButton);
     tabsRow.append(tabList, status);
@@ -724,9 +801,18 @@ export class PresetEditor {
     this.renderDirty();
   }
 
+  private cancelSaveFeedback(): void {
+    this.stopSaveFeedback?.();
+    this.stopSaveFeedback = undefined;
+    if (this.saveButton) {
+      this.saveButton.disabled = false;
+      this.saveButton.textContent = '保存预设';
+    }
+  }
+
   private setTab(tab: PresetTab): void {
     if (this.tab === tab) return;
-    this.flushEditorApply();
+    if (!this.flushEditorApply()) return;
     this.tab = tab;
     writeStorage(TAB_STORAGE_KEY, tab);
     this.applyTab();
@@ -792,24 +878,18 @@ export class PresetEditor {
         }))
         .sort((a, b) => a.id.localeCompare(b.id));
 
-      const win = this.window as any;
-      const context = win.SillyTavern?.getContext?.() ?? {};
-      const oaiSettings = context.chatCompletionSettings ?? win.oai_settings ?? {};
-      const sampleParams: Record<string, any> = {};
-      const paramKeys = ['temp', 'temperature', 'top_p', 'frequency_penalty', 'presence_penalty', 'max_tokens', 'openai_max_tokens', 'openai_max_context', 'model', 'streaming'];
-      for (const k of paramKeys) {
-        if (oaiSettings[k] !== undefined) sampleParams[k] = oaiSettings[k];
-      }
-
-      return JSON.stringify({ order: normalizedOrder, prompts, groups, sampleParams });
+      const preset = this.host?.getPreset?.() ?? pm.serviceSettings;
+      return JSON.stringify({ order: normalizedOrder, prompts, groups, preset });
     } catch {
       return '';
     }
   }
 
   public resetCleanBaseline(): void {
+    this.cancelSaveFeedback();
     this.lastCleanSnapshot = this.takeSnapshot();
-    this.dirty = false;
+    this.localDirty = false;
+    this.dirty = this.lastCleanSnapshot ? false : null;
     this.renderDirty();
   }
 
@@ -836,7 +916,10 @@ export class PresetEditor {
   private ensureDirtyPolling(): void {
     if (this.dirtyInterval) return;
     this.dirtyInterval = this.window.setInterval(() => {
-      if (this.panel?.classList.contains('openDrawer')) this.runDirtyCheck();
+      if (this.panel?.classList.contains('openDrawer')) {
+        this.runDirtyCheck();
+        this.scheduleSync();
+      }
     }, DIRTY_POLL_INTERVAL);
     this.scheduleDirtyCheck();
   }
@@ -849,7 +932,8 @@ export class PresetEditor {
 
   private runDirtyCheck(): void {
     this.dirtyTimer = 0;
-    const dirty = this.checkDirtyState();
+    // 防抖期间表单可能尚未写回，不能用旧快照把状态误判为已保存。
+    const dirty = this.localDirty || this.applyTimer ? true : this.checkDirtyState();
     if (dirty === this.dirty) return;
     this.dirty = dirty;
     this.renderDirty();
@@ -905,6 +989,11 @@ export class PresetEditor {
     this.editorHeader = makeElement(this.document, 'div', 'th-modern-pm-editor-header');
     this.editorExtra = makeElement(this.document, 'div', 'th-modern-pm-editor-extra');
     this.editorBody = makeElement(this.document, 'div', 'th-modern-pm-editor-body');
+    // 增强编辑器可能阻止事件冒泡，捕获阶段仍能检测到用户输入。
+    this.editorBody.addEventListener('input', this.handleEditorInput, true);
+    this.editorBody.addEventListener('change', this.handleEditorInput, true);
+    this.editorBody.addEventListener('focusout', this.flushEditorApplyOnFocusOut, true);
+    this.editorBody.addEventListener('click', this.handleEditorClick, true);
     this.editorPlaceholder = makeElement(this.document, 'div', 'th-modern-pm-editor-placeholder');
     editor.append(this.editorHeader, this.editorExtra, this.editorBody, this.editorPlaceholder);
 
@@ -1112,6 +1201,16 @@ export class PresetEditor {
     });
   }
 
+  private buildListSignature(): string {
+    const pm = this.promptManager;
+    if (!pm) return '';
+    return buildPromptListSignature(
+      this.getOrder(), this.groups, pm.serviceSettings.prompts || [],
+      pm.tokenHandler?.getCounts?.() ?? {}, pm.tokenUsage,
+      this.collapsed, this.search, this.onlyEnabled,
+    );
+  }
+
   private renderList(): void {
     const pm = this.promptManager;
     const list = this.list;
@@ -1119,6 +1218,7 @@ export class PresetEditor {
 
     this.loadCollapsed();
     const order = this.getOrder();
+    this.orderMap = new Map(order.map(entry => [entry.identifier, entry]));
     this.groups = getPromptGroups(pm.serviceSettings);
     this.rows = buildPromptList(order, this.groups, identifier => this.getPrompt(identifier));
 
@@ -1132,6 +1232,8 @@ export class PresetEditor {
       this.activeId = order[0].identifier;
       this.selected = new Set([this.activeId]);
       this.anchorId = this.activeId;
+      // 窄屏默认选择时也打开详情；手动返回列表后不再自动切回。
+      this.openDetail();
     }
 
     const counts = pm.tokenHandler?.getCounts?.() ?? {};
@@ -1141,7 +1243,7 @@ export class PresetEditor {
     const fragment = this.document.createDocumentFragment();
     this.visibleRows = this.computeVisibleRows();
     for (const row of this.visibleRows) {
-      fragment.append(row.kind === 'group' ? this.createGroupRow(row, order) : this.createPromptRow(pm, row, counts[row.identifier]));
+      fragment.append(row.kind === 'group' ? this.createGroupRow(row) : this.createPromptRow(pm, row, counts[row.identifier]));
     }
     if (!this.visibleRows.length) {
       fragment.append(
@@ -1158,18 +1260,19 @@ export class PresetEditor {
     if (this.tokenTotal) this.tokenTotal.textContent = pm.tokenUsage ? `总 Token：${pm.tokenUsage}` : '';
     this.renderBatchBar();
     this.syncEditor();
+    this.listSignature = this.buildListSignature();
   }
 
-  private getGroupState(group: PromptGroupData, order: readonly PromptOrderEntry[]): { enabled: number; total: number } {
+  private getGroupState(group: PromptGroupData): { enabled: number; total: number } {
     const ids = getGroupPromptIds(this.groups, group.id);
-    const enabled = ids.filter(id => order.find(entry => entry.identifier === id)?.enabled).length;
+    const enabled = ids.filter(id => this.orderMap.get(id)?.enabled).length;
     return { enabled, total: ids.length };
   }
 
-  private createGroupRow(row: GroupRow, order: readonly PromptOrderEntry[]): HTMLElement {
+  private createGroupRow(row: GroupRow): HTMLElement {
     const { group } = row;
     const collapsed = this.isCollapsed(group);
-    const state = this.getGroupState(group, order);
+    const state = this.getGroupState(group);
     const element = makeElement(this.document, 'div', 'th-modern-pm-row is-group-header');
     element.dataset.groupId = group.id;
     element.style.setProperty('--th-modern-pm-indent', `${row.depth * INDENT_REM}rem`);
@@ -1380,7 +1483,7 @@ export class PresetEditor {
     if (this.multiSelect) {
       this.toggleGroupSelection(groupId);
     } else {
-      this.flushEditorApply();
+      if (!this.flushEditorApply()) return;
       this.activeGroupId = groupId;
       this.selected.clear();
       this.openDetail();
@@ -1584,7 +1687,7 @@ export class PresetEditor {
   }
 
   private select(identifier: string): void {
-    this.flushEditorApply();
+    if (!this.flushEditorApply()) return;
     this.activeId = identifier;
     this.activeGroupId = null;
     this.anchorId = identifier;
@@ -1596,17 +1699,23 @@ export class PresetEditor {
 
   private isInternalCommitting = false;
 
-  private commit(refreshList = true): void {
+  private commit(refreshList = true, refreshNative = true): void {
     const pm = this.promptManager;
     if (!pm) return;
     this.isInternalCommitting = true;
     try {
       Promise.resolve(pm.saveServiceSettings()).catch(error => console.error('[现代化界面] 保存提示词设置失败', error));
-      pm.render(false);
+      if (refreshNative) {
+        pm.render(false);
+      }
       if (refreshList) {
         this.renderList();
       }
-      this.scheduleDirtyCheck();
+      // 本地修改必定未保存；不再为每次操作序列化整份预设计算脏状态。
+      this.localDirty = true;
+      this.editRevision++;
+      this.dirty = true;
+      this.renderDirty();
     } finally {
       this.window.setTimeout(() => {
         this.isInternalCommitting = false;
@@ -1740,7 +1849,7 @@ export class PresetEditor {
   private addPromptEntry(): void {
     const pm = this.promptManager;
     if (!pm) return;
-    this.flushEditorApply();
+    if (!this.flushEditorApply()) return;
     const identifier = this.createIdentifier();
     pm.addPrompt(
       {
@@ -1772,7 +1881,7 @@ export class PresetEditor {
   private copyEntries(identifiers: string[]): void {
     const pm = this.promptManager;
     if (!pm) return;
-    this.flushEditorApply();
+    if (!this.flushEditorApply()) return;
     const sources = this.getOrder().filter(entry => identifiers.includes(entry.identifier));
     let lastCopy: string | null = null;
     for (const source of sources) {
@@ -1842,7 +1951,7 @@ export class PresetEditor {
   private async deleteEntries(identifiers: string[]): Promise<void> {
     const pm = this.promptManager;
     if (!pm || !identifiers.length) return;
-    this.flushEditorApply();
+    if (!this.flushEditorApply()) return;
     const prompts = identifiers.map(identifier => this.getPrompt(identifier));
     const removable = identifiers.filter((_, index) => {
       const prompt = prompts[index];
@@ -1914,7 +2023,7 @@ export class PresetEditor {
   private async createGroupFromSelection(identifiers = [...this.selected]): Promise<void> {
     const pm = this.promptManager;
     if (!pm || !identifiers.length) return;
-    this.flushEditorApply();
+    if (!this.flushEditorApply()) return;
     const name = await this.askGroupName();
     if (!name) return;
 
@@ -2021,8 +2130,8 @@ export class PresetEditor {
         pointerY = next.clientY;
         if (!started) {
           if (Math.abs(next.clientY - startY) < DRAG_THRESHOLD) return;
+          if (!this.flushEditorApply()) return;
           started = true;
-          this.flushEditorApply();
           this.document.body.append(ghost);
           this.list?.querySelectorAll<HTMLElement>('.th-modern-pm-row').forEach(item => {
             item.classList.toggle('is-dragging', isMovingRow(item));
@@ -2143,7 +2252,7 @@ export class PresetEditor {
   private syncEditor(): void {
     if (!this.editorBody) return;
     if (this.activeGroupId) {
-      this.flushEditorApply();
+      if (!this.flushEditorApply()) return;
       this.editingId = null;
       this.editingPrompt = null;
       this.renderGroupEditor(this.activeGroupId);
@@ -2161,7 +2270,7 @@ export class PresetEditor {
         prompt !== this.editingPrompt ||
         (prompt && this.isEditable(prompt) && isEditAreaHidden)
       ) {
-        this.flushEditorApply();
+        if (!this.flushEditorApply()) return;
         this.editingId = identifier;
         this.editingPrompt = prompt;
         this.loadPromptEditor();
@@ -2237,7 +2346,7 @@ export class PresetEditor {
 
   private setEditorView(view: EditorView): void {
     if (this.editorView === view) return;
-    this.flushEditorApply();
+    if (!this.flushEditorApply()) return;
     this.editorView = view;
     this.loadPromptEditor();
     this.renderPromptEditorHeader();
@@ -2252,10 +2361,6 @@ export class PresetEditor {
     if (editArea) {
       if (!this.editAreaMove) {
         this.editAreaMove = moveNode(editArea, this.editorBody);
-        editArea.addEventListener('input', this.handleEditorInput);
-        editArea.addEventListener('change', this.handleEditorInput);
-        editArea.addEventListener('focusout', () => this.flushEditorApply());
-        editArea.addEventListener('click', this.handleEditorClick);
       } else if (editArea.parentElement !== this.editorBody) {
         this.editorBody.append(editArea);
       }
@@ -2454,8 +2559,7 @@ export class PresetEditor {
     header.replaceChildren();
     extra.replaceChildren();
 
-    const order = this.getOrder();
-    const state = this.getGroupState(group, order);
+    const state = this.getGroupState(group);
     const actions = makeElement(this.document, 'div', 'th-modern-pm-editor-actions');
     const dissolve = makeIconButton(this.document, 'is-danger', '解散分组', 'bi-folder-x');
     dissolve.addEventListener('click', () => void this.dissolveGroup(groupId));
@@ -2518,6 +2622,9 @@ export class PresetEditor {
 
   private readonly handleEditorInput = (): void => {
     if (this.suppressEditorEvents || !this.editingId) return;
+    this.localDirty = true;
+    this.editorApplyPending = true;
+    this.editRevision++;
     this.dirty = true;
     this.renderDirty();
     this.window.clearTimeout(this.applyTimer);
@@ -2536,18 +2643,26 @@ export class PresetEditor {
     }
   };
 
-  public flushEditorApply(): void {
-    if (this.applyTimer) this.applyEditor();
+  private readonly flushEditorApplyOnFocusOut = (): void => {
+    this.flushEditorApply();
+  };
+
+  public flushEditorApply(): boolean {
+    if (!this.editorApplyPending) return true;
+    if (this.applyEditor()) return true;
+    (this.window as any).toastr?.error?.('条目内容未能写回，请保留当前内容并重试。');
+    return false;
   }
 
-  private applyEditor(): void {
+  private applyEditor(): boolean {
     this.window.clearTimeout(this.applyTimer);
     this.applyTimer = 0;
     const pm = this.promptManager;
     const identifier = this.editingId;
     const prompt = identifier ? this.getPrompt(identifier) : null;
-    if (!pm || !identifier || !prompt) return;
+    if (!pm || !identifier || !prompt) return false;
 
+    const previousDisplay = JSON.stringify([prompt.name, prompt.role, prompt.marker, prompt.system_prompt, prompt.injection_position, prompt.injection_depth]);
     try {
       if (pm.isPromptEditAllowed(prompt)) {
         pm.updatePromptWithPromptEditForm(prompt);
@@ -2559,12 +2674,17 @@ export class PresetEditor {
         }
       }
     } catch (err) {
-      console.warn('[现代化预设] 保存表单到条目异常：', err);
+      console.error('[现代化预设] 保存表单到条目异常：', err);
+      return false;
     }
 
     if (QUICK_EDIT_PROMPTS.includes(identifier)) pm.updateQuickEdit?.(identifier, prompt);
     this.resetTokenCount(identifier);
-    this.commit(false);
+    // 正文无需重绘；名称、角色等影响列表的字段变化时同步两侧列表。
+    const displayChanged = previousDisplay !== JSON.stringify([prompt.name, prompt.role, prompt.marker, prompt.system_prompt, prompt.injection_position, prompt.injection_depth]);
+    this.commit(displayChanged, displayChanged);
+    this.editorApplyPending = false;
+    return true;
   }
 
   private focusEditorName(): void {
@@ -2575,14 +2695,11 @@ export class PresetEditor {
   }
 }
 
-export function mountPresetEditor(store: Store, options: PresetEditorOptions = {}): { destroy: () => void } {
+export function mountPresetEditor(
+  store: Store,
+  options: PresetEditorOptions = {},
+): { scheduleSync: () => void; destroy: () => void } {
   const editor = new PresetEditor(store, options);
-  const hostDocument = getHostDocument();
-  const handleInput = (event: Event) => {
-    if ((event.target as Element | null)?.closest?.('#left-nav-panel')) editor.scheduleDirtyCheck();
-  };
-  hostDocument.addEventListener('input', handleInput, true);
-  hostDocument.addEventListener('change', handleInput, true);
 
   const stopWatch = watch(
     () => [store.is_active, store.settings.modernPresetEditor] as const,
@@ -2596,8 +2713,6 @@ export function mountPresetEditor(store: Store, options: PresetEditorOptions = {
     },
     destroy() {
       stopWatch();
-      hostDocument.removeEventListener('input', handleInput, true);
-      hostDocument.removeEventListener('change', handleInput, true);
       editor.destroy();
     },
   };

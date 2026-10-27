@@ -174,34 +174,41 @@ body.th-modern-enabled
   }
 }
 
+/* 原生模式需要同时解除 Select2 的视觉裁剪，display 本身不足以恢复控件。 */
+body.th-modern-enabled select.th-modern-mobile-world-source-native {
+  box-sizing: border-box;
+  display: block !important;
+  position: static !important;
+  clip: auto !important;
+  clip-path: none !important;
+  height: auto !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  flex: 1 1 10rem;
+  width: 100% !important;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 42px;
+  margin: 0 !important;
+  padding: 0.45rem 0.6rem !important;
+  border: 1px solid var(--th-modern-wi-border, var(--SmartThemeBorderColor)) !important;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 82%, transparent);
+  color: var(--SmartThemeBodyColor);
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled .th-modern-wi-worldbar .th-modern-mobile-world-control.is-native {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_info.th-modern-mobile-world-source-native {
+  min-height: 9rem;
+  max-height: min(34dvh, 18rem);
+  overflow-y: auto;
+}
+
 @media (max-width: 899.98px) {
-  body.th-modern-enabled select.th-modern-mobile-world-source-native {
-    box-sizing: border-box;
-    display: block !important;
-    flex: 1 1 10rem;
-    width: 100% !important;
-    min-width: 0;
-    min-height: 42px;
-    margin: 0;
-    padding: 0.45rem 0.6rem;
-    border: 1px solid var(--th-modern-wi-border, var(--SmartThemeBorderColor));
-    border-radius: 8px;
-    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 82%, transparent);
-    color: var(--SmartThemeBodyColor);
-  }
-
-  body.th-modern-enabled
-    :is(#WorldInfo.th-modern-wi-enabled, .character_world, .persona_world):not(.th-modern-world-select-custom)
-    .th-modern-mobile-world-select2-source {
-    display: none !important;
-  }
-
-  body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #world_info.th-modern-mobile-world-source-native {
-    min-height: 9rem;
-    max-height: min(34dvh, 18rem);
-    overflow-y: auto;
-  }
-
   body.th-modern-enabled #WorldInfo.th-modern-wi-enabled #wiTopBlock > .range-block:first-child {
     grid-template-columns: minmax(0, 1fr) !important;
   }

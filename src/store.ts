@@ -59,6 +59,7 @@ export const ModernLayoutSettings = z
     modernWorldInfoEditor: z.boolean().default(true).catch(true),
     modernWorldSelect: z.boolean().default(true).catch(true),
     modernCharacterManagement: z.boolean().default(true).catch(true),
+    modernPersonaManagement: z.boolean().default(true).catch(true),
     modernPresetEditor: z.boolean().default(false).catch(false),
     modernExtensionSettings: z.boolean().default(true).catch(true),
   })
@@ -127,7 +128,6 @@ export function persistSettings(settingsToSave: ModernLayoutSettings) {
 export const useModernLayoutStore = defineStore(SCRIPT_NAME, () => {
   const win = getWindowObject();
   const settings = ref(readSettings());
-  const should_enable = ref(true);
 
   const es = win.eventSource ?? win.SillyTavern?.getContext?.()?.eventSource;
   const onSettingsLoaded = () => {
@@ -135,7 +135,7 @@ export const useModernLayoutStore = defineStore(SCRIPT_NAME, () => {
   };
   es?.on?.('settings_loaded', onSettingsLoaded);
 
-  const is_active = computed(() => should_enable.value && settings.value.enabled);
+  const is_active = computed(() => settings.value.enabled);
   const should_use_two_column = computed(() => is_active.value && settings.value.desktopTwoColumn);
 
   watchEffect(() => {
@@ -151,7 +151,7 @@ export const useModernLayoutStore = defineStore(SCRIPT_NAME, () => {
     settings.value = { ...settings.value, enabled: false };
   }
 
-  function destroy(options: { unregisterUnique?: boolean } = {}) {
+  function destroy() {
     if (typeof es?.removeListener === 'function') {
       es.removeListener('settings_loaded', onSettingsLoaded);
     } else if (typeof es?.off === 'function') {
@@ -161,7 +161,6 @@ export const useModernLayoutStore = defineStore(SCRIPT_NAME, () => {
 
   return {
     settings,
-    should_enable,
     is_active,
     should_use_two_column,
     resetSettings,

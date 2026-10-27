@@ -58,6 +58,21 @@ export type PromptRow = {
 
 export type ListRow = GroupRow | PromptRow;
 
+/** 与列表展示相关的数据签名，不包含可能很大的提示词正文。 */
+export function buildPromptListSignature(
+  order: readonly PromptOrderEntry[], groups: readonly PromptGroupData[], prompts: readonly HostPrompt[],
+  counts: Record<string, number | null | undefined>, tokenUsage: number | undefined,
+  collapsed: ReadonlyMap<string, boolean>, search: string, onlyEnabled: boolean,
+): string {
+  return JSON.stringify({
+    order: order.map(({ identifier, enabled }) => [identifier, !!enabled]),
+    groups: groups.map(g => [g.id, g.name, g.parentId ?? null, g.identifiers, !!g.single_select]),
+    prompts: prompts.map(p => [p.identifier, p.name, p.role, !!p.marker, !!p.system_prompt, p.injection_position, p.injection_depth, search ? p.content : undefined]),
+    counts: Object.entries(counts).sort(([a], [b]) => a.localeCompare(b)), tokenUsage,
+    collapsed: [...collapsed.entries()], search, onlyEnabled,
+  });
+}
+
 export function isGroup(value: unknown): value is PromptGroupData {
   if (!value || typeof value !== 'object') return false;
   const group = value as Partial<PromptGroupData>;

@@ -612,12 +612,12 @@ body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-to
 }
 
 /* 组内部分开启：半填充、滑块居中。 */
-body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-toggle[aria-checked='mixed'] {
+body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-toggle[data-mixed] {
   border-color: color-mix(in srgb, var(--th-modern-pm-accent) 70%, transparent);
   background-color: color-mix(in srgb, var(--th-modern-pm-accent) 40%, transparent);
 }
 
-body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-toggle[aria-checked='mixed']::after {
+body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-toggle[data-mixed]::after {
   left: calc(50% - 0.4rem);
   background-color: color-mix(in srgb, white 85%, var(--th-modern-pm-accent));
 }

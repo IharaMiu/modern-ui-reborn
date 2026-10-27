@@ -1,5 +1,5 @@
 ﻿<template>
-  <div v-if="store.should_enable" class="inline-drawer">
+  <div class="inline-drawer">
     <div class="inline-drawer-toggle inline-drawer-header">
       <b>
         <span>{{ SCRIPT_NAME }}</span>
@@ -68,9 +68,10 @@
             class="text_pole width100px text-right"
             type="number"
             min="720"
+            max="2000"
             step="20"
-            @change="commitNumericSetting($event, 'overlayPanelWidth', 720)"
-            @blur="commitNumericSetting($event, 'overlayPanelWidth', 720)"
+            @change="commitNumericSetting($event, 'overlayPanelWidth', 720, 2000)"
+            @blur="commitNumericSetting($event, 'overlayPanelWidth', 720, 2000)"
           />
           <span class="m-l-0_5">px</span>
         </div>
@@ -84,9 +85,10 @@
             class="text_pole width100px text-right"
             type="number"
             min="0"
+            max="4000"
             step="20"
-            @change="commitNumericSetting($event, 'mainChatMaxWidth', 0)"
-            @blur="commitNumericSetting($event, 'mainChatMaxWidth', 0)"
+            @change="commitNumericSetting($event, 'mainChatMaxWidth', 0, 4000)"
+            @blur="commitNumericSetting($event, 'mainChatMaxWidth', 0, 4000)"
           />
           <span class="m-l-0_5">px</span>
         </div>
@@ -209,6 +211,12 @@
         <span>现代角色管理界面</span>
       </label>
       <small class="notes">美化角色卡片列表、头部操作栏与角色编辑抽屉</small>
+
+      <label class="checkbox_label" for="th_modern_persona">
+        <input id="th_modern_persona" v-model="store.settings.modernPersonaManagement" type="checkbox" />
+        <span>现代用户设定界面</span>
+      </label>
+      <small class="notes">优化人设卡片、选中状态、操作按钮与描述表单</small>
 
       <label class="checkbox_label" for="th_modern_preset_editor">
         <input id="th_modern_preset_editor" v-model="store.settings.modernPresetEditor" type="checkbox" />
