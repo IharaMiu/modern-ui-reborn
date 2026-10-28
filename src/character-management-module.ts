@@ -136,6 +136,7 @@ export function mountCharacterManagement(store: Store): { destroy: () => void } 
   const HostMutationObserver = (hostWindow as Window & { MutationObserver: typeof MutationObserver }).MutationObserver;
   let characterSummary: ModernCharacterSummary | null = null;
   let panelPinMove: MovedNode | null = null;
+  let moreActions: { node: HTMLDetailsElement; moves: MovedNode[] } | null = null;
   let observedPanel: HTMLElement | null = null;
   let scheduledSync = 0;
 
@@ -171,7 +172,35 @@ export function mountCharacterManagement(store: Store): { destroy: () => void } 
     }
   };
 
+  const restoreMoreActions = () => {
+    if (!moreActions) return;
+    [...moreActions.moves].reverse().forEach(restoreMovedNode);
+    moreActions.node.remove();
+    moreActions = null;
+  };
+
+  const syncMoreActions = () => {
+    const bar = hostDocument.querySelector<HTMLElement>('#rm_button_bar');
+    if (moreActions && moreActions.node.parentElement === bar && moreActions.moves.every(move => move.marker.isConnected && move.node.isConnected)) return;
+    restoreMoreActions();
+    if (!bar) return;
+    const nodes = ['#character_import_button', '#external_import_button'].map(selector => bar.querySelector<HTMLElement>(selector));
+    if (nodes.some(node => !node)) return;
+    const details = hostDocument.createElement('details');
+    details.className = 'th-modern-character-more';
+    const summary = hostDocument.createElement('summary');
+    summary.className = 'menu_button';
+    summary.textContent = '更多';
+    const content = hostDocument.createElement('div');
+    content.className = 'th-modern-character-more-content';
+    details.append(summary, content);
+    nodes[0]!.before(details);
+    const moves = nodes.map(node => moveNode(hostDocument, node!, content));
+    moreActions = { node: details, moves };
+  };
+
   const clearState = () => {
+    restoreMoreActions();
     restoreSummary();
     restorePanelPin();
     toggleHostState(hostDocument, false);
@@ -191,6 +220,7 @@ export function mountCharacterManagement(store: Store): { destroy: () => void } 
     const panel = hostDocument.querySelector<HTMLElement>('#right-nav-panel');
     observePanel(panel);
     syncPanelPin(panel);
+    syncMoreActions();
     if (!isEditorMode(panel)) {
       restoreSummary();
       return;

@@ -2,6 +2,8 @@
 import { createPinia, getActivePinia, setActivePinia } from 'pinia';
 import { watch } from 'vue';
 import { mountCharacterManagement } from './character-management-module';
+import { mountBaiBaiCompatibility } from './baibai-compat';
+import { mountPersonaManagement } from './persona-management-module';
 import { mountPresetEditor } from './preset-module';
 import { mountExtensionSettings } from './extension-settings-module';
 import { getHostDocument, getHostWindow } from './host-context';
@@ -28,6 +30,8 @@ import './character-management.css';
 import './management.css';
 import './extension-settings.css';
 import './preset.css';
+import './baibai.css';
+import { fetchRecentChatData } from './baibaoku-recent';
 
 const BODY_CLASS_ENABLED = 'th-modern-enabled';
 const BODY_CLASS_PERSONA_MANAGEMENT = 'th-modern-persona-management';
@@ -483,19 +487,13 @@ function getSTRequestHeaders(): Record<string, string> {
 }
 
 async function fetchRecentChats(signal: AbortSignal): Promise<RecentChat[]> {
-  const response = await fetch('/api/chats/recent', {
-    method: 'POST',
-    headers: getSTRequestHeaders(),
-    body: JSON.stringify({ max: RECENT_CHAT_LIMIT, pinned: getPinnedChats() }),
-    cache: 'no-cache',
+  const data = await fetchRecentChatData(
+    fetch,
+    getSTRequestHeaders(),
+    JSON.stringify({ max: RECENT_CHAT_LIMIT, pinned: getPinnedChats() }),
     signal,
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-
-  const data: unknown = await response.json();
+    (window as any).__baiBaiToolkitExtensionInstalled?.installed === true,
+  );
   if (!Array.isArray(data)) {
     return [];
   }
@@ -2857,6 +2855,7 @@ function mountActiveRuntime(store: ReturnType<typeof useModernLayoutStore>): { d
   let recent_chats: ReturnType<typeof mountRecentChats> | undefined;
 
   try {
+    cleanups.push(mountBaiBaiCompatibility(getHostWindow() as Window & typeof globalThis).destroy);
     const sidebar = mountSidebar(() => recent_chats?.refresh());
     cleanups.push(sidebar.destroy);
     recent_chats = mountRecentChats(sidebar.$list);
@@ -2878,6 +2877,7 @@ function mountActiveRuntime(store: ReturnType<typeof useModernLayoutStore>): { d
     cleanups.push(mountApiPanelEnhancements().destroy);
     cleanups.push(mountWorldInfoEditor(store).destroy);
     cleanups.push(mountCharacterManagement(store).destroy);
+    cleanups.push(mountPersonaManagement(store).destroy);
 
     const stop_state_watch = watch(
       () => [klona(store.settings), store.should_use_two_column] as const,

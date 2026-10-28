@@ -1,4 +1,5 @@
 import { watch } from 'vue';
+import { BAIBAI_COMPAT_CHANGE } from './baibai-compat';
 
 import { getHostDocument, getHostWindow } from './host-context';
 import { trackHostPointerDrag } from './pointer-drag';
@@ -275,6 +276,7 @@ export class PresetEditor {
   private editorBody?: HTMLElement;
   private editorPlaceholder?: HTMLElement;
   private editAreaMove?: MovedNode;
+  private advancedFields?: { details: HTMLDetailsElement; moves: MovedNode[] };
   private inspectMove?: MovedNode;
   private multiButton?: HTMLButtonElement;
   private batchBar?: HTMLElement;
@@ -344,7 +346,10 @@ export class PresetEditor {
       .MutationObserver;
     this.observer = new HostMutationObserver(() => this.scheduleSync());
     this.bindHostEventListeners();
+    this.document.addEventListener(BAIBAI_COMPAT_CHANGE, this.handleCompatibilityChange);
   }
+
+  private readonly handleCompatibilityChange = (): void => { this.scheduleSync(0); };
 
   readonly scheduleSync = (delay = 120): void => {
     if (this.isInternalCommitting) return;
@@ -359,6 +364,7 @@ export class PresetEditor {
   };
 
   destroy(): void {
+    this.document.removeEventListener(BAIBAI_COMPAT_CHANGE, this.handleCompatibilityChange);
     if (this.scheduledSync) {
       this.window.clearTimeout(this.scheduledSync);
       this.scheduledSync = 0;
@@ -539,7 +545,7 @@ export class PresetEditor {
     this.ensurePromptShell(container);
     this.applyTab();
 
-    if (isPanelOpen) {
+    if (isPanelOpen || (this.list && !this.list.hasChildNodes())) {
       this.loadCollapsed();
       this.groups = getPromptGroups(pm.serviceSettings);
       if (this.buildListSignature() !== this.listSignature) {
@@ -615,6 +621,7 @@ export class PresetEditor {
     this.resizeObserver = undefined;
 
     this.cancelLongPress();
+    this.restoreAdvancedFields();
     restoreMovedNode(this.editAreaMove, node => {
       const popup = this.document.getElementById('completion_prompt_manager_popup');
       if (popup) popup.append(node);
@@ -965,6 +972,7 @@ export class PresetEditor {
     }
 
     const shell = makeElement(this.document, 'div', 'th-modern-pm');
+    this.listSignature = '';
     container.after(shell);
     this.shell = shell;
     shell.append(this.buildPromptToolbar(), this.buildBatchBar());
@@ -2366,6 +2374,8 @@ export class PresetEditor {
       }
     }
 
+    if (editArea) this.ensureAdvancedFields(editArea);
+
     const prompt = this.editingPrompt;
     if (prompt && (this.editorView === 'preview' || !this.isEditable(prompt))) {
       this.renderPreview(true);
@@ -2404,6 +2414,34 @@ export class PresetEditor {
       return;
     }
     this.showEditArea(false, !identifier ? '在左侧选择一个条目进行编辑' : '这个条目在预设里找不到定义，可以删除后重新添加。');
+  }
+
+  private restoreAdvancedFields(): void {
+    if (!this.advancedFields) return;
+    [...this.advancedFields.moves].reverse().forEach(move => restoreMovedNode(move));
+    this.advancedFields.details.remove();
+    this.advancedFields = undefined;
+  }
+
+  private ensureAdvancedFields(editArea: HTMLElement): void {
+    if (this.advancedFields?.details.isConnected && editArea.contains(this.advancedFields.details)) return;
+    this.restoreAdvancedFields();
+    const prefix = this.promptManager?.configuration.prefix ?? 'completion_';
+    const trigger = editArea.querySelector<HTMLElement>(`#${prefix}prompt_manager_popup_entry_form_injection_trigger`)?.closest<HTMLElement>('.completion_prompt_manager_popup_entry_form_control');
+    const position = editArea.querySelector<HTMLElement>(`#${prefix}prompt_manager_popup_entry_form_injection_position`)?.closest<HTMLElement>('.completion_prompt_manager_popup_entry_form_control')?.parentElement;
+    const attach = editArea.querySelector<HTMLElement>(`#${prefix}prompt_manager_attach_block`);
+    if (!trigger || !position || !position.parentElement || !trigger.parentElement) return;
+    const details = this.document.createElement('details');
+    details.className = 'th-modern-pm-advanced';
+    const summary = this.document.createElement('summary');
+    summary.textContent = '高级设置';
+    const content = this.document.createElement('div');
+    content.className = 'th-modern-pm-advanced-content';
+    details.append(summary, content);
+    position.before(details);
+    const moves = [moveNode(trigger, content), moveNode(position, content)];
+    if (attach) moves.push(moveNode(attach, content));
+    this.advancedFields = { details, moves };
   }
 
   private ensureEditFormValues(prompt: HostPrompt): void {

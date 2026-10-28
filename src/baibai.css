@@ -1,0 +1,32 @@
+/* 柏宝箱负责交互，本扩展只应用主题外观。 */
+body.th-modern-enabled.th-modern-baibai-preset #completion_prompt_manager_list {
+  border-color: color-mix(in srgb, var(--SmartThemeBorderColor) 75%, transparent);
+  border-radius: var(--th-modern-radius-sm, 7px);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, var(--SmartThemeBodyColor) 4%);
+}
+body.th-modern-enabled.th-modern-baibai-preset #completion_prompt_manager_list :is(.completion_prompt_manager_prompt, .bai-bai-preset-group-header) {
+  border-radius: var(--th-modern-radius-xs, 5px);
+  color: var(--SmartThemeBodyColor);
+}
+body.th-modern-enabled.th-modern-baibai-preset #completion_prompt_manager_list :is(.completion_prompt_manager_prompt, .bai-bai-preset-group-header):hover {
+  background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent);
+}
+body.th-modern-enabled.th-modern-baibai-preset #completion_prompt_manager_list .bai-bai-preset-group-title {
+  color: var(--SmartThemeBodyColor);
+}
+body.th-modern-enabled.th-modern-baibai-world #WorldInfo #world_popup_entries_list .world_entry {
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 75%, transparent);
+  border-radius: var(--th-modern-radius-sm, 7px);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, var(--SmartThemeBodyColor) 4%);
+}
+body.th-modern-enabled.th-modern-baibai-world #WorldInfo :is(.bai-bai-wi-global-selector-display, #world_editor_select) {
+  border-radius: var(--th-modern-radius-sm, 7px);
+  color: var(--SmartThemeBodyColor);
+}
+/* 使用现代选择器时隐藏重复的柏宝箱全局选择控件。 */
+body.th-modern-enabled #WorldInfo.th-modern-world-select-custom .bai-bai-wi-global-selector-display {
+  display: none;
+}
+body.th-modern-enabled:is(.th-modern-baibai-preset, .th-modern-baibai-world) :is(#completion_prompt_manager, #WorldInfo) :focus-visible {
+  outline-color: var(--SmartThemeQuoteColor);
+}

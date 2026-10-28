@@ -1,4 +1,5 @@
 import { watch } from 'vue';
+import { BAIBAI_COMPAT_CHANGE } from './baibai-compat';
 
 import { getHostDocument, getHostWindow } from './host-context';
 import { mountMobileWorldSelects } from './mobile-world-select-module';
@@ -2099,6 +2100,7 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
         scheduledSync = hostWindow.requestAnimationFrame(sync);
     };
 
+    hostDocument.addEventListener(BAIBAI_COMPAT_CHANGE, scheduleSync);
     const observer = new hostWindow.MutationObserver(scheduleSync);
 
     function observeWorldInfo(worldInfo: HTMLElement | null): void {
@@ -2124,6 +2126,7 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
             stopWatch();
             observer?.disconnect();
             hostDocument.removeEventListener('click', handleDocumentClick, true);
+            hostDocument.removeEventListener(BAIBAI_COMPAT_CHANGE, scheduleSync);
             if (scheduledSync) {
                 hostWindow.cancelAnimationFrame(scheduledSync);
                 scheduledSync = 0;

@@ -231,3 +231,137 @@ body.th-modern-enabled #right-nav-panel.th-modern-character-panel :is(.character
     line-height: 1.6;
   }
 }
+
+/* 让搜索和筛选形成清晰的工具区，列表保持内容焦点。 */
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel #charListFixedTop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel #rm_button_bar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel #character_sort_order {
+  min-width: 7rem;
+  min-height: 2.25rem;
+}
+
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel #rm_button_create {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 65%, var(--SmartThemeBorderColor));
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, var(--th-modern-management-control));
+}
+
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel #rm_print_characters_block,
+body.th-modern-enabled #right-nav-panel.th-modern-character-panel #rm_group_chats_block {
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) :is(.persona_management_current_persona, .persona_management_global_settings) {
+  padding: 0.85rem;
+}
+
+body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) .persona_management_current_persona {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 35%, var(--th-modern-management-border));
+}
+
+@media (max-width: 899.98px) {
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel #charListFixedTop {
+    padding: 0.6rem;
+  }
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel #rm_button_bar {
+    flex-wrap: wrap;
+  }
+  body.th-modern-enabled #right-nav-panel.th-modern-character-panel #character_sort_order {
+    flex: 1 1 7rem;
+  }
+  body.th-modern-enabled #PersonaManagement:where(.th-modern-persona-management *) #persona-management-block {
+    gap: 1rem;
+  }
+}
+
+/* 用户设定在窄屏切换列表和详情，宽屏仍同时显示。 */
+body.th-modern-enabled .th-modern-persona-navigation {
+  display: none;
+}
+@media (max-width: 899.98px) {
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block > .th-modern-persona-navigation {
+    display: flex;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block > .th-modern-persona-navigation button {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 2.5rem;
+    margin: 0;
+  }
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block > .th-modern-persona-navigation button[aria-pressed='true'] {
+    border-color: var(--SmartThemeQuoteColor);
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, var(--th-modern-management-control));
+  }
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block[data-th-persona-view='list'] > .persona_management_right_column,
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block[data-th-persona-view='detail'] > .persona_management_left_column,
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block[data-th-persona-view='settings'] > .persona_management_left_column,
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block[data-th-persona-view='detail'] .persona_management_global_settings,
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block[data-th-persona-view='settings'] .persona_management_current_persona {
+    display: none !important;
+  }
+  body.th-modern-enabled.th-modern-persona-management #persona-management-block > .th-modern-persona-navigation button {
+    padding-inline: 0.35rem;
+    white-space: nowrap;
+  }
+}
+
+/* 低频导入操作归入菜单，保留宿主原有按钮及其事件。 */
+body.th-modern-enabled.th-modern-character-management .th-modern-character-more {
+  position: relative;
+  flex: 0 0 auto;
+}
+body.th-modern-enabled.th-modern-character-management #rm_button_bar .th-modern-character-more > summary.menu_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: auto;
+  height: calc(var(--mainFontSize) * 1.7);
+  min-width: 0;
+  min-height: 0;
+  padding: 0 0.55rem;
+  margin: 0;
+  aspect-ratio: auto;
+  white-space: nowrap;
+  list-style: none;
+  cursor: pointer;
+}
+body.th-modern-enabled.th-modern-character-management .th-modern-character-more > summary::-webkit-details-marker {
+  display: none;
+}
+body.th-modern-enabled.th-modern-character-management .th-modern-character-more-content {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  z-index: 20;
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  border: 1px solid var(--th-modern-management-border);
+  border-radius: 8px;
+  background: var(--SmartThemeBlurTintColor);
+  box-shadow: 0 6px 18px color-mix(in srgb, black 25%, transparent);
+}
+body.th-modern-enabled.th-modern-character-management .th-modern-character-more:not([open]) > .th-modern-character-more-content {
+  display: none;
+}
+@media (max-width: 899.98px) {
+  body.th-modern-enabled.th-modern-character-management #rm_button_bar .th-modern-character-more > summary.menu_button {
+    height: 2.5rem;
+    min-height: 2.5rem;
+    padding-inline: 0.75rem;
+  }
+}

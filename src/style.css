@@ -3851,3 +3851,44 @@ body.th-modern-enabled #top-settings-holder > .drawer.mc3-hidden * {
   display: none !important;
 }
 
+
+/* 标题栏和连接操作在不同宽度下保持稳定的视觉层级。 */
+body.th-modern-enabled .th-modern-drawer-titlebar {
+  gap: 0.75rem;
+}
+body.th-modern-enabled .th-modern-drawer-titlebar .th-modern-drawer-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.th-modern-enabled #rm_api_block :is(#api_button_openai, #api_button_textgenerationwebui) {
+  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 70%, var(--SmartThemeBorderColor)) !important;
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, var(--SmartThemeBlurTintColor)) !important;
+}
+@media (max-width: 899.98px) {
+  body.th-modern-enabled #rm_api_block .th-modern-api-footer {
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  body.th-modern-enabled #rm_api_block .online_status {
+    margin-block: 0.75rem;
+  }
+}
+
+/* 连接操作与状态相邻呈现，保留宿主各接口的原生字段顺序。 */
+body.th-modern-enabled #rm_api_block :is(#openai_api, #textgenerationwebui_api) > .flex-container:has(> .api_button) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-block: 0.75rem 0.4rem;
+}
+body.th-modern-enabled #rm_api_block :is(#openai_api, #textgenerationwebui_api) > .flex-container:has(> .api_button) + .online_status {
+  margin-top: 0 !important;
+}
+@media (max-width: 899.98px) {
+  body.th-modern-enabled #rm_api_block :is(#openai_api, #textgenerationwebui_api) > .flex-container:has(> .api_button) > .api_button {
+    min-width: 5rem;
+  }
+}
