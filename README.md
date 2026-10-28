@@ -31,6 +31,19 @@
    ```
 2. 刷新 SillyTavern 网页或重启 TauriTavern 即可自动加载生效。
 
+### 柏宝箱 / 柏宝库兼容分支
+
+使用 [柏宝箱](https://github.com/baibai-git/ST-BaiBai-Tools) 或 [柏宝库](https://github.com/baibai-git/baibaoku) 的用户，可以试用 [柏宝箱兼容测试版 v0.2.1-baibai.1](https://github.com/IharaMiu/modern-ui-reborn/releases/tag/v0.2.1-baibai.1)。该版本包含预设和世界书界面的兼容调整，以及可选的柏宝库最近聊天快速读取。柏宝箱和柏宝库请分别按各自仓库的说明安装。
+
+1. 下载 [兼容版安装包](https://github.com/IharaMiu/modern-ui-reborn/releases/download/v0.2.1-baibai.1/modern-ui-reborn-v0.2.1-baibai.1.zip) 并解压。
+2. 如果已经安装本扩展，先备份原扩展目录及其中的本地改动，再将原目录移出酒馆扩展目录，避免同时加载两份。
+3. 将解压得到的 `modern-ui-reborn` 文件夹放入酒馆加载第三方扩展的目录，确认该文件夹内直接包含 `manifest.json`、`index.js` 和 `style.css`。
+4. 刷新 SillyTavern 页面；TauriTavern 用户按其安装方式重新加载扩展或重启应用。
+
+更新时从兼容版 Release 页面下载新的安装包，备份并替换原扩展目录即可，无需切换 Git 分支。
+
+兼容分支仍在测试中：目前不会自动关闭柏宝箱的界面优化，且尚未覆盖柏宝箱和柏宝库的全部功能；实际效果取决于宿主及插件版本。
+
 ---
 
 ## 🛠️ 二次开发与构建
