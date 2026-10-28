@@ -3260,7 +3260,7 @@ function Us(e) {
 		a &&= (Rs(a), null);
 	}, u = (e) => {
 		let n = t.querySelector("#rm_button_panel_pin_div"), r = e?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
-		a && a.marker.isConnected && a.node === n && a.node.parentElement === r || (l(), n && r && (a = Ls(t, n, r)));
+		a && a.marker.isConnected && a.node === n && a.node.parentElement === r || (l(), n && r && (a = Ls(t, n, r), r.prepend(n)));
 	}, d = () => {
 		c(), l(), Is(t, !1);
 	}, f = () => {

@@ -1053,6 +1053,53 @@ body.th-modern-enabled .th-modern-drawer-actions a[href*="docs.sillytavern.app"]
   box-sizing: border-box !important;
 }
 
+/* 原生图钉包含复选框和两个图标，标题栏中保持与其他按钮同尺寸。 */
+body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div) {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 30px !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 30%, transparent) !important;
+  border-radius: var(--th-modern-radius-sm) !important;
+  box-sizing: border-box !important;
+  font-size: 14px !important;
+}
+
+body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div) > input[type="checkbox"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  clip-path: inset(50%);
+}
+
+body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div) > label {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  cursor: pointer;
+}
+
+body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div) > label > .right_menu_button {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
 body.th-modern-enabled .th-modern-drawer-actions .notes-link i,
 body.th-modern-enabled .th-modern-drawer-actions .notes-link .note-link-span,
 body.th-modern-enabled .th-modern-drawer-actions .note-link-span,

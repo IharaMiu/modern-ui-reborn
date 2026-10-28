@@ -167,6 +167,7 @@ export function mountCharacterManagement(store: Store): { destroy: () => void } 
     restorePanelPin();
     if (pin && actions) {
       panelPinMove = moveNode(hostDocument, pin, actions);
+      actions.prepend(pin);
     }
   };
 
