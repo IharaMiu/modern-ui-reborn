@@ -2,6 +2,7 @@ import { watch } from 'vue';
 
 import { getHostDocument, getHostWindow } from './host-context';
 import { trackHostPointerDrag } from './pointer-drag';
+import { trackCodeMirrorDeletion } from './code-mirror-deletion';
 import { hasNewerPresetEdits, savePresetAndCheck } from './native-save-feedback';
 import {
   applySingleSelectConstraint,
@@ -99,7 +100,7 @@ const QUICK_EDIT_PROMPTS = ['main', 'nsfw', 'jailbreak'];
 const EDITOR_APPLY_DELAY = 400;
 const DIRTY_CHECK_DELAY = 800;
 const DIRTY_POLL_INTERVAL = 5000;
-const NARROW_WIDTH = 640;
+const NARROW_WIDTH = 800;
 const DRAG_THRESHOLD = 4;
 const AUTO_SCROLL_EDGE = 36;
 const INDENT_REM = 1;
@@ -994,6 +995,7 @@ export class PresetEditor {
     // 增强编辑器可能阻止事件冒泡，捕获阶段仍能检测到用户输入。
     this.editorBody.addEventListener('input', this.handleEditorInput, true);
     this.editorBody.addEventListener('change', this.handleEditorInput, true);
+    this.editorBody.addEventListener('keydown', this.handleEditorKeyDown, true);
     this.editorBody.addEventListener('focusout', this.flushEditorApplyOnFocusOut, true);
     this.editorBody.addEventListener('click', this.handleEditorClick, true);
     this.editorPlaceholder = makeElement(this.document, 'div', 'th-modern-pm-editor-placeholder');
@@ -2690,6 +2692,14 @@ export class PresetEditor {
     this.renderDirty();
     this.window.clearTimeout(this.applyTimer);
     this.applyTimer = this.window.setTimeout(() => this.applyEditor(), EDITOR_APPLY_DELAY);
+  };
+
+  private readonly handleEditorKeyDown = (event: KeyboardEvent): void => {
+    const editingId = this.editingId;
+    const revision = this.editRevision;
+    trackCodeMirrorDeletion(event, callback => this.window.requestAnimationFrame(callback), () => {
+      if (editingId && editingId === this.editingId && revision === this.editRevision) this.handleEditorInput();
+    });
   };
 
   private readonly handleEditorClick = (event: MouseEvent): void => {

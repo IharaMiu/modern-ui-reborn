@@ -2819,7 +2819,7 @@ body.th-modern-enabled #rm_api_block [id$='_block'] {
 @media (max-width: 899.98px) {
   body.th-modern-enabled #rm_api_block {
     --th-modern-api-border: color-mix(in srgb, var(--SmartThemeBorderColor) 78%, transparent);
-    --th-modern-api-muted: color-mix(in srgb, var(--SmartThemeBodyColor) 58%, transparent);
+    --th-modern-api-muted: color-mix(in srgb, var(--SmartThemeBodyColor) 78%, transparent);
     --th-modern-api-card: color-mix(in srgb, var(--SmartThemeBlurTintColor) 56%, var(--SmartThemeBodyColor) 3%);
     --th-modern-api-control: color-mix(in srgb, var(--SmartThemeBlurTintColor) 62%, var(--SmartThemeBodyColor) 6%);
     box-sizing: border-box !important;
@@ -2853,7 +2853,7 @@ body.th-modern-enabled #rm_api_block [id$='_block'] {
     width: 100% !important;
     min-width: 0;
     max-width: 100% !important;
-    padding: 0.5rem 0.65rem max(1rem, env(safe-area-inset-bottom)) !important;
+    padding: 0.5rem 0.65rem max(4rem, env(safe-area-inset-bottom)) !important;
     margin: 0 !important;
     overflow: visible !important;
   }
@@ -2920,7 +2920,7 @@ body.th-modern-enabled #rm_api_block [id$='_block'] {
     box-sizing: border-box !important;
     width: 100% !important;
     min-width: 0;
-    min-height: 2.5rem !important;
+    min-height: 44px !important;
     height: auto !important;
     max-height: none !important;
     padding: 0.45rem 0.6rem !important;
@@ -2948,7 +2948,7 @@ body.th-modern-enabled #rm_api_block [id$='_block'] {
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
-    min-height: 2.5rem !important;
+    min-height: 44px !important;
     height: auto !important;
     padding: 0.4rem 0.65rem !important;
     border: 1px solid var(--th-modern-api-border) !important;
@@ -2983,7 +2983,7 @@ body.th-modern-enabled #rm_api_block [id$='_block'] {
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
-    min-height: 2.5rem;
+    min-height: 44px;
     padding: 0.5rem 0.6rem !important;
     margin: 0 !important;
     border: 0 !important;
@@ -3849,5 +3849,41 @@ body.th-modern-enabled #top-settings-holder > .drawer.displayNone {
 html body.th-modern-enabled #top-settings-holder > .drawer.mc3-hidden *,
 body.th-modern-enabled #top-settings-holder > .drawer.mc3-hidden * {
   display: none !important;
+}
+
+@media (max-width: 899.98px) {
+  html body.th-modern-enabled #top-settings-holder #rm_api_block h4:not(.inline-drawer-toggle *):not(#chat *),
+  html body.th-modern-enabled #top-settings-holder #rm_api_block h4:not(.inline-drawer-toggle *):not(#chat *):hover {
+    min-height: 0 !important;
+    margin: 0.75rem 0 0.4rem !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: var(--SmartThemeBodyColor) !important;
+    font-size: 0.95em !important;
+    box-shadow: none !important;
+  }
+
+  html body.th-modern-enabled #top-settings-holder #rm_api_block h4:not(.inline-drawer-toggle *):not(#chat *)::before {
+    content: none !important;
+  }
+
+  body.th-modern-enabled #rm_api_block .flex-container:has(> #connection_profiles) {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  body.th-modern-enabled #rm_api_block #connection_profiles {
+    flex: 1 1 100%;
+  }
+
+  body.th-modern-enabled #rm_api_block .flex-container:has(> #connection_profiles) > .menu_button {
+    min-width: 44px;
+  }
+
+  body.th-modern-enabled #rm_api_block label.checkbox_label {
+    min-height: 44px;
+    align-items: center;
+  }
 }
 
