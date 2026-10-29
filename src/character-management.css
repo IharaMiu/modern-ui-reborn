@@ -487,4 +487,10 @@ body.th-modern-enabled.th-modern-character-management #rm_group_chats_block {
     border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 36%, transparent);
     background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent);
   }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-character-management #rm_print_characters_block.group_overlay_mode_select .character_select.character_selected {
+    border-color: var(--SmartThemeQuoteColor);
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 30%, var(--SmartThemeChatTintColor));
+    box-shadow: inset 3px 0 0 var(--SmartThemeQuoteColor);
+  }
 }
