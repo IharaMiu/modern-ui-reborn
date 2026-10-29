@@ -285,6 +285,17 @@ export function moveOrderEntries(
   return next.every((entry, index) => entry === order[index]) ? null : next;
 }
 
+/** 将选中的条目整体向相邻条目移动，保持其内部顺序。 */
+export function moveOrderEntriesOneStep(
+  order: readonly PromptOrderEntry[], moving: ReadonlySet<string>, direction: -1 | 1,
+): PromptOrderEntry[] | null {
+  const indexes = order.flatMap((entry, index) => moving.has(entry.identifier) ? [index] : []);
+  if (!indexes.length) return null;
+  const boundary = direction === -1 ? indexes[0] : indexes[indexes.length - 1];
+  const neighbor = order[boundary + direction];
+  return neighbor ? moveOrderEntries(order, moving, neighbor.identifier, direction === -1 ? 'before' : 'after') : null;
+}
+
 export function insertOrderEntries(
   order: readonly PromptOrderEntry[],
   entries: readonly PromptOrderEntry[],

@@ -16,12 +16,23 @@ import {
   insertOrderEntries,
   isGroup,
   moveOrderEntries,
+  moveOrderEntriesOneStep,
   removeGroup,
   reparentGroup,
   type HostPrompt,
   type PromptGroupData,
   type PromptOrderEntry,
 } from '../src/preset-prompt-model.ts';
+
+test('move one step preserves selected order and respects boundaries', () => {
+  const order = ['a', 'b', 'c', 'd'].map(identifier => ({ identifier, enabled: true }));
+  const ids = (items: PromptOrderEntry[] | null) => items?.map(item => item.identifier);
+  assert.deepEqual(ids(moveOrderEntriesOneStep(order, new Set(['b', 'c']), -1)), ['b', 'c', 'a', 'd']);
+  assert.deepEqual(ids(moveOrderEntriesOneStep(order, new Set(['b', 'c']), 1)), ['a', 'd', 'b', 'c']);
+  assert.equal(moveOrderEntriesOneStep(order, new Set(['a']), -1), null);
+  assert.equal(moveOrderEntriesOneStep(order, new Set(['d']), 1), null);
+  assert.equal(moveOrderEntriesOneStep(order, new Set(), 1), null);
+});
 
 test('isGroup guards invalid shapes and verifies valid groups', () => {
   assert.equal(isGroup(null), false);

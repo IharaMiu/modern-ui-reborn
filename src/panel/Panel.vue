@@ -3,9 +3,9 @@
     <div class="inline-drawer-toggle inline-drawer-header">
       <b>
         <span>{{ SCRIPT_NAME }}</span>
-        <a class="notes-link" title="恢复默认设置" @click.stop="resetSettings">
+        <button type="button" class="notes-link" aria-label="恢复默认设置" title="恢复默认设置" @click.stop="resetSettings">
           <i class="fa-solid fa-rotate-left"></i>
-        </a>
+        </button>
       </b>
       <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
     </div>
@@ -47,6 +47,7 @@
         <span>左侧栏宽度</span>
         <div class="flex-container alignitemscenter">
           <input
+            aria-label="左侧栏宽度"
             :value="store.settings.leftSidebarWidth"
             class="text_pole width100px text-right"
             type="number"
@@ -64,6 +65,7 @@
         <span>滑出面板偏好宽度</span>
         <div class="flex-container alignitemscenter">
           <input
+            aria-label="滑出面板偏好宽度"
             :value="store.settings.overlayPanelWidth"
             class="text_pole width100px text-right"
             type="number"
@@ -81,6 +83,7 @@
         <span>主聊天最小宽度</span>
         <div class="flex-container alignitemscenter">
           <input
+            aria-label="主聊天最小宽度"
             :value="store.settings.mainChatMaxWidth"
             class="text_pole width100px text-right"
             type="number"
@@ -121,6 +124,7 @@
         <div class="flex-container alignitemscenter m-t-0_5">
           <div class="range-block-range flex1">
             <input
+              aria-label="底部留白边距滑块"
               v-model.number="store.settings.inputBottomGap"
               type="range"
               class="range_slider"
@@ -132,6 +136,7 @@
           </div>
           <div class="range-block-counter m-l-0_5">
             <input
+              aria-label="底部留白边距数值"
               :value="store.settings.inputBottomGap"
               class="text_pole width60px text-center"
               type="number"
@@ -155,6 +160,7 @@
         <div class="flex-container alignitemscenter m-t-0_5">
           <div class="range-block-range flex1">
             <input
+              aria-label="两侧留白边距滑块"
               v-model.number="store.settings.inputSideGap"
               type="range"
               class="range_slider"
@@ -166,6 +172,7 @@
           </div>
           <div class="range-block-counter m-l-0_5">
             <input
+              aria-label="两侧留白边距数值"
               :value="store.settings.inputSideGap"
               class="text_pole width60px text-center"
               type="number"
@@ -250,10 +257,10 @@
 
       <!-- 底部重置按钮 -->
       <div class="flex-container justifyEnd m-t-1">
-        <div class="menu_button menu_button_icon reset-button" title="重置现代化界面设置" @click="resetSettings">
+        <button type="button" class="menu_button menu_button_icon reset-button" title="重置现代化界面设置" @click="resetSettings">
           <i class="fa-solid fa-rotate-left"></i>
           <span>恢复默认设置</span>
-        </div>
+        </button>
       </div>
     </div>
   </div>
@@ -268,6 +275,7 @@ import {
   SCRIPT_NAME,
   useModernLayoutStore,
 } from '../store';
+import { confirmReset } from './confirm-reset';
 
 const store = useModernLayoutStore();
 
@@ -294,14 +302,7 @@ function commitNumericSetting(event: Event, key: NumericSettingKey, min: number,
 }
 
 async function resetSettings() {
-  const popupType = (window as any).SillyTavern?.POPUP_TYPE?.CONFIRM ?? 'confirm';
-  const confirmed = await (window as any).SillyTavern?.callGenericPopup?.(
-    '确定将现代化界面设置重置为默认值吗？',
-    popupType,
-  );
-  if (confirmed !== true && confirmed !== (window as any).SillyTavern?.POPUP_RESULT?.AFFIRMATIVE) {
-    return;
-  }
+  if (!(await confirmReset(window))) return;
   store.resetSettings();
   if (typeof (window as any).toastr !== 'undefined') {
     (window as any).toastr.info('已恢复现代化界面默认设置。', SCRIPT_NAME);

@@ -398,6 +398,11 @@ body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-ro
   background: var(--th-modern-pm-hover);
 }
 
+body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-row:focus-visible {
+  outline: 2px solid var(--th-modern-pm-accent);
+  outline-offset: -2px;
+}
+
 body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-row.is-selected {
   background: var(--th-modern-pm-selected);
 }

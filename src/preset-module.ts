@@ -18,6 +18,7 @@ import {
   getPromptGroups,
   insertOrderEntries,
   moveOrderEntries,
+  moveOrderEntriesOneStep,
   removeGroup,
   reparentGroup,
   type GroupRow,
@@ -967,6 +968,7 @@ export class PresetEditor {
     const shell = makeElement(this.document, 'div', 'th-modern-pm');
     container.after(shell);
     this.shell = shell;
+    this.listSignature = '';
     shell.append(this.buildPromptToolbar(), this.buildBatchBar());
 
     const body = makeElement(this.document, 'div', 'th-modern-pm-body');
@@ -1095,6 +1097,7 @@ export class PresetEditor {
 
   private buildBatchBar(): HTMLElement {
     const bar = makeElement(this.document, 'div', 'th-modern-pm-batch');
+    bar.hidden = true;
     this.batchCount = makeElement(this.document, 'span', 'th-modern-pm-batch-count');
     const actions: Array<[string, string, () => void]> = [
       ['bi-toggle-on', '开启', () => this.setEnabled([...this.selected], true)],
@@ -1274,6 +1277,8 @@ export class PresetEditor {
     const collapsed = this.isCollapsed(group);
     const state = this.getGroupState(group);
     const element = makeElement(this.document, 'div', 'th-modern-pm-row is-group-header');
+    element.tabIndex = 0;
+    element.setAttribute('role', 'option');
     element.dataset.groupId = group.id;
     element.style.setProperty('--th-modern-pm-indent', `${row.depth * INDENT_REM}rem`);
     element.classList.toggle('is-active', group.id === this.activeGroupId);
@@ -1323,29 +1328,12 @@ export class PresetEditor {
       this.toggleGroup(group.id);
     };
     toggle.addEventListener('click', triggerGroupToggle);
-    toggle.addEventListener('pointerup', (e) => {
-      if ((e as PointerEvent).button === 0) triggerGroupToggle(e);
-    });
 
     const ids = getGroupPromptIds(this.groups, group.id);
     const allSelected = ids.length > 0 && ids.every(id => this.selected.has(id));
     element.classList.toggle('is-selected', this.multiSelect && allSelected);
+    element.setAttribute('aria-selected', String(this.multiSelect && allSelected));
     element.append(handle, this.createCheck(allSelected), chevron, main, toggle);
-
-    let lastGroupClickTime = 0;
-    const triggerGroupSelect = (e: MouseEvent | PointerEvent) => {
-      const target = e.target as Element | null;
-      if (target?.closest('.th-modern-pm-handle, .th-modern-pm-toggle, .th-modern-pm-collapse, button')) return;
-      if (Date.now() - lastGroupClickTime < 200) return;
-      lastGroupClickTime = Date.now();
-      this.handleGroupRowClick(group.id, e);
-    };
-    element.addEventListener('click', triggerGroupSelect);
-    element.addEventListener('pointerup', (e) => {
-      if (e.pointerType === 'mouse' && e.button === 0 && !this.stopDrag) {
-        triggerGroupSelect(e);
-      }
-    });
 
     return element;
   }
@@ -1353,6 +1341,7 @@ export class PresetEditor {
   private createPromptRow(pm: HostPromptManager, row: PromptRow, tokens: number | null | undefined): HTMLElement {
     const { identifier, prompt } = row;
     const element = makeElement(this.document, 'div', 'th-modern-pm-row');
+    element.tabIndex = 0;
     element.dataset.id = identifier;
     element.style.setProperty('--th-modern-pm-indent', `${row.depth * INDENT_REM}rem`);
     element.setAttribute('role', 'option');
@@ -1426,25 +1415,7 @@ export class PresetEditor {
       this.toggleEntry(identifier);
     };
     toggle.addEventListener('click', triggerToggle);
-    toggle.addEventListener('pointerup', (e) => {
-      if ((e as PointerEvent).button === 0) triggerToggle(e);
-    });
     element.append(toggle);
-
-    let lastRowClickTime = 0;
-    const triggerRowSelect = (e: MouseEvent | PointerEvent) => {
-      const target = e.target as Element | null;
-      if (target?.closest('.th-modern-pm-handle, .th-modern-pm-toggle, .th-modern-pm-actions, button')) return;
-      if (Date.now() - lastRowClickTime < 200) return;
-      lastRowClickTime = Date.now();
-      this.handlePromptRowClick(identifier, e);
-    };
-    element.addEventListener('click', triggerRowSelect);
-    element.addEventListener('pointerup', (e) => {
-      if (e.pointerType === 'mouse' && e.button === 0 && !this.stopDrag) {
-        triggerRowSelect(e);
-      }
-    });
 
     return element;
   }
@@ -1491,7 +1462,7 @@ export class PresetEditor {
     }
   }
 
-  private handlePromptRowClick(identifier: string, event?: MouseEvent | PointerEvent): void {
+  private handlePromptRowClick(identifier: string, event?: MouseEvent | PointerEvent | KeyboardEvent): void {
     if (this.suppressNextClick) {
       this.suppressNextClick = false;
       return;
@@ -1585,6 +1556,27 @@ export class PresetEditor {
   }
 
   private readonly handleListKeyDown = (event: KeyboardEvent): void => {
+    const target = event.target as HTMLElement;
+    if (target === this.list || target.classList.contains('th-modern-pm-row')) {
+      const rows = [...(this.list?.querySelectorAll<HTMLElement>('.th-modern-pm-row') ?? [])];
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        const index = rows.indexOf(target);
+        const next = index < 0 ? rows[0] : rows[index + (event.key === 'ArrowUp' ? -1 : 1)];
+        next?.focus();
+        event.preventDefault();
+        return;
+      }
+      if (target !== this.list && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
+        const id = target.dataset.id;
+        const group = target.dataset.groupId;
+        if (id) this.handlePromptRowClick(id, event);
+        else if (group) this.handleGroupRowClick(group, event);
+        if (group) [...(this.list?.querySelectorAll<HTMLElement>('.th-modern-pm-row') ?? [])]
+          .find(row => row.dataset.groupId === group)?.focus();
+        return;
+      }
+    }
     if (event.key === 'Escape' && (this.multiSelect || this.selected.size > 1)) {
       event.preventDefault();
       this.clearSelection();
@@ -1730,6 +1722,25 @@ export class PresetEditor {
     if (active) {
       pm.removePromptOrderForCharacter(active);
       pm.addPromptOrderForCharacter(active, order);
+    }
+  }
+
+  private addMoveButtons(actions: HTMLElement, identifiers: readonly string[]): void {
+    for (const [direction, label, icon] of [[-1, '上移', 'fa-solid fa-arrow-up'], [1, '下移', 'fa-solid fa-arrow-down']] as const) {
+      const button = makeIconButton(this.document, '', label, icon);
+      button.dataset.moveDirection = String(direction);
+      button.disabled = !moveOrderEntriesOneStep(this.getOrder(), new Set(identifiers), direction);
+      button.addEventListener('click', () => {
+        if (!this.flushEditorApply()) return;
+        const order = moveOrderEntriesOneStep(this.getOrder(), new Set(identifiers), direction);
+        if (!order) return;
+        this.replaceOrder(order);
+        this.commit();
+        const replacement = this.editorHeader?.querySelector<HTMLButtonElement>(`[data-move-direction="${direction}"]`);
+        if (replacement && !replacement.disabled) replacement.focus();
+        else this.editorHeader?.querySelector<HTMLButtonElement>('[data-move-direction]:not(:disabled)')?.focus();
+      });
+      actions.append(button);
     }
   }
 
@@ -2505,6 +2516,7 @@ export class PresetEditor {
       actions.append(toggle);
     }
     if (entry) {
+      this.addMoveButtons(actions, this.multiSelect && this.selected.has(identifier) ? [...this.selected] : [identifier]);
       const group = makeIconButton(this.document, '', '将此条目放入新分组', 'bi-folder-plus');
       group.addEventListener('click', () => void this.createGroupFromSelection([identifier]));
       actions.append(group);
@@ -2532,6 +2544,31 @@ export class PresetEditor {
     );
 
     const owner = findGroupOf(this.groups, identifier);
+    const groupLabel = makeElement(this.document, 'label', 'th-modern-pm-field');
+    groupLabel.append(makeElement(this.document, 'span', '', '所属分组'));
+    const groupSelect = makeElement(this.document, 'select', 'text_pole');
+    const ungrouped = makeElement(this.document, 'option', '', '无分组');
+    ungrouped.value = '';
+    groupSelect.append(ungrouped);
+    for (const group of this.groups) {
+      const option = makeElement(this.document, 'option', '', group.name || '未命名分组');
+      option.value = group.id;
+      groupSelect.append(option);
+    }
+    groupSelect.value = owner?.id ?? '';
+    groupSelect.addEventListener('change', () => {
+      const pm = this.promptManager;
+      if (!pm || !this.flushEditorApply()) return;
+      assignToGroup(ensurePromptGroups(pm.serviceSettings), [identifier], groupSelect.value || null);
+      const order = this.getOrder();
+      if (order.find(entry => entry.identifier === identifier)?.enabled) {
+        this.replaceOrder(applySingleSelectConstraint(order, getPromptGroups(pm.serviceSettings), identifier));
+      }
+      this.cleanupGroupData();
+      this.commit();
+    });
+    groupLabel.append(groupSelect);
+    extra.append(groupLabel);
     if (owner) {
       const path = makeElement(this.document, 'div', 'th-modern-pm-editor-path');
       path.append(makeElement(this.document, 'i', getIconClass('bi-folder2-open')));
@@ -2561,6 +2598,7 @@ export class PresetEditor {
 
     const state = this.getGroupState(group);
     const actions = makeElement(this.document, 'div', 'th-modern-pm-editor-actions');
+    this.addMoveButtons(actions, getGroupPromptIds(this.groups, groupId));
     const dissolve = makeIconButton(this.document, 'is-danger', '解散分组', 'bi-folder-x');
     dissolve.addEventListener('click', () => void this.dissolveGroup(groupId));
     actions.append(dissolve);
@@ -2604,6 +2642,29 @@ export class PresetEditor {
     });
     modeLabel.append(modeSelect);
 
+    const parentLabel = makeElement(this.document, 'label', 'th-modern-pm-field');
+    parentLabel.append(makeElement(this.document, 'span', '', '上级分组'));
+    const parentSelect = makeElement(this.document, 'select', 'text_pole');
+    const root = makeElement(this.document, 'option', '', '无上级分组');
+    root.value = '';
+    parentSelect.append(root);
+    const excluded = new Set([groupId, ...getDescendantGroupIds(this.groups, groupId)]);
+    for (const candidate of this.groups.filter(item => !excluded.has(item.id))) {
+      const option = makeElement(this.document, 'option', '', candidate.name || '未命名分组');
+      option.value = candidate.id;
+      parentSelect.append(option);
+    }
+    parentSelect.value = group.parentId ?? '';
+    parentSelect.addEventListener('change', () => {
+      const pm = this.promptManager;
+      if (!pm || !this.flushEditorApply()) return;
+      if (reparentGroup(ensurePromptGroups(pm.serviceSettings), groupId, parentSelect.value || null)) {
+        this.cleanupGroupData();
+        this.commit();
+      }
+    });
+    parentLabel.append(parentSelect);
+
     const summary = makeElement(
       this.document,
       'p',
@@ -2616,7 +2677,7 @@ export class PresetEditor {
       'th-modern-pm-meta-hint',
       '分组保存在预设的 Luker 分组数据里，Luker 原生界面也能识别；单选设置只在现代化界面中生效。',
     );
-    form.append(nameLabel, modeLabel, summary, note);
+    form.append(nameLabel, modeLabel, parentLabel, summary, note);
     extra.append(form);
   }
 
