@@ -1,0 +1,48 @@
+/* Moonlit Echoes 3.1.1 动态加载样式；只在其主题样式存在时接管共享布局。 */
+html:has(#MoonlitEchosTheme-style) body.th-modern-enabled #send_form {
+  opacity: 1;
+  min-height: 0 !important;
+}
+
+html:has(#MoonlitEchosTheme-style) body.th-modern-enabled #leftSendForm,
+html:has(#MoonlitEchosTheme-style) body.th-modern-enabled #rightSendForm {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+
+html:has(#MoonlitEchosTheme-style) body.th-modern-enabled #leftSendForm > div,
+html:has(#MoonlitEchosTheme-style) body.th-modern-enabled #nonQRFormItems #options_button {
+  width: 32px !important;
+  height: 32px !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 1000px) {
+  html:has(#MoonlitEchosTheme-style) body.th-modern-enabled.th-modern-floating-input #form_sheld {
+    position: absolute !important;
+    left: max(var(--th-modern-input-side-gap), env(safe-area-inset-left)) !important;
+    right: max(var(--th-modern-input-side-gap), env(safe-area-inset-right)) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    transform: none !important;
+  }
+
+  html:has(#MoonlitEchosTheme-style) body.th-modern-enabled.th-modern-floating-input.th-modern-two-column #form_sheld {
+    left: var(--th-modern-input-inline-inset) !important;
+    right: var(--th-modern-input-inline-inset) !important;
+  }
+
+  html:has(#MoonlitEchosTheme-style) body.th-modern-enabled #nonQRFormItems {
+    display: block;
+    grid-template-areas: none;
+    grid-template-columns: none;
+    grid-template-rows: none;
+  }
+}
+
+html:has(#MoonlitEchosTheme-style) body.th-modern-enabled.th-modern-single-line-input #leftSendForm > div,
+html:has(#MoonlitEchosTheme-style) body.th-modern-enabled.th-modern-single-line-input #nonQRFormItems #options_button {
+  width: 30px !important;
+  height: 30px !important;
+}

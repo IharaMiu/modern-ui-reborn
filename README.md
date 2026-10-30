@@ -15,6 +15,8 @@
 - ⚡ **轻量自包含**：Vue 3 + Pinia 状态管理完全打包，零外部网络请求，支持全离线环境。
 - 📱 **多端自适应**：无缝兼容桌面浏览器、移动端与 TauriTavern 客户端。
 
+支持与 [Moonlit Echoes Theme](https://github.com/RivelleDays/SillyTavern-MoonlitEchoesTheme) 同时启用：现代化界面负责输入框布局，月下回声保留配色和消息样式。输入框兼容规则基于月下回声 3.1.1，随主题样式加载和移除自动生效；已完成浏览器样式检查，完整宿主界面及主题其他布局选项仍需实机验证。
+
 ---
 
 ## 📦 安装使用

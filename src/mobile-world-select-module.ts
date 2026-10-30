@@ -642,16 +642,20 @@ class MobileWorldSelectController {
 
   syncSelect2Container(): void {
     const select2Container = this.findSelect2Container();
-    if (select2Container === this.select2Container) {
-      return;
+    const containerChanged = select2Container !== this.select2Container;
+    if (containerChanged) {
+      this.select2Container?.classList.remove(SELECT2_SOURCE_CLASS);
+      this.select2Container = select2Container;
+      this.select2Container?.classList.add(SELECT2_SOURCE_CLASS);
     }
-    this.select2Container?.classList.remove(SELECT2_SOURCE_CLASS);
-    this.select2Container = select2Container;
-    this.select2Container?.classList.add(SELECT2_SOURCE_CLASS);
-    if (this.wrapper) {
-      (this.select2Container ?? this.source).insertAdjacentElement('afterend', this.wrapper);
+    const anchor = this.select2Container ?? this.source;
+    // 宿主可能保留 select，却删除或搬移旁边的现代按钮。
+    if (this.wrapper && anchor.nextElementSibling !== this.wrapper) {
+      anchor.insertAdjacentElement('afterend', this.wrapper);
     }
-    this.setNativeMode(this.nativeMode);
+    if (containerChanged) {
+      this.setNativeMode(this.nativeMode);
+    }
   }
 
   syncTrigger(): void {
@@ -794,17 +798,13 @@ class MobileWorldPicker {
     heading.append(title);
 
     const headerActions = makeElement(this.document, 'div', 'th-modern-mobile-world-picker-header-actions');
-    const nativeButton = makeElement(this.document, 'button', 'menu_button th-modern-mobile-world-picker-native');
-    nativeButton.type = 'button';
-    nativeButton.append(makeIcon(this.document, 'fa-solid fa-arrow-rotate-left'), this.document.createTextNode('原生界面'));
-    nativeButton.addEventListener('click', this.useNativeMode);
     const closeButton = makeElement(this.document, 'button', 'menu_button th-modern-mobile-world-picker-close');
     closeButton.type = 'button';
     closeButton.title = '关闭世界书选择';
     closeButton.setAttribute('aria-label', '关闭世界书选择');
     closeButton.append(makeIcon(this.document, 'fa-solid fa-xmark'));
     closeButton.addEventListener('click', this.close);
-    headerActions.append(nativeButton, closeButton);
+    headerActions.append(closeButton);
     header.append(heading, headerActions);
 
     const tabs = makeElement(this.document, 'nav', 'th-modern-mobile-world-picker-tabs');
@@ -1237,11 +1237,6 @@ class MobileWorldPicker {
 
     this.controller.commit(new Set([option.value]));
     this.destroy();
-  };
-
-  private readonly useNativeMode = () => {
-    this.manager.requestEnabledChange(false);
-    this.destroy(false);
   };
 
   private readonly close = () => {

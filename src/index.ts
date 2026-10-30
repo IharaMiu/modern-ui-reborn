@@ -28,6 +28,7 @@ import './character-management.css';
 import './management.css';
 import './extension-settings.css';
 import './preset.css';
+import './moonlit-compat.css';
 
 const BODY_CLASS_ENABLED = 'th-modern-enabled';
 const BODY_CLASS_PERSONA_MANAGEMENT = 'th-modern-persona-management';

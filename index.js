@@ -8946,8 +8946,10 @@ var fg = class {
 		}
 	}
 	syncSelect2Container() {
-		let e = this.findSelect2Container();
-		e !== this.select2Container && (this.select2Container?.classList.remove($h), this.select2Container = e, this.select2Container?.classList.add($h), this.wrapper && (this.select2Container ?? this.source).insertAdjacentElement("afterend", this.wrapper), this.setNativeMode(this.nativeMode));
+		let e = this.findSelect2Container(), t = e !== this.select2Container;
+		t && (this.select2Container?.classList.remove($h), this.select2Container = e, this.select2Container?.classList.add($h));
+		let n = this.select2Container ?? this.source;
+		this.wrapper && n.nextElementSibling !== this.wrapper && n.insertAdjacentElement("afterend", this.wrapper), t && this.setNativeMode(this.nativeMode);
 	}
 	syncTrigger() {
 		if (!this.trigger || !this.primaryText || !this.secondaryText || !this.countBadge) return;
@@ -9022,24 +9024,22 @@ var fg = class {
 		r.setAttribute("aria-hidden", "true");
 		let i = J(this.document, "header", "th-modern-mobile-world-picker-header"), a = J(this.document, "div", "th-modern-mobile-world-picker-heading"), o = J(this.document, "strong");
 		o.id = t, o.textContent = this.controller.config.title, a.append(o);
-		let s = J(this.document, "div", "th-modern-mobile-world-picker-header-actions"), c = J(this.document, "button", "menu_button th-modern-mobile-world-picker-native");
-		c.type = "button", c.append(cg(this.document, "fa-solid fa-arrow-rotate-left"), this.document.createTextNode("原生界面")), c.addEventListener("click", this.useNativeMode);
-		let l = J(this.document, "button", "menu_button th-modern-mobile-world-picker-close");
-		l.type = "button", l.title = "关闭世界书选择", l.setAttribute("aria-label", "关闭世界书选择"), l.append(cg(this.document, "fa-solid fa-xmark")), l.addEventListener("click", this.close), s.append(c, l), i.append(a, s);
-		let u = J(this.document, "nav", "th-modern-mobile-world-picker-tabs");
-		u.setAttribute("role", "tablist"), u.setAttribute("aria-label", "世界书筛选"), u.addEventListener("click", this.onTabClick);
-		let d = J(this.document, "label", "th-modern-mobile-world-picker-search");
-		d.append(cg(this.document, "fa-solid fa-magnifying-glass"));
-		let f = J(this.document, "input");
-		f.type = "search", f.placeholder = "搜索世界书名称…", f.autocomplete = "off", f.spellcheck = !1, f.setAttribute("enterkeyhint", "search"), f.addEventListener("input", this.onSearchInput), f.addEventListener("keydown", this.onSearchKeyDown);
-		let p = J(this.document, "button", "th-modern-mobile-world-picker-search-clear");
-		p.type = "button", p.title = "清空搜索", p.setAttribute("aria-label", "清空搜索"), p.append(cg(this.document, "fa-solid fa-circle-xmark")), p.addEventListener("click", this.clearSearch), d.append(f, p);
-		let m = J(this.document, "div", "th-modern-mobile-world-picker-status");
-		m.setAttribute("aria-live", "polite");
-		let h = J(this.document, "div", "th-modern-mobile-world-picker-viewport");
-		h.tabIndex = 0, h.setAttribute("role", "listbox"), this.controller.config.multiple && h.setAttribute("aria-multiselectable", "true");
-		let g = J(this.document, "div", "th-modern-mobile-world-picker-rows"), v = J(this.document, "div", "th-modern-mobile-world-picker-empty"), y = this.document.createTextNode("没有找到匹配的世界书");
-		v.append(cg(this.document, "fa-regular fa-folder-open"), y), h.append(g, v), n.append(r, i, u, d, m, h), e.append(n), e.addEventListener("touchstart", this.stopDrawerAutoClose, { passive: !0 }), e.addEventListener("mousedown", this.stopDrawerAutoClose), e.addEventListener("click", this.onOverlayClick), e.addEventListener("keydown", this.onKeyDown), this.window.addEventListener("resize", this.syncLayout, { passive: !0 }), this.overlay = e, this.sheet = n, this.tabs = u, this.searchInput = f, this.clearSearchButton = p, this.resultStatus = m, this.viewport = h, this.rows = g, this.emptyState = v, this.emptyStateText = y, this.renderTabs(), this.filterOptions(), this.document.body.append(e), e.showModal(), this.syncLayout(), this.controller.syncTrigger(), this.window.requestAnimationFrame(() => {
+		let s = J(this.document, "div", "th-modern-mobile-world-picker-header-actions"), c = J(this.document, "button", "menu_button th-modern-mobile-world-picker-close");
+		c.type = "button", c.title = "关闭世界书选择", c.setAttribute("aria-label", "关闭世界书选择"), c.append(cg(this.document, "fa-solid fa-xmark")), c.addEventListener("click", this.close), s.append(c), i.append(a, s);
+		let l = J(this.document, "nav", "th-modern-mobile-world-picker-tabs");
+		l.setAttribute("role", "tablist"), l.setAttribute("aria-label", "世界书筛选"), l.addEventListener("click", this.onTabClick);
+		let u = J(this.document, "label", "th-modern-mobile-world-picker-search");
+		u.append(cg(this.document, "fa-solid fa-magnifying-glass"));
+		let d = J(this.document, "input");
+		d.type = "search", d.placeholder = "搜索世界书名称…", d.autocomplete = "off", d.spellcheck = !1, d.setAttribute("enterkeyhint", "search"), d.addEventListener("input", this.onSearchInput), d.addEventListener("keydown", this.onSearchKeyDown);
+		let f = J(this.document, "button", "th-modern-mobile-world-picker-search-clear");
+		f.type = "button", f.title = "清空搜索", f.setAttribute("aria-label", "清空搜索"), f.append(cg(this.document, "fa-solid fa-circle-xmark")), f.addEventListener("click", this.clearSearch), u.append(d, f);
+		let p = J(this.document, "div", "th-modern-mobile-world-picker-status");
+		p.setAttribute("aria-live", "polite");
+		let m = J(this.document, "div", "th-modern-mobile-world-picker-viewport");
+		m.tabIndex = 0, m.setAttribute("role", "listbox"), this.controller.config.multiple && m.setAttribute("aria-multiselectable", "true");
+		let h = J(this.document, "div", "th-modern-mobile-world-picker-rows"), g = J(this.document, "div", "th-modern-mobile-world-picker-empty"), v = this.document.createTextNode("没有找到匹配的世界书");
+		g.append(cg(this.document, "fa-regular fa-folder-open"), v), m.append(h, g), n.append(r, i, l, u, p, m), e.append(n), e.addEventListener("touchstart", this.stopDrawerAutoClose, { passive: !0 }), e.addEventListener("mousedown", this.stopDrawerAutoClose), e.addEventListener("click", this.onOverlayClick), e.addEventListener("keydown", this.onKeyDown), this.window.addEventListener("resize", this.syncLayout, { passive: !0 }), this.overlay = e, this.sheet = n, this.tabs = l, this.searchInput = d, this.clearSearchButton = f, this.resultStatus = p, this.viewport = m, this.rows = h, this.emptyState = g, this.emptyStateText = v, this.renderTabs(), this.filterOptions(), this.document.body.append(e), e.showModal(), this.syncLayout(), this.controller.syncTrigger(), this.window.requestAnimationFrame(() => {
 			this.layout === "wide" ? this.searchInput?.focus({ preventScroll: !0 }) : e.focus({ preventScroll: !0 });
 		});
 	}
@@ -9172,9 +9172,6 @@ var fg = class {
 		}
 		let a = t?.closest(".th-modern-mobile-world-picker-row-select");
 		a && !a.disabled && (this.controller.config.multiple ? (this.selectedValues.has(i.value) ? this.selectedValues.delete(i.value) : (this.selectedValues.add(i.value), this.enabledSnapshot.add(i.value)), this.controller.commit(this.selectedValues), this.renderTabs(), this.renderRows()) : (this.controller.commit(/* @__PURE__ */ new Set([i.value])), this.destroy()));
-	};
-	useNativeMode = () => {
-		this.manager.requestEnabledChange(!1), this.destroy(!1);
 	};
 	close = () => {
 		this.destroy();
