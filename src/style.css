@@ -477,7 +477,7 @@ body.th-modern-enabled:not(.th-modern-floating-input) #nonQRFormItems:focus-with
 body.th-modern-enabled:not(.th-modern-floating-input) #send_textarea {
   min-height: 52px !important;
   max-height: 28dvh !important;
-  padding: 2px 8px 40px 8px !important;
+  padding: 2px 8px 4px 8px !important;
 }
 
 body.th-modern-enabled:not(.th-modern-floating-input) #leftSendForm,
@@ -525,7 +525,7 @@ body.th-modern-enabled #send_textarea {
   border-radius: 0 !important;
   background: transparent !important;
   background-color: transparent !important;
-  padding: 4px 10px 48px 10px !important;
+  padding: 4px 10px !important;
   clip-path: none !important;
   resize: none !important;
   color: var(--SmartThemeBodyColor) !important;
@@ -533,6 +533,10 @@ body.th-modern-enabled #send_textarea {
   text-align: left !important;
   outline: none !important;
   box-shadow: none !important;
+}
+
+body.th-modern-enabled:not(.th-modern-single-line-input) #send_textarea {
+  margin-bottom: 42px !important;
 }
 
 body.th-modern-enabled #send_textarea::placeholder {
@@ -1315,7 +1319,7 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
   body.th-modern-enabled:not(.th-modern-floating-input) #send_textarea {
     min-height: 52px !important;
     max-height: 26dvh !important;
-    padding: 2px 6px 40px 6px !important;
+    padding: 2px 6px 4px 6px !important;
   }
 
   body.th-modern-enabled:not(.th-modern-floating-input) #leftSendForm,
@@ -1334,7 +1338,7 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
   body.th-modern-enabled #send_textarea {
     min-height: 64px !important;
     max-height: 28dvh !important;
-    padding: 4px 10px 46px 10px !important;
+    padding: 4px 10px !important;
   }
 
   body.th-modern-enabled.th-modern-single-line-input #nonQRFormItems,
@@ -1567,7 +1571,7 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
   body.th-modern-enabled:not(.th-modern-floating-input).th-modern-two-column #send_textarea {
     min-height: 52px !important;
     max-height: 28dvh !important;
-    padding: 2px 8px 40px 8px !important;
+    padding: 2px 8px 4px 8px !important;
   }
 
   body.th-modern-enabled.th-modern-two-column #qr--bar {
