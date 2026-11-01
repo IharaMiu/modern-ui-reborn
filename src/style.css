@@ -1678,6 +1678,7 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
     scrollbar-gutter: stable;
     overflow-x: hidden;
     overflow-y: auto;
+    transition: none !important;
   }
 
   body.th-modern-enabled.th-modern-two-column.th-modern-drawer-open #top-settings-holder {
@@ -1737,6 +1738,11 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > #rightNavHolder > #unimportantYes {
     width: 100%;
     height: auto;
+    transition: background-color var(--th-modern-motion-duration),
+      border-color var(--th-modern-motion-duration),
+      color var(--th-modern-motion-duration),
+      box-shadow var(--th-modern-motion-duration),
+      opacity var(--th-modern-motion-duration);
   }
 
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:hover {
@@ -1804,6 +1810,21 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
   /* 悬停光晕安全挂载于叶子伪元素 ::after，避免触发父级包含块重排导致的高频抽搐跳动 */
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:hover .drawer-icon::after {
     filter: drop-shadow(0 0 4px color-mix(in srgb, var(--SmartThemeQuoteColor) 65%, transparent)) !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-reduce-motion #top-settings-holder > .drawer > .drawer-toggle,
+  body.th-modern-enabled.th-modern-two-column.th-modern-reduce-motion #top-settings-holder > #rightNavHolder > #unimportantYes,
+  body.th-modern-enabled.th-modern-two-column.th-modern-reduce-motion #top-settings-holder .drawer-icon::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column:is(.th-modern-reduce-motion, .th-modern-reduce-advanced-effects) #top-settings-holder > .drawer > .drawer-toggle:hover .drawer-icon::after {
+    filter: none !important;
+  }
+
+  body.th-modern-enabled.th-modern-two-column.th-modern-reduce-advanced-effects #top-settings-holder .drawer-icon.openIcon {
+    text-shadow: none !important;
   }
 
   body.th-modern-enabled.th-modern-two-column.th-modern-sidebar-collapsed #top-settings-holder .drawer-icon::after,

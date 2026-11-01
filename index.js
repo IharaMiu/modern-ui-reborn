@@ -8423,7 +8423,7 @@ var rh = { class: "inline-drawer" }, ih = { class: "inline-drawer-toggle inline-
 		}
 		return (e, i) => (Zi(), na("div", rh, [L("div", ih, [L("b", null, [L("span", null, Oe(N(Km)), 1), L("button", {
 			type: "button",
-			class: "notes-link",
+			class: "notes-link header-reset",
 			"aria-label": "恢复默认设置",
 			title: "恢复默认设置",
 			onClick: Lo(r, ["stop"])
@@ -8627,7 +8627,7 @@ var rh = { class: "inline-drawer" }, ih = { class: "inline-drawer-toggle inline-
 			}, [...i[48] ||= [L("i", { class: "fa-solid fa-rotate-left" }, null, -1), L("span", null, "恢复默认设置", -1)]])])
 		])]));
 	}
-}), [["__scopeId", "data-v-8d4902a1"]]), qh = "th-modern-panel-root";
+}), [["__scopeId", "data-v-97974573"]]), qh = "th-modern-panel-root";
 function Jh(e) {
 	$(`.${qh}`).remove();
 	let t = !1, n, r = document.getElementById("modern-ui-reborn_container"), i = !1, a = () => {

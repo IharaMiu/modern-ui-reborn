@@ -3,7 +3,7 @@
     <div class="inline-drawer-toggle inline-drawer-header">
       <b>
         <span>{{ SCRIPT_NAME }}</span>
-        <button type="button" class="notes-link" aria-label="恢复默认设置" title="恢复默认设置" @click.stop="resetSettings">
+        <button type="button" class="notes-link header-reset" aria-label="恢复默认设置" title="恢复默认设置" @click.stop="resetSettings">
           <i class="fa-solid fa-rotate-left"></i>
         </button>
       </b>
@@ -329,6 +329,16 @@ async function resetSettings() {
 }
 .text-center {
   text-align: center;
+}
+.header-reset {
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.header-reset:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 .reset-button {
   width: auto !important;
