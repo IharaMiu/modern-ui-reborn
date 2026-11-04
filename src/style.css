@@ -642,6 +642,7 @@ body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input
 }
 
 body.th-modern-enabled #qr--bar {
+  background: transparent !important;
   position: absolute;
   right: 0;
   bottom: calc(var(--th-modern-input-stack-offset) + 10px);
@@ -729,6 +730,7 @@ body.th-modern-enabled #qr--bar > #qr--popoutTrigger {
 }
 
 body.th-modern-enabled #qr--bar > .qr--buttons {
+  background: transparent !important;
   display: flex;
   justify-content: center;
   width: auto;
