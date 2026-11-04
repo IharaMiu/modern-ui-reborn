@@ -48,11 +48,11 @@ body.th-modern-enabled {
   --th-modern-quick-reply-max-height: 40dvh;
   --th-modern-quick-reply-reserve-height: 0px;
   --th-modern-input-inline-inset: var(--th-modern-input-side-gap);
-  --th-modern-radius-xs: 5px;
-  --th-modern-radius-sm: 7px;
+  --th-modern-radius-xs: 6px;
+  --th-modern-radius-sm: 9px;
   --th-modern-gap: 10px;
   --th-modern-main-gap: 14px;
-  --th-modern-line: color-mix(in srgb, var(--SmartThemeBorderColor) 72%, transparent);
+  --th-modern-line: color-mix(in srgb, var(--SmartThemeBodyColor) 14%, transparent);
   --th-modern-surface: color-mix(in srgb, var(--SmartThemeBlurTintColor) 82%, black 18%);
   --th-modern-surface-soft: color-mix(in srgb, var(--SmartThemeChatTintColor) 86%, transparent);
   --th-modern-surface-strong: color-mix(in srgb, var(--SmartThemeBlurTintColor) 70%, var(--SmartThemeQuoteColor) 30%);
@@ -60,16 +60,9 @@ body.th-modern-enabled {
   --th-modern-motion-duration: 160ms;
   --animation-duration: var(--th-modern-motion-duration);
   --animation-duration-2x: calc(var(--th-modern-motion-duration) * 2);
-  --th-modern-input-shadow:
-    0 18px 44px color-mix(in srgb, var(--SmartThemeShadowColor) 38%, transparent),
-    0 4px 16px color-mix(in srgb, var(--SmartThemeShadowColor) 20%, transparent);
-  --th-modern-soft-shadow:
-    0 12px 26px color-mix(in srgb, var(--SmartThemeShadowColor) 24%, transparent),
-    0 2px 8px color-mix(in srgb, var(--SmartThemeShadowColor) 18%, transparent);
-  --th-modern-glass-shadow:
-    8px 8px 8px color-mix(in srgb, var(--SmartThemeShadowColor) 46%, transparent),
-    12px 12px 14px color-mix(in srgb, var(--SmartThemeShadowColor) 34%, transparent),
-    inset 1px 1px 1.5px color-mix(in srgb, var(--SmartThemeBodyColor) 10%, transparent);
+  --th-modern-input-shadow: 0 8px 24px color-mix(in srgb, var(--SmartThemeShadowColor) 14%, transparent);
+  --th-modern-soft-shadow: 0 4px 12px color-mix(in srgb, var(--SmartThemeShadowColor) 12%, transparent);
+  --th-modern-glass-shadow: none;
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%), transparent 46%),
     var(--SmartThemeBlurTintColor);
@@ -208,35 +201,24 @@ body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header {
   justify-content: space-between !important;
   min-height: 32px !important;
   padding: 6px 12px !important;
-  border: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, var(--SmartThemeBorderColor)) !important;
-  border-left: 3.5px solid var(--SmartThemeQuoteColor) !important;
+  border: 1px solid var(--th-modern-line) !important;
   border-radius: var(--th-modern-radius-xs, 6px) !important;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 4%, transparent) 70%,
-    transparent
-  ) !important;
-  color: var(--SmartThemeEmColor, var(--SmartThemeBodyColor)) !important;
-  font-weight: 650 !important;
+  background: color-mix(in srgb, var(--SmartThemeBodyColor) 4%, var(--SmartThemeBlurTintColor)) !important;
+  color: var(--SmartThemeBodyColor) !important;
+  font-weight: 600 !important;
   cursor: pointer !important;
   user-select: none !important;
   margin: 4px 0 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18) !important;
+  box-shadow: none !important;
   transition: background var(--th-modern-motion-duration) ease,
               border-color var(--th-modern-motion-duration) ease,
               box-shadow var(--th-modern-motion-duration) ease !important;
 }
 
 body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header:hover {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 8%, transparent) 70%,
-    transparent
-  ) !important;
-  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 38%, var(--SmartThemeBorderColor)) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28), 0 0 10px color-mix(in srgb, var(--SmartThemeQuoteColor) 15%, transparent) !important;
+  background: color-mix(in srgb, var(--SmartThemeBodyColor) 7%, var(--SmartThemeBlurTintColor)) !important;
+  border-color: var(--th-modern-line) !important;
+  box-shadow: none !important;
 }
 
 body.th-modern-enabled .inline-drawer > .inline-drawer-content {
@@ -363,7 +345,7 @@ body.th-modern-enabled.th-modern-floating-input #nonQRFormItems {
   padding: 14px 14px 12px;
   border: 1px solid var(--th-modern-line);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 90%, black 10%);
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 97%, var(--SmartThemeBodyColor) 3%);
   box-shadow: var(--th-modern-input-shadow);
   transition:
     border-color var(--th-modern-motion-duration),
@@ -453,10 +435,8 @@ body.th-modern-enabled:not(.th-modern-floating-input) #nonQRFormItems {
   padding: 10px 14px 10px;
   border: 1px solid var(--th-modern-line) !important;
   border-radius: 18px !important;
-  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 84%, black 16%) !important;
-  box-shadow:
-    0 2px 8px color-mix(in srgb, var(--SmartThemeShadowColor) 18%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 97%, var(--SmartThemeBodyColor) 3%) !important;
+  box-shadow: var(--th-modern-input-shadow) !important;
   transition:
     border-color var(--th-modern-motion-duration) ease,
     box-shadow var(--th-modern-motion-duration) ease,
@@ -470,7 +450,7 @@ body.th-modern-enabled:not(.th-modern-floating-input) #nonQRFormItems:hover {
 body.th-modern-enabled:not(.th-modern-floating-input) #nonQRFormItems:focus-within {
   border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 52%, var(--th-modern-line)) !important;
   box-shadow:
-    0 2px 12px color-mix(in srgb, var(--SmartThemeShadowColor) 22%, transparent),
+    var(--th-modern-input-shadow),
     0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent) !important;
 }
 
@@ -509,6 +489,12 @@ body.th-modern-enabled #leftSendForm {
 
 body.th-modern-enabled #rightSendForm {
   right: 10px;
+}
+
+/* 发送与停止共用末尾位置，避免切换时与 QR 助手换位。 */
+body.th-modern-enabled #rightSendForm > #send_but,
+body.th-modern-enabled #rightSendForm > #mes_stop {
+  order: 1;
 }
 
 body.th-modern-enabled #send_textarea {
@@ -1746,12 +1732,12 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
   }
 
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:hover {
-    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent);
+    background: color-mix(in srgb, var(--SmartThemeBodyColor) 7%, transparent);
   }
 
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:has(.drawer-icon.openIcon) {
-    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
-    color: var(--SmartThemeEmColor);
+    background-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent);
+    color: var(--SmartThemeBodyColor);
   }
 
   body.th-modern-enabled.th-modern-two-column #top-settings-holder .drawer-icon {
@@ -1891,8 +1877,8 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
     transition-behavior: allow-discrete;
     will-change: clip-path, opacity;
     animation: none !important;
-    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 92%, black 8%) !important;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35) !important;
+    background: var(--SmartThemeBlurTintColor) !important;
+    box-shadow: 4px 0 20px color-mix(in srgb, var(--SmartThemeShadowColor) 12%, transparent) !important;
     border-right: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.15)) 35%, transparent) !important;
   }
 
@@ -2187,14 +2173,14 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
     min-width: 0;
     flex: 1 1 auto;
     flex-direction: column;
-    gap: 6px;
+    gap: 3px;
     min-height: 0;
     margin-top: 4px;
-    padding: 6px;
-    border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 24%, transparent);
+    padding: 0;
+    border: 0;
     border-radius: var(--th-modern-radius-sm);
-    background: color-mix(in srgb, var(--SmartThemeBlurTintColor) 85%, black 15%);
-    box-shadow: var(--th-modern-glass-shadow);
+    background: transparent;
+    box-shadow: none;
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-gutter: auto;
@@ -2292,7 +2278,7 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
   body.th-modern-enabled.th-modern-two-column .th-modern-recent-message,
   body.th-modern-enabled.th-modern-two-column .th-modern-recent-meta,
   body.th-modern-enabled.th-modern-two-column .th-modern-recent-state {
-    color: color-mix(in srgb, var(--SmartThemeBodyColor) 62%, transparent);
+    color: color-mix(in srgb, var(--SmartThemeBodyColor) 78%, transparent);
     font-size: calc(var(--mainFontSize) * 0.78);
   }
 
@@ -3101,7 +3087,7 @@ body.th-modern-enabled .th-modern-recent-item:hover {
 
 body.th-modern-enabled .th-modern-recent-avatar {
   border-radius: 10px;
-  box-shadow: 0 2px 6px color-mix(in srgb, var(--SmartThemeShadowColor, #000) 25%, transparent);
+  box-shadow: none;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -3388,7 +3374,7 @@ body.th-modern-enabled.th-modern-resizing #top-settings-holder > .drawer > .draw
    三次美化：精细打磨 (Tertiary Visual Refinement)
    ======================================================== */
 
-/* ── 侧边栏品牌区：渐变文字 Logo + 更精致间距 ── */
+/* 侧栏以平整色块区分状态，强调色留给当前入口。 */
 body.th-modern-enabled.th-modern-two-column .th-modern-sidebar-brand {
   padding: 2px 10px 4px;
   border-bottom: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 28%, transparent);
@@ -3396,24 +3382,17 @@ body.th-modern-enabled.th-modern-two-column .th-modern-sidebar-brand {
 }
 
 body.th-modern-enabled.th-modern-two-column .th-modern-brand-name {
-  background: linear-gradient(
-    90deg,
-    var(--SmartThemeEmColor),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 85%, var(--SmartThemeEmColor) 15%)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--SmartThemeBodyColor);
   font-size: calc(var(--mainFontSize) * 1.02);
   letter-spacing: 0.02em;
 }
 
-/* ── 侧边栏 nav 项：活跃状态左侧指示条 + 悬浮微升浮（仅桌面端竖排生效） ── */
+/* 桌面导航选中态。 */
 @media (min-width: 900px) {
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle {
     position: relative;
     padding-left: 12px;
-    border-left: 2px solid transparent;
+    border-left: 0;
     transition:
       background-color var(--th-modern-motion-duration),
       border-color var(--th-modern-motion-duration),
@@ -3423,19 +3402,14 @@ body.th-modern-enabled.th-modern-two-column .th-modern-brand-name {
   }
 
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:hover {
-    border-left-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 38%, transparent);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 10%, transparent);
+    border-left-color: transparent;
+    box-shadow: none;
   }
 
   body.th-modern-enabled.th-modern-two-column #top-settings-holder > .drawer > .drawer-toggle:has(.drawer-icon.openIcon) {
-    border-left-color: var(--SmartThemeQuoteColor);
-    background: linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, transparent),
-      color-mix(in srgb, var(--SmartThemeQuoteColor) 10%, transparent) 60%,
-      transparent
-    ) !important;
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 14%, transparent);
+    border-left-color: transparent;
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent) !important;
+    box-shadow: none;
   }
 
   /* 折叠状态下不显示左边框（居中布局） */
@@ -3449,7 +3423,7 @@ body.th-modern-enabled.th-modern-two-column .th-modern-brand-name {
 /* ── Drawer 图标：活跃时轻微 accent 着色 ── */
 body.th-modern-enabled.th-modern-two-column #top-settings-holder .drawer-icon.openIcon {
   color: var(--SmartThemeQuoteColor);
-  text-shadow: 0 0 12px color-mix(in srgb, var(--SmartThemeQuoteColor) 48%, transparent);
+  text-shadow: none;
   opacity: 1;
 }
 
@@ -3494,25 +3468,15 @@ body.th-modern-enabled .th-modern-drawer-fullscreen-toggle.is-fullscreen {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor) 14%, transparent);
 }
 
-/* ── 内联折叠块：标题栏渐变增强 ── */
+/* 折叠标题与面板共用中性色。 */
 body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 6%, transparent) 70%,
-    transparent
-  );
-  border-bottom: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
+  background: color-mix(in srgb, var(--SmartThemeBodyColor) 4%, var(--SmartThemeBlurTintColor));
+  border-bottom: 1px solid var(--th-modern-line);
   transition: background var(--th-modern-motion-duration);
 }
 
 body.th-modern-enabled .inline-drawer-toggle.inline-drawer-header:hover {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, transparent),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 10%, transparent) 70%,
-    transparent
-  );
+  background: color-mix(in srgb, var(--SmartThemeBodyColor) 7%, var(--SmartThemeBlurTintColor));
 }
 
 /* ── 输入框：发送按钮渐变 + 微光晕 ── */
@@ -3545,17 +3509,16 @@ body.th-modern-enabled.th-modern-two-column #rightSendForm > #send_but:hover {
   transform: scale(1.06);
 }
 
-/* ── 输入框 focus 状态：底部轻发光 ── */
+/* 聚焦输入时保留清晰的细描边。 */
 body.th-modern-enabled #nonQRFormItems:focus-within {
   box-shadow:
     var(--th-modern-input-shadow),
-    0 0 0 1.5px color-mix(in srgb, var(--SmartThemeQuoteColor) 28%, transparent),
-    0 -2px 18px color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent) !important;
+    0 0 0 1px color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent) !important;
 }
 
-/* ── 最近聊天区段标题：增加 accent 点缀 ── */
+/* 最近聊天区段标题。 */
 body.th-modern-enabled.th-modern-two-column .th-modern-section-header {
-  border-top: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 22%, var(--th-modern-line));
+  border-top: 1px solid var(--th-modern-line);
   letter-spacing: 0.02em;
 }
 
@@ -3564,21 +3527,16 @@ body.th-modern-enabled.th-modern-two-column .th-modern-section-title {
   letter-spacing: 0.02em;
 }
 
-/* ── 最近聊天卡片：is-current 状态渐变 ── */
+/* 最近聊天当前项。 */
 body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat.is-current {
   border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 52%, transparent) !important;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, transparent),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 8%, transparent) 70%,
-    transparent
-  ) !important;
-  box-shadow: inset 2px 0 0 var(--SmartThemeQuoteColor);
+  background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent) !important;
+  box-shadow: none;
 }
 
-/* ── 最近聊天卡片悬浮：左侧 accent 线 + 轻微上浮 ── */
+/* 最近聊天悬停不增加装饰性阴影。 */
 body.th-modern-enabled.th-modern-two-column .th-modern-recent-chat:hover:not(.is-current) {
-  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--SmartThemeQuoteColor) 60%, transparent);
+  box-shadow: none;
 }
 
 /* ── 最近聊天头像：更圆润 + 轻描边 ── */
@@ -3725,27 +3683,16 @@ body.th-modern-enabled :is(
   min-height: 32px !important;
   margin: 10px 0 6px !important;
   padding: 6px 12px !important;
-  border: 1px solid color-mix(in srgb, var(--SmartThemeQuoteColor) 20%, var(--SmartThemeBorderColor)) !important;
-  border-left: 3.5px solid var(--SmartThemeQuoteColor) !important;
+  border: 1px solid var(--th-modern-line) !important;
   border-radius: var(--th-modern-radius-xs, 6px) !important;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 4%, transparent) 70%,
-    transparent
-  ) !important;
-  background-image: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 16%, transparent),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 4%, transparent) 70%,
-    transparent
-  ) !important;
-  color: var(--SmartThemeEmColor, var(--SmartThemeBodyColor)) !important;
+  background: color-mix(in srgb, var(--SmartThemeBodyColor) 4%, var(--SmartThemeBlurTintColor)) !important;
+  background-image: none !important;
+  color: var(--SmartThemeBodyColor) !important;
   font-size: calc(var(--mainFontSize) * 0.94) !important;
-  font-weight: 650 !important;
+  font-weight: 600 !important;
   letter-spacing: 0.02em !important;
   line-height: 1.4 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: none !important;
   text-shadow: none !important;
   transition: background var(--th-modern-motion-duration) ease,
               border-color var(--th-modern-motion-duration) ease,
@@ -3767,14 +3714,9 @@ body.th-modern-enabled :is(
   .standoutHeader:not(.inline-drawer-toggle *):not(.inline-drawer-header *),
   .userSettingsInnerExpandable
 ):hover {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 24%, transparent),
-    color-mix(in srgb, var(--SmartThemeQuoteColor) 8%, transparent) 70%,
-    transparent
-  ) !important;
-  border-color: color-mix(in srgb, var(--SmartThemeQuoteColor) 38%, var(--SmartThemeBorderColor)) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28), 0 0 10px color-mix(in srgb, var(--SmartThemeQuoteColor) 15%, transparent) !important;
+  background: color-mix(in srgb, var(--SmartThemeBodyColor) 7%, var(--SmartThemeBlurTintColor)) !important;
+  border-color: var(--th-modern-line) !important;
+  box-shadow: none !important;
 }
 
 /* 当 h4 处于可折叠抽屉标题（inline-drawer-toggle）内时，清除内部独立背景与边框 */
@@ -3811,7 +3753,7 @@ body.th-modern-enabled :is(
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
-  color: var(--SmartThemeEmColor, var(--SmartThemeBodyColor)) !important;
+  color: var(--SmartThemeBodyColor) !important;
   font-size: calc(var(--mainFontSize) * 1.06) !important;
   font-weight: 700 !important;
   letter-spacing: 0.02em !important;
