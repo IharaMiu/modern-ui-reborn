@@ -193,8 +193,14 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     };
 
     columns.forEach(column => {
-      Array.from(column.children).forEach(node => {
+      const children = Array.from(column.children).sort(
+        (a, b) => Number(hostWindow.getComputedStyle(a).order) - Number(hostWindow.getComputedStyle(b).order),
+      );
+      children.forEach(node => {
         if (!(node instanceof hostWindow.HTMLElement) || node === navigation) {
+          return;
+        }
+        if (node.matches('.mc3-native-subgroup-header')) {
           return;
         }
 
@@ -217,6 +223,9 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
             d.style.display !== 'none',
         );
         const hasFallbackContent = node.childElementCount > 0 && normalizeText(node.textContent).length > 0;
+        if (drawers.length > 0 && visibleDrawers.length === 0) {
+          return;
+        }
         if (visibleDrawers.length === 0 && !hasFallbackContent) {
           return;
         }
@@ -279,8 +288,10 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       return;
     }
 
+    const focusedSubgroup = navigationList.contains(hostDocument.activeElement)
+      ? (hostDocument.activeElement as HTMLElement)?.dataset.cleanerSubgroupId : undefined;
     const fragment = hostDocument.createDocumentFragment();
-    entries.forEach(entry => {
+    const appendEntry = (entry: ExtensionEntry) => {
       const button = hostDocument.createElement('button');
       button.type = 'button';
       button.className = NAV_ITEM_CLASS;
@@ -300,9 +311,32 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       }
 
       fragment.append(button);
+    };
+    columns.forEach(column => {
+      Array.from(column.children)
+        .sort((a, b) => Number(hostWindow.getComputedStyle(a).order) - Number(hostWindow.getComputedStyle(b).order))
+        .forEach(source => {
+          if (source.matches('.mc3-native-subgroup-header')) {
+            if (source.matches('.mc3-hidden, .displayNone, [hidden]') || (source as HTMLElement).style.display === 'none') return;
+            const button = hostDocument.createElement('button');
+            button.type = 'button';
+            button.className = NAV_ITEM_CLASS;
+            button.dataset.cleanerSubgroupId = source.id;
+            button.textContent = source.textContent;
+            button.setAttribute('aria-expanded', source.getAttribute('aria-expanded') ?? 'false');
+            button.addEventListener('click', () => (source as HTMLElement).click());
+            fragment.append(button);
+          } else {
+            entries.filter(entry => entry.sourceHost === source).forEach(appendEntry);
+          }
+        });
     });
 
     navigationList.replaceChildren(fragment);
+    if (focusedSubgroup) {
+      Array.from(navigationList.querySelectorAll<HTMLButtonElement>('button'))
+        .find(button => button.dataset.cleanerSubgroupId === focusedSubgroup)?.focus({ preventScroll: true });
+    }
     navigationCount.textContent = String(entries.length);
     updateNavigationState();
   }
@@ -424,7 +458,14 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       writeSelectedKey(selectedKey);
     }
 
-    const nextSignature = entries.map(entry => `${entry.key}\u0000${entry.title}\u0000${entry.badge ?? ''}`).join('\u0001');
+    const nextSignature = JSON.stringify([
+      entries.map(entry => [entry.key, entry.title, entry.badge, entry.column.id]),
+      columns.map(column => Array.from(column.children).map(node => [
+        hostWindow.getComputedStyle(node).order,
+        node.matches('.mc3-native-subgroup-header') ? [node.id, node.textContent, node.getAttribute('aria-expanded'),
+          node.matches('.mc3-hidden, .displayNone, [hidden]'), (node as HTMLElement).style.display] : null,
+      ])),
+    ]);
     if (nextSignature !== renderedSignature) {
       renderedSignature = nextSignature;
       renderNavigation();

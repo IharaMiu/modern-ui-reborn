@@ -4,6 +4,7 @@ import { watch } from 'vue';
 import { mountCharacterManagement } from './character-management-module';
 import { mountPresetEditor } from './preset-module';
 import { mountExtensionSettings } from './extension-settings-module';
+import { mountMenuCleanerCompatibility } from './menu-cleaner-compat';
 import { getHostDocument, getHostWindow } from './host-context';
 import { initPanel } from './panel';
 import {
@@ -1918,6 +1919,7 @@ function mountQuickReplyController(store: ReturnType<typeof useModernLayoutStore
 
     manageBar(valid_bar);
     if (!valid_send_form || !valid_bar) {
+      host_document.body.classList.remove('th-modern-quick-reply-external');
       toggle.remove();
       toggle.hidden = true;
       removeHostCssVariable(INPUT_HEIGHT_VARIABLE);
@@ -1931,9 +1933,13 @@ function mountQuickReplyController(store: ReturnType<typeof useModernLayoutStore
       valid_send_form.append(toggle);
     }
 
-    const collapsed = host_document.body.classList.contains(BODY_CLASS_QUICK_REPLIES_COLLAPSED);
+    const cleaner_toggle = valid_bar.querySelector<HTMLElement>('#mc3-qr-toggle-btn');
+    const cleaner_controls_fold = Boolean(cleaner_toggle && !cleaner_toggle.hidden &&
+      host_window.getComputedStyle(cleaner_toggle).display !== 'none');
+    host_document.body.classList.toggle('th-modern-quick-reply-external', cleaner_controls_fold);
+    const collapsed = !cleaner_controls_fold && host_document.body.classList.contains(BODY_CLASS_QUICK_REPLIES_COLLAPSED);
     const has_content = hasVisibleQuickReplyContent(valid_bar);
-    toggle.hidden = !has_content;
+    toggle.hidden = cleaner_controls_fold || !has_content;
     toggle.classList.toggle('fa-chevron-down', has_content && !collapsed);
     toggle.classList.toggle('fa-chevron-up', has_content && collapsed);
     toggle.setAttribute('aria-expanded', String(has_content && !collapsed));
@@ -2023,6 +2029,7 @@ function mountQuickReplyController(store: ReturnType<typeof useModernLayoutStore
       toggle.removeEventListener('click', handleToggle);
       toggle.remove();
       restoreManagedBar();
+      host_document.body.classList.remove('th-modern-quick-reply-external');
       host_window.removeEventListener('resize', schedule);
       removeHostCssVariable(INPUT_HEIGHT_VARIABLE);
       removeHostCssVariable(INPUT_STACK_OFFSET_VARIABLE);
@@ -2870,6 +2877,7 @@ function mountActiveRuntime(store: ReturnType<typeof useModernLayoutStore>): { d
       }
     }).destroy);
     cleanups.push(mountExtensionSettings(store).destroy);
+    cleanups.push(mountMenuCleanerCompatibility().destroy);
     cleanups.push(mountSidebarNavSizer().destroy);
     cleanups.push(mountFailsafeRestore(store).destroy);
     cleanups.push(mountFloatingMenuPositioner().destroy);

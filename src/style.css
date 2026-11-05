@@ -671,14 +671,14 @@ body.th-modern-enabled #qr--bar.popoutVisible {
   padding-right: 44px;
 }
 
-body.th-modern-enabled.th-modern-quick-replies-collapsed #qr--bar {
+body.th-modern-enabled.th-modern-quick-replies-collapsed:not(.th-modern-quick-reply-external) #qr--bar {
   max-height: 0;
   overflow: hidden !important;
   opacity: 0;
   transform: translateY(6px) scale(0.98);
 }
 
-body.th-modern-enabled.th-modern-quick-replies-collapsed #qr--bar > * {
+body.th-modern-enabled.th-modern-quick-replies-collapsed:not(.th-modern-quick-reply-external) #qr--bar > * {
   pointer-events: none !important;
 }
 
@@ -1583,7 +1583,7 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
     padding-right: 44px;
   }
 
-  body.th-modern-enabled.th-modern-two-column.th-modern-quick-replies-collapsed #qr--bar {
+  body.th-modern-enabled.th-modern-two-column.th-modern-quick-replies-collapsed:not(.th-modern-quick-reply-external) #qr--bar {
     max-height: 0;
     overflow: hidden !important;
     opacity: 0;
@@ -3789,6 +3789,10 @@ body.th-modern-enabled :is(
    元素精简与隐藏插件深度兼容 (如酒馆菜单精简器 mc3-hidden 等)
    确保任何隐藏指令均以最高特异性生效，杜绝样式层叠冲突导致元素无法隐藏
    ========================================================================== */
+body.th-modern-enabled #qr--bar > :is(.mc3-qr-toggle-btn, .mc3-native-subgroup-header) {
+  pointer-events: auto;
+}
+
 html body.th-modern-enabled :is(.mc3-hidden, [hidden], .displayNone, .mc3-user-drawer-collapsed, .mc3-qr-content-collapsed),
 html body.th-modern-enabled :is(.mc3-hidden, [hidden], .displayNone, .mc3-user-drawer-collapsed, .mc3-qr-content-collapsed) *,
 body.th-modern-enabled :is(.mc3-hidden, [hidden], .displayNone, .mc3-user-drawer-collapsed, .mc3-qr-content-collapsed),
