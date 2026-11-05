@@ -2712,6 +2712,7 @@ body.th-modern-enabled #rm_api_block .inline-drawer-content {
 body.th-modern-enabled #rm_api_block input[type='text'],
 body.th-modern-enabled #rm_api_block input[type='password'],
 body.th-modern-enabled #rm_api_block input[type='number'],
+body.th-modern-enabled #rm_api_block #quicker_api_url,
 body.th-modern-enabled #rm_api_block select:not([size]),
 body.th-modern-enabled #rm_api_block textarea {
   box-sizing: border-box;
@@ -2732,6 +2733,7 @@ body.th-modern-enabled #rm_api_block textarea {
 body.th-modern-enabled #rm_api_block input[type='text']:focus,
 body.th-modern-enabled #rm_api_block input[type='password']:focus,
 body.th-modern-enabled #rm_api_block input[type='number']:focus,
+body.th-modern-enabled #rm_api_block #quicker_api_url:focus,
 body.th-modern-enabled #rm_api_block select:not([size]):focus,
 body.th-modern-enabled #rm_api_block textarea:focus {
   border-color: var(--SmartThemeQuoteColor) !important;

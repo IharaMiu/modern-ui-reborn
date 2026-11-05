@@ -11020,16 +11020,21 @@ function Py() {
 			});
 		});
 	}, v = () => {
-		if (!e.querySelector("#rm_api_block")?.classList.contains("openDrawer")) {
+		let t = e.querySelector("#rm_api_block");
+		if (!t?.classList.contains("openDrawer")) {
 			f("#rm_api_block #main_api", !1), f("#rm_api_block #chat_completion_source", !1), f("#rm_api_block #textgen_type", !1);
 			return;
 		}
-		let t = e.querySelector("#rm_api_block #main-API-selector-block"), n = e.querySelector("#rm_api_block > .flex-container.flexFlowColumn"), i = Array.from(e.querySelectorAll("#rm_api_block > .flex-container.alignitemscenter.spaceBetween.wide100p")).find((e) => e.textContent?.includes("自动连接到上次的服务器") || e.querySelector("#viewSecrets"));
-		n && i && i.parentElement !== n && (i.classList.add(av), r.push(Ny(i, n, "th-modern-api-footer")));
-		let a = u();
-		if (f("#rm_api_block #main_api", a), h(t, a), g(), t && t.querySelectorAll(".th-modern-api-hint-card").forEach((e) => e.remove()), t) {
-			let n = t.querySelector(".th-modern-api-main-title");
-			n || (n = e.createElement("h4"), n.className = "th-modern-api-main-title", n.textContent = "接口模式", t.prepend(n));
+		let n = e.querySelector("#rm_api_block #main-API-selector-block"), i = e.querySelector("#rm_api_block > .flex-container.flexFlowColumn"), a = Array.from(e.querySelectorAll("#rm_api_block > .flex-container.alignitemscenter.spaceBetween.wide100p")).find((e) => e.textContent?.includes("自动连接到上次的服务器") || e.querySelector("#viewSecrets"));
+		i && a && a.parentElement !== i && (a.classList.add(av), r.push(Ny(a, i, "th-modern-api-footer")));
+		let o = u();
+		f("#rm_api_block #main_api", o), h(n, o), g();
+		let s = t.querySelector("#quicker_api"), c = t.querySelector("#openai_api");
+		if (s && c && s.parentElement !== c && (c.prepend(s), r.push(() => {
+			s.isConnected && e.querySelector("#chat_completion_source")?.after(s);
+		})), n && n.querySelectorAll(".th-modern-api-hint-card").forEach((e) => e.remove()), n) {
+			let t = n.querySelector(".th-modern-api-main-title");
+			t || (t = e.createElement("h4"), t.className = "th-modern-api-main-title", t.textContent = "接口模式", n.prepend(t));
 		}
 	}, y = () => {
 		l !== 0 && (t.cancelAnimationFrame(l), l = 0);

@@ -21,6 +21,8 @@
 
 ## 📦 安装使用
 
+支持与 [ST-Quicker-Api](https://github.com/qianzhuowo/ST-Quicker-Api) 同时启用：API 管理面板保留在来源设置区，适应桌面窄栏和移动端宽度；发送栏闪电入口使用现代化界面的图标尺寸，并位于发送按钮之前。配置、密钥和预设联动仍由 Quicker Api 管理。
+
 ### 方式一：在酒馆中在线安装
 
 1. 打开 SillyTavern 或 TauriTavern 的「扩展程序」面板，点击「安装扩展程序」或「从 URL 安装」。

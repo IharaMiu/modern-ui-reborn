@@ -1,0 +1,62 @@
+/* Quicker Api can occupy a narrow settings column even on a desktop viewport. */
+body.th-modern-enabled #rm_api_block #quicker_api {
+  container-type: inline-size;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  border-radius: var(--th-modern-radius-sm);
+  background: var(--th-modern-surface);
+}
+
+body.th-modern-enabled #quicker_api :is(input, select, .quicker-api__row) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+body.th-modern-enabled #rm_api_block #quicker_api .menu_button {
+  min-height: 36px !important;
+}
+
+body.th-modern-enabled #quicker_api .quicker-api__key-actions {
+  flex-wrap: wrap;
+}
+
+@container (max-width: 36rem) {
+  body.th-modern-enabled #quicker_api .quicker-api__field {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.35rem;
+  }
+
+  body.th-modern-enabled #quicker_api #quicker_api_profile_select {
+    flex-basis: 100%;
+  }
+
+  body.th-modern-enabled #quicker_api .quicker-api__key-row {
+    display: flex;
+    grid-column: 1 / -1;
+  }
+}
+
+body.th-modern-enabled #quicker_api :is(.quicker-api__toggle, .menu_button):focus-visible {
+  outline: 2px solid var(--SmartThemeQuoteColor) !important;
+  outline-offset: 2px;
+}
+
+/* Match the surrounding composer icons; upstream uses the host's larger block size. */
+body.th-modern-enabled #send_form :is(#quicker_api_quick_left, #quicker_api_quick_right) {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  order: 0;
+}
+
+@media (max-width: 899.98px) {
+  body.th-modern-enabled #rm_api_block #quicker_api .menu_button {
+    min-width: 44px;
+    min-height: 44px !important;
+  }
+}

@@ -30,6 +30,7 @@ import './management.css';
 import './extension-settings.css';
 import './preset.css';
 import './moonlit-compat.css';
+import './quicker-api-compat.css';
 
 const BODY_CLASS_ENABLED = 'th-modern-enabled';
 const BODY_CLASS_PERSONA_MANAGEMENT = 'th-modern-persona-management';
@@ -2591,6 +2592,16 @@ function mountApiPanelEnhancements(): { destroy: () => void } {
     setSelectListMode('#rm_api_block #main_api', use_expanded_selectors);
     updateApiSourceGroup(main_api_block, use_expanded_selectors);
     enhanceApiSelectGroups();
+
+    const quicker_api = api_panel.querySelector<HTMLElement>('#quicker_api');
+    const openai_api = api_panel.querySelector<HTMLElement>('#openai_api');
+    if (quicker_api && openai_api && quicker_api.parentElement !== openai_api) {
+      // Quicker Api inserts after the source selector, which we move into the left column.
+      openai_api.prepend(quicker_api);
+      moved_restores.push(() => {
+        if (quicker_api.isConnected) host_document.querySelector('#chat_completion_source')?.after(quicker_api);
+      });
+    }
 
     if (main_api_block) {
       main_api_block.querySelectorAll('.th-modern-api-hint-card').forEach(element => element.remove());
