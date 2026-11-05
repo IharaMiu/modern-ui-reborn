@@ -446,9 +446,14 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     }
 
     const nextEntries = collectEntries();
+    // Keep live entries visible: hiding them during a drag resets the column scroll.
     entries.forEach(entry => {
-      entry.host.classList.remove(HOST_HIDDEN_CLASS, HOST_ACTIVE_CLASS);
-      entry.drawer?.classList.remove(DRAWER_CLASS, DRAWER_ACTIVE_CLASS);
+      if (!nextEntries.some(next => next.host === entry.host)) {
+        entry.host.classList.remove(HOST_HIDDEN_CLASS, HOST_ACTIVE_CLASS);
+      }
+      if (!nextEntries.some(next => next.drawer === entry.drawer)) {
+        entry.drawer?.classList.remove(DRAWER_CLASS, DRAWER_ACTIVE_CLASS);
+      }
     });
     entries = nextEntries;
     entries.forEach(entry => entry.drawer?.classList.add(DRAWER_CLASS));

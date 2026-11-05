@@ -60,6 +60,21 @@ test(`menu cleaner navigation, menu dismissal and QR folding at ${width}px`, { s
     check(nav().length === 2 && nav()[1].getAttribute('aria-expanded') === 'false', 'group collapse hides members without creating a fallback entry');
     nav()[1].click(); await tick();
     check(nav().length === 3, 'group expands again');
+    if (!matchMedia('(max-width:899.98px)').matches) {
+      const column = document.getElementById('extensions_settings');
+      const content = document.querySelector('#second .inline-drawer-content');
+      const list = document.createElement('div');
+      list.innerHTML = '<div class="regex-script-label" style="height:44px">Regex</div>'.repeat(80);
+      content.append(list);
+      column.style.height = '240px'; column.style.maxHeight = '240px'; await tick();
+      column.scrollTop = 500;
+      const top = column.scrollTop;
+      check(top > 0, 'regex fixture scrolls');
+      list.firstElementChild.classList.add('ui-sortable-helper');
+      list.firstElementChild.style.top = '20px'; await tick();
+      check(column.scrollTop === top, 'drag mutations preserve the active extension scroll position: '+column.scrollTop);
+      list.remove(); column.style.removeProperty('height'); column.style.removeProperty('max-height'); await tick();
+    }
     first.style.order = '-1'; await tick();
     check(nav()[0].textContent === 'First', 'live reorder refreshes navigation');
     document.getElementById('extensions_settings2').append(first); await tick();

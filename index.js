@@ -5127,8 +5127,8 @@ function ul(e) {
 	function oe() {
 		if (f = 0, !i?.isConnected) return;
 		let e = w();
-		l.forEach((e) => {
-			e.host.classList.remove($c, el), e.drawer?.classList.remove(tl, nl);
+		l.forEach((t) => {
+			e.some((e) => e.host === t.host) || t.host.classList.remove($c, el), e.some((e) => e.drawer === t.drawer) || t.drawer?.classList.remove(tl, nl);
 		}), l = e, l.forEach((e) => e.drawer?.classList.add(tl)), l.some((e) => e.key === u) || (u = l.find(T)?.key ?? l[0]?.key ?? null, C(u));
 		let t = JSON.stringify([l.map((e) => [
 			e.key,
