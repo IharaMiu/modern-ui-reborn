@@ -9689,6 +9689,7 @@ var x_ = class {
 		});
 	}
 	closeMobileDetail() {
+		if (!this.mobileDetailOpen) return;
 		let e = this.findWorldInfo();
 		this.mobileDetailOpen = !1, this.syncResponsiveMode(), this.window.requestAnimationFrame(() => {
 			this.mounted && this.isNarrowMode() && e?.scrollTo({
@@ -9858,7 +9859,7 @@ var x_ = class {
 		e && this.selectEntry(e);
 	}
 	clearSelection() {
-		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(Eg), this.detachEntryEditor(), this.selectedEntry?.classList.remove(bg), this.selectedEntry = void 0;
+		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(Eg), this.detachEntryEditor(), this.selectedEntry?.classList.remove(bg), this.selectedEntry = void 0, this.mobileDetailOpen = !1, this.shell?.classList.toggle(wg, !1), this.findWorldInfo()?.classList.toggle(Tg, !1);
 	}
 	selectEntry(e) {
 		this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(bg), this.ensureEntryEditor(e), this.openMobileDetail());
@@ -10012,7 +10013,7 @@ function S_(e) {
 		let i = s();
 		m(i);
 		let a = i?.classList.contains("openDrawer") ?? !1;
-		i?.classList.toggle(vg, n && (a || !!r)), n && a ? (r ??= new x_(), r.mount(), r.ensureLayout()) : !n && c() && C_(t);
+		i?.classList.toggle(vg, n && (a || !!r)), n && a ? (r ??= new x_(), r.mount(), r.ensureLayout()) : n ? r?.closeMobileDetail() : c() && C_(t);
 	}, d = (e) => {
 		Bg(e.target)?.closest("#WIDrawerIcon, .drawer-toggle, [data-target=\"WorldInfo\"]") && (n.requestAnimationFrame(() => {
 			r?.isMounted() && r.ensureLayout();

@@ -1246,7 +1246,10 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         worldInfo?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }
 
-    private closeMobileDetail(): void {
+    closeMobileDetail(): void {
+        if (!this.mobileDetailOpen) {
+            return;
+        }
         const worldInfo = this.findWorldInfo();
         this.mobileDetailOpen = false;
         this.syncResponsiveMode();
@@ -1711,6 +1714,9 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         this.detachEntryEditor();
         this.selectedEntry?.classList.remove(SELECTED_ENTRY_CLASS);
         this.selectedEntry = undefined;
+        this.mobileDetailOpen = false;
+        this.shell?.classList.toggle(DETAIL_OPEN_CLASS, false);
+        this.findWorldInfo()?.classList.toggle(ROOT_DETAIL_OPEN_CLASS, false);
     }
 
     private selectEntry(entry: HTMLElement): void {
@@ -2070,7 +2076,9 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
             controller ??= new NativeWorldInfoEnhancer();
             controller.mount();
             controller.ensureLayout();
-        } else if (!shouldEnable && unmount()) {
+        } else if (shouldEnable) {
+            controller?.closeMobileDetail();
+        } else if (unmount()) {
             refreshOriginalEditor(hostDocument);
         }
     };
