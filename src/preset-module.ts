@@ -334,6 +334,7 @@ export class PresetEditor {
   /** 基准干净快照，用于零误报判断未保存修改。 */
   private lastCleanSnapshot = '';
   private boundHostEvents: Array<{ event: string; handler: (...args: any[]) => void }> = [];
+  private destroyed = false;
 
   constructor(
     private readonly store: Store,
@@ -349,7 +350,7 @@ export class PresetEditor {
   }
 
   readonly scheduleSync = (delay = 120): void => {
-    if (this.isInternalCommitting) return;
+    if (this.destroyed || this.isInternalCommitting) return;
     if (this.scheduledSync) {
       this.window.clearTimeout(this.scheduledSync);
       this.scheduledSync = 0;
@@ -361,6 +362,7 @@ export class PresetEditor {
   };
 
   destroy(): void {
+    this.destroyed = true;
     if (this.scheduledSync) {
       this.window.clearTimeout(this.scheduledSync);
       this.scheduledSync = 0;
@@ -535,7 +537,7 @@ export class PresetEditor {
     const isPanelOpen = panel.classList.contains('openDrawer');
 
     this.panel = panel;
-    panel.classList.add(PANEL_CLASS);
+    panel.classList.toggle(PANEL_CLASS, true);
     this.ensurePanelPin(panel);
     this.ensureToolbar(presetsBlock);
     this.ensurePromptShell(container);
@@ -560,6 +562,7 @@ export class PresetEditor {
     this.hostLoading = true;
     (this.options.loadHost ?? loadDefaultHost)()
       .then(host => {
+        if (this.destroyed) return;
         this.host = host;
         this.resetCleanBaseline();
         this.scheduleSync();
@@ -706,11 +709,12 @@ export class PresetEditor {
     this.presetsMove = moveNode(presetsBlock, toolbar);
 
     // 监听预设下拉框选择改变，第一时间进入加载保护状态
-    const presetSelect = presetsBlock.querySelector<HTMLSelectElement>('#settings_preset_openai');
     this.presetSelectCleanup?.();
-    if (presetSelect) {
-      let previousPreset = presetSelect.value;
+    {
+      let previousPreset = presetsBlock.querySelector<HTMLSelectElement>('#settings_preset_openai')?.value ?? '';
       const onPresetSelectChange = (event: Event) => {
+        const presetSelect = event.target as HTMLSelectElement;
+        if (!presetSelect.matches('#settings_preset_openai')) return;
         if (!this.flushEditorApply()) {
           event.stopImmediatePropagation();
           presetSelect.value = previousPreset;
@@ -734,8 +738,8 @@ export class PresetEditor {
           this.shell.classList.add('is-loading-preset');
         }
       };
-      presetSelect.addEventListener('change', onPresetSelectChange, true);
-      this.presetSelectCleanup = () => presetSelect.removeEventListener('change', onPresetSelectChange, true);
+      presetsBlock.addEventListener('change', onPresetSelectChange, true);
+      this.presetSelectCleanup = () => presetsBlock.removeEventListener('change', onPresetSelectChange, true);
     }
 
     const tabsRow = makeElement(this.document, 'div', 'th-modern-preset-tabs');
@@ -1961,6 +1965,20 @@ export class PresetEditor {
     }
   }
 
+  private captureOperationContext(): () => boolean {
+    const pm = this.promptManager;
+    const settings = pm?.serviceSettings;
+    const order = this.getOrder();
+    const snapshot = this.takeSnapshot();
+    const revision = this.editRevision;
+    const preset = this.document.querySelector<HTMLSelectElement>('#settings_preset_openai')?.value;
+    return () => !this.destroyed && this.store.is_active && this.store.settings.modernPresetEditor &&
+      !this.isSwitchingPreset && this.promptManager === pm && pm?.serviceSettings === settings &&
+      this.getOrder() === order && this.editRevision === revision && Boolean(snapshot) &&
+      this.document.querySelector<HTMLSelectElement>('#settings_preset_openai')?.value === preset &&
+      this.takeSnapshot() === snapshot;
+  }
+
   private async deleteEntries(identifiers: string[]): Promise<void> {
     const pm = this.promptManager;
     if (!pm || !identifiers.length) return;
@@ -1980,7 +1998,8 @@ export class PresetEditor {
     const note = detachOnly.length
       ? `\n其中 ${detachOnly.length} 个是酒馆内置条目，只会移出列表，可在列表底部重新加入。`
       : '';
-    if (!(await this.confirm(`确定要删除${subject}吗？${note}`))) return;
+    const isCurrent = this.captureOperationContext();
+    if (!(await this.confirm(`确定要删除${subject}吗？${note}`)) || !isCurrent()) return;
 
     const removeSet = new Set(removable);
     const detachSet = new Set(detachOnly);
@@ -2037,8 +2056,9 @@ export class PresetEditor {
     const pm = this.promptManager;
     if (!pm || !identifiers.length) return;
     if (!this.flushEditorApply()) return;
+    const isCurrent = this.captureOperationContext();
     const name = await this.askGroupName();
-    if (!name) return;
+    if (!name || !isCurrent()) return;
 
     const order = this.getOrder();
     const chosen = new Set(identifiers);
@@ -2076,7 +2096,8 @@ export class PresetEditor {
     const pm = this.promptManager;
     const group = this.getGroup(groupId);
     if (!pm || !group) return;
-    if (!(await this.confirm(`解散分组「${group.name}」？组内条目会保留，只是不再归组。`))) return;
+    const isCurrent = this.captureOperationContext();
+    if (!(await this.confirm(`解散分组「${group.name}」？组内条目会保留，只是不再归组。`)) || !isCurrent()) return;
     removeGroup(ensurePromptGroups(pm.serviceSettings), groupId);
     this.cleanupGroupData();
     this.activeGroupId = null;

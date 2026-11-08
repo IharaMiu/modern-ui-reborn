@@ -151,6 +151,7 @@ class MobileWorldSelectManager {
   private readonly panelObserver: MutationObserver;
   private readonly documentObserver: MutationObserver;
   private readonly controllers: MobileWorldSelectController[] = [];
+  private observedWorldInfo: Element | null = null;
   private readonly lastTabs = new Map<string, PickerTab>();
   private favorites = new Set<string>();
   private enabled: boolean;
@@ -169,14 +170,17 @@ class MobileWorldSelectManager {
         this.closePicker();
       }
     });
-    this.documentObserver = new this.window.MutationObserver(this.scheduleControllerRefresh);
+    const selector = `#WorldInfo, .${CONTROL_CLASS}, .select2-container, ${CONTROLLER_CONFIGS.map(config => config.selector).join(', ')}`;
+    this.documentObserver = new this.window.MutationObserver(mutations => {
+      if (mutations.some(mutation => [...mutation.addedNodes, ...mutation.removedNodes].some(node =>
+        node instanceof this.window.HTMLElement && (node.matches(selector) || node.querySelector(selector)),
+      ))) {
+        this.scheduleControllerRefresh();
+      }
+    });
   }
 
   mount(): void {
-    const worldInfo = this.document.querySelector('#WorldInfo');
-    if (worldInfo) {
-      this.panelObserver.observe(worldInfo, { attributes: true, attributeFilter: ['class'] });
-    }
     this.documentObserver.observe(this.document.body, { childList: true, subtree: true });
     this.document.addEventListener('click', this.captureRenameIntent, true);
     this.favorites = this.readFavorites();
@@ -289,6 +293,15 @@ class MobileWorldSelectManager {
 
   private mountControllers(): void {
     if (!this.enabled) return;
+    const worldInfo = this.document.querySelector('#WorldInfo');
+    if (worldInfo !== this.observedWorldInfo) {
+      this.closePicker();
+      this.panelObserver.disconnect();
+      this.observedWorldInfo = worldInfo;
+      if (worldInfo) {
+        this.panelObserver.observe(worldInfo, { attributes: true, attributeFilter: ['class'] });
+      }
+    }
     for (let index = this.controllers.length - 1; index >= 0; index -= 1) {
       const controller = this.controllers[index];
       if (controller.source.isConnected) {
@@ -313,6 +326,7 @@ class MobileWorldSelectManager {
         this.controllers.push(controller);
       }
     }
+    worldInfo?.classList.toggle(CUSTOM_MODE_CLASS, true);
   }
 
   private unmountControllers(): void {

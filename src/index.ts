@@ -2994,6 +2994,7 @@ function initializeModernLayout(): { dispose: () => void } {
         runtime_registry.delete(script_id);
       }
       store.destroy();
+      store.$dispose();
     });
 
     runtime_registry.set(script_id, destroy_all);
@@ -3004,6 +3005,7 @@ function initializeModernLayout(): { dispose: () => void } {
     runCleanup(active_runtime?.destroy);
     runCleanup(destroy_panel);
     store.destroy();
+    store.$dispose();
     throw error;
   }
 }
@@ -3015,11 +3017,9 @@ export async function activate(): Promise<{ dispose: () => void }> {
 
 // Auto-activate in SillyTavern native extension environment
 $(() => {
-  try {
-    activate();
-  } catch (err) {
+  void activate().catch(err => {
     console.error(`[${SCRIPT_NAME}] 自动初始化失败:`, err);
-  }
+  });
 });
 
 export default {

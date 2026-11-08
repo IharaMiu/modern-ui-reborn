@@ -1061,7 +1061,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
     private documentKeyDownHandler?: (event: KeyboardEvent) => void;
     private documentChangeHandler?: (event: Event) => void;
     private worldSelectChangeHandler?: () => void;
-    private worldSelect?: JQuery<HTMLSelectElement>;
+    private worldSelect?: JQuery<Document>;
     private narrowQuery?: MediaQueryList;
     private narrowQueryHandler?: () => void;
     private readonly editorMoved: MovedNode[] = [];
@@ -1181,7 +1181,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             this.documentChangeHandler = undefined;
         }
         if (this.worldSelect && this.worldSelectChangeHandler) {
-            this.worldSelect.off('change.thModernWorldInfo_modern_ui', this.worldSelectChangeHandler);
+            this.worldSelect.off('change.thModernWorldInfo_modern_ui', '#world_editor_select', this.worldSelectChangeHandler);
         }
         this.worldSelect = undefined;
         this.worldSelectChangeHandler = undefined;
@@ -1542,14 +1542,13 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         this.document.addEventListener('keydown', this.documentKeyDownHandler, true);
         this.document.addEventListener('change', this.documentChangeHandler, true);
 
-        const worldSelect = this.document.querySelector<HTMLSelectElement>('#world_editor_select');
-        if (worldSelect) {
+        {
             if (typeof this.window.$ !== 'function') {
                 throw new Error('宿主页缺少世界书切换所需的 jQuery。');
             }
             this.worldSelectChangeHandler = () => this.syncSelectedWorld();
-            this.worldSelect = this.window.$(worldSelect);
-            this.worldSelect.on('change.thModernWorldInfo_modern_ui', this.worldSelectChangeHandler);
+            this.worldSelect = this.window.$(this.document);
+            this.worldSelect.on('change.thModernWorldInfo_modern_ui', '#world_editor_select', this.worldSelectChangeHandler);
         }
 
         this.observer = new this.window.MutationObserver(mutations => {
@@ -2067,9 +2066,12 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
     const sync = () => {
         scheduledSync = 0;
         const shouldEnable = store.is_active && store.settings.modernWorldInfoEditor;
-        syncWorldSelects(shouldEnable, store.settings.modernWorldSelect);
         const worldInfo = findWorldInfo();
+        if (worldInfo !== observedWorldInfo) {
+            unmount();
+        }
         observeWorldInfo(worldInfo);
+        syncWorldSelects(shouldEnable, store.settings.modernWorldSelect);
         const isOpen = worldInfo?.classList.contains('openDrawer') ?? false;
         worldInfo?.classList.toggle(WORLD_INFO_ENABLED_CLASS, shouldEnable && (isOpen || Boolean(controller)));
         if (shouldEnable && isOpen) {
@@ -2108,6 +2110,16 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
     };
 
     const observer = new hostWindow.MutationObserver(scheduleSync);
+    // 启动时面板可能尚未创建，宿主也可能替换整个面板或延迟填充编辑区。
+    const documentObserver = new hostWindow.MutationObserver(mutations => {
+        const selector = '#WorldInfo, #world_popup, #world_popup_entries_list, #world_editor_select';
+        if (mutations.some(mutation => [...mutation.addedNodes, ...mutation.removedNodes].some(node =>
+            node instanceof HTMLElement && (node.matches(selector) || node.querySelector(selector)),
+        ))) {
+            scheduleSync();
+        }
+    });
+    documentObserver.observe(hostDocument.body, { childList: true, subtree: true });
 
     function observeWorldInfo(worldInfo: HTMLElement | null): void {
         if (worldInfo === observedWorldInfo) {
@@ -2131,6 +2143,7 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
         destroy() {
             stopWatch();
             observer?.disconnect();
+            documentObserver.disconnect();
             hostDocument.removeEventListener('click', handleDocumentClick, true);
             if (scheduledSync) {
                 hostWindow.cancelAnimationFrame(scheduledSync);

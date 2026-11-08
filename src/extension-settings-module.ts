@@ -157,6 +157,13 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     }
   }
 
+  function getOrderedChildren(column: HTMLElement): Element[] {
+    return Array.from(column.children)
+      .map(node => ({ node, order: Number(hostWindow.getComputedStyle(node).order) }))
+      .sort((a, b) => a.order - b.order)
+      .map(item => item.node);
+  }
+
   function collectEntries(): ExtensionEntry[] {
     const keyCounts = new Map<string, number>();
     const nextEntries: ExtensionEntry[] = [];
@@ -193,9 +200,7 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     };
 
     columns.forEach(column => {
-      const children = Array.from(column.children).sort(
-        (a, b) => Number(hostWindow.getComputedStyle(a).order) - Number(hostWindow.getComputedStyle(b).order),
-      );
+      const children = getOrderedChildren(column);
       children.forEach(node => {
         if (!(node instanceof hostWindow.HTMLElement) || node === navigation) {
           return;
@@ -313,8 +318,7 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       fragment.append(button);
     };
     columns.forEach(column => {
-      Array.from(column.children)
-        .sort((a, b) => Number(hostWindow.getComputedStyle(a).order) - Number(hostWindow.getComputedStyle(b).order))
+      getOrderedChildren(column)
         .forEach(source => {
           if (source.matches('.mc3-native-subgroup-header')) {
             if (source.matches('.mc3-hidden, .displayNone, [hidden]') || (source as HTMLElement).style.display === 'none') return;
