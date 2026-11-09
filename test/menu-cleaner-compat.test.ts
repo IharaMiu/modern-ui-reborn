@@ -44,9 +44,10 @@ test(`menu cleaner navigation, menu dismissal and QR folding at ${width}px`, { s
   const {mountMenuCleanerCompatibility} = load(${JSON.stringify(compile(read('../src/menu-cleaner-compat.ts')))});
   const {mountQuickReplyController} = load(${JSON.stringify(compile(`
     const {getHostDocument, getHostWindow} = require('host');
-    const setHostCssVariable = (name, value) => document.documentElement.style.setProperty(name, value);
-    const removeHostCssVariable = name => document.documentElement.style.removeProperty(name);
+    const setHostCssVariable = (name, value) => [document.documentElement, document.body].forEach(el => el.style.setProperty(name, value));
+    const removeHostCssVariable = name => [document.documentElement, document.body].forEach(el => el.style.removeProperty(name));
     ${constants}
+    ${ast.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === 'parseCssPixelValue')!.getText(ast)}
     export ${qr.getText(ast)}
   `))});
   (async () => {

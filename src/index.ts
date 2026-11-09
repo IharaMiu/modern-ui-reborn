@@ -1878,7 +1878,8 @@ function mountQuickReplyController(store: ReturnType<typeof useModernLayoutStore
     if (candidates.length === 0) {
       return send_form.getBoundingClientRect().top;
     }
-    return Math.min(...candidates.map(element => element.getBoundingClientRect().top));
+    // Keep replies above the entire form, including plugin controls and attachments.
+    return Math.min(send_form.getBoundingClientRect().top, ...candidates.map(element => element.getBoundingClientRect().top));
   };
 
   const hasVisibleQuickReplyContent = (bar: HTMLElement): boolean => {
@@ -1972,7 +1973,10 @@ function mountQuickReplyController(store: ReturnType<typeof useModernLayoutStore
     const rendered_bar_height = Math.ceil(valid_bar.getBoundingClientRect().height);
     const externally_collapsed = !collapsed && natural_bar_height > 1 && rendered_bar_height <= 1;
     const quick_reply_height = collapsed || externally_collapsed ? 0 : natural_bar_height;
-    const reserve_height = has_content ? Math.max(toggle_height + 6, quick_reply_height + 10) : 0;
+    const toolbar_gap = parseCssPixelValue(
+      host_window.getComputedStyle(host_document.body).getPropertyValue('--th-modern-input-toolbar-gap'), 8,
+    );
+    const reserve_height = has_content ? Math.max(toggle_height, quick_reply_height) + toolbar_gap : 0;
     setHostCssVariable(QUICK_REPLY_RESERVE_HEIGHT_VARIABLE, `${reserve_height}px`);
   };
 

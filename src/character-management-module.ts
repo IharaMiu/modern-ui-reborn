@@ -174,6 +174,8 @@ export function mountCharacterManagement(store: Store): { destroy: () => void } 
   const clearState = () => {
     restoreSummary();
     restorePanelPin();
+    hostDocument.querySelector('#right-nav-panel')?.classList.remove('th-modern-character-empty-header');
+    hostDocument.querySelector('#bulkSelectedCount')?.removeAttribute('data-th-modern-count');
     toggleHostState(hostDocument, false);
   };
 
@@ -191,6 +193,12 @@ export function mountCharacterManagement(store: Store): { destroy: () => void } 
     const panel = hostDocument.querySelector<HTMLElement>('#right-nav-panel');
     observePanel(panel);
     syncPanelPin(panel);
+    const result = panel?.querySelector<HTMLElement>('#result_info');
+    panel?.classList.toggle('th-modern-character-empty-header', !isEditorMode(panel) &&
+      !panel?.querySelector('#rm_button_selected_ch h2')?.textContent?.trim() &&
+      (!result || hostWindow.getComputedStyle(result).display === 'none'));
+    const count = panel?.querySelector('#bulkSelectedCount');
+    count?.toggleAttribute('data-th-modern-count', Number(count.textContent?.trim()) > 0);
     if (!isEditorMode(panel)) {
       restoreSummary();
       return;
@@ -223,6 +231,7 @@ export function mountCharacterManagement(store: Store): { destroy: () => void } 
         attributes: true,
         attributeFilter: ['data-menu-type'],
         childList: true,
+        characterData: true,
         subtree: true,
       });
     }

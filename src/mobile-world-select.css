@@ -713,3 +713,11 @@ body.th-modern-reduce-motion .th-modern-mobile-world-picker-sheet {
     transform: translateY(0);
   }
 }
+
+body.th-modern-enabled .th-modern-mobile-world-picker-row.is-placeholder[aria-selected='true'] {
+  background: transparent;
+}
+
+body.th-modern-enabled .th-modern-mobile-world-picker[data-layout='wide'] .th-modern-mobile-world-picker-viewport {
+  min-height: 52px;
+}

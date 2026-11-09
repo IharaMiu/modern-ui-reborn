@@ -401,15 +401,51 @@ body.th-modern-enabled.th-modern-character-management #rm_print_characters_block
   box-shadow: inset 3px 0 0 var(--SmartThemeQuoteColor);
 }
 
-body.th-modern-enabled.th-modern-character-management #bulkSelectedCount:not(:empty)::before {
+body.th-modern-enabled.th-modern-character-management #bulkSelectedCount[data-th-modern-count]::before {
   content: '已选 ';
 }
 
-body.th-modern-enabled.th-modern-character-management #bulkSelectedCount:not(:empty)::after {
+body.th-modern-enabled.th-modern-character-management #bulkSelectedCount[data-th-modern-count]::after {
   content: ' 项';
 }
 
 @media (max-width: 899.98px) {
+  body.th-modern-enabled.th-modern-character-management #right-nav-panel #avatar-and-name-block.th-modern-character-summary {
+    padding: 8px;
+  }
+
+  body.th-modern-enabled.th-modern-character-management .th-modern-character-summary-main {
+    gap: 8px;
+  }
+
+  body.th-modern-enabled.th-modern-character-management .th-modern-character-summary-fields {
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  body.th-modern-enabled.th-modern-character-management .th-modern-character-summary-fields > label {
+    margin-block: 0;
+  }
+
+
+  body.th-modern-enabled.th-modern-character-management #right-nav-panel.th-modern-character-panel > .th-modern-drawer-titlebar {
+    margin-bottom: 4px;
+  }
+
+  body.th-modern-enabled.th-modern-character-management #right-nav-panel.th-modern-character-panel #charListFixedTop {
+    padding: 8px;
+  }
+
+  body.th-modern-enabled.th-modern-character-management #right-nav-panel.th-modern-character-panel :is(#rm_button_bar, #rm_print_characters_pagination) {
+    gap: 4px;
+    margin-block: 4px;
+  }
+
+  body.th-modern-enabled.th-modern-character-management #right-nav-panel.th-modern-character-panel #rm_button_bar {
+    align-items: center;
+  }
+
   body.th-modern-enabled.th-modern-character-management #right-nav-panel.th-modern-character-panel #character_sort_order {
     flex: 1 1 55%;
     min-width: 0;
@@ -537,4 +573,9 @@ body.th-modern-enabled.th-modern-character-management #bulkSelectedCount:not(:em
     background: color-mix(in srgb, var(--SmartThemeQuoteColor) 12%, transparent);
   }
 
+}
+
+body.th-modern-enabled.th-modern-character-management #right-nav-panel.th-modern-character-empty-header > #rm_PinAndTabs,
+body.th-modern-enabled.th-modern-character-management #bulkSelectedCount:not([data-th-modern-count]) {
+  display: none !important;
 }

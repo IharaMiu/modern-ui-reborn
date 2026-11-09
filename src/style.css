@@ -45,9 +45,11 @@ body.th-modern-enabled {
   --th-modern-input-side-gap: 16px;
   --th-modern-input-height: 96px;
   --th-modern-input-stack-offset: 100%;
+  --th-modern-input-toolbar-gap: 8px;
   --th-modern-quick-reply-max-height: 40dvh;
   --th-modern-quick-reply-reserve-height: 0px;
   --th-modern-input-inline-inset: var(--th-modern-input-side-gap);
+  --th-modern-titlebar-control-size: 30px;
   --th-modern-radius-xs: 6px;
   --th-modern-radius-sm: 9px;
   --th-modern-gap: 10px;
@@ -642,10 +644,11 @@ body.th-modern-enabled.th-modern-single-line-input:not(.th-modern-floating-input
 }
 
 body.th-modern-enabled #qr--bar {
+  align-items: flex-start;
   background: transparent !important;
   position: absolute;
   right: 0;
-  bottom: calc(var(--th-modern-input-stack-offset) + 10px);
+  bottom: calc(var(--th-modern-input-stack-offset) + var(--th-modern-input-toolbar-gap));
   left: 0;
   z-index: 1;
   display: flex;
@@ -661,8 +664,6 @@ body.th-modern-enabled #qr--bar {
   transform: translateY(0) scale(1);
   transform-origin: center bottom;
   transition:
-    height calc(var(--th-modern-motion-duration) * 2) ease-in-out,
-    max-height var(--th-modern-motion-duration) ease,
     opacity var(--th-modern-motion-duration) ease,
     transform var(--th-modern-motion-duration) ease;
 }
@@ -685,7 +686,7 @@ body.th-modern-enabled.th-modern-quick-replies-collapsed:not(.th-modern-quick-re
 body.th-modern-enabled #th-modern-quick-reply-toggle {
   position: absolute;
   right: 10px;
-  bottom: calc(var(--th-modern-input-stack-offset) + 5px);
+  bottom: calc(var(--th-modern-input-stack-offset) + var(--th-modern-input-toolbar-gap));
   z-index: 3;
   display: inline-flex;
   align-items: center;
@@ -706,7 +707,6 @@ body.th-modern-enabled #th-modern-quick-reply-toggle {
   opacity: 0.82;
   pointer-events: auto;
   transition:
-    bottom var(--th-modern-motion-duration) ease,
     opacity var(--th-modern-motion-duration) ease,
     transform var(--th-modern-motion-duration) ease,
     background-color var(--th-modern-motion-duration) ease;
@@ -1027,13 +1027,13 @@ body.th-modern-enabled .th-modern-drawer-actions a[href*="docs.sillytavern.app"]
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  flex: 0 0 30px !important;
-  width: 30px !important;
-  height: 30px !important;
-  min-width: 30px !important;
-  max-width: 30px !important;
-  min-height: 30px !important;
-  max-height: 30px !important;
+  flex: 0 0 var(--th-modern-titlebar-control-size) !important;
+  width: var(--th-modern-titlebar-control-size) !important;
+  height: var(--th-modern-titlebar-control-size) !important;
+  min-width: var(--th-modern-titlebar-control-size) !important;
+  max-width: var(--th-modern-titlebar-control-size) !important;
+  min-height: var(--th-modern-titlebar-control-size) !important;
+  max-height: var(--th-modern-titlebar-control-size) !important;
   margin: 0 !important;
   padding: 0 !important;
   border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 30%, transparent) !important;
@@ -1046,16 +1046,16 @@ body.th-modern-enabled .th-modern-drawer-actions a[href*="docs.sillytavern.app"]
 }
 
 /* 原生图钉包含复选框和两个图标，标题栏中保持与其他按钮同尺寸。 */
-body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div) {
+body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div, #WI_panel_pin_div) {
   position: relative !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  flex: 0 0 30px !important;
-  width: 30px !important;
-  height: 30px !important;
-  min-width: 30px !important;
-  min-height: 30px !important;
+  flex: 0 0 var(--th-modern-titlebar-control-size) !important;
+  width: var(--th-modern-titlebar-control-size) !important;
+  height: var(--th-modern-titlebar-control-size) !important;
+  min-width: var(--th-modern-titlebar-control-size) !important;
+  min-height: var(--th-modern-titlebar-control-size) !important;
   margin: 0 !important;
   padding: 0 !important;
   border: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 30%, transparent) !important;
@@ -1064,7 +1064,7 @@ body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #
   font-size: 14px !important;
 }
 
-body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div) > input[type="checkbox"] {
+body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div, #WI_panel_pin_div) > input[type="checkbox"] {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -1074,7 +1074,7 @@ body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #
   clip-path: inset(50%);
 }
 
-body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div) > label {
+body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div, #WI_panel_pin_div) > label {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -1085,7 +1085,7 @@ body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #
   cursor: pointer;
 }
 
-body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div) > label > .right_menu_button {
+body.th-modern-enabled .th-modern-drawer-actions :is(#lm_button_panel_pin_div, #rm_button_panel_pin_div, #WI_panel_pin_div) > label > .right_menu_button {
   margin: 0 !important;
   padding: 0 !important;
   font-size: 14px !important;
@@ -1565,7 +1565,7 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
   body.th-modern-enabled.th-modern-two-column #qr--bar {
     position: absolute;
     right: 0;
-    bottom: calc(var(--th-modern-input-stack-offset) + 10px);
+    bottom: calc(var(--th-modern-input-stack-offset) + var(--th-modern-input-toolbar-gap));
     left: 0;
     z-index: 1;
     display: flex;
@@ -1710,10 +1710,10 @@ body.th-modern-enabled .drawer-content:has(> .th-modern-drawer-titlebar) > :not(
     box-sizing: border-box;
     align-items: center;
     width: 100%;
-    min-height: 38px;
-    gap: 10px;
-    margin: 1px 0;
-    padding: 7px 9px;
+    min-height: 36px;
+    gap: 8px;
+    margin: 0;
+    padding: 6px 8px;
     border-radius: var(--th-modern-radius-sm);
     color: var(--SmartThemeBodyColor);
     cursor: pointer;
@@ -3862,3 +3862,27 @@ body.th-modern-enabled #top-settings-holder > .drawer.mc3-hidden * {
   }
 }
 
+
+@media (max-width: 899.98px) {
+  body.th-modern-enabled {
+    --th-modern-titlebar-control-size: 44px;
+  }
+
+  body.th-modern-enabled .welcomePanel .welcomeHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  body.th-modern-enabled .welcomePanel .recentChatsTitle {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  body.th-modern-enabled .welcomePanel .welcomeShortcuts {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 100%;
+  }
+}

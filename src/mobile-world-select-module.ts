@@ -946,7 +946,7 @@ class MobileWorldPicker {
       button.classList.toggle('is-active', this.activeTab === tab);
       const count =
         tab === 'all'
-          ? this.options.length
+          ? this.options.filter(option => option.value !== '').length
           : tab === 'enabled'
             ? this.selectedValues.size
             : this.manager.getFavorites().size;
@@ -971,8 +971,9 @@ class MobileWorldPicker {
     if (this.viewport) {
       this.viewport.scrollTop = 0;
     }
-    this.updateStatus(candidates.length);
+    this.updateStatus(candidates.filter(option => option.value !== '').length);
     this.renderRows();
+    if (this.sheet?.isConnected) this.syncLayout();
   }
 
   private renderRows(): void {
@@ -1057,14 +1058,15 @@ class MobileWorldPicker {
   private updatePooledRow(row: PickerRowView, option: PickerOption): void {
     const selected = this.selectedValues.has(option.value);
     const favorite = this.manager.isFavorite(option.favoriteKey);
-    const label = option.label || (option.value === '' ? '不选择世界书' : option.value);
+    const label = option.value === '' ? '不选择世界书' : option.label || option.value;
     row.root.dataset.sourceIndex = String(option.sourceIndex);
     row.root.setAttribute('aria-selected', String(selected));
     row.root.dataset.favorite = String(favorite);
+    row.root.classList.toggle('is-placeholder', option.value === '');
     row.selectButton.disabled = option.disabled;
     row.selectButton.title = this.controller.config.multiple
       ? `${selected ? '停用' : '启用'}世界书：${option.label}`
-      : `选择世界书：${option.label}`;
+      : option.value === '' ? '取消选择世界书' : `选择世界书：${option.label}`;
     row.labelText.data = label;
     row.selectedIcon.hidden = !selected;
     row.favoriteButton.hidden = !option.value;
@@ -1077,7 +1079,7 @@ class MobileWorldPicker {
 
   private updateStatus(tabTotal: number): void {
     if (this.resultStatus) {
-      const resultText = this.query ? `找到 ${this.filteredOptions.length} / ${tabTotal} 本` : `当前页签 ${tabTotal} 本`;
+      const resultText = this.query ? `找到 ${this.filteredOptions.filter(option => option.value !== '').length} / ${tabTotal} 本` : `当前页签 ${tabTotal} 本`;
       this.resultStatus.textContent = this.controller.config.multiple
         ? `${resultText} · 已启用 ${this.selectedValues.size} 本 · 点击即生效`
         : `${resultText} · 点击即选择`;
@@ -1116,7 +1118,10 @@ class MobileWorldPicker {
     const margin = 12;
     const gap = 8;
     const width = Math.min(560, viewportWidth - margin * 2);
-    const preferredHeight = Math.min(640, viewportHeight - margin * 2);
+    this.sheet.style.width = `${width}px`;
+    const chromeHeight = this.sheet.getBoundingClientRect().height - (this.viewport?.getBoundingClientRect().height ?? 0);
+    const contentHeight = Math.max(this.rows?.scrollHeight ?? 0, this.emptyState?.offsetHeight ?? 0);
+    const preferredHeight = Math.min(640, Math.max(220, Math.ceil(chromeHeight + contentHeight)), viewportHeight - margin * 2);
     const below = Math.max(0, viewportHeight - triggerRect.bottom - gap - margin);
     const above = Math.max(0, triggerRect.top - gap - margin);
     const placeBelow = below >= Math.min(420, preferredHeight) || below >= above;
@@ -1222,7 +1227,7 @@ class MobileWorldPicker {
       this.renderTabs();
       this.updateStatus(
         this.activeTab === 'all'
-          ? this.options.length
+          ? this.options.filter(option => option.value !== '').length
           : this.activeTab === 'enabled'
             ? this.options.filter(candidate => this.enabledSnapshot.has(candidate.value)).length
             : this.options.filter(candidate => this.favoriteSnapshot.has(candidate.favoriteKey)).length,

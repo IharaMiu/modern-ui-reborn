@@ -3262,15 +3262,19 @@ function Vs(e) {
 		let n = t.querySelector("#rm_button_panel_pin_div"), r = e?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
 		a && a.marker.isConnected && a.node === n && a.node.parentElement === r || (l(), n && r && (a = Fs(t, n, r), r.prepend(n)));
 	}, d = () => {
-		c(), l(), Ps(t, !1);
+		c(), l(), t.querySelector("#right-nav-panel")?.classList.remove("th-modern-character-empty-header"), t.querySelector("#bulkSelectedCount")?.removeAttribute("data-th-modern-count"), Ps(t, !1);
 	}, f = () => {
 		if (s = 0, !(e.is_active && e.settings.modernCharacterManagement)) {
 			h(null), d();
 			return;
 		}
 		Ps(t, !0);
-		let n = t.querySelector("#right-nav-panel");
-		h(n), u(n), Bs(n) ? (i && !zs(t, i) && c(), i ??= Rs(t)) : c();
+		let r = t.querySelector("#right-nav-panel");
+		h(r), u(r);
+		let a = r?.querySelector("#result_info");
+		r?.classList.toggle("th-modern-character-empty-header", !Bs(r) && !r?.querySelector("#rm_button_selected_ch h2")?.textContent?.trim() && (!a || n.getComputedStyle(a).display === "none"));
+		let o = r?.querySelector("#bulkSelectedCount");
+		o?.toggleAttribute("data-th-modern-count", Number(o.textContent?.trim()) > 0), Bs(r) ? (i && !zs(t, i) && c(), i ??= Rs(t)) : c();
 	}, p = () => {
 		s ||= n.requestAnimationFrame(f);
 	}, m = new r(p);
@@ -3279,6 +3283,7 @@ function Vs(e) {
 			attributes: !0,
 			attributeFilter: ["data-menu-type"],
 			childList: !0,
+			characterData: !0,
 			subtree: !0
 		}));
 	}
@@ -9116,14 +9121,14 @@ var pg = class {
 		for (let t of this.getAvailableTabs()) {
 			let n = J(this.document, "button", "th-modern-mobile-world-picker-tab");
 			n.type = "button", n.dataset.tab = t, n.setAttribute("role", "tab"), n.setAttribute("aria-selected", String(this.activeTab === t)), n.classList.toggle("is-active", this.activeTab === t);
-			let r = t === "all" ? this.options.length : t === "enabled" ? this.selectedValues.size : this.manager.getFavorites().size;
+			let r = t === "all" ? this.options.filter((e) => e.value !== "").length : t === "enabled" ? this.selectedValues.size : this.manager.getFavorites().size;
 			n.append(this.document.createTextNode(cg[t]), J(this.document, "span")), n.lastElementChild.textContent = String(r), e.append(n);
 		}
 		this.tabs.replaceChildren(e);
 	}
 	filterOptions() {
 		let e = ug(this.query), t = this.options;
-		this.activeTab === "enabled" ? t = t.filter((e) => this.enabledSnapshot.has(e.value)) : this.activeTab === "favorites" && (t = t.filter((e) => this.favoriteSnapshot.has(e.favoriteKey))), this.filteredOptions = e ? t.filter((t) => t.searchText.includes(e)) : [...t], this.viewport && (this.viewport.scrollTop = 0), this.updateStatus(t.length), this.renderRows();
+		this.activeTab === "enabled" ? t = t.filter((e) => this.enabledSnapshot.has(e.value)) : this.activeTab === "favorites" && (t = t.filter((e) => this.favoriteSnapshot.has(e.favoriteKey))), this.filteredOptions = e ? t.filter((t) => t.searchText.includes(e)) : [...t], this.viewport && (this.viewport.scrollTop = 0), this.updateStatus(t.filter((e) => e.value !== "").length), this.renderRows(), this.sheet?.isConnected && this.syncLayout();
 	}
 	renderRows() {
 		if (!this.viewport || !this.rows || !this.emptyState) return;
@@ -9167,12 +9172,12 @@ var pg = class {
 		this.rows.append(t);
 	}
 	updatePooledRow(e, t) {
-		let n = this.selectedValues.has(t.value), r = this.manager.isFavorite(t.favoriteKey), i = t.label || (t.value === "" ? "不选择世界书" : t.value);
-		e.root.dataset.sourceIndex = String(t.sourceIndex), e.root.setAttribute("aria-selected", String(n)), e.root.dataset.favorite = String(r), e.selectButton.disabled = t.disabled, e.selectButton.title = this.controller.config.multiple ? `${n ? "停用" : "启用"}世界书：${t.label}` : `选择世界书：${t.label}`, e.labelText.data = i, e.selectedIcon.hidden = !n, e.favoriteButton.hidden = !t.value, e.favoriteButton.setAttribute("aria-pressed", String(r)), e.favoriteButton.setAttribute("aria-label", `${r ? "取消收藏" : "收藏"}世界书：${t.label}`), e.favoriteButton.title = r ? "取消收藏" : "收藏", e.favoriteOnIcon.hidden = !r, e.favoriteOffIcon.hidden = r;
+		let n = this.selectedValues.has(t.value), r = this.manager.isFavorite(t.favoriteKey), i = t.value === "" ? "不选择世界书" : t.label || t.value;
+		e.root.dataset.sourceIndex = String(t.sourceIndex), e.root.setAttribute("aria-selected", String(n)), e.root.dataset.favorite = String(r), e.root.classList.toggle("is-placeholder", t.value === ""), e.selectButton.disabled = t.disabled, e.selectButton.title = this.controller.config.multiple ? `${n ? "停用" : "启用"}世界书：${t.label}` : t.value === "" ? "取消选择世界书" : `选择世界书：${t.label}`, e.labelText.data = i, e.selectedIcon.hidden = !n, e.favoriteButton.hidden = !t.value, e.favoriteButton.setAttribute("aria-pressed", String(r)), e.favoriteButton.setAttribute("aria-label", `${r ? "取消收藏" : "收藏"}世界书：${t.label}`), e.favoriteButton.title = r ? "取消收藏" : "收藏", e.favoriteOnIcon.hidden = !r, e.favoriteOffIcon.hidden = r;
 	}
 	updateStatus(e) {
 		if (this.resultStatus) {
-			let t = this.query ? `找到 ${this.filteredOptions.length} / ${e} 本` : `当前页签 ${e} 本`;
+			let t = this.query ? `找到 ${this.filteredOptions.filter((e) => e.value !== "").length} / ${e} 本` : `当前页签 ${e} 本`;
 			this.resultStatus.textContent = this.controller.config.multiple ? `${t} · 已启用 ${this.selectedValues.size} 本 · 点击即生效` : `${t} · 点击即选择`;
 		}
 		this.clearSearchButton && (this.clearSearchButton.hidden = this.query.length === 0), this.emptyStateText && (this.emptyStateText.data = this.query ? "没有找到匹配的世界书" : this.activeTab === "favorites" ? "还没有收藏世界书" : this.activeTab === "enabled" ? "当前没有已启用的世界书" : "没有可选择的世界书");
@@ -9184,8 +9189,10 @@ var pg = class {
 		if (!this.sheet) return;
 		let e = Math.min(this.window.innerWidth, this.document.documentElement.clientWidth || this.window.innerWidth), t = Math.min(this.window.innerHeight, this.document.documentElement.clientHeight || this.window.innerHeight), n = this.controller.getTriggerRect();
 		if (!n) return;
-		let r = Math.min(560, e - 24), i = Math.min(640, t - 24), a = Math.max(0, t - n.bottom - 8 - 12), o = Math.max(0, n.top - 8 - 12), s = a >= Math.min(420, i) || a >= o, c = Math.max(220, Math.min(i, s ? a : o)), l = Math.max(12, Math.min(n.left, e - r - 12)), u = s ? Math.min(t - c - 12, n.bottom + 8) : Math.max(12, n.top - 8 - c);
-		this.sheet.style.left = `${l}px`, this.sheet.style.top = `${u}px`, this.sheet.style.width = `${r}px`, this.sheet.style.height = `${c}px`;
+		let r = Math.min(560, e - 24);
+		this.sheet.style.width = `${r}px`;
+		let i = this.sheet.getBoundingClientRect().height - (this.viewport?.getBoundingClientRect().height ?? 0), a = Math.max(this.rows?.scrollHeight ?? 0, this.emptyState?.offsetHeight ?? 0), o = Math.min(640, Math.max(220, Math.ceil(i + a)), t - 24), s = Math.max(0, t - n.bottom - 8 - 12), c = Math.max(0, n.top - 8 - 12), l = s >= Math.min(420, o) || s >= c, u = Math.max(220, Math.min(o, l ? s : c)), d = Math.max(12, Math.min(n.left, e - r - 12)), f = l ? Math.min(t - u - 12, n.bottom + 8) : Math.max(12, n.top - 8 - u);
+		this.sheet.style.left = `${d}px`, this.sheet.style.top = `${f}px`, this.sheet.style.width = `${r}px`, this.sheet.style.height = `${u}px`;
 	}
 	focusFilteredIndex(e) {
 		if (!this.viewport || this.filteredOptions.length === 0) return;
@@ -9219,7 +9226,7 @@ var pg = class {
 		let r = Number(n.dataset.sourceIndex), i = this.options.find((e) => e.sourceIndex === r);
 		if (!i) return;
 		if (t?.closest(".th-modern-mobile-world-picker-favorite")) {
-			this.manager.toggleFavorite(i.favoriteKey) && this.favoriteSnapshot.add(i.favoriteKey), this.renderTabs(), this.updateStatus(this.activeTab === "all" ? this.options.length : this.activeTab === "enabled" ? this.options.filter((e) => this.enabledSnapshot.has(e.value)).length : this.options.filter((e) => this.favoriteSnapshot.has(e.favoriteKey)).length), this.renderRows();
+			this.manager.toggleFavorite(i.favoriteKey) && this.favoriteSnapshot.add(i.favoriteKey), this.renderTabs(), this.updateStatus(this.activeTab === "all" ? this.options.filter((e) => e.value !== "").length : this.activeTab === "enabled" ? this.options.filter((e) => this.enabledSnapshot.has(e.value)).length : this.options.filter((e) => this.favoriteSnapshot.has(e.favoriteKey)).length), this.renderRows();
 			return;
 		}
 		let a = t?.closest(".th-modern-mobile-world-picker-row-select");
@@ -9640,6 +9647,7 @@ var x_ = class {
 	pendingSummaryUpdates = /* @__PURE__ */ new Map();
 	worldbar;
 	toolbar;
+	emptyWorldControls = /* @__PURE__ */ new Set();
 	main;
 	popupObserver;
 	observedPopup;
@@ -9686,7 +9694,7 @@ var x_ = class {
 		let e = this.mounted;
 		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(yg, Sg, Tg), this.observer?.disconnect(), this.observer = void 0, this.popupObserver?.disconnect(), this.popupObserver = void 0, this.observedPopup = void 0, this.pendingReconcileFrame &&= (this.window.cancelAnimationFrame(this.pendingReconcileFrame), 0), this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), Ng.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", "#world_editor_select", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
 		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(bg, xg, Eg);
-		return this.observedList = void 0, Gg(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
+		return this.observedList = void 0, this.restoreEmptyWorldControls(), Gg(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
 	}
 	bindResponsiveMode() {
 		this.narrowQuery = this.window.matchMedia("(max-width: 899.98px)"), this.narrowQueryHandler = () => this.syncResponsiveMode(), this.narrowQuery.addEventListener("change", this.narrowQueryHandler), this.syncResponsiveMode();
@@ -9777,7 +9785,7 @@ var x_ = class {
 			for (let e of u) this.shell.append(e);
 			n = !0;
 		}
-		(s.firstElementChild !== l || s.lastElementChild !== c) && (s.append(l, c), n = !0), r && r.parentElement !== l && (Wg(r, l, this.moved), n = !0);
+		l.nextElementSibling !== c && (s.append(l, c), n = !0), r && r.parentElement !== l && (Wg(r, l, this.moved), n = !0);
 		let f = t.querySelector("#world_create_button")?.closest(".flex-container");
 		f && f.parentElement !== a && (Wg(f, a, this.moved), n = !0);
 		let p = t.querySelector("#world_info_search")?.closest(".flex-container");
@@ -9790,7 +9798,7 @@ var x_ = class {
 				n && n.parentElement !== m && Wg(n, m, this.moved, e);
 			}
 		}
-		return this.isNarrowMode() || this.multiSelect || c.childElementCount || (this.selectedEntry && this.selectedEntry.isConnected ? this.ensureEntryEditor(this.selectedEntry) : this.selectFirstEntry()), this.syncResponsiveMode(), this.observePopup(), n;
+		return this.isNarrowMode() || this.multiSelect || c.childElementCount || (this.selectedEntry && this.selectedEntry.isConnected ? this.ensureEntryEditor(this.selectedEntry) : this.selectFirstEntry()), this.syncWorldAvailability(), this.syncResponsiveMode(), this.observePopup(), n;
 	}
 	buildLayout(e, t) {
 		this.ensureLayout(e);
@@ -9847,7 +9855,22 @@ var x_ = class {
 	restoreSelectionAfterRender() {
 		this.selectedEntry?.isConnected || (this.clearSelection(), this.mobileDetailOpen = !1, this.syncResponsiveMode(), this.isNarrowMode() || this.selectFirstEntry());
 	}
+	restoreEmptyWorldControls() {
+		for (let e of this.emptyWorldControls) e.inert = !1;
+		this.emptyWorldControls.clear();
+	}
+	syncWorldAvailability() {
+		if (!this.shell || !this.main) return;
+		let e = Ig(this.document) === "";
+		this.shell.classList.toggle("th-modern-wi-no-world", e);
+		let t = this.main.querySelector(":scope > .th-modern-wi-empty-world");
+		if (t || (t = Y(this.document, "p", "th-modern-wi-empty-world"), t.textContent = "选择世界书以查看条目", this.main.prepend(t)), t.hidden = !e, this.restoreEmptyWorldControls(), e) {
+			let e = [this.toolbar, ...this.shell.querySelectorAll("#world_popup_export, #world_popup_name_button, #world_duplicate, #world_popup_delete")];
+			for (let t of e) t && !t.inert && (t.inert = !0, this.emptyWorldControls.add(t));
+		}
+	}
 	syncSelectedWorld() {
+		this.syncWorldAvailability();
 		let e = Ig(this.document);
 		if (e !== this.selectedWorldName) {
 			this.selectedWorldName = e, this.worldRevision += 1, this.clearSelection(), this.cancelPendingSummaryUpdates(), this.selectedUids.clear(), Ng.clear();
@@ -10790,7 +10813,7 @@ function ky(e) {
 			let t = n.getComputedStyle(e), r = e.getBoundingClientRect();
 			return !e.hidden && t.display !== "none" && t.visibility !== "hidden" && r.height > 0;
 		});
-		return t.length === 0 ? e.getBoundingClientRect().top : Math.min(...t.map((e) => e.getBoundingClientRect().top));
+		return t.length === 0 ? e.getBoundingClientRect().top : Math.min(e.getBoundingClientRect().top, ...t.map((e) => e.getBoundingClientRect().top));
 	}, d = (e) => Array.from(e.children).some((e) => {
 		if (!(e instanceof n.HTMLElement) || e.id === "qr--popoutTrigger" || e.hidden) return !1;
 		let t = n.getComputedStyle(e);
@@ -10829,8 +10852,8 @@ function ky(e) {
 		zv(wv, `${Math.max(0, Math.ceil(S.bottom - u(p)))}px`);
 		let C = b ? Math.max(0, Math.ceil(h.scrollHeight)) : 0;
 		zv(Tv, `${C}px`);
-		let w = r.hidden ? 0 : Math.ceil(r.getBoundingClientRect().height || 26), T = Math.ceil(h.getBoundingClientRect().height), ee = y || !y && C > 1 && T <= 1 ? 0 : C;
-		zv(Ev, `${b ? Math.max(w + 6, ee + 10) : 0}px`);
+		let w = r.hidden ? 0 : Math.ceil(r.getBoundingClientRect().height || 26), T = Math.ceil(h.getBoundingClientRect().height), ee = y || !y && C > 1 && T <= 1 ? 0 : C, te = Bv(n.getComputedStyle(t.body).getPropertyValue("--th-modern-input-toolbar-gap"), 8);
+		zv(Ev, `${b ? Math.max(w, ee) + te : 0}px`);
 	};
 	function p() {
 		i === 0 && (i = n.requestAnimationFrame(f));

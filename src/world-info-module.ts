@@ -1068,6 +1068,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
     private readonly pendingSummaryUpdates = new Map<HTMLElement, number>();
     private worldbar?: HTMLElement;
     private toolbar?: HTMLElement;
+    private readonly emptyWorldControls = new Set<HTMLElement>();
     private main?: HTMLElement;
     private popupObserver?: MutationObserver;
     private observedPopup?: HTMLElement;
@@ -1198,6 +1199,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         }
         this.observedList = undefined;
 
+        this.restoreEmptyWorldControls();
         restoreMovedNodes(this.moved);
         this.shell?.remove();
         this.shell = undefined;
@@ -1414,7 +1416,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         }
 
         // 5. 确保 main 内部顺序：listPane → editorPane
-        if (main.firstElementChild !== listPane || main.lastElementChild !== editorPane) {
+        if (listPane.nextElementSibling !== editorPane) {
             main.append(listPane, editorPane);
             changed = true;
         }
@@ -1465,6 +1467,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             }
         }
 
+        this.syncWorldAvailability();
         this.syncResponsiveMode();
         this.observePopup();
         return changed;
@@ -1623,7 +1626,38 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         }
     }
 
+    private restoreEmptyWorldControls(): void {
+        for (const control of this.emptyWorldControls) control.inert = false;
+        this.emptyWorldControls.clear();
+    }
+
+    private syncWorldAvailability(): void {
+        if (!this.shell || !this.main) return;
+        const empty = getSelectedWorldName(this.document) === '';
+        this.shell.classList.toggle('th-modern-wi-no-world', empty);
+        let message = this.main.querySelector<HTMLElement>(':scope > .th-modern-wi-empty-world');
+        if (!message) {
+            message = makeElement(this.document, 'p', 'th-modern-wi-empty-world');
+            message.textContent = '选择世界书以查看条目';
+            this.main.prepend(message);
+        }
+        message.hidden = !empty;
+        this.restoreEmptyWorldControls();
+        if (empty) {
+            const controls = [this.toolbar, ...this.shell.querySelectorAll<HTMLElement>(
+                '#world_popup_export, #world_popup_name_button, #world_duplicate, #world_popup_delete',
+            )];
+            for (const control of controls) {
+                if (control && !control.inert) {
+                    control.inert = true;
+                    this.emptyWorldControls.add(control);
+                }
+            }
+        }
+    }
+
     private syncSelectedWorld(): void {
+        this.syncWorldAvailability();
         const worldName = getSelectedWorldName(this.document);
         if (worldName === this.selectedWorldName) {
             return;
