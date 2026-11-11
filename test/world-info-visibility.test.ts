@@ -14,7 +14,7 @@ const compile = (source: string) => ts.transpileModule(source, {
 }).outputText;
 
 for (const width of [1280, 800, 390]) {
-  test(`world selectors recover after closing details and changing books at ${width}px`, { skip: !existsSync(browser) }, () => {
+  test(`world book entry, batch deletion and selector interactions at ${width}px`, { skip: !existsSync(browser) }, () => {
     const fixture = `<!doctype html><meta charset="utf-8"><style>${read('../src/world-info.css')}${read('../src/mobile-world-select.css')}
       #WorldInfo { width:100%; height:800px; } #WorldInfo:not(.openDrawer) { display:none; }
       </style><body class="th-modern-enabled">
@@ -46,12 +46,34 @@ for (const width of [1280, 800, 390]) {
           }
         },
       });
-      window.SillyTavern = { reloadWorldInfoEditor() {} };
+      let world = { entries: { 1: {uid:1}, 2: {uid:2}, 3: {uid:3} } };
+      let cachedWorld;
+      let changeCacheDuringRead = false;
+      let persistSave = true;
+      const savedWorlds = [];
+      const reloadedWorlds = [];
+      const errors = [];
+      window.toastr = { error: message => errors.push(message) };
+      let confirmation;
+      window.confirm = message => { confirmation = message; return true; };
+      window.fetch = async (url, options) => {
+        check(url === '/api/worldinfo/get' && JSON.parse(options.body).name === 'Book A', 'checks the current book');
+        if (changeCacheDuringRead) cachedWorld = {entries: {...world.entries, 2: {uid:2, comment:'changed'}}};
+        return { ok:true, json: async () => structuredClone(world) };
+      };
+      window.SillyTavern = { getContext: () => ({
+        loadWorldInfo: async () => structuredClone(cachedWorld ?? world),
+        getRequestHeaders: () => ({}),
+        saveWorldInfo: async (name, data, immediately) => { savedWorlds.push([name, immediately]); if (persistSave) world = data; },
+        reloadWorldInfoEditor: (name, force) => { reloadedWorlds.push([name, force]); },
+      }) };
       const host = { getHostDocument: () => document, getHostWindow: () => window };
       let selectors;
       const require = name => name === 'vue' ? {watch: (read, callback) => { callback(read()); return () => {}; }}
-        : name.includes('mobile-world-select-module') ? selectors : host;
+        : name.includes('mobile-world-select-module') ? selectors
+        : name.includes('world-info-concurrency') ? concurrency : host;
       const load = code => { const exports = {}; new Function('exports', 'require', code)(exports, require); return exports; };
+      const concurrency = load(${JSON.stringify(compile(read('../src/world-info-concurrency.ts')))});
       selectors = load(${JSON.stringify(compile(read('../src/mobile-world-select-module.ts') + '\nexport const TestManager = MobileWorldSelectManager;'))});
       let controllerRefreshes = 0;
       const mountControllers = selectors.TestManager.prototype.mountControllers;
@@ -81,6 +103,59 @@ for (const width of [1280, 800, 390]) {
         initialPanel.append(delayedPopup);
         await tick(); checkSelectors('initial selectors visible');
         const panel = document.getElementById('WorldInfo');
+        const multiButton = panel.querySelector('.th-modern-wi-multi-toggle');
+        const deleteButton = panel.querySelector('.th-modern-wi-delete-selected');
+        const list = document.getElementById('world_popup_entries_list');
+        const addEntry = (uid, book, title) => {
+          const entry = document.createElement('div');
+          entry.className = 'world_entry';
+          entry.setAttribute('uid', uid);
+          entry.innerHTML = '<form class="world_entry_form"><div class="inline-drawer"><div class="inline-drawer-header"><textarea name="comment"></textarea><button type="button" class="move_entry_button"></button></div></div></form>';
+          entry.querySelector('textarea').value = title;
+          entry.querySelector('.move_entry_button').dataset.currentWorld = book;
+          list.append(entry);
+          return entry;
+        };
+        const stale = addEntry(2, 'Book B', 'Stale row');
+        const first = addEntry(1, 'Book A', 'Entry one');
+        const third = addEntry(3, 'Book A', 'Entry three');
+        await tick();
+        const summary = entry => entry.querySelector('.th-modern-wi-row-summary');
+        summary(stale).click();
+        check(enhancer.selectedEntry !== stale, 'a stale row cannot open in a different book');
+        const title = first.querySelector('textarea');
+        title.value = '';
+        title.dispatchEvent(new Event('input', {bubbles:true}));
+        await tick();
+        check(first.querySelector('.th-modern-wi-row-title').textContent === 'UID 1', 'clearing the title clears the cached summary');
+        multiButton.click();
+        summary(stale).click();
+        check(deleteButton.hidden, 'a stale row cannot be selected for deletion');
+        summary(first).click();
+        summary(third).dispatchEvent(new KeyboardEvent('keydown', {key:'Enter', bubbles:true}));
+        third.remove();
+        await tick();
+        changeCacheDuringRead = true;
+        deleteButton.click();
+        await tick();
+        check(errors.pop()?.includes('世界书已更改') && savedWorlds.length === 0 && !deleteButton.hidden, 'a changed host cache stops deletion and retains the selection');
+        changeCacheDuringRead = false;
+        cachedWorld = undefined;
+        persistSave = false;
+        deleteButton.click();
+        await tick();
+        check(errors.pop()?.includes('无法确认世界书已保存') && reloadedWorlds.length === 0 && !deleteButton.hidden, 'a silent write failure keeps the selection and reports the error');
+        savedWorlds.length = 0;
+        persistSave = true;
+        deleteButton.click();
+        await tick();
+        check(errors.length === 0, 'batch delete errors: '+errors.join(', '));
+        check(confirmation.includes('Book A') && confirmation.includes('UID 3'), 'confirmation identifies the book and off-page entry');
+        check(Object.keys(world.entries).join(',') === '2', 'batch delete preserves the unselected entry');
+        check(JSON.stringify(savedWorlds) === '[["Book A",true]]', 'batch delete saves once through the host context');
+        check(JSON.stringify(reloadedWorlds) === '[["Book A",true]]', 'batch delete reloads through the host context');
+        multiButton.click();
+        list.replaceChildren();
         const openDetail = () => {
           enhancer.selectedEntry = document.getElementById('selected-entry');
           enhancer.mobileDetailOpen = true; enhancer.syncResponsiveMode();
@@ -98,10 +173,19 @@ for (const width of [1280, 800, 390]) {
         document.getElementById('world_editor_select').dispatchEvent(new Event('change', {bubbles:true}));
         await tick(); checkSelectors('book change clears stale detail flags');
         for (const id of ['world_info', 'world_editor_select']) {
-          document.querySelector('[data-source="'+id+'"] .th-modern-mobile-world-trigger').click(); await tick();
+          const pickerTrigger = document.querySelector('[data-source="'+id+'"] .th-modern-mobile-world-trigger');
+          pickerTrigger.click(); await tick();
           check(document.querySelector('dialog.th-modern-mobile-world-picker')?.open, 'recovered selector opens: '+id);
           document.querySelector('.th-modern-mobile-world-picker-close').click(); await tick();
+          check(pickerTrigger.getAttribute('aria-expanded') === 'false', 'closing the picker resets expanded state');
         }
+        const editorSource = panel.querySelector('#world_editor_select');
+        panel.querySelector('[data-source="world_editor_select"] .th-modern-mobile-world-trigger').click(); await tick();
+        const staleOptionButton = document.querySelector('.th-modern-mobile-world-picker-row-select');
+        editorSource.options[0].replaceWith(new Option('Replacement book', 'A'));
+        staleOptionButton.click();
+        check(editorSource.value === 'B' && document.querySelector('dialog.th-modern-mobile-world-picker')?.open, 'an old picker row cannot select a replacement at the same index');
+        document.querySelector('.th-modern-mobile-world-picker-close').click();
         check(!panel.classList.contains('th-modern-wi-mobile-detail-open'), 'root detail flag cleared');
         check(!document.querySelector('.th-modern-wi-detail-open'), 'shell detail flag cleared');
         panel.replaceWith(replacementPanel); await tick();
@@ -137,8 +221,37 @@ for (const width of [1280, 800, 390]) {
         observer.observe(replacementPanel, {attributes:true, childList:true, subtree:true});
         await tick(); const settled = mutations; await tick();
         check(mutations === settled, 'recovery does not cause a refresh loop'); observer.disconnect();
-        const editorSelect = document.getElementById('world_editor_select');
-        const none = new Option('--- Pick to Edit ---', ''); editorSelect.prepend(none);
+        let editorSelect = document.getElementById('world_editor_select');
+        const none = new Option('--- Pick to Edit ---', '');
+        const replacementList = document.getElementById('world_popup_entries_list');
+        let nativeRefreshes = 0;
+        const renderBook = () => {
+          nativeRefreshes++;
+          const entry = first.cloneNode(true);
+          entry.querySelector('.move_entry_button').dataset.currentWorld = 'Book B';
+          replacementList.replaceChildren(entry);
+        };
+        window.$(editorSelect).on('change', renderBook);
+        editorSelect.replaceChildren(none, new Option('Book B', 'new-B'), new Option('Book A', 'A'));
+        check(editorSelect.value === '', 'background rebuild temporarily resets the native selector');
+        await tick();
+        check(editorSelect.value === 'new-B' && nativeRefreshes === 1, 'rebuilding options restores the same book by name and reloads once');
+        check(visible(replacementList.querySelector('.world_entry')), 'reloaded book entries remain visible');
+        const newSelect = editorSelect.cloneNode(true);
+        newSelect.value = '';
+        editorSelect.replaceWith(newSelect);
+        editorSelect = newSelect;
+        window.$(editorSelect).on('change', renderBook);
+        await tick();
+        check(editorSelect.value === 'new-B' && nativeRefreshes === 2, 'replacing the selector also restores the selected book');
+        editorSelect.options[1].remove();
+        await tick();
+        check(enhancer.selectedWorldName === '' && nativeRefreshes === 2, 'removing the selected book leaves no book selected');
+        editorSelect.append(new Option('Book B', 'B'));
+        await tick();
+        check(editorSelect.value === '', 'adding a deleted book back does not reopen it');
+        editorSelect.value = 'B';
+        window.$(editorSelect).trigger('change');
         editorSelect.value = ''; editorSelect.dispatchEvent(new Event('change', {bubbles:true})); await tick();
         const emptyMessage = document.querySelector('.th-modern-wi-empty-world');
         check(visible(emptyMessage) && emptyMessage.textContent === '选择世界书以查看条目', 'no-book guidance visible');

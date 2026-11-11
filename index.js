@@ -1021,116 +1021,116 @@ function xn(e, t, n, r = !0, i = !1) {
 	if (i) throw e;
 	console.error(e);
 }
-var Sn = [], Cn = -1, wn = [], Tn = null, En = 0, Dn = /* @__PURE__ */ Promise.resolve(), On = null;
-function kn(e) {
-	let t = On || Dn;
+var P = [], Sn = -1, Cn = [], wn = null, Tn = 0, En = /* @__PURE__ */ Promise.resolve(), Dn = null;
+function On(e) {
+	let t = Dn || En;
 	return e ? t.then(this ? e.bind(this) : e) : t;
 }
-function An(e) {
-	let t = Cn + 1, n = Sn.length;
+function kn(e) {
+	let t = Sn + 1, n = P.length;
 	for (; t < n;) {
-		let r = t + n >>> 1, i = Sn[r], a = Rn(i);
+		let r = t + n >>> 1, i = P[r], a = Ln(i);
 		a < e || a === e && i.flags & 2 ? t = r + 1 : n = r;
 	}
 	return t;
 }
-function jn(e) {
+function An(e) {
 	if (!(e.flags & 1)) {
-		let t = Rn(e), n = Sn[Sn.length - 1];
-		!n || !(e.flags & 2) && t >= Rn(n) ? Sn.push(e) : Sn.splice(An(t), 0, e), e.flags |= 1, Mn();
+		let t = Ln(e), n = P[P.length - 1];
+		!n || !(e.flags & 2) && t >= Ln(n) ? P.push(e) : P.splice(kn(t), 0, e), e.flags |= 1, jn();
 	}
 }
-function Mn() {
-	On ||= Dn.then(zn);
+function jn() {
+	Dn ||= En.then(Rn);
 }
-function Nn(e) {
-	if (!f(e)) Tn && e.id === -1 ? Tn.splice(En + 1, 0, e) : e.flags & 1 || (wn.push(e), e.flags |= 1);
-	else for (let t = 0; t < e.length; t++) wn.push(e[t]);
-	Mn();
+function Mn(e) {
+	if (!f(e)) wn && e.id === -1 ? wn.splice(Tn + 1, 0, e) : e.flags & 1 || (Cn.push(e), e.flags |= 1);
+	else for (let t = 0; t < e.length; t++) Cn.push(e[t]);
+	jn();
 }
-function Pn(e, t, n, r = Cn + 1) {
-	for (; r < Sn.length; r++) {
-		let n = Sn[r];
+function Nn(e, t, n, r = Sn + 1) {
+	for (; r < P.length; r++) {
+		let n = P[r];
 		if (n && n.flags & 2) {
 			if (e && n.id !== e.uid || t !== void 0 && !(n.id >= t)) continue;
-			Sn.splice(r, 1), r = e ? r - 1 : Cn, n.flags & 4 && (n.flags &= -2), n(), n.flags & 4 || (n.flags &= -2);
+			P.splice(r, 1), r = e ? r - 1 : Sn, n.flags & 4 && (n.flags &= -2), n(), n.flags & 4 || (n.flags &= -2);
 		}
 	}
 }
-function Fn(e, t, n = 0) {
-	if (wn.length) {
-		let e = wn, r = 0;
+function Pn(e, t, n = 0) {
+	if (Cn.length) {
+		let e = Cn, r = 0;
 		if (t) {
 			e = [];
-			for (let i = 0; i < wn.length; i++) {
-				let a = wn[i];
-				(a.i === void 0 ? t.has(a) : !a.i || a.i.uid < n) ? wn[r++] = a : e.push(a);
+			for (let i = 0; i < Cn.length; i++) {
+				let a = Cn[i];
+				(a.i === void 0 ? t.has(a) : !a.i || a.i.uid < n) ? Cn[r++] = a : e.push(a);
 			}
 		}
-		let i = [...new Set(e)].sort((e, t) => Rn(e) - Rn(t));
-		if (wn.length = r, Tn) {
-			for (let e = 0; e < i.length; e++) Tn.push(i[e]);
+		let i = [...new Set(e)].sort((e, t) => Ln(e) - Ln(t));
+		if (Cn.length = r, wn) {
+			for (let e = 0; e < i.length; e++) wn.push(i[e]);
 			return;
 		}
-		for (Tn = i, En = 0; En < Tn.length; En++) {
-			let e = Tn[En];
+		for (wn = i, Tn = 0; Tn < wn.length; Tn++) {
+			let e = wn[Tn];
 			e.flags & 4 && (e.flags &= -2), e.flags & 8 || e(), e.flags &= -2;
 		}
-		Tn = null, En = 0;
+		wn = null, Tn = 0;
 	}
 }
-var In = !1;
-function Ln(e, t) {
-	if (In) {
+var Fn = !1;
+function In(e, t) {
+	if (Fn) {
 		e();
 		return;
 	}
-	let n = t === void 0 ? void 0 : new Set(wn);
-	e(), In = !0;
+	let n = t === void 0 ? void 0 : new Set(Cn);
+	e(), Fn = !0;
 	try {
-		Pn(void 0, t), Fn(void 0, n, t);
+		Nn(void 0, t), Pn(void 0, n, t);
 	} finally {
-		In = !1;
+		Fn = !1;
 	}
 }
-var Rn = (e) => e.id == null ? e.flags & 2 ? -1 : Infinity : e.id;
-function zn(e) {
+var Ln = (e) => e.id == null ? e.flags & 2 ? -1 : Infinity : e.id;
+function Rn(e) {
 	try {
-		for (Cn = 0; Cn < Sn.length; Cn++) {
-			let e = Sn[Cn];
+		for (Sn = 0; Sn < P.length; Sn++) {
+			let e = P[Sn];
 			e && !(e.flags & 8) && (e.flags & 4 && (e.flags &= -2), vn(e, e.i, e.i ? 15 : 14), e.flags & 4 || (e.flags &= -2));
 		}
 	} finally {
-		for (; Cn < Sn.length; Cn++) {
-			let e = Sn[Cn];
+		for (; Sn < P.length; Sn++) {
+			let e = P[Sn];
 			e && (e.flags &= -2);
 		}
-		Cn = -1, Sn.length = 0, Fn(e), On = null, (Sn.length || wn.length) && zn(e);
+		Sn = -1, P.length = 0, Pn(e), Dn = null, (P.length || Cn.length) && Rn(e);
 	}
 }
-var Bn = null, Vn = null;
-function Hn(e) {
-	let t = Bn;
-	return Bn = e, Vn = e && e.type.__scopeId || null, t;
+var zn = null, Bn = null;
+function Vn(e) {
+	let t = zn;
+	return zn = e, Bn = e && e.type.__scopeId || null, t;
 }
-function Un(e, t = Bn, n) {
+function Hn(e, t = zn, n) {
 	if (!t || e._n) return e;
 	let r = (...n) => {
 		r._d && ta(-1);
-		let i = Hn(t), a = Xi.length, o;
+		let i = Vn(t), a = Xi.length, o;
 		try {
 			o = e(...n);
 		} finally {
 			for (let e = Xi.length; e > a; e--) $i();
-			Hn(i), r._d && ta(1);
+			Vn(i), r._d && ta(1);
 		}
 		return o;
 	};
 	return r._n = !0, r._c = !0, r._d = !0, r;
 }
-function P(e, t) {
-	if (Bn === null) return e;
-	let r = Fa(Bn), i = e.dirs ||= [];
+function F(e, t) {
+	if (zn === null) return e;
+	let r = Fa(zn), i = e.dirs ||= [];
 	for (let e = 0; e < t.length; e++) {
 		let [a, o, s, c = n] = t[e];
 		a && (g(a) && (a = {
@@ -1147,7 +1147,7 @@ function P(e, t) {
 	}
 	return e;
 }
-function Wn(e, t, n, r) {
+function Un(e, t, n, r) {
 	let i = e.dirs, a = t && t.dirs;
 	for (let o = 0; o < i.length; o++) {
 		let s = i[o];
@@ -1161,13 +1161,13 @@ function Wn(e, t, n, r) {
 		]), Qe());
 	}
 }
-function Gn(e, t) {
+function Wn(e, t) {
 	if (L) {
 		let n = L.provides, r = L.parent && L.parent.provides;
 		r === n && (n = L.provides = Object.create(r)), n[e] = t;
 	}
 }
-function Kn(e, t, n = !1) {
+function Gn(e, t, n = !1) {
 	let r = Sa();
 	if (r || ti) {
 		let i = ti ? ti._context.provides : r ? r.parent == null || r.ce ? r.vnode.appContext && r.vnode.appContext.provides : r.parent.provides : void 0;
@@ -1175,21 +1175,21 @@ function Kn(e, t, n = !1) {
 		if (arguments.length > 1) return n && g(t) ? t.call(r && r.proxy) : t;
 	}
 }
-function qn() {
+function Kn() {
 	return !!(Sa() || ti);
 }
-var Jn = /* @__PURE__ */ Symbol.for("v-scx"), Yn = () => Kn(Jn);
-function Xn(e, t) {
-	return Qn(e, null, t);
+var qn = /* @__PURE__ */ Symbol.for("v-scx"), Jn = () => Gn(qn);
+function Yn(e, t) {
+	return Zn(e, null, t);
 }
-function Zn(e, t, n) {
-	return Qn(e, t, n);
+function Xn(e, t, n) {
+	return Zn(e, t, n);
 }
-function Qn(e, t, r = n) {
+function Zn(e, t, r = n) {
 	let { immediate: a, deep: o, flush: s, once: l } = r, u = c({}, r), d = t && a || !t && s !== "post", f;
 	if (Oa) {
 		if (s === "sync") {
-			let e = Yn();
+			let e = Jn();
 			f = e.__watcherHandles ||= [];
 		} else if (!d) {
 			let e = () => {};
@@ -1202,20 +1202,20 @@ function Qn(e, t, r = n) {
 	s === "post" ? u.scheduler = (e) => {
 		e.i = p, Ni(e, p && p.suspense);
 	} : s !== "sync" && (m = !0, u.scheduler = (e, t) => {
-		t ? e() : jn(e);
+		t ? e() : An(e);
 	}), u.augmentJob = (e) => {
 		t && (e.flags |= 4), m && (e.flags |= 2, p && (e.id = p.uid, e.i = p));
 	};
 	let h = gn(e, t, u);
 	return Oa && (f ? f.push(h) : d && h()), h;
 }
-function $n(e, t, n) {
-	let r = this.proxy, i = v(e) ? e.includes(".") ? er(r, e) : () => r[e] : e.bind(r, r), a;
+function Qn(e, t, n) {
+	let r = this.proxy, i = v(e) ? e.includes(".") ? $n(r, e) : () => r[e] : e.bind(r, r), a;
 	g(t) ? a = t : (a = t.handler, n = t);
-	let o = Ta(this), s = Qn(i, a.bind(r), n);
+	let o = Ta(this), s = Zn(i, a.bind(r), n);
 	return o(), s;
 }
-function er(e, t) {
+function $n(e, t) {
 	let n = t.split(".");
 	return () => {
 		let t = e;
@@ -1223,8 +1223,8 @@ function er(e, t) {
 		return t;
 	};
 }
-var tr = /* @__PURE__ */ Symbol("_vte"), nr = (e) => e.__isTeleport, rr = /* @__PURE__ */ Symbol("_leaveCb");
-function ir(e) {
+var er = /* @__PURE__ */ Symbol("_vte"), tr = (e) => e.__isTeleport, nr = /* @__PURE__ */ Symbol("_leaveCb");
+function rr(e) {
 	let t = e[0];
 	if (e.length > 1) {
 		for (let n of e) if (n.type !== Ji) {
@@ -1234,8 +1234,8 @@ function ir(e) {
 	}
 	return t;
 }
-function ar(e) {
-	if (!hr(e)) return nr(e.type) && e.children ? ir(e.children) : e;
+function ir(e) {
+	if (!mr(e)) return tr(e.type) && e.children ? rr(e.children) : e;
 	if (e.component) return e.component.subTree;
 	let { shapeFlag: t, children: n } = e;
 	if (n) {
@@ -1243,53 +1243,53 @@ function ar(e) {
 		if (t & 32 && g(n.default)) return n.default();
 	}
 }
-function or(e, t) {
+function ar(e, t) {
 	if (e.shapeFlag & 6 && e.component) {
 		e.transition = t;
 		let n = e.component.subTree;
-		or(nr(n.type) && ar(n) || n, t);
+		ar(tr(n.type) && ir(n) || n, t);
 	} else if (e.shapeFlag & 128) e.ssContent.transition = t.clone(e.ssContent), e.ssFallback.transition = t.clone(e.ssFallback);
 	else if (e.transition = t, e.type === Ki && f(e.children)) {
 		let n = ci(e.children, !1);
-		n && or(n, t);
+		n && ar(n, t);
 	}
 }
-function sr(e) {
-	if (e.component) return sr(e.component.subTree);
+function or(e) {
+	if (e.component) return or(e.component.subTree);
 	if (e.type === Ki) {
 		let t = f(e.children) && ci(e.children, !1);
-		return t ? sr(t) : void 0;
+		return t ? or(t) : void 0;
 	}
 	if (e.type !== Ji) return e;
 }
 // @__NO_SIDE_EFFECTS__
-function cr(e, t) {
+function sr(e, t) {
 	return g(e) ? /* @__PURE__ */ c({ name: e.name }, t, { setup: e }) : e;
 }
-function lr(e) {
+function cr(e) {
 	e.ids = [
 		e.ids[0] + e.ids[2]++ + "-",
 		0,
 		0
 	];
 }
-function ur(e, t) {
+function lr(e, t) {
 	let n;
 	return !!((n = Object.getOwnPropertyDescriptor(e, t)) && !n.configurable);
 }
-var dr = /* @__PURE__ */ new WeakMap();
-function fr(e, t, r, i, o = !1) {
+var ur = /* @__PURE__ */ new WeakMap();
+function dr(e, t, r, i, o = !1) {
 	if (f(e)) {
-		e.forEach((e, n) => fr(e, t && (f(t) ? t[n] : t), r, i, o));
+		e.forEach((e, n) => dr(e, t && (f(t) ? t[n] : t), r, i, o));
 		return;
 	}
-	if (mr(i) && !o) {
-		i.shapeFlag & 512 && i.type.__asyncResolved && i.component.subTree.component && fr(e, t, r, i.component.subTree);
+	if (pr(i) && !o) {
+		i.shapeFlag & 512 && i.type.__asyncResolved && i.component.subTree.component && dr(e, t, r, i.component.subTree);
 		return;
 	}
-	let s = i.shapeFlag & 4 ? Fa(i.component) : i.el, c = o ? null : s, { i: u, r: p } = e, m = t && t.r, h = u.refs === n ? u.refs = {} : u.refs, y = u.setupState, b = /* @__PURE__ */ j(y), x = y === n ? a : (e) => !ur(h, e) && d(b, e), S = (e, t) => !(t && ur(h, t));
+	let s = i.shapeFlag & 4 ? Fa(i.component) : i.el, c = o ? null : s, { i: u, r: p } = e, m = t && t.r, h = u.refs === n ? u.refs = {} : u.refs, y = u.setupState, b = /* @__PURE__ */ j(y), x = y === n ? a : (e) => !lr(h, e) && d(b, e), S = (e, t) => !(t && lr(h, t));
 	if (m != null && m !== p) {
-		if (pr(t), v(m)) h[m] = null, x(m) && (y[m] = null);
+		if (fr(t), v(m)) h[m] = null, x(m) && (y[m] = null);
 		else if (/* @__PURE__ */ M(m)) {
 			let e = t;
 			S(m, e.k) && (m.value = null), e.k && (h[e.k] = null);
@@ -1313,26 +1313,26 @@ function fr(e, t, r, i, o = !1) {
 			};
 			if (c) {
 				let t = () => {
-					i(), dr.delete(e);
+					i(), ur.delete(e);
 				};
-				t.id = -1, dr.set(e, t), Ni(t, r);
-			} else pr(e), i();
+				t.id = -1, ur.set(e, t), Ni(t, r);
+			} else fr(e), i();
 		}
 	}
 }
-function pr(e) {
-	let t = dr.get(e);
-	t && (t.flags |= 8, dr.delete(e));
+function fr(e) {
+	let t = ur.get(e);
+	t && (t.flags |= 8, ur.delete(e));
 }
 fe().requestIdleCallback, fe().cancelIdleCallback;
-var mr = (e) => !!e.type.__asyncLoader, hr = (e) => e.type.__isKeepAlive;
+var pr = (e) => !!e.type.__asyncLoader, mr = (e) => e.type.__isKeepAlive;
+function hr(e, t) {
+	_r(e, "a", t);
+}
 function gr(e, t) {
-	vr(e, "a", t);
+	_r(e, "da", t);
 }
-function _r(e, t) {
-	vr(e, "da", t);
-}
-function vr(e, t, n = L) {
+function _r(e, t, n = L) {
 	let r = e.__wdc ||= () => {
 		let t = n;
 		for (; t;) {
@@ -1341,18 +1341,18 @@ function vr(e, t, n = L) {
 		}
 		return e();
 	};
-	if (br(t, r, n), n) {
+	if (yr(t, r, n), n) {
 		let e = n.parent;
-		for (; e && e.parent;) hr(e.parent.vnode) && yr(r, t, n, e), e = e.parent;
+		for (; e && e.parent;) mr(e.parent.vnode) && vr(r, t, n, e), e = e.parent;
 	}
 }
-function yr(e, t, n, r) {
-	let i = br(t, e, r, !0);
-	Dr(() => {
+function vr(e, t, n, r) {
+	let i = yr(t, e, r, !0);
+	Er(() => {
 		l(r[t], i);
 	}, n);
 }
-function br(e, t, n = L, r = !1) {
+function yr(e, t, n = L, r = !1) {
 	if (n) {
 		let i = n[e] || (n[e] = []), a = t.__weh ||= (...r) => {
 			Ze();
@@ -1362,13 +1362,13 @@ function br(e, t, n = L, r = !1) {
 		return r ? i.unshift(a) : i.push(a), a;
 	}
 }
-var xr = (e) => (t, n = L) => {
-	Oa && e !== "sp" || br(e, (...e) => t(...e), n);
-}, Sr = xr("bm"), Cr = xr("m"), wr = xr("bu"), Tr = xr("u"), Er = xr("bum"), Dr = xr("um"), Or = xr("sp"), kr = xr("rtg"), Ar = xr("rtc");
-function jr(e, t = L) {
-	br("ec", e, t);
+var br = (e) => (t, n = L) => {
+	Oa && e !== "sp" || yr(e, (...e) => t(...e), n);
+}, xr = br("bm"), Sr = br("m"), Cr = br("bu"), wr = br("u"), Tr = br("bum"), Er = br("um"), Dr = br("sp"), Or = br("rtg"), kr = br("rtc");
+function Ar(e, t = L) {
+	yr("ec", e, t);
 }
-var Mr = /* @__PURE__ */ Symbol.for("v-ndc"), Nr = (e) => e ? Da(e) ? Fa(e) : Nr(e.parent) : null, Pr = /* @__PURE__ */ c(/* @__PURE__ */ Object.create(null), {
+var jr = /* @__PURE__ */ Symbol.for("v-ndc"), Mr = (e) => e ? Da(e) ? Fa(e) : Mr(e.parent) : null, Nr = /* @__PURE__ */ c(/* @__PURE__ */ Object.create(null), {
 	$: (e) => e,
 	$el: (e) => e.vnode.el,
 	$data: (e) => e.data,
@@ -1376,17 +1376,17 @@ var Mr = /* @__PURE__ */ Symbol.for("v-ndc"), Nr = (e) => e ? Da(e) ? Fa(e) : Nr
 	$attrs: (e) => e.attrs,
 	$slots: (e) => e.slots,
 	$refs: (e) => e.refs,
-	$parent: (e) => Nr(e.parent),
-	$root: (e) => Nr(e.root),
+	$parent: (e) => Mr(e.parent),
+	$root: (e) => Mr(e.root),
 	$host: (e) => e.ce,
 	$emit: (e) => e.emit,
-	$options: (e) => Ur(e),
+	$options: (e) => Hr(e),
 	$forceUpdate: (e) => e.f ||= () => {
-		jn(e.update);
+		An(e.update);
 	},
-	$nextTick: (e) => e.n ||= kn.bind(e.proxy),
-	$watch: (e) => $n.bind(e)
-}), Fr = (e, t) => e !== n && !e.__isScriptSetup && d(e, t), Ir = {
+	$nextTick: (e) => e.n ||= On.bind(e.proxy),
+	$watch: (e) => Qn.bind(e)
+}), Pr = (e, t) => e !== n && !e.__isScriptSetup && d(e, t), Fr = {
 	get({ _: e }, t) {
 		if (t === "__v_skip") return !0;
 		let { ctx: r, setupState: i, data: a, props: o, accessCache: s, type: c, appContext: l } = e;
@@ -1398,13 +1398,13 @@ var Mr = /* @__PURE__ */ Symbol.for("v-ndc"), Nr = (e) => e ? Da(e) ? Fa(e) : Nr
 				case 4: return r[t];
 				case 3: return o[t];
 			}
-			else if (Fr(i, t)) return s[t] = 1, i[t];
+			else if (Pr(i, t)) return s[t] = 1, i[t];
 			else if (a !== n && d(a, t)) return s[t] = 2, a[t];
 			else if (d(o, t)) return s[t] = 3, o[t];
 			else if (r !== n && d(r, t)) return s[t] = 4, r[t];
-			else Rr && (s[t] = 0);
+			else Lr && (s[t] = 0);
 		}
-		let u = Pr[t], f, p;
+		let u = Nr[t], f, p;
 		if (u) return t === "$attrs" && A(e.attrs, "get", ""), u(e);
 		if ((f = c.__cssModules) && (f = f[t])) return f;
 		if (r !== n && d(r, t)) return s[t] = 4, r[t];
@@ -1412,25 +1412,25 @@ var Mr = /* @__PURE__ */ Symbol.for("v-ndc"), Nr = (e) => e ? Da(e) ? Fa(e) : Nr
 	},
 	set({ _: e }, t, r) {
 		let { data: i, setupState: a, ctx: o } = e;
-		return Fr(a, t) ? (a[t] = r, !0) : i !== n && d(i, t) ? (i[t] = r, !0) : d(e.props, t) || t[0] === "$" && t.slice(1) in e ? !1 : (o[t] = r, !0);
+		return Pr(a, t) ? (a[t] = r, !0) : i !== n && d(i, t) ? (i[t] = r, !0) : d(e.props, t) || t[0] === "$" && t.slice(1) in e ? !1 : (o[t] = r, !0);
 	},
 	has({ _: { data: e, setupState: t, accessCache: r, ctx: i, appContext: a, props: o, type: s } }, c) {
 		let l;
-		return !!(r[c] || e !== n && c[0] !== "$" && d(e, c) || Fr(t, c) || d(o, c) || d(i, c) || d(Pr, c) || d(a.config.globalProperties, c) || (l = s.__cssModules) && l[c]);
+		return !!(r[c] || e !== n && c[0] !== "$" && d(e, c) || Pr(t, c) || d(o, c) || d(i, c) || d(Nr, c) || d(a.config.globalProperties, c) || (l = s.__cssModules) && l[c]);
 	},
 	defineProperty(e, t, n) {
 		return n.get == null ? d(n, "value") && this.set(e, t, n.value, null) : e._.accessCache[t] = 0, Reflect.defineProperty(e, t, n);
 	}
 };
-function Lr(e) {
+function Ir(e) {
 	return f(e) ? e.reduce((e, t) => (e[t] = null, e), {}) : e;
 }
-var Rr = !0;
-function zr(e) {
-	let t = Ur(e), n = e.proxy, r = e.ctx;
-	Rr = !1, t.beforeCreate && Vr(t.beforeCreate, e, "bc");
+var Lr = !0;
+function Rr(e) {
+	let t = Hr(e), n = e.proxy, r = e.ctx;
+	Lr = !1, t.beforeCreate && Br(t.beforeCreate, e, "bc");
 	let { data: a, computed: o, methods: s, watch: c, provide: l, inject: u, created: d, beforeMount: p, mounted: m, beforeUpdate: h, updated: v, activated: y, deactivated: x, beforeDestroy: S, beforeUnmount: C, destroyed: w, unmounted: T, render: ee, renderTracked: te, renderTriggered: ne, errorCaptured: re, serverPrefetch: E, expose: ie, inheritAttrs: ae, components: oe, directives: se, filters: ce } = t;
-	if (u && Br(u, r, null), s) for (let e in s) {
+	if (u && zr(u, r, null), s) for (let e in s) {
 		let t = s[e];
 		g(t) && (r[e] = t.bind(n));
 	}
@@ -1438,7 +1438,7 @@ function zr(e) {
 		let t = a.call(n, n);
 		b(t) && (e.data = /* @__PURE__ */ Wt(t));
 	}
-	if (Rr = !0, o) for (let e in o) {
+	if (Lr = !0, o) for (let e in o) {
 		let t = o[e], a = La({
 			get: g(t) ? t.bind(n, n) : g(t.get) ? t.get.bind(n, n) : i,
 			set: !g(t) && g(t.set) ? t.set.bind(n) : i
@@ -1450,18 +1450,18 @@ function zr(e) {
 			set: (e) => a.value = e
 		});
 	}
-	if (c) for (let e in c) Hr(c[e], r, n, e);
+	if (c) for (let e in c) Vr(c[e], r, n, e);
 	if (l) {
 		let e = g(l) ? l.call(n) : l;
 		Reflect.ownKeys(e).forEach((t) => {
-			Gn(t, e[t]);
+			Wn(t, e[t]);
 		});
 	}
-	d && Vr(d, e, "c");
+	d && Br(d, e, "c");
 	function D(e, t) {
 		f(t) ? t.forEach((t) => e(t.bind(n))) : t && e(t.bind(n));
 	}
-	if (D(Sr, p), D(Cr, m), D(wr, h), D(Tr, v), D(gr, y), D(_r, x), D(jr, re), D(Ar, te), D(kr, ne), D(Er, C), D(Dr, T), D(Or, E), f(ie)) {
+	if (D(xr, p), D(Sr, m), D(Cr, h), D(wr, v), D(hr, y), D(gr, x), D(Ar, re), D(kr, te), D(Or, ne), D(Tr, C), D(Er, T), D(Dr, E), f(ie)) {
 		if (ie.length) {
 			let t = e.exposed ||= {};
 			ie.forEach((e) => {
@@ -1473,13 +1473,13 @@ function zr(e) {
 			});
 		} else e.exposed ||= {};
 	}
-	ee && e.render === i && (e.render = ee), ae != null && (e.inheritAttrs = ae), oe && (e.components = oe), se && (e.directives = se), E && lr(e);
+	ee && e.render === i && (e.render = ee), ae != null && (e.inheritAttrs = ae), oe && (e.components = oe), se && (e.directives = se), E && cr(e);
 }
-function Br(e, t, n = i) {
-	f(e) && (e = Jr(e));
+function zr(e, t, n = i) {
+	f(e) && (e = qr(e));
 	for (let n in e) {
 		let r = e[n], i;
-		i = b(r) ? "default" in r ? Kn(r.from || n, r.default, !0) : Kn(r.from || n) : Kn(r), /* @__PURE__ */ M(i) ? Object.defineProperty(t, n, {
+		i = b(r) ? "default" in r ? Gn(r.from || n, r.default, !0) : Gn(r.from || n) : Gn(r), /* @__PURE__ */ M(i) ? Object.defineProperty(t, n, {
 			enumerable: !0,
 			configurable: !0,
 			get: () => i.value,
@@ -1487,71 +1487,71 @@ function Br(e, t, n = i) {
 		}) : t[n] = i;
 	}
 }
-function Vr(e, t, n) {
+function Br(e, t, n) {
 	yn(f(e) ? e.map((e) => e.bind(t.proxy)) : e.bind(t.proxy), t, n);
 }
-function Hr(e, t, n, r) {
-	let i = r.includes(".") ? er(n, r) : () => n[r];
+function Vr(e, t, n, r) {
+	let i = r.includes(".") ? $n(n, r) : () => n[r];
 	if (v(e)) {
 		let n = t[e];
-		g(n) && Zn(i, n);
-	} else if (g(e)) Zn(i, e.bind(n));
+		g(n) && Xn(i, n);
+	} else if (g(e)) Xn(i, e.bind(n));
 	else if (b(e)) {
-		if (f(e)) e.forEach((e) => Hr(e, t, n, r));
+		if (f(e)) e.forEach((e) => Vr(e, t, n, r));
 		else {
 			let r = g(e.handler) ? e.handler.bind(n) : t[e.handler];
-			g(r) && Zn(i, r, e);
+			g(r) && Xn(i, r, e);
 		}
 	}
 }
-function Ur(e) {
+function Hr(e) {
 	let t = e.type, { mixins: n, extends: r } = t, { mixins: i, optionsCache: a, config: { optionMergeStrategies: o } } = e.appContext, s = a.get(t), c;
-	return s ? c = s : !i.length && !n && !r ? c = t : (c = {}, i.length && i.forEach((e) => Wr(c, e, o, !0)), Wr(c, t, o)), b(t) && a.set(t, c), c;
+	return s ? c = s : !i.length && !n && !r ? c = t : (c = {}, i.length && i.forEach((e) => Ur(c, e, o, !0)), Ur(c, t, o)), b(t) && a.set(t, c), c;
 }
-function Wr(e, t, n, r = !1) {
+function Ur(e, t, n, r = !1) {
 	let { mixins: i, extends: a } = t;
-	a && Wr(e, a, n, !0), i && i.forEach((t) => Wr(e, t, n, !0));
+	a && Ur(e, a, n, !0), i && i.forEach((t) => Ur(e, t, n, !0));
 	for (let i in t) if (!(r && i === "expose")) {
-		let r = Gr[i] || n && n[i];
+		let r = Wr[i] || n && n[i];
 		e[i] = r ? r(e[i], t[i]) : t[i];
 	}
 	return e;
 }
-var Gr = {
-	data: Kr,
+var Wr = {
+	data: Gr,
 	props: Xr,
 	emits: Xr,
 	methods: Yr,
 	computed: Yr,
-	beforeCreate: F,
-	created: F,
-	beforeMount: F,
-	mounted: F,
-	beforeUpdate: F,
-	updated: F,
-	beforeDestroy: F,
-	beforeUnmount: F,
-	destroyed: F,
-	unmounted: F,
-	activated: F,
-	deactivated: F,
-	errorCaptured: F,
-	serverPrefetch: F,
+	beforeCreate: Jr,
+	created: Jr,
+	beforeMount: Jr,
+	mounted: Jr,
+	beforeUpdate: Jr,
+	updated: Jr,
+	beforeDestroy: Jr,
+	beforeUnmount: Jr,
+	destroyed: Jr,
+	unmounted: Jr,
+	activated: Jr,
+	deactivated: Jr,
+	errorCaptured: Jr,
+	serverPrefetch: Jr,
 	components: Yr,
 	directives: Yr,
 	watch: Zr,
-	provide: Kr,
-	inject: qr
+	provide: Gr,
+	inject: Kr
 };
-function Kr(e, t) {
+function Gr(e, t) {
 	return t ? e ? function() {
 		return c(g(e) ? e.call(this, this) : e, g(t) ? t.call(this, this) : t);
 	} : t : e;
 }
-function qr(e, t) {
-	return Yr(Jr(e), Jr(t));
+function Kr(e, t) {
+	return Yr(qr(e), qr(t));
 }
-function Jr(e) {
+function qr(e) {
 	if (f(e)) {
 		let t = {};
 		for (let n = 0; n < e.length; n++) t[e[n]] = e[n];
@@ -1559,20 +1559,20 @@ function Jr(e) {
 	}
 	return e;
 }
-function F(e, t) {
+function Jr(e, t) {
 	return e ? [...new Set([].concat(e, t))] : t;
 }
 function Yr(e, t) {
 	return e ? c(/* @__PURE__ */ Object.create(null), e, t) : t;
 }
 function Xr(e, t) {
-	return e ? f(e) && f(t) ? [.../* @__PURE__ */ new Set([...e, ...t])] : c(/* @__PURE__ */ Object.create(null), Lr(e), Lr(t ?? {})) : t;
+	return e ? f(e) && f(t) ? [.../* @__PURE__ */ new Set([...e, ...t])] : c(/* @__PURE__ */ Object.create(null), Ir(e), Ir(t ?? {})) : t;
 }
 function Zr(e, t) {
 	if (!e) return t;
 	if (!t) return e;
 	let n = c(/* @__PURE__ */ Object.create(null), e);
-	for (let r in t) n[r] = F(e[r], t[r]);
+	for (let r in t) n[r] = Jr(e[r], t[r]);
 	return n;
 }
 function Qr() {
@@ -1684,7 +1684,7 @@ function oi(e, t) {
 	return !e || !o(t) ? !1 : (t = t.slice(2), t = t === "Once" ? t : t.replace(/Once$/, ""), d(e, t[0].toLowerCase() + t.slice(1)) || d(e, ae(t)) || d(e, t));
 }
 function si(e) {
-	let { type: t, vnode: n, proxy: r, withProxy: i, propsOptions: [a], slots: o, attrs: c, emit: l, render: u, renderCache: d, props: f, data: p, setupState: m, ctx: h, inheritAttrs: g } = e, v = Hn(e), y, b;
+	let { type: t, vnode: n, proxy: r, withProxy: i, propsOptions: [a], slots: o, attrs: c, emit: l, render: u, renderCache: d, props: f, data: p, setupState: m, ctx: h, inheritAttrs: g } = e, v = Vn(e), y, b;
 	try {
 		if (n.shapeFlag & 4) {
 			let e = i || r, t = e;
@@ -1705,7 +1705,7 @@ function si(e) {
 		let e = Object.keys(b), { shapeFlag: t } = x;
 		e.length && t & 7 && (a && e.some(s) && (b = ui(b, a)), x = da(x, b, !1, !0));
 	}
-	return n.dirs && (x = da(x, null, !1, !0), x.dirs = x.dirs ? x.dirs.concat(n.dirs) : n.dirs), n.transition && or(nr(x.type) && ar(x) || x, n.transition), y = x, Hn(v), y;
+	return n.dirs && (x = da(x, null, !1, !0), x.dirs = x.dirs ? x.dirs.concat(n.dirs) : n.dirs), n.transition && ar(tr(x.type) && ir(x) || x, n.transition), y = x, Vn(v), y;
 }
 function ci(e, t = !0) {
 	let n;
@@ -1877,7 +1877,7 @@ function wi(e) {
 }
 var Ti = (e) => e === "_" || e === "_ctx" || e === "$stable", Ei = (e) => f(e) ? e.map(pa) : [pa(e)], Di = (e, t, n) => {
 	if (t._n) return t;
-	let r = Un((...e) => Ei(t(...e)), n);
+	let r = Hn((...e) => Ei(t(...e)), n);
 	return r._c = !1, r;
 }, Oi = (e, t, n) => {
 	let r = e._ctx;
@@ -1934,7 +1934,7 @@ function Fi(e, t) {
 				break;
 			default: f & 1 ? T(e, t, n, i, a, o, s, c, l) : f & 6 ? se(e, t, n, i, a, o, s, c, l) : (f & 64 || f & 128) && u.process(e, t, n, i, a, o, s, c, l, we);
 		}
-		d != null && a ? fr(d, e && e.ref, o, t || e, !t) : d == null && e && e.ref != null && fr(e.ref, null, o, e, !0);
+		d != null && a ? dr(d, e && e.ref, o, t || e, !t) : d == null && e && e.ref != null && dr(e.ref, null, o, e, !0);
 	}, b = (e, t, n, r) => {
 		if (e == null) o(t.el = u(t.children), n, r);
 		else {
@@ -1965,15 +1965,15 @@ function Fi(e, t) {
 		}
 	}, ee = (e, t, n, r, i, a, s, u) => {
 		let d, f, { props: m, shapeFlag: h, transition: g, dirs: v } = e;
-		if (d = e.el = l(e.type, a, m && m.is, m), h & 8 ? p(d, e.children) : h & 16 && re(e.children, d, null, r, i, Ii(e, a), s, u), v && Wn(e, null, r, "created"), ne(d, e, e.scopeId, s, r), m) {
+		if (d = e.el = l(e.type, a, m && m.is, m), h & 8 ? p(d, e.children) : h & 16 && re(e.children, d, null, r, i, Ii(e, a), s, u), v && Un(e, null, r, "created"), ne(d, e, e.scopeId, s, r), m) {
 			for (let e in m) e !== "value" && !te(e) && c(d, e, null, m[e], a, r);
 			"value" in m && c(d, "value", null, m.value, a), (f = m.onVnodeBeforeMount) && _a(f, r, e);
 		}
-		v && Wn(e, null, r, "beforeMount");
+		v && Un(e, null, r, "beforeMount");
 		let y = Ri(i, g);
 		y && g.beforeEnter(d), o(d, t, n), ((f = m && m.onVnodeMounted) || y || v) && Ni(() => {
 			try {
-				f && _a(f, r, e), y && g.enter(d), v && Wn(e, null, r, "mounted");
+				f && _a(f, r, e), y && g.enter(d), v && Un(e, null, r, "mounted");
 			} finally {}
 		}, i);
 	}, ne = (e, t, n, r, i) => {
@@ -1994,7 +1994,7 @@ function Fi(e, t) {
 		let l = t.el = e.el, { patchFlag: u, dynamicChildren: d, dirs: f } = t;
 		u |= e.patchFlag & 16;
 		let m = e.props || n, h = t.props || n, g;
-		if (r && Li(r, !1), (g = h.onVnodeBeforeUpdate) && _a(g, r, t, e), f && Wn(t, e, r, "beforeUpdate"), r && Li(r, !0), d && (!e.dynamicChildren || e.dynamicChildren.length !== d.length) && (u = 0, s = !1, d = null), (m.innerHTML && h.innerHTML == null || m.textContent && h.textContent == null) && p(l, ""), d ? ie(e.dynamicChildren, d, l, r, i, Ii(t, a), o) : s || pe(e, t, l, null, r, i, Ii(t, a), o, !1), u > 0) {
+		if (r && Li(r, !1), (g = h.onVnodeBeforeUpdate) && _a(g, r, t, e), f && Un(t, e, r, "beforeUpdate"), r && Li(r, !0), d && (!e.dynamicChildren || e.dynamicChildren.length !== d.length) && (u = 0, s = !1, d = null), (m.innerHTML && h.innerHTML == null || m.textContent && h.textContent == null) && p(l, ""), d ? ie(e.dynamicChildren, d, l, r, i, Ii(t, a), o) : s || pe(e, t, l, null, r, i, Ii(t, a), o, !1), u > 0) {
 			if (u & 16) ae(l, m, h, r, a);
 			else if (u & 2 && m.class !== h.class && c(l, "class", null, h.class, a), u & 4 && c(l, "style", m.style, h.style, a), u & 8) {
 				let e = t.dynamicProps;
@@ -2006,7 +2006,7 @@ function Fi(e, t) {
 			u & 1 && e.children !== t.children && p(l, t.children);
 		} else !s && d == null && ae(l, m, h, r, a);
 		((g = h.onVnodeUpdated) || f) && Ni(() => {
-			g && _a(g, r, t, e), f && Wn(t, e, r, "updated");
+			g && _a(g, r, t, e), f && Un(t, e, r, "updated");
 		}, i);
 	}, ie = (e, t, n, r, i, a, o) => {
 		for (let s = 0; s < t.length; s++) {
@@ -2030,7 +2030,7 @@ function Fi(e, t) {
 		t.slotScopeIds = s, e == null ? t.shapeFlag & 512 ? i.ctx.activate(t, n, r, o, c) : ce(t, n, r, i, a, o, c) : le(e, t, c);
 	}, ce = (e, t, n, r, i, a, o) => {
 		let s = e.component = xa(e, r, i);
-		if (hr(e) && (s.ctx.renderer = we), ka(s, !1, o), s.asyncDep) {
+		if (mr(e) && (s.ctx.renderer = we), ka(s, !1, o), s.asyncDep) {
 			if (i && i.registerDep(s, ue, o, a), !e.el) {
 				let r = s.subTree = ca(Ji);
 				x(null, r, t, n), e.placeholder = r.el;
@@ -2065,7 +2065,7 @@ function Fi(e, t) {
 				let f = si(e), p = e.subTree;
 				e.subTree = f, y(p, f, m(p.el), Se(p), e, i, a), t.el = f.el, u === null && mi(e, f.el), r && Ni(r, i), (d = t.props && t.props.onVnodeUpdated) && Ni(() => _a(d, s, t, c), i);
 			} else {
-				let o, { el: s, props: c } = t, { bm: l, m: u, parent: d, root: f, type: p } = e, m = mr(t);
+				let o, { el: s, props: c } = t, { bm: l, m: u, parent: d, root: f, type: p } = e, m = pr(t);
 				if (Li(e, !1), l && D(l), !m && (o = c && c.onVnodeBeforeMount) && _a(o, d, t), Li(e, !0), s && Ee) {
 					let t = () => {
 						e.subTree = si(e), Ee(s, e.subTree, e, i, null);
@@ -2080,18 +2080,18 @@ function Fi(e, t) {
 					let e = t;
 					Ni(() => _a(o, d, e), i);
 				}
-				(t.shapeFlag & 256 || d && mr(d.vnode) && d.vnode.shapeFlag & 256) && e.a && Ni(e.a, i), e.isMounted = !0, t = n = r = null;
+				(t.shapeFlag & 256 || d && pr(d.vnode) && d.vnode.shapeFlag & 256) && e.a && Ni(e.a, i), e.isMounted = !0, t = n = r = null;
 			}
 		};
 		e.scope.on();
 		let c = e.effect = new Ie(s);
 		e.scope.off();
 		let l = e.update = c.run.bind(c), u = e.job = c.runIfDirty.bind(c);
-		u.i = e, u.id = e.uid, c.scheduler = () => jn(u), Li(e, !0), l();
+		u.i = e, u.id = e.uid, c.scheduler = () => An(u), Li(e, !0), l();
 	}, de = (e, t, n) => {
 		t.component = e;
 		let r = e.vnode.props;
-		e.vnode = t, e.next = null, yi(e, t.props, r, n), Mi(e, t.children, n), Ze(), Pn(e), Qe();
+		e.vnode = t, e.next = null, yi(e, t.props, r, n), Mi(e, t.children, n), Ze(), Nn(e), Qe();
 	}, pe = (e, t, n, r, i, a, o, s, c = !1) => {
 		let l = e && e.children, u = e ? e.shapeFlag : 0, d = t.children, { patchFlag: f, shapeFlag: m } = t;
 		if (f > 0) {
@@ -2172,13 +2172,13 @@ function Fi(e, t) {
 			o(e.anchor, t, n);
 		} else if (c === Yi) C(e, t, n);
 		else if (r !== 2 && d & 1 && l) {
-			if (r === 0) l.persisted && !a[rr] ? o(a, t, n) : (l.beforeEnter(a), o(a, t, n), Ni(() => l.enter(a), i));
+			if (r === 0) l.persisted && !a[nr] ? o(a, t, n) : (l.beforeEnter(a), o(a, t, n), Ni(() => l.enter(a), i));
 			else {
 				let { leave: r, delayLeave: i, afterLeave: c } = l, u = () => {
 					e.ctx.isUnmounted ? s(a) : o(a, t, n);
 				}, d = () => {
-					let e = a._isLeaving || !!a[rr];
-					a._isLeaving && a[rr](!0), l.persisted && !e ? u() : r(a, () => {
+					let e = a._isLeaving || !!a[nr];
+					a._isLeaving && a[nr](!0), l.persisted && !e ? u() : r(a, () => {
 						u(), c && c();
 					});
 				};
@@ -2187,22 +2187,22 @@ function Fi(e, t) {
 		} else o(a, t, n);
 	}, _e = (e, t, n, r = !1, i = !1) => {
 		let { type: a, props: o, ref: s, children: c, dynamicChildren: l, shapeFlag: u, patchFlag: d, dirs: f, cacheIndex: p, memo: m } = e;
-		if ((d === -2 || l && l.hasOnce) && (i = !1), s != null && (Ze(), fr(s, null, n, e, !0), Qe()), p == null || e.ctx && e.ctx !== t || (t.renderCache[p] = void 0), u & 256) {
+		if ((d === -2 || l && l.hasOnce) && (i = !1), s != null && (Ze(), dr(s, null, n, e, !0), Qe()), p == null || e.ctx && e.ctx !== t || (t.renderCache[p] = void 0), u & 256) {
 			t.ctx.deactivate(e);
 			return;
 		}
-		let h = u & 1 && f, g = !mr(e), v;
+		let h = u & 1 && f, g = !pr(e), v;
 		if (g && (v = o && o.onVnodeBeforeUnmount) && _a(v, t, e), u & 6) be(e.component, n, r);
 		else {
 			if (u & 128) {
 				e.suspense.unmount(n, r);
 				return;
 			}
-			h && Wn(e, null, t, "beforeUnmount"), u & 64 ? e.type.remove(e, t, n, we, r) : l && !l.hasOnce && (a !== Ki || d > 0 && d & 64) ? xe(l, t, n, !1, !0) : (a === Ki && d & 384 || !i && u & 16) && xe(c, t, n), r && ve(e);
+			h && Un(e, null, t, "beforeUnmount"), u & 64 ? e.type.remove(e, t, n, we, r) : l && !l.hasOnce && (a !== Ki || d > 0 && d & 64) ? xe(l, t, n, !1, !0) : (a === Ki && d & 384 || !i && u & 16) && xe(c, t, n), r && ve(e);
 		}
 		let y = m != null && p == null;
 		(g && (v = o && o.onVnodeUnmounted) || h || y) && Ni(() => {
-			v && _a(v, t, e), h && Wn(e, null, t, "unmounted"), y && (e.el = null);
+			v && _a(v, t, e), h && Un(e, null, t, "unmounted"), y && (e.el = null);
 		}, n);
 	}, ve = (e) => {
 		let { type: t, el: n, anchor: r, transition: i } = e, a = t === Ki;
@@ -2214,7 +2214,7 @@ function Fi(e, t) {
 			w(e), i && !i.persisted && i.afterLeave && i.afterLeave();
 			return;
 		}
-		let o = a ? sr(e) : e, c = () => {
+		let o = a ? or(e) : e, c = () => {
 			a ? m(n) && ye(n, r) : s(n), i && !i.persisted && i.afterLeave && i.afterLeave();
 		};
 		if (o && o.shapeFlag & 1 && i && !i.persisted) {
@@ -2235,10 +2235,10 @@ function Fi(e, t) {
 	}, Se = (e) => {
 		if (e.shapeFlag & 6) return Se(e.component.subTree);
 		if (e.shapeFlag & 128) return e.suspense.next();
-		let t = h(e.anchor || e.el), n = t && t[tr];
+		let t = h(e.anchor || e.el), n = t && t[er];
 		return n ? h(n) : t;
 	}, Ce = (e, t, n) => {
-		Ln(() => {
+		In(() => {
 			e == null ? t._vnode && _e(t._vnode, null, null, !0) : y(t._vnode || null, e, t, null, null, null, n), t._vnode = e;
 		}, e && t._vnode ? void 0 : e && e.component ? e.component.uid : ba());
 	}, we = {
@@ -2305,7 +2305,7 @@ function Ui(e) {
 }
 var Wi = (e) => e.__isSuspense;
 function Gi(e, t) {
-	t && t.pendingBranch ? f(e) ? t.effects.push(...e) : t.effects.push(e) : Nn(e);
+	t && t.pendingBranch ? f(e) ? t.effects.push(...e) : t.effects.push(e) : Mn(e);
 }
 var Ki = /* @__PURE__ */ Symbol.for("v-fgt"), qi = /* @__PURE__ */ Symbol.for("v-txt"), Ji = /* @__PURE__ */ Symbol.for("v-cmt"), Yi = /* @__PURE__ */ Symbol.for("v-stc"), Xi = [], Zi = null;
 function Qi(e = !1) {
@@ -2331,7 +2331,7 @@ function aa(e, t) {
 	return e.type === t.type && e.key === t.key;
 }
 var oa = ({ key: e }) => e ?? null, sa = ({ ref: e, ref_key: t, ref_for: n }) => (typeof e == "number" && (e = "" + e), e == null ? null : v(e) || /* @__PURE__ */ M(e) || g(e) ? {
-	i: Bn,
+	i: zn,
 	r: e,
 	k: t,
 	f: !!n
@@ -2344,7 +2344,7 @@ function I(e, t = null, n = null, r = 0, i = null, a = e === Ki ? 0 : 1, o = !1,
 		props: t,
 		key: t && oa(t),
 		ref: t && sa(t),
-		scopeId: Vn,
+		scopeId: Bn,
 		slotScopeIds: null,
 		children: n,
 		component: null,
@@ -2364,13 +2364,13 @@ function I(e, t = null, n = null, r = 0, i = null, a = e === Ki ? 0 : 1, o = !1,
 		dynamicProps: i,
 		dynamicChildren: null,
 		appContext: null,
-		ctx: Bn
+		ctx: zn
 	};
 	return s ? (ha(c, n), a & 128 && e.normalize(c)) : n && (c.shapeFlag |= v(n) ? 8 : 16), ea > 0 && !o && Zi && (c.patchFlag > 0 || a & 6) && c.patchFlag !== 32 && Zi.push(c), c;
 }
 var ca = la;
 function la(e, t = null, n = null, r = 0, i = null, a = !1) {
-	if (e && e !== Mr || (e = Ji), ia(e)) {
+	if (e && e !== jr || (e = Ji), ia(e)) {
 		let r = da(e, t, !0);
 		return n && ha(r, n), ea > 0 && !a && Zi && (r.shapeFlag & 6 ? Zi[Zi.indexOf(e)] = r : Zi.push(r)), r.patchFlag = -2, r;
 	}
@@ -2379,7 +2379,7 @@ function la(e, t = null, n = null, r = 0, i = null, a = !1) {
 		let { class: e, style: n } = t;
 		e && !v(e) && (t.class = ve(e)), b(n) && (/* @__PURE__ */ Zt(n) && !f(n) && (n = c({}, n)), t.style = pe(n));
 	}
-	let o = v(e) ? 1 : Wi(e) ? 128 : nr(e) ? 64 : b(e) ? 4 : g(e) ? 2 : 0;
+	let o = v(e) ? 1 : Wi(e) ? 128 : tr(e) ? 64 : b(e) ? 4 : g(e) ? 2 : 0;
 	return I(e, t, n, r, i, o, a, !0);
 }
 function ua(e) {
@@ -2418,7 +2418,7 @@ function da(e, t, n = !1, r = !1) {
 		ce: e.ce,
 		cacheIndex: e.cacheIndex
 	};
-	return c && r && or(u, c.clone(u)), u;
+	return c && r && ar(u, c.clone(u)), u;
 }
 function fa(e = " ", t = 0) {
 	return ca(qi, null, e, t);
@@ -2442,7 +2442,7 @@ function ha(e, t) {
 		{
 			n = 32;
 			let r = t._;
-			!r && !_i(t) ? t._ctx = Bn : r === 3 && Bn && (Bn.slots._ === 1 ? t._ = 1 : (t._ = 2, e.patchFlag |= 1024));
+			!r && !_i(t) ? t._ctx = zn : r === 3 && zn && (zn.slots._ === 1 ? t._ = 1 : (t._ = 2, e.patchFlag |= 1024));
 		}
 	} else if (g(t)) {
 		if (r & 65) {
@@ -2451,7 +2451,7 @@ function ha(e, t) {
 		}
 		t = {
 			default: t,
-			_ctx: Bn
+			_ctx: zn
 		}, n = 32;
 	} else t = String(t), r & 64 ? (n = 16, t = [fa(t)]) : n = 8;
 	e.children = t, e.shapeFlag |= n;
@@ -2543,7 +2543,7 @@ function xa(e, t, r) {
 	};
 	return o.ctx = { _: o }, o.root = t ? t.root : o, o.emit = ri.bind(null, o), e.ce && e.ce(o), o;
 }
-var L = null, Sa = () => L || Bn, Ca, wa;
+var L = null, Sa = () => L || zn, Ca, wa;
 {
 	let e = fe(), t = (t, n) => {
 		let r;
@@ -2574,12 +2574,12 @@ function ka(e, t = !1, n = !1) {
 }
 function Aa(e, t) {
 	let n = e.type;
-	e.accessCache = /* @__PURE__ */ Object.create(null), e.proxy = new Proxy(e.ctx, Ir);
+	e.accessCache = /* @__PURE__ */ Object.create(null), e.proxy = new Proxy(e.ctx, Fr);
 	let { setup: r } = n;
 	if (r) {
 		Ze();
 		let n = e.setupContext = r.length > 1 ? Pa(e) : null, i = Ta(e), a = vn(r, e, 0, [e.props, n]), o = x(a);
-		if (Qe(), i(), (o || e.sp) && !mr(e) && lr(e), o) {
+		if (Qe(), i(), (o || e.sp) && !pr(e) && cr(e), o) {
 			if (a.then(Ea, Ea), t) return a.then((n) => {
 				wa(!0);
 				try {
@@ -2604,7 +2604,7 @@ function Ma(e, t, n) {
 		let t = Ta(e);
 		Ze();
 		try {
-			zr(e);
+			Rr(e);
 		} finally {
 			Qe(), t();
 		}
@@ -2627,10 +2627,10 @@ function Fa(e) {
 	return e.exposed ? e.exposeProxy ||= new Proxy(on(Qt(e.exposed)), {
 		get(t, n) {
 			if (n in t) return t[n];
-			if (n in Pr) return Pr[n](e);
+			if (n in Nr) return Nr[n](e);
 		},
 		has(e, t) {
-			return t in e || t in Pr;
+			return t in e || t in Nr;
 		}
 	}) : e.proxy;
 }
@@ -2952,7 +2952,7 @@ function Wo(e) {
 	return v(e) ? document.querySelector(e) : e;
 }
 // node_modules/pinia/dist/pinia.mjs
-var Go, Ko = (e) => Go = e, qo = () => qn() && Kn(Jo) || Go, Jo = Symbol();
+var Go, Ko = (e) => Go = e, qo = () => Kn() && Gn(Jo) || Go, Jo = Symbol();
 function Yo(e) {
 	return e && typeof e == "object" && Object.prototype.toString.call(e) === "[object Object]" && typeof e.toJSON != "function";
 }
@@ -3102,7 +3102,7 @@ function Cs(e, t, n = {}, r, i, a) {
 			events: p
 		});
 		let i = h = Symbol();
-		kn().then(() => {
+		On().then(() => {
 			h === i && (l = !0);
 		}), u = !0, ps(d, n, r.state.value[e]);
 	}
@@ -3149,7 +3149,7 @@ function Cs(e, t, n = {}, r, i, a) {
 		$patch: g,
 		$reset: v,
 		$subscribe(t, n = {}) {
-			let i = fs(d, t, n.detached, () => a()), a = o.run(() => Zn(() => r.state.value[e], (r) => {
+			let i = fs(d, t, n.detached, () => a()), a = o.run(() => Xn(() => r.state.value[e], (r) => {
 				(n.flush === "sync" ? u : l) && t({
 					storeId: e,
 					type: Xo.direct,
@@ -3186,8 +3186,8 @@ function ws(e, t, n) {
 	let r, i, a = typeof t == "function";
 	typeof e == "string" ? (r = e, i = a ? n : t) : (i = e, r = e.id);
 	function o(e, n) {
-		let o = qn();
-		return e ||= o ? Kn(Jo, null) : null, e && Ko(e), e = Go, e._s.has(r) || (a ? Cs(r, t, i, e) : Ss(r, i, e)), e._s.get(r);
+		let o = Kn();
+		return e ||= o ? Gn(Jo, null) : null, e && Ko(e), e = Go, e._s.has(r) || (a ? Cs(r, t, i, e) : Ss(r, i, e)), e._s.get(r);
 	}
 	return o.$id = r, o;
 }
@@ -3287,7 +3287,7 @@ function Vs(e) {
 			subtree: !0
 		}));
 	}
-	let g = Zn(() => [e.is_active, e.settings.modernCharacterManagement], p, { immediate: !0 });
+	let g = Xn(() => [e.is_active, e.settings.modernCharacterManagement], p, { immediate: !0 });
 	return { destroy() {
 		g(), m.disconnect(), s &&= (n.cancelAnimationFrame(s), 0), d();
 	} };
@@ -4968,7 +4968,7 @@ var Vc = class {
 	}
 };
 function Hc(e, t = {}) {
-	let n = new Vc(e, t), r = Zn(() => [e.is_active, e.settings.modernPresetEditor], () => n.scheduleSync(), { immediate: !0 });
+	let n = new Vc(e, t), r = Xn(() => [e.is_active, e.settings.modernPresetEditor], () => n.scheduleSync(), { immediate: !0 });
 	return {
 		scheduleSync() {
 			n.scheduleSync();
@@ -5230,7 +5230,7 @@ function ul(e) {
 			e.classList.remove(Zc, Qc), e.querySelectorAll(`.${nl}`).forEach((e) => e.classList.remove(nl)), Array.from(e.children).forEach((e) => e.classList.remove($c, el));
 		}), i?.classList.remove(Gc), r?.classList.remove(Wc, rl), t.body.classList.remove(Uc), r = null, i = null, a = null, o = null, s = null, c = [], l = [], d = "";
 	}
-	let me = Zn(() => [e.is_active, e.settings.modernExtensionSettings], ([e, t]) => {
+	let me = Xn(() => [e.is_active, e.settings.modernExtensionSettings], ([e, t]) => {
 		e && t ? fe() : pe();
 	}, { immediate: !0 });
 	return { destroy() {
@@ -8369,7 +8369,7 @@ var nh = ws(qm, () => {
 	};
 	r?.on?.("settings_loaded", i);
 	let a = La(() => n.value.enabled), o = La(() => a.value && n.value.desktopTwoColumn);
-	Xn(() => {
+	Yn(() => {
 		th(Xm.parse(e(n.value)));
 	});
 	function s() {
@@ -8456,7 +8456,7 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
-})(/* @__PURE__ */ cr({
+})(/* @__PURE__ */ sr({
 	__name: "Panel",
 	setup(e) {
 		let t = nh();
@@ -8479,7 +8479,7 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 			title: "恢复默认设置",
 			onClick: Ro(r, ["stop"])
 		}, [...i[25] ||= [I("i", { class: "fa-solid fa-rotate-left" }, null, -1)]])]), i[26] ||= I("div", { class: "inline-drawer-icon fa-solid fa-circle-chevron-down down" }, null, -1)]), I("div", oh, [
-			I("label", sh, [P(I("input", {
+			I("label", sh, [F(I("input", {
 				id: "th_modern_enabled",
 				"onUpdate:modelValue": i[0] ||= (e) => N(t).settings.enabled = e,
 				type: "checkbox"
@@ -8487,7 +8487,7 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 			i[49] ||= I("small", { class: "notes" }, "全面应用毛玻璃、常驻侧边栏与现代布局排版", -1),
 			i[50] ||= I("hr", null, null, -1),
 			i[51] ||= I("h4", null, "分栏与排版", -1),
-			I("label", ch, [P(I("input", {
+			I("label", ch, [F(I("input", {
 				id: "th_modern_two_column",
 				"onUpdate:modelValue": i[1] ||= (e) => N(t).settings.desktopTwoColumn = e,
 				type: "checkbox"
@@ -8496,7 +8496,7 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 			I("label", {
 				class: ve(["checkbox_label", { "is-disabled": !N(t).settings.desktopTwoColumn }]),
 				for: "th_modern_docked_drawer"
-			}, [P(I("input", {
+			}, [F(I("input", {
 				id: "th_modern_docked_drawer",
 				"onUpdate:modelValue": i[2] ||= (e) => N(t).settings.desktopDockedDrawer = e,
 				type: "checkbox",
@@ -8539,13 +8539,13 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 			i[54] ||= I("small", { class: "notes" }, "0 表示跟随酒馆宽度比例始终铺满可用空间。", -1),
 			i[55] ||= I("hr", null, null, -1),
 			i[56] ||= I("h4", null, "输入框设置", -1),
-			I("label", yh, [P(I("input", {
+			I("label", yh, [F(I("input", {
 				id: "th_modern_floating_input",
 				"onUpdate:modelValue": i[9] ||= (e) => N(t).settings.floatingChatInput = e,
 				type: "checkbox"
 			}, null, 512), [[Mo, N(t).settings.floatingChatInput]]), i[36] ||= I("span", null, "悬浮输入框", -1)]),
 			i[57] ||= I("small", { class: "notes" }, "开启时输入框以毛玻璃胶囊形态悬浮于聊天区上方；关闭时与原版 SillyTavern 一样固定置底铺满。", -1),
-			I("label", bh, [P(I("input", {
+			I("label", bh, [F(I("input", {
 				id: "th_modern_single_line_input",
 				"onUpdate:modelValue": i[10] ||= (e) => N(t).settings.singleLineChatInput = e,
 				type: "checkbox"
@@ -8553,7 +8553,7 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 			i[58] ||= I("small", { class: "notes" }, "开启后输入框采用紧凑单行排版（发送与操作按钮置于输入框两侧）；关闭时保持双行排版（上方输入文本、下方操作按钮）。", -1),
 			I("div", { class: ve({ "is-disabled": !N(t).settings.floatingChatInput }) }, [
 				I("div", xh, [i[38] ||= I("span", null, "底部留白边距", -1), I("div", Sh, [I("span", Ch, Oe(N(t).settings.inputBottomGap) + " px", 1)])]),
-				I("div", wh, [I("div", Th, [P(I("input", {
+				I("div", wh, [I("div", Th, [F(I("input", {
 					"aria-label": "底部留白边距滑块",
 					"onUpdate:modelValue": i[11] ||= (e) => N(t).settings.inputBottomGap = e,
 					type: "range",
@@ -8581,7 +8581,7 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 				}, null, 40, Oh)])]),
 				I("small", kh, "调整悬浮输入框与窗口底边的间距（" + Oe(N(t).settings.inputBottomGap) + " px）。", 1),
 				I("div", Ah, [i[39] ||= I("span", null, "两侧留白边距", -1), I("div", jh, [I("span", Mh, Oe(N(t).settings.inputSideGap) + " px", 1)])]),
-				I("div", Nh, [I("div", Ph, [P(I("input", {
+				I("div", Nh, [I("div", Ph, [F(I("input", {
 					"aria-label": "两侧留白边距滑块",
 					"onUpdate:modelValue": i[14] ||= (e) => N(t).settings.inputSideGap = e,
 					type: "range",
@@ -8611,7 +8611,7 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 			], 2),
 			i[59] ||= I("hr", null, null, -1),
 			i[60] ||= I("h4", null, "增强子模块", -1),
-			I("label", zh, [P(I("input", {
+			I("label", zh, [F(I("input", {
 				id: "th_modern_wi_editor",
 				"onUpdate:modelValue": i[17] ||= (e) => N(t).settings.modernWorldInfoEditor = e,
 				type: "checkbox"
@@ -8620,26 +8620,26 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 			I("label", {
 				class: ve(["checkbox_label", { "is-disabled": !N(t).settings.modernWorldInfoEditor }]),
 				for: "th_modern_wi_select"
-			}, [P(I("input", {
+			}, [F(I("input", {
 				id: "th_modern_wi_select",
 				"onUpdate:modelValue": i[18] ||= (e) => N(t).settings.modernWorldSelect = e,
 				type: "checkbox",
 				disabled: !N(t).settings.modernWorldInfoEditor
 			}, null, 8, Bh), [[Mo, N(t).settings.modernWorldSelect]]), i[41] ||= I("span", null, "现代世界书选择器", -1)], 2),
 			i[62] ||= I("small", { class: "notes" }, "多端卡片式世界书下拉选择面板与收藏置顶", -1),
-			I("label", Vh, [P(I("input", {
+			I("label", Vh, [F(I("input", {
 				id: "th_modern_cm",
 				"onUpdate:modelValue": i[19] ||= (e) => N(t).settings.modernCharacterManagement = e,
 				type: "checkbox"
 			}, null, 512), [[Mo, N(t).settings.modernCharacterManagement]]), i[42] ||= I("span", null, "现代角色管理界面", -1)]),
 			i[63] ||= I("small", { class: "notes" }, "美化角色卡片列表、头部操作栏与角色编辑抽屉", -1),
-			I("label", Hh, [P(I("input", {
+			I("label", Hh, [F(I("input", {
 				id: "th_modern_persona",
 				"onUpdate:modelValue": i[20] ||= (e) => N(t).settings.modernPersonaManagement = e,
 				type: "checkbox"
 			}, null, 512), [[Mo, N(t).settings.modernPersonaManagement]]), i[43] ||= I("span", null, "现代用户设定界面", -1)]),
 			i[64] ||= I("small", { class: "notes" }, "优化人设卡片、选中状态、操作按钮与描述表单", -1),
-			I("label", Uh, [P(I("input", {
+			I("label", Uh, [F(I("input", {
 				id: "th_modern_preset_editor",
 				"onUpdate:modelValue": i[21] ||= (e) => N(t).settings.modernPresetEditor = e,
 				type: "checkbox"
@@ -8649,7 +8649,7 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 				"margin-left": "4px"
 			} }, "(实验性)")], -1)]),
 			i[65] ||= I("small", { class: "notes" }, "优化预设提示词顺序列表、支持多选拖拽、分组折叠与单选互斥（大型预设调优中，默认关闭）", -1),
-			I("label", Wh, [P(I("input", {
+			I("label", Wh, [F(I("input", {
 				id: "th_modern_ext_settings",
 				"onUpdate:modelValue": i[22] ||= (e) => N(t).settings.modernExtensionSettings = e,
 				type: "checkbox"
@@ -8657,13 +8657,13 @@ var ih = { class: "inline-drawer" }, ah = { class: "inline-drawer-toggle inline-
 			i[66] ||= I("small", { class: "notes" }, "将酒馆扩展设置抽屉重排为侧边栏导航与卡片分栏体验，深度兼容菜单精简器等扩展", -1),
 			i[67] ||= I("hr", null, null, -1),
 			i[68] ||= I("h4", null, "视觉与性能", -1),
-			I("label", Gh, [P(I("input", {
+			I("label", Gh, [F(I("input", {
 				id: "th_modern_reduce_motion",
 				"onUpdate:modelValue": i[23] ||= (e) => N(t).settings.reduceMotion = e,
 				type: "checkbox"
 			}, null, 512), [[Mo, N(t).settings.reduceMotion]]), i[46] ||= I("span", null, "减弱动态效果", -1)]),
 			i[69] ||= I("small", { class: "notes" }, "最小化过渡与缩放动画，降低能耗并提升响应", -1),
-			I("label", Kh, [P(I("input", {
+			I("label", Kh, [F(I("input", {
 				id: "th_modern_reduce_effects",
 				"onUpdate:modelValue": i[24] ||= (e) => N(t).settings.reduceAdvancedEffects = e,
 				type: "checkbox"
@@ -8945,7 +8945,13 @@ var pg = class {
 		let o = J(this.document, "button", "menu_button menu_button_icon th-modern-mobile-world-native-return");
 		o.type = "button", o.title = "使用现代世界书选择器", o.append(lg(this.document, "fa-solid fa-list-check"), J(this.document, "span")), o.lastElementChild.textContent = "现代选择", t.addEventListener("click", this.openPicker), o.addEventListener("click", this.returnToCustomMode), e.append(t, o), (this.select2Container ?? this.source).insertAdjacentElement("afterend", e), this.wrapper = e, this.trigger = t, this.primaryText = r, this.secondaryText = i, this.countBadge = a, this.nativeReturn = o, typeof this.window.$ == "function" ? (this.$source = this.window.$(this.source), this.$source.on(`change${this.namespace}`, this.onSourceChange)) : (this.nativeChangeHandler = this.onSourceChange, this.source.addEventListener("change", this.nativeChangeHandler)), this.observer = new this.window.MutationObserver(this.scheduleSync), this.observer.observe(this.source, {
 			attributes: !0,
-			attributeFilter: ["disabled"],
+			attributeFilter: [
+				"disabled",
+				"label",
+				"selected",
+				"value"
+			],
+			characterData: !0,
 			childList: !0,
 			subtree: !0
 		}), this.syncTrigger();
@@ -8957,7 +8963,8 @@ var pg = class {
 		let e = Array.from(this.source.options).map((e, t) => {
 			let n = String(e.label || e.textContent || e.value).trim();
 			return {
-				disabled: e.disabled,
+				disabled: e.matches(":disabled"),
+				element: e,
 				favoriteKey: e.value ? n : "",
 				label: n,
 				searchText: ug(n),
@@ -9011,7 +9018,7 @@ var pg = class {
 	syncTrigger() {
 		if (!this.trigger || !this.primaryText || !this.secondaryText || !this.countBadge) return;
 		let e = this.getOptions(), t = this.getSelectedValues(), n = e.filter((e) => t.has(e.value)), r = e.filter((e) => !e.disabled);
-		if (this.trigger.disabled = this.source.disabled || r.length === 0, this.trigger.setAttribute("aria-expanded", String(this.manager.isPickerFor(this))), this.config.multiple) this.primaryText.textContent = n.length > 0 ? `${n.length} 本已启用` : this.config.placeholder, this.secondaryText.textContent = n.length > 0 ? `${n.slice(0, 2).map((e) => e.label).join("、")}${n.length > 2 ? ` 等 ${n.length} 本` : ""}` : "", this.secondaryText.hidden = n.length === 0, this.countBadge.textContent = String(n.length), this.countBadge.hidden = n.length === 0;
+		if (this.trigger.disabled = this.source.matches(":disabled") || r.length === 0, this.trigger.setAttribute("aria-expanded", String(this.manager.isPickerFor(this))), this.config.multiple) this.primaryText.textContent = n.length > 0 ? `${n.length} 本已启用` : this.config.placeholder, this.secondaryText.textContent = n.length > 0 ? `${n.slice(0, 2).map((e) => e.label).join("、")}${n.length > 2 ? ` 等 ${n.length} 本` : ""}` : "", this.secondaryText.hidden = n.length === 0, this.countBadge.textContent = String(n.length), this.countBadge.hidden = n.length === 0;
 		else {
 			let e = n[0];
 			this.primaryText.textContent = e?.value ? e.label : this.config.placeholder, this.secondaryText.textContent = "", this.secondaryText.hidden = !0, this.countBadge.hidden = !0;
@@ -9026,7 +9033,7 @@ var pg = class {
 		typeof this.window.$ == "function" ? this.window.$(this.source).trigger("change") : this.source.dispatchEvent(new this.window.Event("change", { bubbles: !0 }));
 	}
 	openPicker = () => {
-		this.source.disabled || this.manager.openPicker(this);
+		this.source.matches(":disabled") || this.manager.openPicker(this);
 	};
 	returnToCustomMode = () => {
 		this.manager.requestEnabledChange(!0);
@@ -9074,7 +9081,7 @@ var pg = class {
 		return this.controller === e;
 	}
 	mount() {
-		this.previousFocus = this.document.activeElement, this.options = this.controller.getOptions(), this.selectedValues = this.controller.getSelectedValues(), this.enabledSnapshot = new Set(this.selectedValues), this.favoriteSnapshot = this.manager.getFavorites();
+		this.previousFocus = this.document.activeElement, this.options = this.controller.getOptions(), this.selectedValues = this.controller.getSelectedValues(), this.enabledSnapshot = new Set(this.options.filter((e) => e.selected).map((e) => e.favoriteKey)), this.favoriteSnapshot = this.manager.getFavorites();
 		let e = J(this.document, "dialog", ng), t = `th-modern-mobile-world-picker-title-${this.controller.source.id}`;
 		e.setAttribute("role", "dialog"), e.setAttribute("aria-labelledby", t), e.tabIndex = -1;
 		let n = J(this.document, "section", "th-modern-mobile-world-picker-sheet"), r = J(this.document, "span", "th-modern-mobile-world-picker-handle");
@@ -9101,12 +9108,12 @@ var pg = class {
 		});
 	}
 	destroy(e = !0) {
-		this.destroyed || (this.destroyed = !0, this.searchTimer &&= (this.window.clearTimeout(this.searchTimer), 0), this.searchInput?.removeEventListener("input", this.onSearchInput), this.searchInput?.removeEventListener("keydown", this.onSearchKeyDown), this.clearSearchButton?.removeEventListener("click", this.clearSearch), this.tabs?.removeEventListener("click", this.onTabClick), this.overlay?.removeEventListener("touchstart", this.stopDrawerAutoClose), this.overlay?.removeEventListener("mousedown", this.stopDrawerAutoClose), this.overlay?.removeEventListener("click", this.onOverlayClick), this.overlay?.removeEventListener("keydown", this.onKeyDown), this.window.removeEventListener("resize", this.syncLayout), this.overlay?.remove(), this.overlay = void 0, e && this.previousFocus?.isConnected && this.previousFocus.focus({ preventScroll: !0 }), this.controller.syncTrigger(), this.onDestroy());
+		this.destroyed || (this.destroyed = !0, this.searchTimer &&= (this.window.clearTimeout(this.searchTimer), 0), this.searchInput?.removeEventListener("input", this.onSearchInput), this.searchInput?.removeEventListener("keydown", this.onSearchKeyDown), this.clearSearchButton?.removeEventListener("click", this.clearSearch), this.tabs?.removeEventListener("click", this.onTabClick), this.overlay?.removeEventListener("touchstart", this.stopDrawerAutoClose), this.overlay?.removeEventListener("mousedown", this.stopDrawerAutoClose), this.overlay?.removeEventListener("click", this.onOverlayClick), this.overlay?.removeEventListener("keydown", this.onKeyDown), this.window.removeEventListener("resize", this.syncLayout), this.overlay?.remove(), this.overlay = void 0, e && this.previousFocus?.isConnected && this.previousFocus.focus({ preventScroll: !0 }), this.onDestroy(), this.controller.syncTrigger());
 	}
 	refreshFromSource() {
 		this.options = this.controller.getOptions(), this.selectedValues = this.controller.getSelectedValues();
-		for (let e of this.selectedValues) this.enabledSnapshot.add(e);
-		this.renderTabs(), this.filterOptions();
+		for (let e of this.options) e.selected && this.enabledSnapshot.add(e.favoriteKey);
+		this.renderTabs(), this.filterOptions(!1);
 	}
 	getAvailableTabs() {
 		return this.controller.config.multiple ? [
@@ -9121,14 +9128,14 @@ var pg = class {
 		for (let t of this.getAvailableTabs()) {
 			let n = J(this.document, "button", "th-modern-mobile-world-picker-tab");
 			n.type = "button", n.dataset.tab = t, n.setAttribute("role", "tab"), n.setAttribute("aria-selected", String(this.activeTab === t)), n.classList.toggle("is-active", this.activeTab === t);
-			let r = t === "all" ? this.options.filter((e) => e.value !== "").length : t === "enabled" ? this.selectedValues.size : this.manager.getFavorites().size;
+			let r = t === "all" ? this.options.filter((e) => e.value !== "").length : t === "enabled" ? this.selectedValues.size : this.options.filter((e) => this.manager.isFavorite(e.favoriteKey)).length;
 			n.append(this.document.createTextNode(cg[t]), J(this.document, "span")), n.lastElementChild.textContent = String(r), e.append(n);
 		}
 		this.tabs.replaceChildren(e);
 	}
-	filterOptions() {
-		let e = ug(this.query), t = this.options;
-		this.activeTab === "enabled" ? t = t.filter((e) => this.enabledSnapshot.has(e.value)) : this.activeTab === "favorites" && (t = t.filter((e) => this.favoriteSnapshot.has(e.favoriteKey))), this.filteredOptions = e ? t.filter((t) => t.searchText.includes(e)) : [...t], this.viewport && (this.viewport.scrollTop = 0), this.updateStatus(t.filter((e) => e.value !== "").length), this.renderRows(), this.sheet?.isConnected && this.syncLayout();
+	filterOptions(e = !0) {
+		let t = ug(this.query), n = this.options;
+		this.activeTab === "enabled" ? n = n.filter((e) => this.enabledSnapshot.has(e.favoriteKey)) : this.activeTab === "favorites" && (n = n.filter((e) => this.favoriteSnapshot.has(e.favoriteKey))), this.filteredOptions = t ? n.filter((e) => e.searchText.includes(t)) : [...n], this.viewport && e && (this.viewport.scrollTop = 0), this.updateStatus(n.filter((e) => e.value !== "").length), this.renderRows(), this.sheet?.isConnected && this.syncLayout();
 	}
 	renderRows() {
 		if (!this.viewport || !this.rows || !this.emptyState) return;
@@ -9223,14 +9230,17 @@ var pg = class {
 	onRowClick = (e) => {
 		let t = fg(e.target), n = t?.closest(".th-modern-mobile-world-picker-row");
 		if (!n) return;
-		let r = Number(n.dataset.sourceIndex), i = this.options.find((e) => e.sourceIndex === r);
-		if (!i) return;
-		if (t?.closest(".th-modern-mobile-world-picker-favorite")) {
-			this.manager.toggleFavorite(i.favoriteKey) && this.favoriteSnapshot.add(i.favoriteKey), this.renderTabs(), this.updateStatus(this.activeTab === "all" ? this.options.filter((e) => e.value !== "").length : this.activeTab === "enabled" ? this.options.filter((e) => this.enabledSnapshot.has(e.value)).length : this.options.filter((e) => this.favoriteSnapshot.has(e.favoriteKey)).length), this.renderRows();
-			return;
+		let r = Number(n.dataset.sourceIndex), i = this.options.find((e) => e.sourceIndex === r), a = this.controller.source;
+		if (!i || !a.isConnected || a.matches(":disabled")) return;
+		let o = this.controller.getOptions().find((e) => e.sourceIndex === r);
+		if (o?.element !== i.element || o.value !== i.value || o.label !== i.label) this.refreshFromSource();
+		else if (t?.closest(".th-modern-mobile-world-picker-favorite")) this.manager.toggleFavorite(i.favoriteKey) ? this.favoriteSnapshot.add(i.favoriteKey) : this.favoriteSnapshot.delete(i.favoriteKey), this.renderTabs(), this.filterOptions(!1);
+		else if (t?.closest(".th-modern-mobile-world-picker-row-select") && !o.disabled) {
+			if (this.controller.config.multiple) {
+				if (!i.value) return;
+				this.selectedValues = this.controller.getSelectedValues(), this.selectedValues.has(i.value) ? this.selectedValues.delete(i.value) : (this.selectedValues.add(i.value), this.enabledSnapshot.add(i.favoriteKey)), this.controller.commit(this.selectedValues), this.renderTabs(), this.renderRows();
+			} else this.controller.commit(/* @__PURE__ */ new Set([i.value])), this.destroy();
 		}
-		let a = t?.closest(".th-modern-mobile-world-picker-row-select");
-		a && !a.disabled && (this.controller.config.multiple ? (this.selectedValues.has(i.value) ? this.selectedValues.delete(i.value) : (this.selectedValues.add(i.value), this.enabledSnapshot.add(i.value)), this.controller.commit(this.selectedValues), this.renderTabs(), this.renderRows()) : (this.controller.commit(/* @__PURE__ */ new Set([i.value])), this.destroy()));
 	};
 	close = () => {
 		this.destroy();
@@ -9273,49 +9283,52 @@ var vg = "th-modern-wi-enabled", yg = "th-modern-wi-native", bg = "th-modern-wi-
 	["th-modern-wi-prevent-recursion-field", "input[name=\"preventRecursion\"]"]
 ];
 function Fg(e) {
-	let t = e.getAttribute("uid") ?? e.dataset.uid, n = Number(t);
-	return Number.isFinite(n) ? n : void 0;
+	let t = (e.getAttribute("uid") ?? e.dataset.uid)?.trim(), n = Number(t);
+	return t && Number.isSafeInteger(n) && n >= 0 ? n : void 0;
 }
 function Ig(e) {
+	return e.querySelector(".move_entry_button")?.dataset.currentWorld;
+}
+function Lg(e) {
 	let t = e.querySelector("#world_editor_select");
 	return !t || t.value === "" ? "" : t.selectedOptions[0]?.textContent?.trim() ?? "";
 }
-function Lg(e) {
+function Rg(e) {
 	return typeof e == "object" && !!e && !Array.isArray(e);
 }
-function Rg(e) {
-	return Lg(e) && typeof e.message == "string" ? e.message : String(e);
+function zg(e) {
+	return Rg(e) && typeof e.message == "string" ? e.message : String(e);
 }
-function zg(e, t, n) {
+function Bg(e, t, n) {
 	let r = n.structuredClone(e);
-	if (!Lg(r) || !Lg(r.entries)) throw Error("世界书数据缺少 entries 对象");
+	if (!Rg(r) || !Rg(r.entries)) throw Error("世界书数据缺少 entries 对象");
 	let i = 0;
 	for (let [e, n] of Object.entries(r.entries)) {
-		let a = Number(Lg(n) && n.uid !== void 0 ? n.uid : e);
+		let a = Number(Rg(n) && n.uid !== void 0 ? n.uid : e);
 		Number.isFinite(a) && t.has(a) && (delete r.entries[e], i += 1);
 	}
 	if (i !== t.size) throw Error(`仅找到 ${i}/${t.size} 个待删除条目`);
-	return Lg(r.originalData) && Array.isArray(r.originalData.entries) && (r.originalData.entries = r.originalData.entries.filter((e) => {
-		let n = Number(Lg(e) ? e.uid ?? e.id : void 0);
+	return Rg(r.originalData) && Array.isArray(r.originalData.entries) && (r.originalData.entries = r.originalData.entries.filter((e) => {
+		let n = Number(Rg(e) ? e.uid ?? e.id : void 0);
 		return !Number.isFinite(n) || !t.has(n);
 	})), r;
 }
-function Bg(e) {
+function Vg(e) {
 	let t = e;
 	return t ? typeof t.closest == "function" ? t : t.nodeType === 3 ? t.parentElement ?? null : null : null;
 }
-function Vg(e) {
-	return Bg(e)?.closest(".world_entry") ?? null;
-}
 function Hg(e) {
-	let t = Bg(e);
-	return t ? !!t.closest(".th-modern-wi-tab,.th-modern-wi-editor-surface,.th-modern-wi-editor-actions,.th-modern-wi-toolbar,.drag-handle,.inline-drawer-toggle,.move_entry_button,.duplicate_entry_button,.delete_entry_button,input,select,textarea,button,a,label,.menu_button,.select2,.select2-container") : !1;
+	return Vg(e)?.closest(".world_entry") ?? null;
 }
 function Ug(e) {
-	let t = Bg(e);
-	return !t || !t.closest("#world_popup_entries_list") || Hg(t) ? null : Vg(t);
+	let t = Vg(e);
+	return t ? !!t.closest(".th-modern-wi-tab,.th-modern-wi-editor-surface,.th-modern-wi-editor-actions,.th-modern-wi-toolbar,.drag-handle,.inline-drawer-toggle,.move_entry_button,.duplicate_entry_button,.delete_entry_button,input,select,textarea,button,a,label,.menu_button,.select2,.select2-container") : !1;
 }
-function Wg(e, t, n, r) {
+function Wg(e) {
+	let t = Vg(e);
+	return !t || !t.closest("#world_popup_entries_list") || Ug(t) ? null : Hg(t);
+}
+function Gg(e, t, n, r) {
 	if (e.parentNode === t) {
 		r && e.nextSibling !== r && t.insertBefore(e, r);
 		return;
@@ -9332,7 +9345,7 @@ function Wg(e, t, n, r) {
 		node: e
 	});
 }
-function Gg(e) {
+function Kg(e) {
 	for (let t of [...e].reverse()) {
 		let e = t.marker.parentNode;
 		e && (e.insertBefore(t.node, t.marker), t.marker.remove());
@@ -9343,71 +9356,71 @@ function Y(e, t, n, r) {
 	let i = e.createElement(t);
 	return n && (i.className = n), r !== void 0 && (i.textContent = r), i;
 }
-function Kg(e, t, n, r) {
+function qg(e, t, n, r) {
 	let i = Y(e, "button", t);
 	return i.type = "button", i.title = n, i.setAttribute("aria-label", n), i.innerHTML = `<i class="${r}" aria-hidden="true"></i>`, i;
 }
-function qg(e, t, n, r = !1) {
+function Jg(e, t, n, r = !1) {
 	let i = Y(e, "label", `th-modern-wi-field${r ? " th-modern-wi-field-wide" : ""}`);
 	i.classList.add("th-modern-wi-labeled-field");
 	let a = Y(e, "span", "th-modern-wi-field-label", n);
 	return i.append(a, t), i;
 }
-function Jg(e, t, n, r = "") {
+function Yg(e, t, n, r = "") {
 	t.append(Y(e, "div", `th-modern-wi-section-title${r ? ` ${r}` : ""}`, n));
 }
-function Yg(e) {
+function Xg(e) {
 	return e ? e.closest(".world_entry_form_control,.range-block,.checkbox_label,label.checkbox,label,.flex-container") ?? e.parentElement : null;
 }
 function X(e, t, n, r, i, a = !1, o = "") {
-	let s = n.querySelector(r), c = Yg(s);
+	let s = n.querySelector(r), c = Xg(s);
 	if (c && !c.closest(".th-modern-wi-panel")) {
 		if (i && c === s) {
-			let n = qg(e, c, i, a);
+			let n = Jg(e, c, i, a);
 			o && n.classList.add(o), t.append(n);
 		} else c.classList.add("th-modern-wi-native-field"), i && (c.classList.add("th-modern-wi-labeled-field"), c.querySelector(":scope > .th-modern-wi-field-label") || c.prepend(Y(e, "span", "th-modern-wi-field-label", i))), a && c.classList.add("th-modern-wi-native-field-wide"), o && c.classList.add(o), t.append(c);
 	}
 }
-function Xg(e, t, n, r, i = !1, a = "", o = "") {
+function Zg(e, t, n, r, i = !1, a = "", o = "") {
 	let s = t.querySelector(n)?.closest(r);
 	s && !s.closest(".th-modern-wi-panel") && (s.classList.add("th-modern-wi-native-field"), o && (s.classList.add("th-modern-wi-labeled-field"), s.querySelector(":scope > .th-modern-wi-field-label") || s.prepend(Y(R(), "span", "th-modern-wi-field-label", o))), i && s.classList.add("th-modern-wi-native-field-wide"), a && s.classList.add(a), e.append(s));
 }
-function Zg(e, t, n, r, i, a = !1, o = "") {
+function Qg(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s || s.closest(".th-modern-wi-panel")) return;
-	let c = qg(e, s, i, a);
+	let c = Jg(e, s, i, a);
 	o && c.classList.add(o), t.append(c);
 }
-function Qg(e) {
+function $g(e) {
 	let t = e.ownerDocument.defaultView?.Event ?? Event;
 	e.dispatchEvent(new t("input", { bubbles: !0 })), e.dispatchEvent(new t("change", { bubbles: !0 }));
 }
-function $g(e, t) {
+function e_(e, t) {
 	let n = e.tagName.toLowerCase(), r = t.tagName.toLowerCase();
 	n === "input" && r === "input" && e.type === "checkbox" ? t.checked = e.checked : n === "select" && r === "select" ? t.selectedIndex = e.selectedIndex : t.value = e.value;
 }
-function e_(e, t, n) {
+function t_(e, t, n) {
 	let r = [...Array.from(t.querySelectorAll(n)), ...Array.from(e.querySelectorAll(n))];
 	return r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? null;
 }
-function t_(e) {
+function n_(e) {
 	return Pg.find(([t]) => e.classList.contains(t))?.[1];
 }
-function n_(e, t) {
+function r_(e, t) {
 	for (let n of t.querySelectorAll(".th-modern-wi-shortcut-field")) {
-		let r = t_(n);
+		let r = n_(n);
 		if (!r) continue;
-		let i = n.querySelector("input, select"), a = e_(e, t, r);
+		let i = n.querySelector("input, select"), a = t_(e, t, r);
 		if (!i || !a || i === a || i.dataset[jg] === "true") continue;
 		let o = () => {
-			$g(i, a), Qg(a);
+			e_(i, a), $g(a);
 		}, s = () => {
-			$g(a, i), i.disabled = a.disabled;
+			e_(a, i), i.disabled = a.disabled;
 		};
 		i.addEventListener("input", o), i.addEventListener("change", o), a.addEventListener("input", s), a.addEventListener("change", s), i.dataset[jg] = "true", s();
 	}
 }
-function r_(e, t, n, r, i, a = !1, o = "") {
+function i_(e, t, n, r, i, a = !1, o = "") {
 	let s = n.querySelector(r);
 	if (!s) return;
 	let c = s.tagName.toLowerCase() === "select", l = !c && s.type === "checkbox", u = c ? Y(e, "select") : Y(e, "input");
@@ -9425,25 +9438,25 @@ function r_(e, t, n, r, i, a = !1, o = "") {
 	}
 	u.disabled = s.disabled;
 	let d = () => {
-		l ? s.checked = u.checked : c ? s.selectedIndex = u.selectedIndex : s.value = u.value, Qg(s);
+		l ? s.checked = u.checked : c ? s.selectedIndex = u.selectedIndex : s.value = u.value, $g(s);
 	}, f = () => {
 		l ? u.checked = s.checked : c ? u.selectedIndex = s.selectedIndex : u.value = s.value, u.disabled = s.disabled;
 	};
 	u.addEventListener("input", d), u.addEventListener("change", d), s.addEventListener("input", f), s.addEventListener("change", f), u.dataset[jg] = "true";
-	let p = qg(e, u, i, a);
+	let p = Jg(e, u, i, a);
 	p.classList.add("th-modern-wi-shortcut-field"), o && p.classList.add(o), t.append(p);
 }
-function i_(e, t, n, r, i = !1, a = "") {
+function a_(e, t, n, r, i = !1, a = "") {
 	let o = Y(e, "div", "th-modern-wi-shared-slot");
 	o.dataset.sharedName = r;
-	let s = qg(e, o, n, i);
+	let s = Jg(e, o, n, i);
 	return s.classList.add("th-modern-wi-shared-field", a), t.append(s), o;
 }
-function a_(e, t, n, r) {
-	let i = Yg(e.querySelector(t));
+function o_(e, t, n, r) {
+	let i = Xg(e.querySelector(t));
 	i && !i.closest(".th-modern-wi-panel") && (i.classList.add("th-modern-wi-shared-control"), i.dataset.sharedName = n, r[0]?.append(i));
 }
-function o_(e, t) {
+function s_(e, t) {
 	let n = [
 		t,
 		t.closest(".inline-drawer-content.inline-drawer-outlet"),
@@ -9452,20 +9465,20 @@ function o_(e, t) {
 	];
 	return n.filter((e, t) => !!e && n.indexOf(e) === t);
 }
-function s_(e, t, n, r) {
-	let i = o_(e, t);
+function c_(e, t, n, r) {
+	let i = s_(e, t);
 	for (let e of i) {
 		let t = e.querySelector(`.th-modern-wi-shared-control[data-shared-name="${r}"]`);
 		if (t) return t;
 	}
 	for (let e of i) {
-		let t = Yg(e.querySelector(n));
+		let t = Xg(e.querySelector(n));
 		if (t) return t.classList.add("th-modern-wi-shared-control"), t.dataset.sharedName = r, t;
 	}
 	return null;
 }
-function c_(e, t, n) {
-	let r = new Set(t.querySelectorAll(".th-modern-wi-shared-control[data-shared-name]")), i = s_(e, t, ".keyprimary", "primary-key");
+function l_(e, t, n) {
+	let r = new Set(t.querySelectorAll(".th-modern-wi-shared-control[data-shared-name]")), i = c_(e, t, ".keyprimary", "primary-key");
 	i && r.add(i);
 	for (let e of r) {
 		let r = e.dataset.sharedName;
@@ -9474,8 +9487,8 @@ function c_(e, t, n) {
 		i && e.parentElement !== i && i.append(e);
 	}
 }
-function l_(e, t) {
-	let n = t.querySelector(".th-modern-wi-panel:not([hidden])")?.querySelector(".th-modern-wi-position-field select"), r = Array.from(t.querySelectorAll(".th-modern-wi-position-field select, select[name=\"position\"]")), i = n ?? r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? e.querySelector("select[name=\"position\"]"), a = t.querySelector("input[name=\"delay_until_recursion\"]") ?? e.querySelector("input[name=\"delay_until_recursion\"]"), o = i?.value, s = i?.selectedOptions[0]?.textContent?.trim().toLowerCase() ?? "", c = f_(i) ? "depth" : o === "7" || s.includes("outlet") || s.includes("锚点") ? "outlet" : "normal", l = !!a?.checked;
+function u_(e, t) {
+	let n = t.querySelector(".th-modern-wi-panel:not([hidden])")?.querySelector(".th-modern-wi-position-field select"), r = Array.from(t.querySelectorAll(".th-modern-wi-position-field select, select[name=\"position\"]")), i = n ?? r.find((e) => !e.closest(".th-modern-wi-shortcut-field")) ?? r[0] ?? e.querySelector("select[name=\"position\"]"), a = t.querySelector("input[name=\"delay_until_recursion\"]") ?? e.querySelector("input[name=\"delay_until_recursion\"]"), o = i?.value, s = i?.selectedOptions[0]?.textContent?.trim().toLowerCase() ?? "", c = p_(i) ? "depth" : o === "7" || s.includes("outlet") || s.includes("锚点") ? "outlet" : "normal", l = !!a?.checked;
 	t.dataset.thModernPositionKind = c, t.dataset.thModernRecursionDelay = l ? "true" : "false";
 	for (let e of t.querySelectorAll(".th-modern-wi-depth-field")) {
 		e.hidden = c !== "depth";
@@ -9484,33 +9497,29 @@ function l_(e, t) {
 	for (let e of t.querySelectorAll(".th-modern-wi-outlet-field")) e.hidden = c !== "outlet";
 	for (let e of t.querySelectorAll(".th-modern-wi-recursion-level-field")) e.hidden = !l;
 }
-function u_(e, t) {
-	let n = () => l_(e, t);
+function d_(e, t) {
+	let n = () => u_(e, t);
 	if (t.dataset[Ag] !== "true") {
 		let e = (e) => {
-			Bg(e.target)?.closest(".th-modern-wi-position-field, select[name=\"position\"], .th-modern-wi-delay-recursion-field, input[name=\"delay_until_recursion\"]") && n();
+			Vg(e.target)?.closest(".th-modern-wi-position-field, select[name=\"position\"], .th-modern-wi-delay-recursion-field, input[name=\"delay_until_recursion\"]") && n();
 		};
 		t.addEventListener("input", e), t.addEventListener("change", e), t.dataset[Ag] = "true";
 	}
 	n();
 }
-function d_(e, t = e) {
-	let n = t.querySelector("textarea[name=\"comment\"]")?.value.trim();
-	if (n) return e.dataset.thModernTitle = n, n;
-	let r = e === t ? void 0 : e.querySelector("textarea[name=\"comment\"]")?.value.trim();
-	if (r) return e.dataset.thModernTitle = r, r;
-	let i = e.classList.contains(bg) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor textarea[name=\"comment\"]")?.value.trim() : void 0;
-	return i ? (e.dataset.thModernTitle = i, i) : e.dataset.thModernTitle ? e.dataset.thModernTitle : `UID ${Fg(e) ?? ""}`.trim();
+function f_(e, t = e) {
+	let n = "textarea[name=\"comment\"]", r = e.classList.contains(bg) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, i = t.querySelector(n) ?? (e === t ? null : e.querySelector(n)) ?? r?.querySelector(n);
+	return i && (e.dataset.thModernTitle = i.value.trim()), e.dataset.thModernTitle || `UID ${Fg(e) ?? ""}`.trim();
 }
-function f_(e) {
+function p_(e) {
 	let t = e?.selectedOptions[0], n = e?.value, r = t?.dataset.role, i = t?.textContent?.trim().toLowerCase() ?? "";
 	return n === "4" || r === "0" || r === "1" || r === "2" || i.includes("@d") || i.includes("depth") || i.includes("深度");
 }
-function p_(e, t = e) {
-	let n = e.classList.contains(bg) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, r = t.querySelector("select[name=\"position\"]") ?? (e === t ? null : e.querySelector("select[name=\"position\"]")) ?? n?.querySelector("select[name=\"position\"]"), i = t.querySelector("input[name=\"depth\"]") ?? (e === t ? null : e.querySelector("input[name=\"depth\"]")) ?? n?.querySelector("input[name=\"depth\"]"), a = r?.selectedOptions[0]?.textContent?.trim() || "", o = i?.value.trim(), s = f_(r) && o ? `${a} ${o}` : a;
+function m_(e, t = e) {
+	let n = e.classList.contains(bg) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, r = t.querySelector("select[name=\"position\"]") ?? (e === t ? null : e.querySelector("select[name=\"position\"]")) ?? n?.querySelector("select[name=\"position\"]"), i = t.querySelector("input[name=\"depth\"]") ?? (e === t ? null : e.querySelector("input[name=\"depth\"]")) ?? n?.querySelector("input[name=\"depth\"]"), a = r?.selectedOptions[0]?.textContent?.trim() || "", o = i?.value.trim(), s = p_(r) && o ? `${a} ${o}` : a;
 	return s && (e.dataset.thModernPosition = s), s || e.dataset.thModernPosition || "";
 }
-function m_(e, t = e) {
+function h_(e, t = e) {
 	let n = e.querySelector(".th-modern-wi-row-summary");
 	if (!n) return;
 	let r = e.classList.contains(bg) ? e.ownerDocument.querySelector(".th-modern-wi-native-editor") : null, i = t.querySelector("input[name=\"order\"]") ?? (e === t ? null : e.querySelector("input[name=\"order\"]")) ?? r?.querySelector("input[name=\"order\"]"), a = i?.value ?? e.dataset.thModernOrder;
@@ -9518,27 +9527,27 @@ function m_(e, t = e) {
 	let o = t.querySelector("select[name=\"entryStateSelector\"]") ?? (e === t ? null : e.querySelector("select[name=\"entryStateSelector\"]")) ?? r?.querySelector("select[name=\"entryStateSelector\"]"), s = o?.value ?? e.dataset.thModernEntryState;
 	o?.value && (e.dataset.thModernEntryState = o.value);
 	let c = n.querySelector(".th-modern-wi-row-title"), l = n.querySelector(".th-modern-wi-row-meta"), u = n.querySelector(".th-modern-wi-row-stats");
-	c && (c.textContent = d_(e, t)), l && (l.textContent = p_(e, t)), u && (u.textContent = a ? `#${a}` : ""), s && (e.dataset.thModernEntryState = s);
+	c && (c.textContent = f_(e, t)), l && (l.textContent = m_(e, t)), u && (u.textContent = a ? `#${a}` : ""), s && (e.dataset.thModernEntryState = s);
 }
-function h_(e, t, n) {
+function g_(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-header");
 	if (!r) return;
 	let i = r.querySelector(".th-modern-wi-row-summary");
-	i || (i = Y(e, "div", "th-modern-wi-row-summary"), i.tabIndex = 0, i.setAttribute("role", "button"), i.setAttribute("aria-label", "打开世界书条目"), r.append(i)), i.dataset.layoutVersion !== kg && (i.innerHTML = "<span class=\"th-modern-wi-row-leading\" aria-hidden=\"true\"><span class=\"th-modern-wi-select-dot\"></span><span class=\"th-modern-wi-entry-state-icon\"></span></span><span class=\"th-modern-wi-row-text\"><span class=\"th-modern-wi-row-primary\"><strong class=\"th-modern-wi-row-title\"></strong><span class=\"th-modern-wi-row-stats\"></span></span><small class=\"th-modern-wi-row-meta\"></small></span>", i.dataset.layoutVersion = kg), t.dataset[Og] !== "true" && (t.dataset[Og] = "true", t.addEventListener("input", () => n(t)), t.addEventListener("change", () => n(t))), m_(t);
+	i || (i = Y(e, "div", "th-modern-wi-row-summary"), i.tabIndex = 0, i.setAttribute("role", "button"), i.setAttribute("aria-label", "打开世界书条目"), r.append(i)), i.dataset.layoutVersion !== kg && (i.innerHTML = "<span class=\"th-modern-wi-row-leading\" aria-hidden=\"true\"><span class=\"th-modern-wi-select-dot\"></span><span class=\"th-modern-wi-entry-state-icon\"></span></span><span class=\"th-modern-wi-row-text\"><span class=\"th-modern-wi-row-primary\"><strong class=\"th-modern-wi-row-title\"></strong><span class=\"th-modern-wi-row-stats\"></span></span><small class=\"th-modern-wi-row-meta\"></small></span>", i.dataset.layoutVersion = kg), t.dataset[Og] !== "true" && (t.dataset[Og] = "true", t.addEventListener("input", () => n(t)), t.addEventListener("change", () => n(t))), h_(t);
 }
-function g_(e, t, n = e) {
+function __(e, t, n = e) {
 	e.dataset.thModernActiveTab = t;
 	for (let e of n.querySelectorAll(".th-modern-wi-tab")) {
 		let n = e.dataset.panel === t;
 		e.classList.toggle("active", n), e.setAttribute("aria-selected", String(n));
 	}
 	for (let e of n.querySelectorAll(".th-modern-wi-panel")) e.hidden = e.dataset.panel !== t;
-	c_(e, n, t), l_(e, n), n.querySelector(".th-modern-wi-panels")?.scrollTo({
+	l_(e, n, t), u_(e, n), n.querySelector(".th-modern-wi-panels")?.scrollTo({
 		top: 0,
 		left: 0
 	});
 }
-function __(e) {
+function v_(e) {
 	let t = Fg(e);
 	if (t !== void 0) {
 		let e = Ng.get(t);
@@ -9546,7 +9555,7 @@ function __(e) {
 	}
 	return e.dataset.thModernActiveTab || "main";
 }
-function v_(e) {
+function y_(e) {
 	let t = e.querySelector("select[name=\"entryStateSelector\"]");
 	if (!t) return;
 	let n = {
@@ -9559,9 +9568,9 @@ function v_(e) {
 		t && (e.textContent = t);
 	}
 }
-function y_(e, t) {
+function b_(e, t) {
 	t.dataset.thModernSwitchCaptureReady !== "true" && (t.addEventListener("click", (t) => {
-		let n = Bg(t.target);
+		let n = Vg(t.target);
 		if (!n?.closest(".switch_input_type_icon")) return;
 		let r = Fg(e);
 		if (r !== void 0) {
@@ -9570,11 +9579,11 @@ function y_(e, t) {
 		}
 	}, !0), t.dataset.thModernSwitchCaptureReady = "true"), t.onclick = (n) => {
 		if (n.defaultPrevented) return;
-		let r = Bg(n.target), i = r?.closest(".th-modern-wi-tab");
+		let r = Vg(n.target), i = r?.closest(".th-modern-wi-tab");
 		if (i && t.contains(i)) {
 			let r = i.dataset.panel;
 			if (!r) return;
-			n.preventDefault(), g_(e, r, t);
+			n.preventDefault(), __(e, r, t);
 			return;
 		}
 		let a = r?.closest(".th-modern-wi-action");
@@ -9587,18 +9596,18 @@ function y_(e, t) {
 		o && (n.preventDefault(), e.querySelector(o)?.click());
 	};
 }
-function b_(e, t, n) {
+function x_(e, t, n) {
 	let r = t.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet"), i = t.querySelector(".world_entry_edit");
 	if (!r || !i) return !1;
 	if (t.dataset[Dg] === "true") {
 		let e = r.querySelector(":scope > .th-modern-wi-editor-surface");
-		if (e) return e.dataset.thModernLayoutVersion = Mg, v_(t), y_(t, e), n_(t, e), u_(t, e), g_(t, __(t), e), !0;
+		if (e) return e.dataset.thModernLayoutVersion = Mg, y_(t), b_(t, e), r_(t, e), d_(t, e), __(t, v_(t), e), !0;
 		delete t.dataset[Dg];
 	}
-	t.dataset[Dg] = "true", h_(e, t, n), v_(t);
+	t.dataset[Dg] = "true", g_(e, t, n), y_(t);
 	let a = Y(e, "div", "th-modern-wi-editor-surface");
 	a.dataset.thModernLayoutVersion = Mg;
-	let o = Y(e, "div", "th-modern-wi-editor-top"), s = Y(e, "div", "th-modern-wi-enable-dock"), c = Y(e, "div", "th-modern-wi-editor-actions"), l = Kg(e, "menu_button th-modern-wi-action", "移动/复制到其他世界书", "fa-solid fa-arrow-right-arrow-left"), u = Kg(e, "menu_button th-modern-wi-action", "复制条目", "fa-regular fa-copy"), d = Kg(e, "menu_button th-modern-wi-action danger", "删除条目", "fa-regular fa-trash-can");
+	let o = Y(e, "div", "th-modern-wi-editor-top"), s = Y(e, "div", "th-modern-wi-enable-dock"), c = Y(e, "div", "th-modern-wi-editor-actions"), l = qg(e, "menu_button th-modern-wi-action", "移动/复制到其他世界书", "fa-solid fa-arrow-right-arrow-left"), u = qg(e, "menu_button th-modern-wi-action", "复制条目", "fa-regular fa-copy"), d = qg(e, "menu_button th-modern-wi-action danger", "删除条目", "fa-regular fa-trash-can");
 	l.dataset.action = "move", u.dataset.action = "duplicate", d.dataset.action = "delete", c.append(l, u, d);
 	let f = Y(e, "div", "th-modern-wi-tabs"), p = Y(e, "div", "th-modern-wi-panels"), m = [
 		["main", "主要"],
@@ -9609,25 +9618,25 @@ function b_(e, t, n) {
 	for (let [n, r] of m) {
 		let i = Y(e, "button", "th-modern-wi-tab", r);
 		i.type = "button", i.dataset.panel = n, i.addEventListener("click", (e) => {
-			e.preventDefault(), g_(t, n, a);
+			e.preventDefault(), __(t, n, a);
 		}), f.append(i);
 		let o = Y(e, "div", "th-modern-wi-panel");
 		o.classList.add(`th-modern-wi-panel-${n}`), o.dataset.panel = n, p.append(o), h.set(n, o);
 	}
 	let g = Y(e, "div", "th-modern-wi-content-panel");
-	o.append(s, f, c), a.append(o, p, g), r.prepend(a), y_(t, a), Zg(e, s, t, ".killSwitch", "启用", !1, "th-modern-wi-enable-field");
+	o.append(s, f, c), a.append(o, p, g), r.prepend(a), b_(t, a), Qg(e, s, t, ".killSwitch", "启用", !1, "th-modern-wi-enable-field");
 	let v = h.get("main");
-	Zg(e, v, t, "textarea[name=\"comment\"]", "条目标题/备注", !0, "th-modern-wi-title-field"), Zg(e, v, t, "select[name=\"entryStateSelector\"]", "条目状态", !1, "th-modern-wi-state-field"), r_(e, v, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), r_(e, v, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), r_(e, v, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), r_(e, v, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), r_(e, v, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field");
-	let y = i_(e, v, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
-	r_(e, v, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field");
-	let b = h.get("keywords"), x = i_(e, b, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
-	X(e, b, t, "select[name=\"entryLogicType\"]", "逻辑", !1, "th-modern-wi-logic-field"), X(e, b, t, ".keysecondary", "可选过滤器", !0, "th-modern-wi-secondary-key-field"), X(e, b, t, "select[name=\"caseSensitive\"]", "区分大小写", !1, "th-modern-wi-case-field"), X(e, b, t, "select[name=\"matchWholeWords\"]", "全词匹配", !1, "th-modern-wi-whole-field"), X(e, b, t, "select[name=\"useGroupScoring\"]", "组评分", !1, "th-modern-wi-group-scoring-field"), X(e, b, t, "input[name=\"scanDepth\"]", "扫描深度", !1, "th-modern-wi-scan-field"), X(e, b, t, "input[name=\"automationId\"]", "自动化 ID", !1, "th-modern-wi-automation-field"), a_(t, ".keyprimary", "primary-key", [y, x]);
+	Qg(e, v, t, "textarea[name=\"comment\"]", "条目标题/备注", !0, "th-modern-wi-title-field"), Qg(e, v, t, "select[name=\"entryStateSelector\"]", "条目状态", !1, "th-modern-wi-state-field"), i_(e, v, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), i_(e, v, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), i_(e, v, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), i_(e, v, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), i_(e, v, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field");
+	let y = a_(e, v, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
+	i_(e, v, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field");
+	let b = h.get("keywords"), x = a_(e, b, "主要关键字", "primary-key", !0, "th-modern-wi-primary-key-field");
+	X(e, b, t, "select[name=\"entryLogicType\"]", "逻辑", !1, "th-modern-wi-logic-field"), X(e, b, t, ".keysecondary", "可选过滤器", !0, "th-modern-wi-secondary-key-field"), X(e, b, t, "select[name=\"caseSensitive\"]", "区分大小写", !1, "th-modern-wi-case-field"), X(e, b, t, "select[name=\"matchWholeWords\"]", "全词匹配", !1, "th-modern-wi-whole-field"), X(e, b, t, "select[name=\"useGroupScoring\"]", "组评分", !1, "th-modern-wi-group-scoring-field"), X(e, b, t, "input[name=\"scanDepth\"]", "扫描深度", !1, "th-modern-wi-scan-field"), X(e, b, t, "input[name=\"automationId\"]", "自动化 ID", !1, "th-modern-wi-automation-field"), o_(t, ".keyprimary", "primary-key", [y, x]);
 	let S = h.get("insert");
-	Zg(e, S, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Zg(e, S, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), X(e, S, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Zg(e, S, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Zg(e, S, t, "input[name=\"probability\"]", "触发概率", !1, "th-modern-wi-probability-field"), X(e, S, t, "input[name=\"useProbability\"]", "使用概率", !1, "th-modern-wi-use-probability-field"), X(e, S, t, "input[name=\"group\"]", "包含组", !0, "th-modern-wi-group-field"), X(e, S, t, "input[name=\"groupWeight\"]", "分组权重", !1, "th-modern-wi-group-weight-field"), X(e, S, t, "input[name=\"sticky\"]", "黏附", !1, "th-modern-wi-sticky-field"), X(e, S, t, "input[name=\"cooldown\"]", "冷却", !1, "th-modern-wi-cooldown-field"), X(e, S, t, "input[name=\"delay\"]", "延迟", !1, "th-modern-wi-delay-field"), Xg(S, t, "select[name=\"characterFilter\"]", ".flex4", !0, "th-modern-wi-character-filter-field", "绑定到角色或标签"), Xg(S, t, "select[name=\"triggers\"]", ".flex4", !0, "th-modern-wi-generation-trigger-field", "筛选生成触发器"), X(e, S, t, "input[name=\"delayUntilRecursionLevel\"]", "递归等级", !1, "th-modern-wi-recursion-level-field"), X(e, S, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field"), X(e, S, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field"), X(e, S, t, "input[name=\"delay_until_recursion\"]", "延迟到递归", !1, "th-modern-wi-delay-recursion-field"), X(e, S, t, "input[name=\"ignoreBudget\"]", "无视回复限额", !1, "th-modern-wi-budget-field");
+	Qg(e, S, t, "select[name=\"position\"]", "插入位置", !0, "th-modern-wi-position-field"), Qg(e, S, t, "input[name=\"depth\"]", "深度", !1, "th-modern-wi-depth-field"), X(e, S, t, "input[name=\"outletName\"]", "锚点名称", !1, "th-modern-wi-outlet-field"), Qg(e, S, t, "input[name=\"order\"]", "顺序", !1, "th-modern-wi-order-field"), Qg(e, S, t, "input[name=\"probability\"]", "触发概率", !1, "th-modern-wi-probability-field"), X(e, S, t, "input[name=\"useProbability\"]", "使用概率", !1, "th-modern-wi-use-probability-field"), X(e, S, t, "input[name=\"group\"]", "包含组", !0, "th-modern-wi-group-field"), X(e, S, t, "input[name=\"groupWeight\"]", "分组权重", !1, "th-modern-wi-group-weight-field"), X(e, S, t, "input[name=\"sticky\"]", "黏附", !1, "th-modern-wi-sticky-field"), X(e, S, t, "input[name=\"cooldown\"]", "冷却", !1, "th-modern-wi-cooldown-field"), X(e, S, t, "input[name=\"delay\"]", "延迟", !1, "th-modern-wi-delay-field"), Zg(S, t, "select[name=\"characterFilter\"]", ".flex4", !0, "th-modern-wi-character-filter-field", "绑定到角色或标签"), Zg(S, t, "select[name=\"triggers\"]", ".flex4", !0, "th-modern-wi-generation-trigger-field", "筛选生成触发器"), X(e, S, t, "input[name=\"delayUntilRecursionLevel\"]", "递归等级", !1, "th-modern-wi-recursion-level-field"), X(e, S, t, "input[name=\"excludeRecursion\"]", "不可递归", !1, "th-modern-wi-no-recursion-field"), X(e, S, t, "input[name=\"preventRecursion\"]", "防止进一步递归", !1, "th-modern-wi-prevent-recursion-field"), X(e, S, t, "input[name=\"delay_until_recursion\"]", "延迟到递归", !1, "th-modern-wi-delay-recursion-field"), X(e, S, t, "input[name=\"ignoreBudget\"]", "无视回复限额", !1, "th-modern-wi-budget-field");
 	let C = h.get("trigger");
-	return Jg(e, C, "额外匹配来源", "th-modern-wi-match-source-title"), X(e, C, t, "input[name=\"matchCharacterDescription\"]", "角色描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterPersonality\"]", "角色性格", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchScenario\"]", "情景", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchPersonaDescription\"]", "用户设定描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterDepthPrompt\"]", "角色备注", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCreatorNotes\"]", "创作者的注释", !1, "th-modern-wi-match-source-field"), X(e, g, t, "textarea[name=\"content\"]", "正文", !0), n_(t, a), u_(t, a), g_(t, __(t), a), !0;
+	return Yg(e, C, "额外匹配来源", "th-modern-wi-match-source-title"), X(e, C, t, "input[name=\"matchCharacterDescription\"]", "角色描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterPersonality\"]", "角色性格", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchScenario\"]", "情景", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchPersonaDescription\"]", "用户设定描述", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCharacterDepthPrompt\"]", "角色备注", !1, "th-modern-wi-match-source-field"), X(e, C, t, "input[name=\"matchCreatorNotes\"]", "创作者的注释", !1, "th-modern-wi-match-source-field"), X(e, g, t, "textarea[name=\"content\"]", "正文", !0), r_(t, a), d_(t, a), __(t, v_(t), a), !0;
 }
-var x_ = class {
+var S_ = class {
 	document;
 	window;
 	moved = [];
@@ -9636,6 +9645,7 @@ var x_ = class {
 	listPane;
 	editorPane;
 	observedList;
+	observedEditorSelect;
 	documentClickHandler;
 	documentKeyDownHandler;
 	documentChangeHandler;
@@ -9675,7 +9685,7 @@ var x_ = class {
 	scheduleSummaryUpdate = (e) => {
 		if (!this.mounted || this.pendingSummaryUpdates.has(e)) return;
 		let t = this.window.requestAnimationFrame(() => {
-			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && m_(e, this.selectedEntry === e && this.editorPane && this.editorPane.childElementCount > 0 ? this.editorPane : e);
+			this.pendingSummaryUpdates.delete(e), this.mounted && e.isConnected && h_(e, this.selectedEntry === e && this.editorPane && this.editorPane.childElementCount > 0 ? this.editorPane : e);
 		});
 		this.pendingSummaryUpdates.set(e, t);
 	};
@@ -9685,7 +9695,7 @@ var x_ = class {
 			return;
 		}
 		let e = this.findWorldInfo(), t = this.findWorldPopup(), n = this.findEntriesList();
-		e && t && n && (this.mounted = !0, this.selectedWorldName = Ig(this.document), e.classList.add(yg), this.ensureLayout(t), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
+		e && t && n && (this.mounted = !0, this.selectedWorldName = Lg(this.document), e.classList.add(yg), this.ensureLayout(t), this.bindResponsiveMode(), this.bindEvents(), this.enhanceEntries(), this.isNarrowMode() || this.selectFirstEntry());
 	}
 	isMounted() {
 		return this.mounted;
@@ -9694,7 +9704,7 @@ var x_ = class {
 		let e = this.mounted;
 		this.worldRevision += 1, this.setDeleteBusy(!1), this.findWorldInfo()?.classList.remove(yg, Sg, Tg), this.observer?.disconnect(), this.observer = void 0, this.popupObserver?.disconnect(), this.popupObserver = void 0, this.observedPopup = void 0, this.pendingReconcileFrame &&= (this.window.cancelAnimationFrame(this.pendingReconcileFrame), 0), this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(), this.clearSelection(), this.selectedUids.clear(), Ng.clear(), this.selectedWorldName = "", this.multiSelect = !1, this.mounted = !1, this.pendingEnhance &&= (this.window.cancelAnimationFrame(this.pendingEnhance), 0), this.documentClickHandler &&= (this.document.removeEventListener("click", this.documentClickHandler, !0), void 0), this.documentKeyDownHandler &&= (this.document.removeEventListener("keydown", this.documentKeyDownHandler, !0), void 0), this.documentChangeHandler &&= (this.document.removeEventListener("change", this.documentChangeHandler, !0), void 0), this.worldSelect && this.worldSelectChangeHandler && this.worldSelect.off("change.thModernWorldInfo_modern_ui", "#world_editor_select", this.worldSelectChangeHandler), this.worldSelect = void 0, this.worldSelectChangeHandler = void 0, this.narrowQuery && this.narrowQueryHandler && this.narrowQuery.removeEventListener("change", this.narrowQueryHandler), this.narrowQuery = void 0, this.narrowQueryHandler = void 0, this.mobileDetailOpen = !1, this.mobileListScrollTop = 0;
 		for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(bg, xg, Eg);
-		return this.observedList = void 0, this.restoreEmptyWorldControls(), Gg(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
+		return this.observedList = void 0, this.observedEditorSelect = void 0, this.restoreEmptyWorldControls(), Kg(this.moved), this.shell?.remove(), this.shell = void 0, this.worldbar = void 0, this.toolbar = void 0, this.main = void 0, this.listPane = void 0, this.editorPane = void 0, this.moreMenu = void 0, e;
 	}
 	bindResponsiveMode() {
 		this.narrowQuery = this.window.matchMedia("(max-width: 899.98px)"), this.narrowQueryHandler = () => this.syncResponsiveMode(), this.narrowQuery.addEventListener("change", this.narrowQueryHandler), this.syncResponsiveMode();
@@ -9736,12 +9746,12 @@ var x_ = class {
 		return this.document.querySelector("#world_popup_entries_list");
 	}
 	ensureToolbarButtons(e, t) {
-		if (this.multiButton && this.multiButton.isConnected || (this.multiButton = Kg(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.multiButton.addEventListener("click", () => this.toggleMultiSelect())), this.deleteSelectedButton && this.deleteSelectedButton.isConnected || (this.deleteSelectedButton = Kg(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = this.selectedUids.size === 0, this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries())), !this.moreMenu || !this.moreMenu.isConnected) {
+		if (this.multiButton && this.multiButton.isConnected || (this.multiButton = qg(this.document, "menu_button th-modern-wi-multi-toggle", "多选条目", "fa-regular fa-square-check"), this.multiButton.addEventListener("click", () => this.toggleMultiSelect())), this.deleteSelectedButton && this.deleteSelectedButton.isConnected || (this.deleteSelectedButton = qg(this.document, "menu_button th-modern-wi-delete-selected danger", "删除选中条目", "fa-regular fa-trash-can"), this.deleteSelectedButton.hidden = this.selectedUids.size === 0, this.deleteSelectedButton.addEventListener("click", () => void this.deleteSelectedEntries())), !this.moreMenu || !this.moreMenu.isConnected) {
 			let e = Y(this.document, "details", "th-modern-wi-more-menu"), t = Y(this.document, "summary", "menu_button th-modern-wi-more-toggle");
 			t.title = "更多条目操作", t.setAttribute("aria-label", "更多条目操作"), t.innerHTML = "<i class=\"fa-solid fa-ellipsis\" aria-hidden=\"true\"></i>";
 			let n = Y(this.document, "div", "th-modern-wi-more-popover");
 			e.append(t, n), e.addEventListener("click", (t) => {
-				Bg(t.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (e.open = !1);
+				Vg(t.target)?.closest("#OpenAllWIEntries, #CloseAllWIEntries, #world_backfill_memos, #world_apply_current_sorting") && (e.open = !1);
 			}), this.moreMenu = e;
 		}
 		let n = this.moreMenu.querySelector(".th-modern-wi-more-popover");
@@ -9752,7 +9762,7 @@ var x_ = class {
 			"#world_apply_current_sorting"
 		]) {
 			let i = t.querySelector(r) ?? e.querySelector(r);
-			i && i.parentElement !== n && Wg(i, n, this.moved);
+			i && i.parentElement !== n && Gg(i, n, this.moved);
 		}
 		this.multiButton.parentElement !== e && e.append(this.multiButton), this.deleteSelectedButton.parentElement !== e && e.append(this.deleteSelectedButton), this.moreMenu.parentElement !== e && e.append(this.moreMenu);
 	}
@@ -9785,20 +9795,20 @@ var x_ = class {
 			for (let e of u) this.shell.append(e);
 			n = !0;
 		}
-		l.nextElementSibling !== c && (s.append(l, c), n = !0), r && r.parentElement !== l && (Wg(r, l, this.moved), n = !0);
+		l.nextElementSibling !== c && (s.append(l, c), n = !0), r && r.parentElement !== l && (Gg(r, l, this.moved), n = !0);
 		let f = t.querySelector("#world_create_button")?.closest(".flex-container");
-		f && f.parentElement !== a && (Wg(f, a, this.moved), n = !0);
+		f && f.parentElement !== a && (Gg(f, a, this.moved), n = !0);
 		let p = t.querySelector("#world_info_search")?.closest(".flex-container");
-		p && p.parentElement !== o && (Wg(p, o, this.moved), n = !0), this.ensureToolbarButtons(o, t);
+		p && p.parentElement !== o && (Gg(p, o, this.moved), n = !0), this.ensureToolbarButtons(o, t);
 		let m = this.findWorldInfo()?.querySelector(":scope > .th-modern-drawer-titlebar .th-modern-drawer-actions");
 		if (m) {
 			let e = m.firstElementChild;
 			for (let t of ["#WI_panel_pin_div", "#WorldInfoheader + .flex-container .notes-link"]) {
 				let n = this.findWorldInfo()?.querySelector(t);
-				n && n.parentElement !== m && Wg(n, m, this.moved, e);
+				n && n.parentElement !== m && Gg(n, m, this.moved, e);
 			}
 		}
-		return this.isNarrowMode() || this.multiSelect || c.childElementCount || (this.selectedEntry && this.selectedEntry.isConnected ? this.ensureEntryEditor(this.selectedEntry) : this.selectFirstEntry()), this.syncWorldAvailability(), this.syncResponsiveMode(), this.observePopup(), n;
+		return this.isNarrowMode() || this.multiSelect || c.childElementCount || (this.selectedEntry && this.selectedEntry.isConnected ? this.ensureEntryEditor(this.selectedEntry) : this.selectFirstEntry()), this.syncWorldAvailability(), this.syncResponsiveMode(), this.observeNativeEditor(), this.observePopup(), n;
 	}
 	buildLayout(e, t) {
 		this.ensureLayout(e);
@@ -9823,30 +9833,42 @@ var x_ = class {
 	}
 	bindEvents() {
 		if (this.documentClickHandler = (e) => {
-			let t = Bg(e.target);
-			this.moreMenu?.open && t && !this.moreMenu.contains(t) && (this.moreMenu.open = !1), Ug(e.target) && this.onEntryClick(e);
+			let t = Vg(e.target);
+			this.moreMenu?.open && t && !this.moreMenu.contains(t) && (this.moreMenu.open = !1), Wg(e.target) && this.onEntryClick(e);
 		}, this.documentKeyDownHandler = (e) => this.onEntryKeyDown(e), this.documentChangeHandler = (e) => {
-			Bg(e.target)?.matches("#world_editor_select") && this.syncSelectedWorld();
+			Vg(e.target)?.matches("#world_editor_select") && this.syncSelectedWorld();
 		}, this.document.addEventListener("click", this.documentClickHandler, !0), this.document.addEventListener("keydown", this.documentKeyDownHandler, !0), this.document.addEventListener("change", this.documentChangeHandler, !0), typeof this.window.$ != "function") throw Error("宿主页缺少世界书切换所需的 jQuery。");
 		this.worldSelectChangeHandler = () => this.syncSelectedWorld(), this.worldSelect = this.window.$(this.document), this.worldSelect.on("change.thModernWorldInfo_modern_ui", "#world_editor_select", this.worldSelectChangeHandler), this.observer = new this.window.MutationObserver((e) => {
-			e.some((e) => e.addedNodes.length > 0 || e.removedNodes.length > 0) && this.scheduleEnhance();
-		}), this.observeCurrentList(), this.observePopup();
+			e.some((e) => this.observedEditorSelect?.contains(e.target)) && this.restoreWorldAfterOptionsChange(), e.some((e) => e.addedNodes.length > 0 || e.removedNodes.length > 0) && this.scheduleEnhance();
+		}), this.observeNativeEditor(), this.observePopup();
 	}
-	observeCurrentList() {
+	observeNativeEditor() {
 		if (!this.observer) return;
-		let e = this.findEntriesList();
-		e && this.observedList !== e && (this.observer.disconnect(), this.listPane && this.observer.observe(this.listPane, { childList: !0 }), this.observer.observe(e, { childList: !0 }), this.observedList = e);
+		let e = this.findEntriesList() ?? void 0, t = this.document.querySelector("#world_editor_select") ?? void 0;
+		if (this.observedList === e && this.observedEditorSelect === t) return;
+		let n = this.observedEditorSelect && this.observedEditorSelect !== t;
+		this.observer.disconnect(), this.listPane && this.observer.observe(this.listPane, { childList: !0 }), e && this.observer.observe(e, { childList: !0 }), t && this.observer.observe(t, {
+			childList: !0,
+			subtree: !0
+		}), this.observedList = e, this.observedEditorSelect = t, n && this.restoreWorldAfterOptionsChange();
+	}
+	restoreWorldAfterOptionsChange() {
+		let e = this.observedEditorSelect, t = this.selectedWorldName;
+		if (e && e.value === "" && t) {
+			let n = Array.from(e.options).find((e) => e.value !== "" && e.textContent?.trim() === t);
+			n && (n.selected = !0, this.window.$?.(e).trigger("change"));
+		}
+		this.syncSelectedWorld();
 	}
 	scheduleEnhance() {
 		this.mounted && !this.pendingEnhance && (this.pendingEnhance = this.window.requestAnimationFrame(() => {
-			this.pendingEnhance = 0, this.mounted && (this.ensureLayout(), this.syncSelectedWorld(), this.observeCurrentList(), this.enhanceEntries(), this.restoreSelectionAfterRender());
+			this.pendingEnhance = 0, this.mounted && (this.ensureLayout(), this.syncSelectedWorld(), this.enhanceEntries(), this.restoreSelectionAfterRender());
 		}));
 	}
 	enhanceEntries() {
-		this.observeCurrentList();
 		let e = this.findEntriesList();
 		if (e) {
-			for (let t of e.querySelectorAll(":scope > .world_entry")) if (h_(this.document, t, this.scheduleSummaryUpdate), this.multiSelect || this.selectedUids.size > 0) {
+			for (let t of e.querySelectorAll(":scope > .world_entry")) if (g_(this.document, t, this.scheduleSummaryUpdate), this.multiSelect || this.selectedUids.size > 0) {
 				let e = Fg(t);
 				t.classList.toggle(xg, e !== void 0 && this.selectedUids.has(e));
 			}
@@ -9861,7 +9883,7 @@ var x_ = class {
 	}
 	syncWorldAvailability() {
 		if (!this.shell || !this.main) return;
-		let e = Ig(this.document) === "";
+		let e = Lg(this.document) === "";
 		this.shell.classList.toggle("th-modern-wi-no-world", e);
 		let t = this.main.querySelector(":scope > .th-modern-wi-empty-world");
 		if (t || (t = Y(this.document, "p", "th-modern-wi-empty-world"), t.textContent = "选择世界书以查看条目", this.main.prepend(t)), t.hidden = !e, this.restoreEmptyWorldControls(), e) {
@@ -9871,7 +9893,7 @@ var x_ = class {
 	}
 	syncSelectedWorld() {
 		this.syncWorldAvailability();
-		let e = Ig(this.document);
+		let e = Lg(this.document);
 		if (e !== this.selectedWorldName) {
 			this.selectedWorldName = e, this.worldRevision += 1, this.clearSelection(), this.cancelPendingSummaryUpdates(), this.selectedUids.clear(), Ng.clear();
 			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(xg);
@@ -9880,14 +9902,14 @@ var x_ = class {
 	}
 	onEntryKeyDown(e) {
 		if (this.deleteBusy || e.repeat || e.key !== "Enter" && e.key !== " ") return;
-		let t = Bg(e.target)?.closest(".th-modern-wi-row-summary"), n = t ? Ug(t) : null;
+		let t = Vg(e.target)?.closest(".th-modern-wi-row-summary"), n = t ? Wg(t) : null;
 		n && (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.multiSelect ? this.toggleEntrySelected(n) : this.selectEntry(n));
 	}
 	onEntryClick(e) {
 		if (this.deleteBusy) return;
-		let t = Ug(e.target);
+		let t = Wg(e.target);
 		if (!t) return;
-		let n = Bg(e.target);
+		let n = Vg(e.target);
 		this.nativeEditorToggleEntry === t && n?.closest(".inline-drawer-toggle") || (this.multiSelect ? (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.toggleEntrySelected(t)) : (e.preventDefault(), e.stopImmediatePropagation(), e.stopPropagation(), this.selectEntry(t)));
 	}
 	selectFirstEntry() {
@@ -9899,11 +9921,12 @@ var x_ = class {
 		this.cancelPendingEditorRetry(), this.cancelPendingSummaryUpdates(this.selectedEntry), this.selectedEntry?.classList.remove(Eg), this.detachEntryEditor(), this.selectedEntry?.classList.remove(bg), this.selectedEntry = void 0, this.mobileDetailOpen = !1, this.shell?.classList.toggle(wg, !1), this.findWorldInfo()?.classList.toggle(Tg, !1);
 	}
 	selectEntry(e) {
-		this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(bg), this.ensureEntryEditor(e), this.openMobileDetail());
+		let t = Lg(this.document), n = Ig(e);
+		!t || n !== void 0 && n !== t || (this.selectedEntry === e ? (this.editorPane?.childElementCount || this.ensureEntryEditor(e), this.openMobileDetail()) : (this.clearSelection(), this.selectedEntry = e, e.classList.add(bg), this.ensureEntryEditor(e), this.openMobileDetail()));
 	}
 	ensureEntryEditor(e) {
 		if (e.classList.contains(Eg)) return;
-		if (this.cancelPendingEditorRetry(), h_(this.document, e, this.scheduleSummaryUpdate), b_(this.document, e, this.scheduleSummaryUpdate)) {
+		if (this.cancelPendingEditorRetry(), g_(this.document, e, this.scheduleSummaryUpdate), x_(this.document, e, this.scheduleSummaryUpdate)) {
 			this.attachEntryEditor(e);
 			return;
 		}
@@ -9918,7 +9941,7 @@ var x_ = class {
 			e.classList.add(Eg);
 		}
 		let r = 0, i = this.editorRetryRevision, a = () => {
-			this.mounted && this.selectedEntry === e && i === this.editorRetryRevision && (r += 1, b_(this.document, e, this.scheduleSummaryUpdate) ? (e.classList.remove(Eg), this.attachEntryEditor(e)) : r > 20 ? e.classList.remove(Eg) : this.pendingEditorRetry = this.window.setTimeout(() => {
+			this.mounted && this.selectedEntry === e && i === this.editorRetryRevision && (r += 1, x_(this.document, e, this.scheduleSummaryUpdate) ? (e.classList.remove(Eg), this.attachEntryEditor(e)) : r > 20 ? e.classList.remove(Eg) : this.pendingEditorRetry = this.window.setTimeout(() => {
 				this.pendingEditorRetry = 0, a();
 			}, 50));
 		};
@@ -9939,21 +9962,21 @@ var x_ = class {
 	detachEntryEditor() {
 		let e = this.selectedEntry;
 		for (let e of this.editorMoved) e.node.nodeType === 1 && e.node.classList.remove("th-modern-wi-active-editor-content");
-		Gg(this.editorMoved), e && m_(e), this.editorPane?.replaceChildren();
+		Kg(this.editorMoved), e && h_(e), this.editorPane?.replaceChildren();
 	}
 	attachEntryEditor(e) {
 		if (!this.editorPane || this.selectedEntry !== e) return;
 		let t = e.querySelector(":scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet");
 		if (!t || t.closest(".th-modern-wi-native-editor")) return;
 		this.detachEntryEditor();
-		let n = Kg(this.document, "menu_button th-modern-wi-mobile-back", "返回世界书条目列表", "fa-solid fa-arrow-left");
+		let n = qg(this.document, "menu_button th-modern-wi-mobile-back", "返回世界书条目列表", "fa-solid fa-arrow-left");
 		n.append(Y(this.document, "span", "", "返回条目列表")), n.addEventListener("click", (e) => {
 			e.preventDefault(), this.closeMobileDetail();
 		});
 		let r = Y(this.document, "div", `${e.className} th-modern-wi-editor-entry-host`);
 		for (let t of Array.from(e.attributes)) t.name !== "class" && r.setAttribute(t.name, t.value);
-		let i = Y(this.document, "form", "world_entry_form"), a = Y(this.document, "div", "inline-drawer"), o = () => m_(e, r);
-		r.addEventListener("input", o), r.addEventListener("change", o), i.append(a), r.append(i), this.editorPane.replaceChildren(n, r), t.classList.add("th-modern-wi-active-editor-content"), Wg(t, a, this.editorMoved), m_(e, r);
+		let i = Y(this.document, "form", "world_entry_form"), a = Y(this.document, "div", "inline-drawer"), o = () => h_(e, r);
+		r.addEventListener("input", o), r.addEventListener("change", o), i.append(a), r.append(i), this.editorPane.replaceChildren(n, r), t.classList.add("th-modern-wi-active-editor-content"), Gg(t, a, this.editorMoved), h_(e, r);
 	}
 	toggleMultiSelect() {
 		if (!this.deleteBusy) {
@@ -9965,8 +9988,9 @@ var x_ = class {
 		}
 	}
 	toggleEntrySelected(e) {
+		this.syncSelectedWorld();
 		let t = Fg(e);
-		t !== void 0 && (this.selectedUids.has(t) ? (this.selectedUids.delete(t), e.classList.remove(xg)) : (this.selectedUids.add(t), e.classList.add(xg)), this.updateDeleteSelectedButton());
+		t !== void 0 && this.selectedWorldName && Ig(e) === this.selectedWorldName && (this.selectedUids.has(t) ? (this.selectedUids.delete(t), e.classList.remove(xg)) : (this.selectedUids.add(t), e.classList.add(xg)), this.updateDeleteSelectedButton());
 	}
 	updateDeleteSelectedButton() {
 		if (!this.deleteSelectedButton) return;
@@ -9983,39 +10007,50 @@ var x_ = class {
 		} else this.lockedWorldSelect &&= (this.lockedWorldSelect.element.disabled = this.lockedWorldSelect.wasDisabled, void 0);
 	}
 	isDeleteContextCurrent(e, t) {
-		return this.mounted && this.worldRevision === t && Ig(this.document) === e;
+		return this.mounted && this.worldRevision === t && Lg(this.document) === e;
 	}
 	async deleteSelectedEntries() {
 		if (this.deleteBusy) return;
+		this.syncSelectedWorld();
 		let e = Array.from(this.selectedUids);
 		if (!e.length) return;
-		let t = Ig(this.document);
+		let t = Lg(this.document);
 		if (!t) {
 			toastr.error("无法确定当前正在编辑的世界书");
 			return;
 		}
-		let n = this.worldRevision, r = e.map((e) => this.document.querySelector(`.world_entry[uid="${e}"]`)).filter((e) => !!e).map((e) => d_(e)).slice(0, 5).join("、"), i = e.length > 5 ? ` 等 ${e.length} 项` : "", a = `确认删除 ${e.length} 个世界书条目？\n${r}${i}`;
-		if (!this.window.confirm(a) || !this.isDeleteContextCurrent(t, n)) return;
-		let o = new Set(e);
+		let n = this.worldRevision, r = this.findEntriesList(), i = e.slice(0, 5).map((e) => {
+			let n = r?.querySelector(`.world_entry[uid="${e}"]`);
+			return n && Ig(n) === t ? f_(n) : `UID ${e}`;
+		}), a = e.length > i.length ? ` 等 ${e.length} 项` : "", o = `确认从「${t}」删除 ${e.length} 个世界书条目？\n${i.join("、")}${a}`;
+		if (!this.window.confirm(o) || !this.isDeleteContextCurrent(t, n)) return;
+		let s = new Set(e);
 		this.setDeleteBusy(!0);
-		let s;
 		try {
-			if (s = await SillyTavern.loadWorldInfo(t), !this.isDeleteContextCurrent(t, n)) return;
-			if (!s) throw Error(`无法读取世界书“${t}”`);
-			let e = JSON.stringify(s), r = this.window.SillyTavern?.getContext?.()?.getRequestHeaders?.();
-			if (!r) throw Error("宿主不支持验证世界书版本，请使用原生删除功能");
-			let i = await this.window.fetch("/api/worldinfo/get", {
-				method: "POST",
-				headers: r,
-				body: JSON.stringify({ name: t }),
-				cache: "no-cache"
-			});
-			if (!i.ok) throw Error("无法验证世界书是否被其他窗口修改");
-			if (_g(e, await i.json(), s)) throw Error("世界书已更改，请检查并刷新后重试");
-			let a = zg(s, o, this.window);
-			if (!this.isDeleteContextCurrent(t, n) || (await SillyTavern.saveWorldInfo(t, a, !0), !this.isDeleteContextCurrent(t, n))) return;
+			let e = this.window.SillyTavern.getContext(), r = await e.loadWorldInfo(t);
+			if (!this.isDeleteContextCurrent(t, n)) return;
+			if (!r) throw Error(`无法读取世界书“${t}”`);
+			let i = JSON.stringify(r), a = e.getRequestHeaders?.();
+			if (!a) throw Error("宿主不支持验证世界书版本，请使用原生删除功能");
+			let o = async (e) => {
+				let n = await this.window.fetch("/api/worldinfo/get", {
+					method: "POST",
+					headers: a,
+					body: JSON.stringify({ name: t }),
+					cache: "no-cache"
+				});
+				if (!n.ok) throw Error(e);
+				return n.json();
+			};
+			if (_g(i, await o("无法验证世界书是否被其他窗口修改"), await e.loadWorldInfo(t))) throw Error("世界书已更改，请检查并刷新后重试");
+			let c = Bg(r, s, this.window);
+			if (!this.isDeleteContextCurrent(t, n)) return;
+			let l = JSON.stringify(c);
+			await e.saveWorldInfo(t, c, !0);
+			let u = "无法确认世界书已保存，请重新加载酒馆后核对条目", d = await o(u);
+			if (JSON.stringify(d) !== l) throw Error(u);
 		} catch (e) {
-			console.error("[现代化界面] 世界书批量删除失败", e), toastr.error(`删除世界书条目失败：${Rg(e)}`);
+			console.error("[现代化界面] 世界书批量删除失败", e), toastr.error(`删除世界书条目失败：${zg(e)}`);
 			return;
 		} finally {
 			this.setDeleteBusy(!1);
@@ -10025,14 +10060,14 @@ var x_ = class {
 			for (let e of this.document.querySelectorAll(".world_entry")) e.classList.remove(xg);
 			this.updateDeleteSelectedButton();
 			try {
-				await SillyTavern.reloadWorldInfoEditor(t, !0);
+				await this.window.SillyTavern.getContext().reloadWorldInfoEditor(t, !0);
 			} catch (e) {
 				console.error("[现代化界面] 世界书删除成功，但编辑器刷新失败", e), toastr.error("条目已删除，但世界书编辑器刷新失败，请手动刷新");
 			}
 		}
 	}
 };
-function S_(e) {
+function C_(e) {
 	let t = R(), n = z(), r, i, a = null, o = 0, s = () => t.querySelector("#WorldInfo"), c = () => {
 		let e = r?.destroy() ?? !1;
 		return r = void 0, e;
@@ -10048,9 +10083,9 @@ function S_(e) {
 		let n = e.is_active && e.settings.modernWorldInfoEditor, i = s();
 		i !== a && c(), h(i), l(n, e.settings.modernWorldSelect);
 		let u = i?.classList.contains("openDrawer") ?? !1;
-		i?.classList.toggle(vg, n && (u || !!r)), n && u ? (r ??= new x_(), r.mount(), r.ensureLayout()) : n ? r?.closeMobileDetail() : c() && C_(t);
+		i?.classList.toggle(vg, n && (u || !!r)), n && u ? (r ??= new S_(), r.mount(), r.ensureLayout()) : n ? r?.closeMobileDetail() : c() && w_(t);
 	}, d = (e) => {
-		Bg(e.target)?.closest("#WIDrawerIcon, .drawer-toggle, [data-target=\"WorldInfo\"]") && (n.requestAnimationFrame(() => {
+		Vg(e.target)?.closest("#WIDrawerIcon, .drawer-toggle, [data-target=\"WorldInfo\"]") && (n.requestAnimationFrame(() => {
 			r?.isMounted() && r.ensureLayout();
 		}), n.setTimeout(() => {
 			r?.isMounted() && r.ensureLayout();
@@ -10073,64 +10108,64 @@ function S_(e) {
 			attributeFilter: ["class"]
 		}));
 	}
-	let g = Zn(() => [
+	let g = Xn(() => [
 		e.is_active,
 		e.settings.modernWorldInfoEditor,
 		e.settings.modernWorldSelect
 	], f, { immediate: !0 });
 	return { destroy() {
-		g(), p?.disconnect(), m.disconnect(), t.removeEventListener("click", d, !0), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(vg), i?.destroy(), i = void 0, c() && C_(t);
+		g(), p?.disconnect(), m.disconnect(), t.removeEventListener("click", d, !0), o &&= (n.cancelAnimationFrame(o), 0), s()?.classList.remove(vg), i?.destroy(), i = void 0, c() && w_(t);
 	} };
 }
-function C_(e) {
-	let t = Ig(e);
+function w_(e) {
+	let t = Lg(e);
 	if (t) try {
-		SillyTavern.reloadWorldInfoEditor(t, !0);
+		SillyTavern.getContext().reloadWorldInfoEditor(t, !0);
 	} catch (e) {
 		console.error("[现代化界面] 恢复原生世界书编辑器失败", e), toastr.error("恢复原生世界书编辑器失败，请手动刷新");
 	}
 }
 // src/index.ts
-var w_ = "th-modern-enabled", T_ = "th-modern-persona-management", E_ = "th-modern-two-column", D_ = "th-modern-three-column", O_ = "th-modern-docked-drawer", k_ = "th-modern-main-fill", A_ = "th-modern-floating-input", j_ = "th-modern-single-line-input", M_ = "th-modern-reduce-motion", N_ = "th-modern-reduce-advanced-effects", P_ = "th-modern-sidebar-collapsed", F_ = "th-modern-auto-collapse", I_ = "th-modern-sidebar-temp-expanded", L_ = "th-modern-resizing", R_ = "th-modern-drawer-fullscreen", z_ = "th-modern-drawer-open", B_ = "th-modern-drawer-switching", V_ = "th-modern-quick-replies-collapsed", H_ = "th-modern-sidebar", U_ = "th-modern-sidebar-resize-handle", W_ = "th-modern-overlay-resize-handle", G_ = "th-modern-quick-reply-toggle", K_ = "th-modern-topbar-label", q_ = "th-modern-drawer-titlebar", J_ = "th-modern-drawer-title", Y_ = "th-modern-drawer-actions", X_ = "th-modern-drawer-close", Z_ = "th-modern-drawer-fullscreen-toggle", Q_ = "th-modern-drawer-fullscreen-content", $_ = "th-modern-drawer-active", ev = "thModernFullscreenPinned", tv = "thModernFullscreenWasPinned", nv = "thModernDockedPinned", rv = "thModernDockedWasPinned", iv = "th-modern-api-source-group", av = "th-modern-api-footer", ov = "th-reset", sv = "th-modern-failsafe-shortcut", cv = "SillyTavern", lv = "TavernHelper.modernLayout.dispose", uv = "TavernHelper.modernLayout.runtimes", dv = "TavernHelper.modernLayout.sidebarCollapsed", fv = "TavernHelper.modernLayout.recentCollapsed", pv = 15, mv = "(min-width: 900px) and (max-width: 1199.98px)", hv = "(min-width: 900px)", gv = 320, _v = 460, vv = 720, yv = 24, bv = 480, xv = 1e3, Sv = "--th-modern-left-nav-height", Cv = "--th-modern-input-height", wv = "--th-modern-input-stack-offset", Tv = "--th-modern-quick-reply-max-height", Ev = "--th-modern-quick-reply-reserve-height", Dv = 66, Ov = 240, kv = 44, Av = 12, jv = "modern-ui", Mv = "1.0.0", Nv = !1;
-function Pv(e, t, n, r) {
+var T_ = "th-modern-enabled", E_ = "th-modern-persona-management", D_ = "th-modern-two-column", O_ = "th-modern-three-column", k_ = "th-modern-docked-drawer", A_ = "th-modern-main-fill", j_ = "th-modern-floating-input", M_ = "th-modern-single-line-input", N_ = "th-modern-reduce-motion", P_ = "th-modern-reduce-advanced-effects", F_ = "th-modern-sidebar-collapsed", I_ = "th-modern-auto-collapse", L_ = "th-modern-sidebar-temp-expanded", R_ = "th-modern-resizing", z_ = "th-modern-drawer-fullscreen", B_ = "th-modern-drawer-open", V_ = "th-modern-drawer-switching", H_ = "th-modern-quick-replies-collapsed", U_ = "th-modern-sidebar", W_ = "th-modern-sidebar-resize-handle", G_ = "th-modern-overlay-resize-handle", K_ = "th-modern-quick-reply-toggle", q_ = "th-modern-topbar-label", J_ = "th-modern-drawer-titlebar", Y_ = "th-modern-drawer-title", X_ = "th-modern-drawer-actions", Z_ = "th-modern-drawer-close", Q_ = "th-modern-drawer-fullscreen-toggle", $_ = "th-modern-drawer-fullscreen-content", ev = "th-modern-drawer-active", tv = "thModernFullscreenPinned", nv = "thModernFullscreenWasPinned", rv = "thModernDockedPinned", iv = "thModernDockedWasPinned", av = "th-modern-api-source-group", ov = "th-modern-api-footer", sv = "th-reset", cv = "th-modern-failsafe-shortcut", lv = "SillyTavern", uv = "TavernHelper.modernLayout.dispose", dv = "TavernHelper.modernLayout.runtimes", fv = "TavernHelper.modernLayout.sidebarCollapsed", pv = "TavernHelper.modernLayout.recentCollapsed", mv = 15, hv = "(min-width: 900px) and (max-width: 1199.98px)", gv = "(min-width: 900px)", _v = 320, vv = 460, yv = 720, bv = 24, xv = 480, Sv = 1e3, Cv = "--th-modern-left-nav-height", wv = "--th-modern-input-height", Tv = "--th-modern-input-stack-offset", Ev = "--th-modern-quick-reply-max-height", Dv = "--th-modern-quick-reply-reserve-height", Ov = 66, kv = 240, Av = 44, jv = 12, Mv = "modern-ui", Nv = "1.0.0", Pv = !1;
+function Fv(e, t, n, r) {
 	return typeof e != "number" || !Number.isFinite(e) ? r : Math.min(Math.max(e, t), n);
 }
-function Fv() {
+function Iv() {
 	let e = R();
 	return e.body ? [e.documentElement, e.body] : [e.documentElement];
 }
-function Iv() {
+function Lv() {
 	return z().localStorage;
 }
-function Lv(e) {
+function Rv(e) {
 	try {
-		return Iv()?.getItem(e) === "true";
+		return Lv()?.getItem(e) === "true";
 	} catch (e) {
 		return console.warn(`[${qm}] 读取浏览器状态失败。`, e), !1;
 	}
 }
-function Rv(e, t) {
+function zv(e, t) {
 	try {
-		Iv()?.setItem(e, String(t));
+		Lv()?.setItem(e, String(t));
 	} catch (e) {
 		console.warn(`[${qm}] 保存浏览器状态失败。`, e);
 	}
 }
-function zv(e, t) {
-	Fv().forEach((n) => {
+function Bv(e, t) {
+	Iv().forEach((n) => {
 		n.style.getPropertyValue(e) !== t && n.style.setProperty(e, t);
 	});
 }
 function Z(e) {
-	Fv().forEach((t) => {
+	Iv().forEach((t) => {
 		t.style.getPropertyValue(e) && t.style.removeProperty(e);
 	});
 }
-function Bv(e, t) {
+function Vv(e, t) {
 	let n = Number.parseFloat(e);
 	return Number.isFinite(n) ? n : t;
 }
-function Vv(e, t, n) {
+function Hv(e, t, n) {
 	e.forEach((e) => {
 		e.style.getPropertyValue(t) !== n && e.style.setProperty(t, n);
 	});
@@ -10142,9 +10177,9 @@ function Q() {
 	} catch {
 		n = void 0;
 	}
-	return n && typeof n == "object" || (n = t ?? e), Array.isArray(n.characters) || (n.characters = Gv()), Array.isArray(n.groups) || (n.groups = Kv()), n.characterId === void 0 && (n.characterId = e.this_chid ?? e.characterId), n.groupId === void 0 && (n.groupId = e.selected_group ?? e.groupId), typeof n.getCurrentChatId != "function" && (n.getCurrentChatId = () => e.getCurrentChatId?.() ?? e.selected_and_active_chat), n;
+	return n && typeof n == "object" || (n = t ?? e), Array.isArray(n.characters) || (n.characters = Kv()), Array.isArray(n.groups) || (n.groups = qv()), n.characterId === void 0 && (n.characterId = e.this_chid ?? e.characterId), n.groupId === void 0 && (n.groupId = e.selected_group ?? e.groupId), typeof n.getCurrentChatId != "function" && (n.getCurrentChatId = () => e.getCurrentChatId?.() ?? e.selected_and_active_chat), n;
 }
-function Hv() {
+function Uv() {
 	let e, t = !1, n = async () => {
 		let e = z(), n = R().baseURI || e.location.href, r = new URL("script.js", n).href, i = new URL("scripts/group-chats.js", n).href, a = e.Function, [o, s] = await a("mainModuleUrl", "groupModuleUrl", "return Promise.all([import(mainModuleUrl), import(groupModuleUrl)]);")(r, i), c = o, l = s;
 		if (typeof c.selectCharacterById != "function" || typeof c.isGenerating != "function" || typeof c.isChatSaving != "boolean" || typeof c.setActiveCharacter != "function" || typeof c.setActiveGroup != "function" || typeof l.openGroupChat != "function" || typeof l.openGroupById != "function") throw Error("当前 SillyTavern 缺少最近聊天所需的导航能力。");
@@ -10172,10 +10207,10 @@ function Hv() {
 		}
 	};
 }
-function Uv(e) {
+function Wv(e) {
 	return e instanceof DOMException && e.name === "AbortError";
 }
-function Wv() {
+function Gv() {
 	let e = window.SillyTavern?.getContext?.(), t = (window.SillyTavern?.accountStorage ?? e?.accountStorage ?? window.accountStorage ?? localStorage)?.getItem?.("pinnedChats");
 	if (typeof t != "string") return [];
 	try {
@@ -10185,21 +10220,21 @@ function Wv() {
 		return console.warn(`[${qm}] 读取最近聊天置顶状态失败。`, e), [];
 	}
 }
-function Gv() {
+function Kv() {
 	let e = z?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n = t?.getContext?.();
 	return Array.isArray(n?.characters) ? n.characters : Array.isArray(e.characters) ? e.characters : Array.isArray(t?.characters) ? t.characters : Array.isArray(window.characters) ? window.characters : [];
 }
-function Kv() {
+function qv() {
 	let e = z?.() ?? window, t = e.SillyTavern ?? (typeof SillyTavern < "u" ? SillyTavern : void 0), n = t?.getContext?.();
 	return Array.isArray(n?.groups) ? n.groups : Array.isArray(e.groups) ? e.groups : Array.isArray(t?.groups) ? t.groups : Array.isArray(window.groups) ? window.groups : [];
 }
-function qv(e) {
-	if (e) return Gv().find((t) => t?.avatar === e);
-}
 function Jv(e) {
-	if (e) return Kv().find((t) => t?.id === e);
+	if (e) return Kv().find((t) => t?.avatar === e);
 }
 function Yv(e) {
+	if (e) return qv().find((t) => t?.id === e);
+}
+function Xv(e) {
 	if (!e) return;
 	let t = window.SillyTavern?.getContext?.(), n = window.SillyTavern?.timestampToMoment ?? t?.timestampToMoment;
 	if (typeof n == "function") try {
@@ -10210,7 +10245,7 @@ function Yv(e) {
 		return r(e);
 	} catch {}
 }
-function Xv(e, t) {
+function Zv(e, t) {
 	if (!t) return "img/groupchat.png";
 	let n = window.SillyTavern?.getContext?.(), r = window.SillyTavern?.getThumbnailUrl ?? n?.getThumbnailUrl ?? window.getThumbnailUrl;
 	if (typeof r == "function") try {
@@ -10218,10 +10253,10 @@ function Xv(e, t) {
 	} catch {}
 	return t.startsWith("http://") || t.startsWith("https://") || t.startsWith("/") ? t : `/characters/${encodeURIComponent(t)}`;
 }
-function Zv(e) {
-	let t = qv(e.avatar), n = Jv(e.group);
+function Qv(e) {
+	let t = Jv(e.avatar), n = Yv(e.group);
 	if (!t && !n) return;
-	let r = e.chat_name ?? e.file_name.replace(/\.jsonl$/i, ""), i = Yv(e.last_mes), a = "", o = "";
+	let r = e.chat_name ?? e.file_name.replace(/\.jsonl$/i, ""), i = Xv(e.last_mes), a = "", o = "";
 	if (i?.format) try {
 		a = i.format("l"), o = i.format("LL LT");
 	} catch {}
@@ -10233,7 +10268,7 @@ function Zv(e) {
 		...e,
 		chat_name: r,
 		char_name: t?.name ?? String(n?.name ?? ""),
-		char_thumbnail: t ? Xv("avatar", t.avatar) : "img/groupchat.png",
+		char_thumbnail: t ? Zv("avatar", t.avatar) : "img/groupchat.png",
 		date_short: a,
 		date_long: o,
 		is_group: !!n,
@@ -10246,35 +10281,35 @@ function Zv(e) {
 		last_mes: e.last_mes ?? ""
 	};
 }
-function Qv() {
+function $v() {
 	let e = window.SillyTavern?.getContext?.();
 	return typeof window.SillyTavern?.getRequestHeaders == "function" ? window.SillyTavern.getRequestHeaders() : typeof e?.getRequestHeaders == "function" ? e.getRequestHeaders() : typeof window.getRequestHeaders == "function" ? window.getRequestHeaders() : {
 		"Content-Type": "application/json",
 		"X-CSRF-Token": window.token || ""
 	};
 }
-async function $v(e) {
+async function ey(e) {
 	let t = await fetch("/api/chats/recent", {
 		method: "POST",
-		headers: Qv(),
+		headers: $v(),
 		body: JSON.stringify({
-			max: pv,
-			pinned: Wv()
+			max: mv,
+			pinned: Gv()
 		}),
 		cache: "no-cache",
 		signal: e
 	});
 	if (!t.ok) throw Error(`HTTP ${t.status}`);
 	let n = await t.json();
-	return Array.isArray(n) ? n.map((e) => Zv(e)).filter((e) => e !== void 0).slice(0, pv) : [];
+	return Array.isArray(n) ? n.map((e) => Qv(e)).filter((e) => e !== void 0).slice(0, mv) : [];
 }
-function ey(e) {
+function ty(e) {
 	return (e ?? "").replace(/\.jsonl$/i, "");
 }
-async function ty(e, t) {
+async function ny(e, t) {
 	let n = await fetch("/api/characters/chats", {
 		method: "POST",
-		headers: Qv(),
+		headers: $v(),
 		body: JSON.stringify({
 			avatar_url: e,
 			simple: !0
@@ -10286,22 +10321,22 @@ async function ty(e, t) {
 	return !r || typeof r != "object" ? !1 : (Array.isArray(r) ? r : Object.values(r)).some((e) => {
 		if (!e || typeof e != "object") return !1;
 		let n = e, r = typeof n.file_id == "string" ? n.file_id : void 0, i = typeof n.file_name == "string" ? n.file_name : void 0;
-		return ey(r ?? i) === t;
+		return ty(r ?? i) === t;
 	});
 }
-function ny(e) {
-	let t = Q(), n = ey(e.chat_name ?? e.file_name);
-	if (!n || ey(t.getCurrentChatId?.()) !== n) return !1;
+function ry(e) {
+	let t = Q(), n = ty(e.chat_name ?? e.file_name);
+	if (!n || ty(t.getCurrentChatId?.()) !== n) return !1;
 	if (e.is_group && e.group) return String(t.groupId ?? "") === e.group;
 	if (!e.avatar || t.groupId) return !1;
-	let r = (Array.isArray(t.characters) ? t.characters : Gv()).findIndex((t) => t?.avatar === e.avatar);
+	let r = (Array.isArray(t.characters) ? t.characters : Kv()).findIndex((t) => t?.avatar === e.avatar);
 	return r !== -1 && String(t.characterId) === String(r);
 }
-function ry(e, t) {
+function iy(e, t) {
 	let n = $("<button>").attr({
 		type: "button",
 		title: e.date_long ? `${e.char_name} - ${e.chat_name}\n${e.date_long}` : `${e.char_name} - ${e.chat_name}`
-	}).addClass("th-modern-recent-chat").toggleClass("is-current", ny(e)).on("click", () => t(e)), r = $("<span>").addClass("th-modern-recent-avatar");
+	}).addClass("th-modern-recent-chat").toggleClass("is-current", ry(e)).on("click", () => t(e)), r = $("<span>").addClass("th-modern-recent-avatar");
 	$("<img>").attr({
 		src: e.char_thumbnail || "img/ai4.png",
 		alt: e.char_name || "聊天头像"
@@ -10311,39 +10346,39 @@ function ry(e, t) {
 	let a = $("<span>").addClass("th-modern-recent-meta");
 	return $("<span>").text(e.date_short ?? "").appendTo(a), $("<span>").text(`${e.chat_items ?? 0} 条`).appendTo(a), n.append(r, i, a);
 }
-async function iy(e, t, n) {
-	let r = ey(e.chat_name ?? e.file_name);
+async function ay(e, t, n) {
+	let r = ty(e.chat_name ?? e.file_name);
 	if (!r) throw Error("最近聊天缺少聊天文件名。");
 	let i = z?.() ?? window, a = Q(), o = i.SillyTavern?.saveSettingsDebounced ?? a?.saveSettingsDebounced ?? i.saveSettingsDebounced, s = i.SillyTavern?.openGroupChat ?? a?.openGroupChat ?? i.openGroupChat, c = i.SillyTavern?.selectCharacterById ?? a?.selectCharacterById ?? i.selectCharacterById, l = i.SillyTavern?.openCharacterChat ?? a?.openCharacterChat ?? i.openCharacterChat;
 	if (e.is_group && e.group) {
-		if (!Jv(e.group)) throw Error("未找到对应群组。");
+		if (!Yv(e.group)) throw Error("未找到对应群组。");
 		if (String(Q().groupId ?? "") !== e.group) {
 			let r = await t.openGroupById(e.group);
 			if (n(), !r && String(Q().groupId ?? "") !== e.group) throw Error("群组切换被聊天保存或生成状态阻止。");
 		}
 		if (String(Q().groupId ?? "") !== e.group) throw Error("群组未能正确激活。");
-		if (t.setActiveGroup(e.group), o?.(), ey(Q().getCurrentChatId?.()) !== r && (await s?.(e.group, r), n()), String(Q().groupId ?? "") !== e.group || ey(Q().getCurrentChatId?.()) !== r) throw Error("群组聊天不存在或未能正确打开。");
+		if (t.setActiveGroup(e.group), o?.(), ty(Q().getCurrentChatId?.()) !== r && (await s?.(e.group, r), n()), String(Q().groupId ?? "") !== e.group || ty(Q().getCurrentChatId?.()) !== r) throw Error("群组聊天不存在或未能正确打开。");
 	} else if (e.avatar) {
 		let i = () => {
 			let e = Q().characters;
-			return Array.isArray(e) ? e : Gv();
+			return Array.isArray(e) ? e : Kv();
 		}, a = i().findIndex((t) => t?.avatar === e.avatar);
 		if (a === -1) throw Error("未找到对应角色。");
-		if (!await ty(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
+		if (!await ny(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
 		if (n(), a = i().findIndex((t) => t?.avatar === e.avatar), a === -1) throw Error("角色已不存在。");
 		await c?.(a), n();
 		let s = i()[Number(Q().characterId)];
 		if (Q().groupId || s?.avatar !== e.avatar) throw Error("角色切换被聊天保存或生成状态阻止。");
-		if (t.setActiveCharacter(e.avatar), o?.(), ey(Q().getCurrentChatId?.()) !== r) {
-			if (!await ty(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
+		if (t.setActiveCharacter(e.avatar), o?.(), ty(Q().getCurrentChatId?.()) !== r) {
+			if (!await ny(e.avatar, r)) throw n(), Error("角色聊天已不存在。");
 			if (n(), Q().groupId || i()[Number(Q().characterId)]?.avatar !== e.avatar) throw Error("角色已不再处于激活状态。");
 			t.setActiveCharacter(e.avatar), await l?.(r), n();
 		}
 		let u = i()[Number(Q().characterId)];
-		if (Q().groupId || u?.avatar !== e.avatar || ey(Q().getCurrentChatId?.()) !== r) throw Error("角色聊天未能正确打开。");
+		if (Q().groupId || u?.avatar !== e.avatar || ty(Q().getCurrentChatId?.()) !== r) throw Error("角色聊天未能正确打开。");
 	} else throw Error("最近聊天缺少角色或群组标识。");
 }
-function ay(e, t) {
+function oy(e, t) {
 	let n = String(e ?? "").replace(/\s+/g, " ").trim();
 	if (n) {
 		if (t === "version") {
@@ -10354,20 +10389,20 @@ function ay(e, t) {
 		if (!(!n || n.length > 64 || n.includes("://"))) return n;
 	}
 }
-function oy(e = R()) {
+function sy(e = R()) {
 	for (let t of [
 		".welcomeHeaderVersionDisplay",
 		"#version_display_welcome",
 		"#version_display"
 	]) {
-		let n = ay(e.querySelector(t)?.textContent, "version");
+		let n = oy(e.querySelector(t)?.textContent, "version");
 		if (n) return n;
 	}
-	return ay(e.querySelector("meta[name=\"application-name\"]")?.content, "plain") || ay(e.querySelector(".welcomePanel .welcomeHeaderLogo")?.alt, "logo") || (ay(e.title, "plain") ?? cv);
+	return oy(e.querySelector("meta[name=\"application-name\"]")?.content, "plain") || oy(e.querySelector(".welcomePanel .welcomeHeaderLogo")?.alt, "logo") || (oy(e.title, "plain") ?? lv);
 }
-function sy(e) {
-	let t = z(), n = R(), r = $("<div>").attr("id", H_).addClass("th-modern-sidebar recentChat"), i = $("<div>").addClass("th-modern-sidebar-brand"), a = $("<span>").addClass("th-modern-brand-main").appendTo(i), o = $("<img>").addClass("th-modern-brand-logo welcomeHeaderLogo").attr("src", "img/logo.png").appendTo(a), s = $("<span>").addClass("th-modern-brand-name").appendTo(a), c = () => {
-		let e = oy(n);
+function cy(e) {
+	let t = z(), n = R(), r = $("<div>").attr("id", U_).addClass("th-modern-sidebar recentChat"), i = $("<div>").addClass("th-modern-sidebar-brand"), a = $("<span>").addClass("th-modern-brand-main").appendTo(i), o = $("<img>").addClass("th-modern-brand-logo welcomeHeaderLogo").attr("src", "img/logo.png").appendTo(a), s = $("<span>").addClass("th-modern-brand-name").appendTo(a), c = () => {
+		let e = sy(n);
 		s.text(e), o.attr("alt", `${e} Logo`);
 	};
 	c();
@@ -10388,7 +10423,7 @@ function sy(e) {
 		type: "button",
 		title: "折叠侧边栏",
 		"aria-pressed": "false"
-	}).addClass("th-modern-icon-button th-modern-sidebar-toggle fa-solid fa-chevron-left").appendTo(i), d = $("<section>").addClass("th-modern-recent-section"), f = `${H_}-recent-list`, p = $("<div>").addClass("th-modern-section-header"), m = $("<span>").addClass("th-modern-section-actions"), h = $("<button>").attr({
+	}).addClass("th-modern-icon-button th-modern-sidebar-toggle fa-solid fa-chevron-left").appendTo(i), d = $("<section>").addClass("th-modern-recent-section"), f = `${U_}-recent-list`, p = $("<div>").addClass("th-modern-section-header"), m = $("<span>").addClass("th-modern-section-actions"), h = $("<button>").attr({
 		type: "button",
 		title: "折叠最近聊天",
 		"aria-controls": f,
@@ -10396,9 +10431,9 @@ function sy(e) {
 	}).addClass("th-modern-section-title th-modern-recent-toggle"), g = $("<span>").attr("aria-hidden", "true").addClass("th-modern-icon-button th-modern-recent-collapse fa-solid fa-chevron-up").appendTo(h);
 	$("<span>").addClass("th-modern-section-label").text("最近聊天").appendTo(h);
 	let v = (e, t = !0) => {
-		$(R().body).toggleClass(P_, e), $(R().body).removeClass(I_), r.toggleClass("is-collapsed", e), y(), t && Rv(dv, e);
+		$(R().body).toggleClass(F_, e), $(R().body).removeClass(L_), r.toggleClass("is-collapsed", e), y(), t && zv(fv, e);
 	}, y = () => {
-		let e = R().body, t = e.classList.contains(P_), n = e.classList.contains(F_) && !e.classList.contains(I_), r = t || n;
+		let e = R().body, t = e.classList.contains(F_), n = e.classList.contains(I_) && !e.classList.contains(L_), r = t || n;
 		u.toggleClass("fa-chevron-left", !r).toggleClass("fa-chevron-right", r).attr({
 			title: r ? "展开侧边栏" : "折叠侧边栏",
 			"aria-pressed": String(r)
@@ -10408,14 +10443,14 @@ function sy(e) {
 		d.toggleClass("is-collapsed", e), h.attr({
 			title: n,
 			"aria-expanded": String(!e)
-		}), g.toggleClass("fa-chevron-up", !e).toggleClass("fa-chevron-down", e), t && Rv(fv, e);
+		}), g.toggleClass("fa-chevron-up", !e).toggleClass("fa-chevron-down", e), t && zv(pv, e);
 	}, x = () => {
 		b(!d.hasClass("is-collapsed"));
 	};
 	u.on("click", (e) => {
 		e.preventDefault(), e.stopPropagation();
 		let t = R().body;
-		t.classList.contains(F_) && !t.classList.contains(P_) ? (t.classList.toggle(I_), y()) : v(!t.classList.contains(P_));
+		t.classList.contains(I_) && !t.classList.contains(F_) ? (t.classList.toggle(L_), y()) : v(!t.classList.contains(F_));
 	}), h.on("click", (e) => {
 		e.preventDefault(), x();
 	});
@@ -10432,32 +10467,32 @@ function sy(e) {
 	return w.observe(R().body, {
 		attributes: !0,
 		attributeFilter: ["class"]
-	}), v(Lv(dv), !1), b(Lv(fv), !1), y(), {
+	}), v(Rv(fv), !1), b(Rv(pv), !1), y(), {
 		$list: C,
 		destroy: () => {
-			w.disconnect(), l.disconnect(), $(R().body).removeClass(P_), r.remove();
+			w.disconnect(), l.disconnect(), $(R().body).removeClass(F_), r.remove();
 		}
 	};
 }
-function cy(e) {
+function ly(e) {
 	e.empty().append($("<div>").addClass("th-modern-recent-state").text("正在读取最近聊天..."));
 }
-function ly(e, t) {
+function uy(e, t) {
 	let n = t instanceof Error ? t.message : String(t);
 	e.empty().append($("<div>").addClass("th-modern-recent-state").text(`读取失败：${n}`));
 }
-function uy(e) {
-	let t = Hv(), n, r = 0, i = 0, a = !1, o = !1, s = (t) => {
+function dy(e) {
+	let t = Uv(), n, r = 0, i = 0, a = !1, o = !1, s = (t) => {
 		a = t, e.toggleClass("is-navigating", t).attr("aria-busy", String(t)), e.find("button").prop("disabled", t);
 	}, c = (e) => {
-		if (o || a || ny(e)) return;
+		if (o || a || ry(e)) return;
 		let n = ++i, r = () => {
 			if (o || n !== i) throw new DOMException("导航已取消。", "AbortError");
 		};
 		s(!0), t.get().then(async (t) => {
-			r(), await iy(e, t, r);
+			r(), await ay(e, t, r);
 		}).catch((e) => {
-			if (Uv(e)) return;
+			if (Wv(e)) return;
 			let t = e instanceof Error ? e.message : String(e);
 			toastr.error(`打开最近聊天失败：${t}`, qm), console.error(`[${qm}] 打开最近聊天失败。`, e);
 		}).finally(() => {
@@ -10469,12 +10504,12 @@ function uy(e) {
 			if (o) return;
 			n?.abort(), n = new AbortController();
 			let t = ++r;
-			cy(e), $v(n.signal).then((n) => {
+			ly(e), ey(n.signal).then((n) => {
 				o || t !== r || (e.empty(), n.length === 0 ? e.append($("<div>").addClass("th-modern-recent-state").text("暂无最近聊天")) : (n.forEach((t) => {
-					e.append(ry(t, c));
+					e.append(iy(t, c));
 				}), a && s(!0)));
 			}).catch((n) => {
-				o || t !== r || Uv(n) || ly(e, n);
+				o || t !== r || Wv(n) || uy(e, n);
 			});
 		},
 		destroy: () => {
@@ -10482,113 +10517,113 @@ function uy(e) {
 		}
 	};
 }
-function dy(e) {
+function fy(e) {
 	let t = e.children(".drawer-icon").first();
 	return String(t.attr("title") || e.attr("title") || e.text()).trim();
 }
-function fy() {
-	return R().querySelector(`#top-settings-holder > .drawer > .drawer-content.${Q_}`) ?? void 0;
-}
 function py() {
-	let e = fy();
-	$(`.${Z_}`, R()).each((t, n) => {
-		let r = Nv && !!(e && $(n).closest(".drawer-content")[0] === e);
+	return R().querySelector(`#top-settings-holder > .drawer > .drawer-content.${$_}`) ?? void 0;
+}
+function my() {
+	let e = py();
+	$(`.${Q_}`, R()).each((t, n) => {
+		let r = Pv && !!(e && $(n).closest(".drawer-content")[0] === e);
 		$(n).toggleClass("is-fullscreen", r).toggleClass("fa-expand", !r).toggleClass("fa-compress", r).attr({
 			title: r ? "恢复面板宽度" : "全屏显示面板",
 			"aria-label": r ? "恢复面板宽度" : "全屏显示面板"
 		});
 	});
 }
-function my(e) {
-	let t = R(), n = e === void 0 ? !!t.querySelector("#top-settings-holder > .drawer > .drawer-content.openDrawer") : e.length > 0;
-	t.body.classList.contains(z_) !== n && t.body.classList.toggle(z_, n);
-}
 function hy(e) {
-	if (e.dataset[rv] === void 0) {
+	let t = R(), n = e === void 0 ? !!t.querySelector("#top-settings-holder > .drawer > .drawer-content.openDrawer") : e.length > 0;
+	t.body.classList.contains(B_) !== n && t.body.classList.toggle(B_, n);
+}
+function gy(e) {
+	if (e.dataset[iv] === void 0) {
 		let t = e.classList.contains("pinnedOpen");
-		e.dataset[rv] = String(t), t || (e.dataset[nv] = "true");
+		e.dataset[iv] = String(t), t || (e.dataset[rv] = "true");
 	}
 	e.classList.add("pinnedOpen");
 }
-function gy(e) {
-	if (e.dataset[rv] === void 0) return;
-	let t = e.dataset[rv] === "true";
-	e.dataset[nv] === "true" ? e.classList.remove("pinnedOpen") : t && e.classList.add("pinnedOpen"), delete e.dataset[nv], delete e.dataset[rv];
-}
 function _y(e) {
-	let t = R(), n = t.body.classList.contains(O_), r = new Set(e);
+	if (e.dataset[iv] === void 0) return;
+	let t = e.dataset[iv] === "true";
+	e.dataset[rv] === "true" ? e.classList.remove("pinnedOpen") : t && e.classList.add("pinnedOpen"), delete e.dataset[rv], delete e.dataset[iv];
+}
+function vy(e) {
+	let t = R(), n = t.body.classList.contains(k_), r = new Set(e);
 	t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
-		n && r.has(e) ? hy(e) : e.classList.contains(Q_) || gy(e);
+		n && r.has(e) ? gy(e) : e.classList.contains($_) || _y(e);
 	});
 }
-function vy() {
-	let e = fy();
-	if (e) {
-		let t = e.dataset[tv] === "true", n = e.dataset[tv] === void 0 || !t;
-		$(e).removeClass(Q_), n ? $(e).removeClass("pinnedOpen") : t && $(e).addClass("pinnedOpen"), delete e.dataset[ev], delete e.dataset[tv];
-	}
-	R().body.classList.remove(R_), my();
-}
 function yy() {
-	Nv = !1, vy(), py();
-}
-function by(e) {
-	let t = fy();
-	if (t && t !== e && vy(), !(e instanceof (R().defaultView ?? window).HTMLElement)) return;
-	let n = R().body, r = $(e);
-	if (e.dataset[tv] === void 0) {
-		let t = r.hasClass("pinnedOpen");
-		e.dataset[tv] = String(t), t || (e.dataset[ev] = "true");
+	let e = py();
+	if (e) {
+		let t = e.dataset[nv] === "true", n = e.dataset[nv] === void 0 || !t;
+		$(e).removeClass($_), n ? $(e).removeClass("pinnedOpen") : t && $(e).addClass("pinnedOpen"), delete e.dataset[tv], delete e.dataset[nv];
 	}
-	r.addClass(`${Q_} pinnedOpen openDrawer`).removeClass("closedDrawer");
+	R().body.classList.remove(z_), hy();
+}
+function by() {
+	Pv = !1, yy(), my();
+}
+function xy(e) {
+	let t = py();
+	if (t && t !== e && yy(), !(e instanceof (R().defaultView ?? window).HTMLElement)) return;
+	let n = R().body, r = $(e);
+	if (e.dataset[nv] === void 0) {
+		let t = r.hasClass("pinnedOpen");
+		e.dataset[nv] = String(t), t || (e.dataset[tv] = "true");
+	}
+	r.addClass(`${$_} pinnedOpen openDrawer`).removeClass("closedDrawer");
 	let i = r.closest(".drawer").find(".drawer-icon").first();
-	i.hasClass("closedIcon") && i.removeClass("closedIcon").addClass("openIcon"), n.classList.add(R_), my([e]), n.classList.contains(F_) && !n.classList.contains(P_) && n.classList.add(I_), py();
+	i.hasClass("closedIcon") && i.removeClass("closedIcon").addClass("openIcon"), n.classList.add(z_), hy([e]), n.classList.contains(I_) && !n.classList.contains(F_) && n.classList.add(L_), my();
 }
-function xy(e, t) {
-	Nv = t, t ? by(e) : yy();
-}
-function Sy(e) {
-	fy() === e && vy();
-	let t = $(e);
-	if (!t.hasClass("openDrawer")) return;
-	gy(e), t.removeClass("openDrawer pinnedOpen").addClass("closedDrawer");
-	let n = t.closest(".drawer").find(".drawer-icon").first();
-	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), my();
+function Sy(e, t) {
+	Pv = t, t ? xy(e) : by();
 }
 function Cy(e) {
+	py() === e && yy();
+	let t = $(e);
+	if (!t.hasClass("openDrawer")) return;
+	_y(e), t.removeClass("openDrawer pinnedOpen").addClass("closedDrawer");
+	let n = t.closest(".drawer").find(".drawer-icon").first();
+	n.hasClass("openIcon") && n.removeClass("openIcon").addClass("closedIcon"), hy();
+}
+function wy(e) {
 	let t = R(), n = t.defaultView ?? window, r = /* @__PURE__ */ new Map(), i = 0, a, o = 0, s, c = (e, n) => {
 		n?.classList.contains("openDrawer") ? s = n : s?.isConnected && s.classList.contains("openDrawer") || (s = e[e.length - 1]);
 		let r = e.length > 1;
-		t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle($_, r && e === s));
+		t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => e.classList.toggle(ev, r && e === s));
 	}, l = () => {
-		o !== 0 && (n.clearTimeout(o), o = 0), a = void 0, t.body.classList.remove(B_);
+		o !== 0 && (n.clearTimeout(o), o = 0), a = void 0, t.body.classList.remove(V_);
 	}, u = (e) => {
-		a = e, t.body.classList.add(B_), o !== 0 && n.clearTimeout(o), o = n.setTimeout(() => {
-			o = 0, a = void 0, t.body.classList.remove(B_), my();
-		}, xv);
+		a = e, t.body.classList.add(V_), o !== 0 && n.clearTimeout(o), o = n.setTimeout(() => {
+			o = 0, a = void 0, t.body.classList.remove(V_), hy();
+		}, Sv);
 	}, d = () => {
 		i === 0 && (i = n.requestAnimationFrame(() => {
 			i = 0, f();
 		}));
 	}, f = () => {
-		let e = fy(), n = Array.from(t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
-		if (c(n), _y(n), my(n), a && (!a.isConnected || a.classList.contains("openDrawer")) && l(), !e) {
-			if (t.body.classList.contains(R_) && t.body.classList.remove(R_), Nv && n[0]) {
-				by(n[0]);
+		let e = py(), n = Array.from(t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content.openDrawer"));
+		if (c(n), vy(n), hy(n), a && (!a.isConnected || a.classList.contains("openDrawer")) && l(), !e) {
+			if (t.body.classList.contains(z_) && t.body.classList.remove(z_), Pv && n[0]) {
+				xy(n[0]);
 				return;
 			}
-			py();
+			my();
 			return;
 		}
 		if (!e.isConnected || !e.classList.contains("openDrawer")) {
-			vy(), Nv && n[0] ? by(n[0]) : py();
+			yy(), Pv && n[0] ? xy(n[0]) : my();
 			return;
 		}
 		let r = n.find((t) => t !== e);
-		r && (vy(), Sy(e), Nv ? by(r) : py());
+		r && (yy(), Cy(e), Pv ? xy(r) : my());
 	}, p = () => {
 		$("#top-settings-holder .drawer-toggle").each((e, t) => {
-			let n = $(t), i = dy(n);
+			let n = $(t), i = fy(n);
 			if (i) {
 				let e = t, a = r.get(e);
 				a ? a.written = i : r.set(e, {
@@ -10600,18 +10635,18 @@ function Cy(e) {
 					"aria-label": i
 				});
 			}
-			n.children(`.${K_}`).length > 0 || i && $("<span>").addClass(K_).text(i).appendTo(n);
+			n.children(`.${q_}`).length > 0 || i && $("<span>").addClass(q_).text(i).appendTo(n);
 		});
 		let e = ".notes-link, .help_button, .help-button, a:has(.note-link-span), a[href*=\"docs.sillytavern.app\"], .note-link-span, [title*=\"帮助\"], [title*=\"Help\"]", t = (t) => {
-			let n = t.find(e).not(`.${q_} *`);
+			let n = t.find(e).not(`.${J_} *`);
 			if (n.length === 0) return $();
 			let r = n.first(), i = r.closest("a, button, .notes-link, .help_button");
 			return i.length > 0 ? i : r;
 		};
 		$("#top-settings-holder .drawer-content").each((n, r) => {
-			let i = $(r), a = i.attr("id"), o = a !== "WorldInfo" && a !== "rm_extensions_block", s = i.children(`.${q_}`), c = s.first();
+			let i = $(r), a = i.attr("id"), o = a !== "WorldInfo" && a !== "rm_extensions_block", s = i.children(`.${J_}`), c = s.first();
 			if (s.slice(1).remove(), c.length > 0) {
-				let n = c.find(`.${Y_}`).first();
+				let n = c.find(`.${X_}`).first();
 				if (!o) n.find(e).remove();
 				else if (!(n.find(e).length > 0)) {
 					let e = t(i);
@@ -10619,9 +10654,9 @@ function Cy(e) {
 				}
 				return;
 			}
-			let l = dy(i.closest(".drawer").children(".drawer-toggle").first()), u = $("<div>").addClass(q_);
-			$("<span>").addClass(J_).text(l || "菜单").appendTo(u);
-			let d = $("<div>").addClass(Y_).appendTo(u);
+			let l = fy(i.closest(".drawer").children(".drawer-toggle").first()), u = $("<div>").addClass(J_);
+			$("<span>").addClass(Y_).text(l || "菜单").appendTo(u);
+			let d = $("<div>").addClass(X_).appendTo(u);
 			if (o) {
 				let e = t(i);
 				e.length > 0 && d.append(e);
@@ -10630,29 +10665,29 @@ function Cy(e) {
 				type: "button",
 				title: "全屏显示面板",
 				"aria-label": "全屏显示面板"
-			}).addClass(`${Z_} fa-solid fa-expand`).appendTo(d), $("<button>").attr({
+			}).addClass(`${Q_} fa-solid fa-expand`).appendTo(d), $("<button>").attr({
 				type: "button",
 				title: "关闭面板"
-			}).addClass(`${X_} fa-solid fa-xmark`).appendTo(d), i.prepend(u);
-		}), py(), f();
+			}).addClass(`${Z_} fa-solid fa-xmark`).appendTo(d), i.prepend(u);
+		}), my(), f();
 	}, m = (e) => {
 		let r = e.target instanceof n.Element ? e.target : null, i = r?.closest("#top-settings-holder > .drawer > .drawer-toggle, #top-settings-holder .drawer-toggle"), a = r?.closest(".drawer-opener");
 		if (i || a) {
 			let e = i?.closest(".drawer") ?? i?.parentElement ?? (a?.dataset.target ? t.getElementById(a.dataset.target) : null), n = e?.querySelector(":scope > .drawer-content") ?? e?.querySelector(".drawer-content"), r = !!n?.classList.contains("openDrawer");
-			if (t.body.classList.contains(O_)) {
+			if (t.body.classList.contains(k_)) {
 				let e = Array.from(t.querySelectorAll("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"));
 				n && !r && e.length > 0 && u(n), e.forEach((e) => {
-					e !== n && gy(e);
+					e !== n && _y(e);
 				});
 			}
 		}
-		let o = r?.closest(`.${Z_}, .${X_}`);
+		let o = r?.closest(`.${Q_}, .${Z_}`);
 		if (!o) {
 			i && d();
 			return;
 		}
 		let s = o.closest("#top-settings-holder > .drawer > .drawer-content");
-		s && (e.preventDefault(), e.stopPropagation(), o.classList.contains(Z_) ? xy(s, fy() !== s) : (Sy(s), d()));
+		s && (e.preventDefault(), e.stopPropagation(), o.classList.contains(Q_) ? Sy(s, py() !== s) : (Cy(s), d()));
 	}, h = t.getElementById("top-settings-holder"), g = h instanceof n.HTMLElement ? new n.MutationObserver((r) => {
 		let i = r.find((e) => e.target instanceof n.HTMLElement && !(e.oldValue?.split(/\s+/).includes("openDrawer") ?? !1) && e.target.classList.contains("openDrawer"))?.target;
 		if (i instanceof n.HTMLElement) {
@@ -10684,42 +10719,42 @@ function Cy(e) {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), t.addEventListener("click", m, !0), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), l(), b?.disconnect(), g?.disconnect(), x.disconnect(), t.removeEventListener("click", m, !0), yy(), t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
-			gy(e), e.classList.remove($_);
-		}), s = void 0, $(`.${K_}`).remove(), $(`.${q_}`).remove(), r.forEach((e, t) => {
+		i !== 0 && n.cancelAnimationFrame(i), l(), b?.disconnect(), g?.disconnect(), x.disconnect(), t.removeEventListener("click", m, !0), by(), t.querySelectorAll("#top-settings-holder > .drawer > .drawer-content").forEach((e) => {
+			_y(e), e.classList.remove(ev);
+		}), s = void 0, $(`.${q_}`).remove(), $(`.${J_}`).remove(), r.forEach((e, t) => {
 			t.getAttribute("title") === e.written && (e.title === null ? t.removeAttribute("title") : t.setAttribute("title", e.title)), t.getAttribute("aria-label") === e.written && (e.ariaLabel === null ? t.removeAttribute("aria-label") : t.setAttribute("aria-label", e.ariaLabel));
 		}), r.clear();
 	} };
 }
-async function wy(e) {
+async function Ty(e) {
 	let t = z(), n = t.SillyTavern, r = n?.POPUP_TYPE, i = n?.POPUP_RESULT;
 	if (typeof n?.callGenericPopup != "function") {
 		t.confirm("将立即还原原始布局，确认继续？") && (e.disableModernLayout(), toastr.warning("已关闭现代化界面。", qm));
 		return;
 	}
-	let a = await n.callGenericPopup(`将立即还原 ${oy(R())} 原始布局，并保持关闭状态。之后可在酒馆助手设置里重新启用。`, r?.CONFIRM ?? "confirm", void 0, {
+	let a = await n.callGenericPopup(`将立即还原 ${sy(R())} 原始布局，并保持关闭状态。之后可在酒馆助手设置里重新启用。`, r?.CONFIRM ?? "confirm", void 0, {
 		okButton: "关闭并还原",
 		cancelButton: "取消"
 	});
 	(a === !0 || a === (i?.AFFIRMATIVE ?? 1)) && (e.disableModernLayout(), toastr.warning("已关闭现代化界面。", qm));
 }
-function Ty(e) {
+function Ey(e) {
 	let t = R(), n = z(), r = "", i = !1, a = async () => {
 		if (!i && e.is_active) {
 			i = !0;
 			try {
-				await wy(e);
+				await Ty(e);
 			} finally {
 				i = !1;
 			}
 		}
 	}, o = (e) => {
-		e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || (r = `${r}${e.key.toLowerCase()}`.slice(-8), r === ov && (r = "", a()));
+		e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.key.length !== 1 || (r = `${r}${e.key.toLowerCase()}`.slice(-8), r === sv && (r = "", a()));
 	}, s = (e) => {
 		let n = e.querySelector(".welcomeShortcuts");
-		if (!n || n.querySelector(`.${sv}`)) return;
+		if (!n || n.querySelector(`.${cv}`)) return;
 		let r = t.createElement("button");
-		r.type = "button", r.className = `menu_button menu_button_icon ${sv}`, r.title = "关闭现代化界面并还原原始布局", r.setAttribute("aria-label", "重置界面");
+		r.type = "button", r.className = `menu_button menu_button_icon ${cv}`, r.title = "关闭现代化界面并还原原始布局", r.setAttribute("aria-label", "重置界面");
 		let i = t.createElement("i");
 		i.className = "fa-solid fa-arrow-rotate-left", i.setAttribute("aria-hidden", "true");
 		let a = t.createElement("span");
@@ -10727,7 +10762,7 @@ function Ty(e) {
 	}, c = (e) => {
 		e instanceof n.Element && e.matches(".welcomePanel") && s(e), e.querySelectorAll(".welcomePanel").forEach(s);
 	}, l = (e) => {
-		(e.target instanceof n.Element ? e.target : null)?.closest(`.${sv}`) && (e.preventDefault(), e.stopPropagation(), a());
+		(e.target instanceof n.Element ? e.target : null)?.closest(`.${cv}`) && (e.preventDefault(), e.stopPropagation(), a());
 	};
 	c(t);
 	let u = new n.MutationObserver((e) => {
@@ -10741,10 +10776,10 @@ function Ty(e) {
 		childList: !0,
 		subtree: !0
 	}), t.addEventListener("keydown", o, !0), t.addEventListener("click", l, !0), { destroy: () => {
-		u.disconnect(), t.removeEventListener("keydown", o, !0), t.removeEventListener("click", l, !0), t.querySelectorAll(`.${sv}`).forEach((e) => e.remove());
+		u.disconnect(), t.removeEventListener("keydown", o, !0), t.removeEventListener("click", l, !0), t.querySelectorAll(`.${cv}`).forEach((e) => e.remove());
 	} };
 }
-function Ey(e, t, n, r) {
+function Dy(e, t, n, r) {
 	let i = r.get(e);
 	i ? i.applied[t] !== void 0 && e.style[t] !== i.applied[t] && (i.original[t] = e.style[t]) : (i = {
 		original: {
@@ -10756,31 +10791,31 @@ function Ey(e, t, n, r) {
 		applied: {}
 	}, r.set(e, i)), e.style[t] !== n && (e.style[t] = n), i.applied[t] = n;
 }
-function Dy(e, t) {
+function Oy(e, t) {
 	let n = e.ownerDocument.defaultView ?? z(), r = n.getComputedStyle(e);
 	if (r.display === "none" || r.visibility === "hidden" || r.position !== "absolute" && r.position !== "fixed") return;
 	let i = e.getBoundingClientRect();
 	if (i.width < 8 || i.height < 8) return;
 	let a = Math.max(160, n.innerWidth - 16), o = Math.max(120, n.innerHeight - 16), s = `${a}px`, c = `${o}px`, l = Math.min(Math.max(i.left, 8), n.innerWidth - Math.min(i.width, a) - 8), u = Math.min(Math.max(i.top, 8), n.innerHeight - Math.min(i.height, o) - 8), d = Math.abs(l - i.left) > 1, f = Math.abs(u - i.top) > 1, p = (d || f) && r.position === "absolute" ? e.offsetParent : null, m = p?.getBoundingClientRect(), h, g;
 	if (d) {
-		let e = Bv(r.marginLeft, 0);
+		let e = Vv(r.marginLeft, 0);
 		h = `${r.position === "fixed" ? l : p && m ? l - m.left - p.clientLeft + p.scrollLeft - e : l + n.scrollX - e}px`;
 	}
 	if (f) {
-		let e = Bv(r.marginTop, 0);
+		let e = Vv(r.marginTop, 0);
 		g = `${r.position === "fixed" ? u : p && m ? u - m.top - p.clientTop + p.scrollTop - e : u + n.scrollY - e}px`;
 	}
-	Ey(e, "maxWidth", s, t), Ey(e, "maxHeight", c, t), h !== void 0 && Ey(e, "left", h, t), g !== void 0 && Ey(e, "top", g, t);
+	Dy(e, "maxWidth", s, t), Dy(e, "maxHeight", c, t), h !== void 0 && Dy(e, "left", h, t), g !== void 0 && Dy(e, "top", g, t);
 }
-function Oy() {
+function ky() {
 	let e = R(), t = e.defaultView ?? window, n = ".select2-container--open, .select2-dropdown, .ui-autocomplete, .list-group, #export_format_popup, #rawPromptPopup", r = /* @__PURE__ */ new Map(), i = 0, a = () => {
 		i = 0, r.forEach((e, t) => {
 			t.isConnected || r.delete(t);
 		}), e.querySelectorAll(n).forEach((e) => {
-			Dy(e, r);
+			Oy(e, r);
 		});
 	}, o = () => {
-		e.body.classList.contains(L_) || i === 0 && (i = t.requestAnimationFrame(a));
+		e.body.classList.contains(R_) || i === 0 && (i = t.requestAnimationFrame(a));
 	}, s = (e) => e instanceof t.Element && (e.matches(n) || !!e.querySelector(n)), c = new t.MutationObserver((e) => {
 		e.some((e) => [...e.addedNodes].some(s)) && o();
 	});
@@ -10796,9 +10831,9 @@ function Oy() {
 		}), r.clear();
 	} };
 }
-function ky(e) {
+function Ay(e) {
 	let t = R(), n = t.defaultView ?? window, r = t.createElement("button");
-	r.id = G_, r.type = "button", r.className = "menu_button fa-solid", r.setAttribute("aria-controls", "qr--bar"), r.hidden = !0;
+	r.id = K_, r.type = "button", r.className = "menu_button fa-solid", r.setAttribute("aria-controls", "qr--bar"), r.hidden = !0;
 	let i = 0, a, o = new n.ResizeObserver(() => p()), s = new n.MutationObserver(p), c = () => {
 		a &&= (a.element.toggleAttribute("inert", a.inert), a.ariaHidden === null ? a.element.removeAttribute("aria-hidden") : a.element.setAttribute("aria-hidden", a.ariaHidden), void 0);
 	}, l = (e) => {
@@ -10838,22 +10873,22 @@ function ky(e) {
 				"style"
 			]
 		}), l(h), !p || !h) {
-			t.body.classList.remove("th-modern-quick-reply-external"), r.remove(), r.hidden = !0, Z(Cv), Z(wv), Z(Tv), Z(Ev);
+			t.body.classList.remove("th-modern-quick-reply-external"), r.remove(), r.hidden = !0, Z(wv), Z(Tv), Z(Ev), Z(Dv);
 			return;
 		}
 		r.parentElement !== p && p.append(r);
 		let g = h.querySelector("#mc3-qr-toggle-btn"), v = !(!g || g.hidden || n.getComputedStyle(g).display === "none");
 		t.body.classList.toggle("th-modern-quick-reply-external", v);
-		let y = !v && t.body.classList.contains(V_), b = d(h);
+		let y = !v && t.body.classList.contains(H_), b = d(h);
 		r.hidden = v || !b, r.classList.toggle("fa-chevron-down", b && !y), r.classList.toggle("fa-chevron-up", b && y), r.setAttribute("aria-expanded", String(b && !y)), r.setAttribute("aria-label", y ? "展开快速回复栏" : "收起快速回复栏"), r.title = y ? "展开快速回复栏" : "收起快速回复栏", h.toggleAttribute("inert", y || a?.inert === !0), y ? h.setAttribute("aria-hidden", "true") : a?.ariaHidden === null ? h.removeAttribute("aria-hidden") : a && h.setAttribute("aria-hidden", a.ariaHidden);
 		let x = Math.ceil(m?.getBoundingClientRect().height ?? p.getBoundingClientRect().height);
-		zv(Cv, `${Math.max(0, x)}px`);
+		Bv(wv, `${Math.max(0, x)}px`);
 		let S = p.getBoundingClientRect();
-		zv(wv, `${Math.max(0, Math.ceil(S.bottom - u(p)))}px`);
+		Bv(Tv, `${Math.max(0, Math.ceil(S.bottom - u(p)))}px`);
 		let C = b ? Math.max(0, Math.ceil(h.scrollHeight)) : 0;
-		zv(Tv, `${C}px`);
-		let w = r.hidden ? 0 : Math.ceil(r.getBoundingClientRect().height || 26), T = Math.ceil(h.getBoundingClientRect().height), ee = y || !y && C > 1 && T <= 1 ? 0 : C, te = Bv(n.getComputedStyle(t.body).getPropertyValue("--th-modern-input-toolbar-gap"), 8);
-		zv(Ev, `${b ? Math.max(w, ee) + te : 0}px`);
+		Bv(Ev, `${C}px`);
+		let w = r.hidden ? 0 : Math.ceil(r.getBoundingClientRect().height || 26), T = Math.ceil(h.getBoundingClientRect().height), ee = y || !y && C > 1 && T <= 1 ? 0 : C, te = Vv(n.getComputedStyle(t.body).getPropertyValue("--th-modern-input-toolbar-gap"), 8);
+		Bv(Dv, `${b ? Math.max(w, ee) + te : 0}px`);
 	};
 	function p() {
 		i === 0 && (i = n.requestAnimationFrame(f));
@@ -10874,46 +10909,46 @@ function ky(e) {
 		t.preventDefault(), t.stopPropagation(), e.settings.quickReplyCollapsed = !e.settings.quickReplyCollapsed;
 	};
 	return r.addEventListener("click", v), n.addEventListener("resize", p), p(), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), h.disconnect(), g.disconnect(), s.disconnect(), o.disconnect(), r.removeEventListener("click", v), r.remove(), c(), t.body.classList.remove("th-modern-quick-reply-external"), n.removeEventListener("resize", p), Z(Cv), Z(wv), Z(Tv), Z(Ev);
+		i !== 0 && n.cancelAnimationFrame(i), h.disconnect(), g.disconnect(), s.disconnect(), o.disconnect(), r.removeEventListener("click", v), r.remove(), c(), t.body.classList.remove("th-modern-quick-reply-external"), n.removeEventListener("resize", p), Z(wv), Z(Tv), Z(Ev), Z(Dv);
 	} };
 }
-function Ay(e) {
-	let t = R(), n = t.defaultView ?? window, r = n.matchMedia(mv), i = 0, a = () => {
-		Ly(e.settings, e.is_active, e.should_use_two_column);
+function jy(e) {
+	let t = R(), n = t.defaultView ?? window, r = n.matchMedia(hv), i = 0, a = () => {
+		Ry(e.settings, e.is_active, e.should_use_two_column);
 	}, o = () => {
 		i === 0 && (i = n.requestAnimationFrame(() => {
 			i = 0, a();
 		}));
 	}, s = (e) => {
 		let r = t.body;
-		if (!r.classList.contains(F_) || r.classList.contains(P_)) return;
-		let i = !!(e.target instanceof n.Element ? e.target : null)?.closest(`#${H_}, #top-settings-holder`);
-		r.classList.contains(R_) ? r.classList.add(I_) : r.classList.contains(I_) && !i && r.classList.remove(I_);
+		if (!r.classList.contains(I_) || r.classList.contains(F_)) return;
+		let i = !!(e.target instanceof n.Element ? e.target : null)?.closest(`#${U_}, #top-settings-holder`);
+		r.classList.contains(z_) ? r.classList.add(L_) : r.classList.contains(L_) && !i && r.classList.remove(L_);
 	};
 	return r.addEventListener("change", o), n.addEventListener("resize", o), t.addEventListener("pointerdown", s, !0), a(), { destroy: () => {
-		i !== 0 && n.cancelAnimationFrame(i), r.removeEventListener("change", o), n.removeEventListener("resize", o), t.removeEventListener("pointerdown", s, !0), t.body.classList.remove(F_, I_);
+		i !== 0 && n.cancelAnimationFrame(i), r.removeEventListener("change", o), n.removeEventListener("resize", o), t.removeEventListener("pointerdown", s, !0), t.body.classList.remove(I_, L_);
 	} };
 }
-function jy() {
+function My() {
 	let e = R(), t = e.defaultView ?? window, n = e.getElementById("top-settings-holder"), r = 0, i = () => {
 		if (r = 0, !(n instanceof t.HTMLElement)) {
-			Z(Sv);
+			Z(Cv);
 			return;
 		}
 		let i = e.body;
-		if (!i.classList.contains(w_) || !i.classList.contains(E_)) {
-			Z(Sv);
+		if (!i.classList.contains(T_) || !i.classList.contains(D_)) {
+			Z(Cv);
 			return;
 		}
-		let a = t.getComputedStyle(i), o = Bv(a.getPropertyValue("--th-modern-left-nav-top"), Dv), s = Bv(a.getPropertyValue("--th-modern-left-nav-min-height"), Ov), c = Bv(a.getPropertyValue("--th-modern-recent-min-height"), kv), l = Math.min(c, 44), u = Math.max(s, t.innerHeight - o - l - Av), d = t.getComputedStyle(n), f = Bv(d.paddingTop, 0) + Bv(d.paddingBottom, 0) + Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).map((e) => {
+		let a = t.getComputedStyle(i), o = Vv(a.getPropertyValue("--th-modern-left-nav-top"), Ov), s = Vv(a.getPropertyValue("--th-modern-left-nav-min-height"), kv), c = Vv(a.getPropertyValue("--th-modern-recent-min-height"), Av), l = Math.min(c, 44), u = Math.max(s, t.innerHeight - o - l - jv), d = t.getComputedStyle(n), f = Vv(d.paddingTop, 0) + Vv(d.paddingBottom, 0) + Array.from(n.querySelectorAll(":scope > .drawer > .drawer-toggle")).map((e) => {
 			let n = e.closest(".drawer");
 			if (n?.classList.contains("mc3-hidden") || n?.classList.contains("displayNone") || n?.hidden || e.classList.contains("mc3-hidden") || e.classList.contains("displayNone") || e.hidden) return 0;
 			let r = n ? t.getComputedStyle(n) : null;
 			if (r && (r.display === "none" || r.visibility === "hidden")) return 0;
 			let i = t.getComputedStyle(e);
-			return i.display === "none" || i.visibility === "hidden" ? 0 : e.getBoundingClientRect().height + Bv(i.marginTop, 0) + Bv(i.marginBottom, 0);
+			return i.display === "none" || i.visibility === "hidden" ? 0 : e.getBoundingClientRect().height + Vv(i.marginTop, 0) + Vv(i.marginBottom, 0);
 		}).reduce((e, t) => e + t, 0);
-		zv(Sv, `${Math.ceil(Math.min(f > 0 ? f : s, u))}px`);
+		Bv(Cv, `${Math.ceil(Math.min(f > 0 ? f : s, u))}px`);
 	}, a = () => {
 		r === 0 && (r = t.requestAnimationFrame(i));
 	}, o = n instanceof t.HTMLElement ? new t.ResizeObserver(a) : void 0, s = () => {
@@ -10938,36 +10973,36 @@ function jy() {
 		attributes: !0,
 		attributeFilter: ["class"]
 	}), t.addEventListener("resize", a), a(), { destroy: () => {
-		r !== 0 && t.cancelAnimationFrame(r), c?.disconnect(), o?.disconnect(), l.disconnect(), t.removeEventListener("resize", a), Z(Sv);
+		r !== 0 && t.cancelAnimationFrame(r), c?.disconnect(), o?.disconnect(), l.disconnect(), t.removeEventListener("resize", a), Z(Cv);
 	} };
 }
-function My(e) {
-	let t = R(), n = t.defaultView ?? window, r = $("<div>").attr("id", U_).appendTo("body"), i = $("<div>").attr("id", W_).appendTo("body"), a, o = (r, i) => {
+function Ny(e) {
+	let t = R(), n = t.defaultView ?? window, r = $("<div>").attr("id", W_).appendTo("body"), i = $("<div>").attr("id", G_).appendTo("body"), a, o = (r, i) => {
 		if (r.button !== 0) return;
-		let o = t.body, s = t.getElementById(H_), c = t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer.th-modern-drawer-active, #top-settings-holder .drawer-content.openDrawer.th-modern-drawer-active") ?? t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"), l = o.classList.contains(O_);
-		if (i === "sidebar" && (!s || c && !l || o.classList.contains(P_) || o.classList.contains(F_)) || i === "overlay" && !c) return;
+		let o = t.body, s = t.getElementById(U_), c = t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer.th-modern-drawer-active, #top-settings-holder .drawer-content.openDrawer.th-modern-drawer-active") ?? t.querySelector("#top-settings-holder .drawer > .drawer-content.openDrawer, #top-settings-holder .drawer-content.openDrawer"), l = o.classList.contains(k_);
+		if (i === "sidebar" && (!s || c && !l || o.classList.contains(F_) || o.classList.contains(I_)) || i === "overlay" && !c) return;
 		a?.(), r.preventDefault();
 		let u = r.target;
 		try {
 			u?.setPointerCapture?.(r.pointerId);
 		} catch {}
-		let d = r.clientX, f = i === "sidebar" ? s.getBoundingClientRect().width : c.getBoundingClientRect().width, p = c?.getBoundingClientRect().left ?? 0, m = i === "sidebar" ? "--th-modern-left-width" : "--th-modern-overlay-width", h = Fv(), g = Math.round(f), v = 0;
-		o.classList.add(L_);
+		let d = r.clientX, f = i === "sidebar" ? s.getBoundingClientRect().width : c.getBoundingClientRect().width, p = c?.getBoundingClientRect().left ?? 0, m = i === "sidebar" ? "--th-modern-left-width" : "--th-modern-overlay-width", h = Iv(), g = Math.round(f), v = 0;
+		o.classList.add(R_);
 		let y = () => {
-			v = 0, Vv(h, m, `${g}px`);
+			v = 0, Hv(h, m, `${g}px`);
 		}, b = (e) => {
 			e !== g && (g = e, v === 0 && (v = n.requestAnimationFrame(y)));
 		}, x = (e) => {
 			let t = e.clientX - d;
 			if (i === "sidebar") {
-				let e = c ? n.innerWidth - c.getBoundingClientRect().width - bv - 28 : _v, r = l ? Math.min(_v, e) : _v;
-				b(Math.round(Pv(f + t, gv, r, 360)));
+				let e = c ? n.innerWidth - c.getBoundingClientRect().width - xv - 28 : vv, r = l ? Math.min(vv, e) : vv;
+				b(Math.round(Fv(f + t, _v, r, 360)));
 				return;
 			}
-			let r = l ? 508 : yv, a = Math.max(vv, n.innerWidth - p - r);
-			b(Math.round(Pv(f + t, vv, a, 960)));
+			let r = l ? 508 : bv, a = Math.max(yv, n.innerWidth - p - r);
+			b(Math.round(Fv(f + t, yv, a, 960)));
 		}, S = () => {
-			v !== 0 && (n.cancelAnimationFrame(v), y()), i === "sidebar" && e.settings.leftSidebarWidth !== g && (e.settings.leftSidebarWidth = g), i === "overlay" && e.settings.overlayPanelWidth !== g && (e.settings.overlayPanelWidth = g), o.classList.remove(L_);
+			v !== 0 && (n.cancelAnimationFrame(v), y()), i === "sidebar" && e.settings.leftSidebarWidth !== g && (e.settings.leftSidebarWidth = g), i === "overlay" && e.settings.overlayPanelWidth !== g && (e.settings.overlayPanelWidth = g), o.classList.remove(R_);
 			try {
 				u?.hasPointerCapture?.(r.pointerId) && u.releasePointerCapture(r.pointerId);
 			} catch {}
@@ -10980,18 +11015,18 @@ function My(e) {
 	}), i.on("pointerdown", (e) => {
 		o(e.originalEvent, "overlay");
 	}), { destroy: () => {
-		a?.(), r.remove(), i.remove(), t.body.classList.remove(L_);
+		a?.(), r.remove(), i.remove(), t.body.classList.remove(R_);
 	} };
 }
-function Ny(e, t, n) {
+function Py(e, t, n) {
 	if (e.parentElement === t) return () => {};
 	let r = e.ownerDocument.createComment(n);
 	return e.before(r), t.append(e), () => {
 		r.parentNode && r.replaceWith(e);
 	};
 }
-function Py() {
-	let e = R(), t = e.defaultView ?? window, n = t.matchMedia(hv), r = [], i = /* @__PURE__ */ new Map(), a = [], o = /* @__PURE__ */ new Map(), s, c, l = 0, u = () => n.matches && e.body.classList.contains(E_), d = (e) => {
+function Fy() {
+	let e = R(), t = e.defaultView ?? window, n = t.matchMedia(gv), r = [], i = /* @__PURE__ */ new Map(), a = [], o = /* @__PURE__ */ new Map(), s, c, l = 0, u = () => n.matches && e.body.classList.contains(D_), d = (e) => {
 		if (!i.has(e)) return;
 		let t = i.get(e);
 		t !== void 0 && (t === null ? e.hasAttribute("size") && e.removeAttribute("size") : e.getAttribute("size") !== t && e.setAttribute("size", t));
@@ -11029,14 +11064,14 @@ function Py() {
 			p();
 			return;
 		}
-		let i = t.querySelector(`.${iv}`);
-		i || (i = e.createElement("div"), i.className = iv, t.append(i));
+		let i = t.querySelector(`.${av}`);
+		i || (i = e.createElement("div"), i.className = av, t.append(i));
 		let a = r ? e.querySelector(r.selector) : null;
 		if (!r || !a) p(), i.classList.add("is-empty");
 		else if (i.classList.remove("is-empty"), c !== r.selector || a.parentElement !== i) {
 			p();
 			let t = e.querySelector(r.block_selector), n = (a.previousElementSibling?.matches("h4") ? a.previousElementSibling : t?.querySelector("h4")) ?? null, o = [];
-			n && n.parentElement !== i && o.push(Ny(n, i, r.title_marker)), a.parentElement !== i && o.push(Ny(a, i, r.select_marker)), s = () => {
+			n && n.parentElement !== i && o.push(Py(n, i, r.title_marker)), a.parentElement !== i && o.push(Py(a, i, r.select_marker)), s = () => {
 				o.reverse().forEach((e) => e());
 			}, c = r.selector;
 		}
@@ -11069,7 +11104,7 @@ function Py() {
 			return;
 		}
 		let n = e.querySelector("#rm_api_block #main-API-selector-block"), i = e.querySelector("#rm_api_block > .flex-container.flexFlowColumn"), a = Array.from(e.querySelectorAll("#rm_api_block > .flex-container.alignitemscenter.spaceBetween.wide100p")).find((e) => e.textContent?.includes("自动连接到上次的服务器") || e.querySelector("#viewSecrets"));
-		i && a && a.parentElement !== i && (a.classList.add(av), r.push(Ny(a, i, "th-modern-api-footer")));
+		i && a && a.parentElement !== i && (a.classList.add(ov), r.push(Py(a, i, "th-modern-api-footer")));
 		let o = u();
 		f("#rm_api_block #main_api", o), h(n, o), g();
 		let s = t.querySelector("#quicker_api"), c = t.querySelector("#openai_api");
@@ -11115,44 +11150,44 @@ function Py() {
 		e.target instanceof t.HTMLSelectElement && e.target.matches("#rm_api_block #main_api, #rm_api_block #chat_completion_source, #rm_api_block #textgen_type") && b();
 	};
 	return e.addEventListener("input", te), e.addEventListener("change", te), n.addEventListener("change", T), { destroy: () => {
-		y(), S?.disconnect(), C?.disconnect(), ee.disconnect(), e.removeEventListener("input", te), e.removeEventListener("change", te), n.removeEventListener("change", T), p(), r.reverse().forEach((e) => e()), e.querySelectorAll(`.${iv}:empty`).forEach((e) => e.remove()), e.querySelectorAll(`.${av}`).forEach((e) => e.classList.remove(av)), e.querySelectorAll(".th-modern-api-main-title, .th-modern-api-hint-card").forEach((e) => e.remove()), a.splice(0).reverse().forEach((e) => e()), o.forEach((e, t) => {
+		y(), S?.disconnect(), C?.disconnect(), ee.disconnect(), e.removeEventListener("input", te), e.removeEventListener("change", te), n.removeEventListener("change", T), p(), r.reverse().forEach((e) => e()), e.querySelectorAll(`.${av}:empty`).forEach((e) => e.remove()), e.querySelectorAll(`.${ov}`).forEach((e) => e.classList.remove(ov)), e.querySelectorAll(".th-modern-api-main-title, .th-modern-api-hint-card").forEach((e) => e.remove()), a.splice(0).reverse().forEach((e) => e()), o.forEach((e, t) => {
 			t.style.display = e;
 		}), o.clear(), i.forEach((e, t) => {
 			e === null ? t.removeAttribute("size") : t.setAttribute("size", e);
 		});
 	} };
 }
-function Fy(e, t, n) {
+function Iy(e, t, n) {
 	if (!t || !n || !e.desktopDockedDrawer) return !1;
 	let r = R(), i = z();
-	return i.matchMedia(hv).matches ? Math.min(i.innerWidth, r.documentElement.clientWidth || i.innerWidth) >= Pv(e.leftSidebarWidth, gv, _v, 360) + Pv(e.overlayPanelWidth, vv, 2 ** 53 - 1, 960) + bv + 28 : !1;
+	return i.matchMedia(gv).matches ? Math.min(i.innerWidth, r.documentElement.clientWidth || i.innerWidth) >= Fv(e.leftSidebarWidth, _v, vv, 360) + Fv(e.overlayPanelWidth, yv, 2 ** 53 - 1, 960) + xv + 28 : !1;
 }
-var Iy;
-function Ly(e, t, n) {
-	let r = R(), i = z(), a = $(r.body), o = t && n && i.matchMedia(mv).matches, s = Fy(e, t, n), c = t && e.floatingChatInput, l = t && e.singleLineChatInput;
-	if (a.toggleClass(w_, t).toggleClass(T_, t && e.modernPersonaManagement).toggleClass(E_, n).toggleClass(O_, s).toggleClass(k_, t && n && e.mainChatMaxWidth === 0).toggleClass(A_, c).toggleClass(j_, l).toggleClass(M_, t && e.reduceMotion).toggleClass(N_, t && e.reduceAdvancedEffects).toggleClass(V_, t && e.quickReplyCollapsed).toggleClass(F_, o).removeClass(D_), Iy !== void 0 && Iy !== l) {
+var Ly;
+function Ry(e, t, n) {
+	let r = R(), i = z(), a = $(r.body), o = t && n && i.matchMedia(hv).matches, s = Iy(e, t, n), c = t && e.floatingChatInput, l = t && e.singleLineChatInput;
+	if (a.toggleClass(T_, t).toggleClass(E_, t && e.modernPersonaManagement).toggleClass(D_, n).toggleClass(k_, s).toggleClass(A_, t && n && e.mainChatMaxWidth === 0).toggleClass(j_, c).toggleClass(M_, l).toggleClass(N_, t && e.reduceMotion).toggleClass(P_, t && e.reduceAdvancedEffects).toggleClass(H_, t && e.quickReplyCollapsed).toggleClass(I_, o).removeClass(O_), Ly !== void 0 && Ly !== l) {
 		let e = r.getElementById("send_textarea");
 		e instanceof i.HTMLTextAreaElement && (e.style.height = "", e.dispatchEvent(new i.Event("input", { bubbles: !0 })));
 	}
-	Iy = l, (!o || a.hasClass(P_)) && a.removeClass(I_), t && n || yy(), zv("--th-modern-left-width", `${Pv(e.leftSidebarWidth, gv, _v, 360)}px`), zv("--th-modern-overlay-width", `${Pv(e.overlayPanelWidth, vv, 2 ** 53 - 1, 960)}px`), zv("--th-modern-main-min-width", `${Pv(e.mainChatMaxWidth, 0, 2 ** 53 - 1, 960)}px`), zv("--th-modern-input-bottom-gap", `${Pv(e.inputBottomGap, 0, 120, 15)}px`), zv("--th-modern-input-side-gap", `${Pv(e.inputSideGap, 0, 80, 16)}px`);
+	Ly = l, (!o || a.hasClass(F_)) && a.removeClass(L_), t && n || by(), Bv("--th-modern-left-width", `${Fv(e.leftSidebarWidth, _v, vv, 360)}px`), Bv("--th-modern-overlay-width", `${Fv(e.overlayPanelWidth, yv, 2 ** 53 - 1, 960)}px`), Bv("--th-modern-main-min-width", `${Fv(e.mainChatMaxWidth, 0, 2 ** 53 - 1, 960)}px`), Bv("--th-modern-input-bottom-gap", `${Fv(e.inputBottomGap, 0, 120, 15)}px`), Bv("--th-modern-input-side-gap", `${Fv(e.inputSideGap, 0, 80, 16)}px`);
 }
-function Ry() {
-	Iy = void 0, $(R().body).removeClass(`${w_} ${T_} ${E_} ${D_} ${O_} ${k_} ${A_} ${j_} ${M_} ${N_} ${V_} ${P_} ${F_} ${I_} ${L_} ${R_} ${z_} ${B_}`), Z("--th-modern-left-width"), Z("--th-modern-overlay-width"), Z("--th-modern-main-min-width"), Z("--th-modern-input-bottom-gap"), Z("--th-modern-input-side-gap"), Z(Cv), Z(wv), Z(Tv), Z(Ev), Z(Sv);
+function zy() {
+	Ly = void 0, $(R().body).removeClass(`${T_} ${E_} ${D_} ${O_} ${k_} ${A_} ${j_} ${M_} ${N_} ${P_} ${H_} ${F_} ${I_} ${L_} ${R_} ${z_} ${B_} ${V_}`), Z("--th-modern-left-width"), Z("--th-modern-overlay-width"), Z("--th-modern-main-min-width"), Z("--th-modern-input-bottom-gap"), Z("--th-modern-input-side-gap"), Z(wv), Z(Tv), Z(Ev), Z(Dv), Z(Cv);
 }
-function zy(e) {
+function By(e) {
 	if (e) try {
 		e();
 	} catch (e) {
 		console.error(`[${qm}] 清理运行时资源失败。`, e);
 	}
 }
-function By(e) {
-	for (; e.length > 0;) zy(e.pop());
+function Vy(e) {
+	for (; e.length > 0;) By(e.pop());
 }
-function Vy() {
+function Hy() {
 	return window.eventSource ?? window.SillyTavern?.getContext?.()?.eventSource;
 }
-var Hy = {
+var Uy = {
 	APP_READY: "app_ready",
 	CHAT_CHANGED: "chat_id_changed",
 	CHAT_CREATED: "chat_created",
@@ -11161,23 +11196,23 @@ var Hy = {
 	MESSAGE_RECEIVED: "message_received",
 	CHARACTER_PAGE_LOADED: "character_page_loaded"
 };
-function Uy(e, t) {
-	let n = Vy();
+function Wy(e, t) {
+	let n = Hy();
 	return n && typeof n.on == "function" ? (n.on(e, t), { stop: () => {
 		typeof n.removeListener == "function" ? n.removeListener(e, t) : typeof n.off == "function" && n.off(e, t);
 	} }) : { stop: () => {} };
 }
-function Wy(t) {
-	let n = [Ry], r;
+function Gy(t) {
+	let n = [zy], r;
 	try {
-		let i = sy(() => r?.refresh());
-		n.push(i.destroy), r = uy(i.$list), n.push(r.destroy);
+		let i = cy(() => r?.refresh());
+		n.push(i.destroy), r = dy(i.$list), n.push(r.destroy);
 		let a = Hc(t);
-		n.push(a.destroy), n.push(Cy((e) => {
+		n.push(a.destroy), n.push(wy((e) => {
 			e === "left-nav-panel" && a.scheduleSync();
-		}).destroy), n.push(ul(t).destroy), n.push(dl().destroy), n.push(jy().destroy), n.push(Ty(t).destroy), n.push(Oy().destroy), n.push(ky(t).destroy), n.push(Ay(t).destroy), n.push(My(t).destroy), n.push(Py().destroy), n.push(S_(t).destroy), n.push(Vs(t).destroy);
-		let o = Zn(() => [e(t.settings), t.should_use_two_column], ([e, t]) => {
-			Ly(e, !0, t);
+		}).destroy), n.push(ul(t).destroy), n.push(dl().destroy), n.push(My().destroy), n.push(Ey(t).destroy), n.push(ky().destroy), n.push(Ay(t).destroy), n.push(jy(t).destroy), n.push(Ny(t).destroy), n.push(Fy().destroy), n.push(C_(t).destroy), n.push(Vs(t).destroy);
+		let o = Xn(() => [e(t.settings), t.should_use_two_column], ([e, t]) => {
+			Ry(e, !0, t);
 		}, {
 			immediate: !0,
 			deep: !0,
@@ -11187,55 +11222,55 @@ function Wy(t) {
 		let s = _.debounce(() => r?.refresh(), 500);
 		n.push(s.cancel);
 		let c = [
-			Uy(Hy.APP_READY, s),
-			Uy(Hy.CHAT_CHANGED, s),
-			Uy(Hy.CHAT_CREATED, s),
-			Uy(Hy.CHAT_DELETED, s),
-			Uy(Hy.MESSAGE_SENT, s),
-			Uy(Hy.MESSAGE_RECEIVED, s),
-			Uy(Hy.CHARACTER_PAGE_LOADED, s)
+			Wy(Uy.APP_READY, s),
+			Wy(Uy.CHAT_CHANGED, s),
+			Wy(Uy.CHAT_CREATED, s),
+			Wy(Uy.CHAT_DELETED, s),
+			Wy(Uy.MESSAGE_SENT, s),
+			Wy(Uy.MESSAGE_RECEIVED, s),
+			Wy(Uy.CHARACTER_PAGE_LOADED, s)
 		];
-		return n.push(() => c.forEach((e) => e.stop())), s(), { destroy: _.once(() => By(n)) };
+		return n.push(() => c.forEach((e) => e.stop())), s(), { destroy: _.once(() => Vy(n)) };
 	} catch (e) {
-		throw By(n), e;
+		throw Vy(n), e;
 	}
 }
-function Gy() {
-	let e = z(), t = _.get(e, uv);
+function Ky() {
+	let e = z(), t = _.get(e, dv);
 	if (t && typeof t.get == "function" && typeof t.set == "function") return t;
 	let n = /* @__PURE__ */ new Map();
-	return _.set(e, uv, n), n;
+	return _.set(e, dv, n), n;
 }
-function Ky() {
-	let e = z(), t = window, n = _.get(e, lv);
-	typeof n == "function" && (n(), _.unset(e, lv));
-	let r = "modern-ui", i = Gy();
+function qy() {
+	let e = z(), t = window, n = _.get(e, uv);
+	typeof n == "function" && (n(), _.unset(e, uv));
+	let r = "modern-ui", i = Ky();
 	i.get(r)?.({ unregisterUnique: !1 });
 	let a = qo() ?? us();
 	Ko(a);
 	let o = nh(), s, c, l, u;
 	try {
-		s = Yh(a).destroy, l = Zn(() => o.is_active, () => {
-			o.is_active ? c ??= Wy(o) : (c?.destroy(), c = void 0);
+		s = Yh(a).destroy, l = Xn(() => o.is_active, () => {
+			o.is_active ? c ??= Gy(o) : (c?.destroy(), c = void 0);
 		}, {
 			immediate: !0,
 			flush: "sync"
 		});
 		let e = () => u?.();
 		return u = _.once((n = {}) => {
-			t.removeEventListener("pagehide", e), zy(l), l = void 0, zy(c?.destroy), c = void 0, zy(s), s = void 0, i.get(r) === u && i.delete(r), o.destroy(), o.$dispose();
+			t.removeEventListener("pagehide", e), By(l), l = void 0, By(c?.destroy), c = void 0, By(s), s = void 0, i.get(r) === u && i.delete(r), o.destroy(), o.$dispose();
 		}), i.set(r, u), t.addEventListener("pagehide", e), { dispose: () => u?.() };
 	} catch (e) {
-		throw zy(l), zy(c?.destroy), zy(s), o.destroy(), o.$dispose(), e;
+		throw By(l), By(c?.destroy), By(s), o.destroy(), o.$dispose(), e;
 	}
 }
-async function qy() {
-	return await new Promise((e) => $(e)), Ky();
+async function Jy() {
+	return await new Promise((e) => $(e)), qy();
 }
 $(() => {
-	qy().catch((e) => {
+	Jy().catch((e) => {
 		console.error(`[${qm}] 自动初始化失败:`, e);
 	});
 });
-var Jy = { activate: qy };
-export { jv as PLUGIN_ID, Mv as PLUGIN_VERSION, qy as activate, Jy as default };
+var Yy = { activate: Jy };
+export { Mv as PLUGIN_ID, Nv as PLUGIN_VERSION, Jy as activate, Yy as default };

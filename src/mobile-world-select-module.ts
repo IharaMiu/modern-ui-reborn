@@ -22,6 +22,7 @@ type PickerLayout = 'wide' | 'narrow' | 'phone';
 
 type PickerOption = {
   disabled: boolean;
+  element: HTMLOptionElement;
   favoriteKey: string;
   label: string;
   searchText: string;
@@ -529,7 +530,8 @@ class MobileWorldSelectController {
     this.observer = new this.window.MutationObserver(this.scheduleSync);
     this.observer.observe(this.source, {
       attributes: true,
-      attributeFilter: ['disabled'],
+      attributeFilter: ['disabled', 'label', 'selected', 'value'],
+      characterData: true,
       childList: true,
       subtree: true,
     });
@@ -571,7 +573,8 @@ class MobileWorldSelectController {
     const options = Array.from(this.source.options).map((option, sourceIndex): PickerOption => {
       const label = String(option.label || option.textContent || option.value).trim();
       return {
-        disabled: option.disabled,
+        disabled: option.matches(':disabled'),
+        element: option,
         favoriteKey: option.value ? label : '',
         label,
         searchText: normalizeSearchText(label),
@@ -681,7 +684,7 @@ class MobileWorldSelectController {
     const selectedValues = this.getSelectedValues();
     const selected = options.filter(option => selectedValues.has(option.value));
     const enabledOptions = options.filter(option => !option.disabled);
-    this.trigger.disabled = this.source.disabled || enabledOptions.length === 0;
+    this.trigger.disabled = this.source.matches(':disabled') || enabledOptions.length === 0;
     this.trigger.setAttribute('aria-expanded', String(this.manager.isPickerFor(this)));
 
     if (this.config.multiple) {
@@ -722,7 +725,7 @@ class MobileWorldSelectController {
   }
 
   private readonly openPicker = () => {
-    if (!this.source.disabled) {
+    if (!this.source.matches(':disabled')) {
       this.manager.openPicker(this);
     }
   };
@@ -792,7 +795,7 @@ class MobileWorldPicker {
     this.previousFocus = this.document.activeElement as HTMLElement | undefined;
     this.options = this.controller.getOptions();
     this.selectedValues = this.controller.getSelectedValues();
-    this.enabledSnapshot = new Set(this.selectedValues);
+    this.enabledSnapshot = new Set(this.options.filter(option => option.selected).map(option => option.favoriteKey));
     this.favoriteSnapshot = this.manager.getFavorites();
 
     const overlay = makeElement(this.document, 'dialog', PICKER_CLASS);
@@ -914,18 +917,18 @@ class MobileWorldPicker {
     if (restoreFocus && this.previousFocus?.isConnected) {
       this.previousFocus.focus({ preventScroll: true });
     }
-    this.controller.syncTrigger();
     this.onDestroy();
+    this.controller.syncTrigger();
   }
 
   refreshFromSource(): void {
     this.options = this.controller.getOptions();
     this.selectedValues = this.controller.getSelectedValues();
-    for (const value of this.selectedValues) {
-      this.enabledSnapshot.add(value);
+    for (const option of this.options) {
+      if (option.selected) this.enabledSnapshot.add(option.favoriteKey);
     }
     this.renderTabs();
-    this.filterOptions();
+    this.filterOptions(false);
   }
 
   private getAvailableTabs(): PickerTab[] {
@@ -949,7 +952,7 @@ class MobileWorldPicker {
           ? this.options.filter(option => option.value !== '').length
           : tab === 'enabled'
             ? this.selectedValues.size
-            : this.manager.getFavorites().size;
+            : this.options.filter(option => this.manager.isFavorite(option.favoriteKey)).length;
       button.append(this.document.createTextNode(TAB_LABELS[tab]), makeElement(this.document, 'span'));
       button.lastElementChild!.textContent = String(count);
       fragment.append(button);
@@ -957,18 +960,18 @@ class MobileWorldPicker {
     this.tabs.replaceChildren(fragment);
   }
 
-  private filterOptions(): void {
+  private filterOptions(resetScroll = true): void {
     const normalizedQuery = normalizeSearchText(this.query);
     let candidates = this.options;
     if (this.activeTab === 'enabled') {
-      candidates = candidates.filter(option => this.enabledSnapshot.has(option.value));
+      candidates = candidates.filter(option => this.enabledSnapshot.has(option.favoriteKey));
     } else if (this.activeTab === 'favorites') {
       candidates = candidates.filter(option => this.favoriteSnapshot.has(option.favoriteKey));
     }
     this.filteredOptions = normalizedQuery
       ? candidates.filter(option => option.searchText.includes(normalizedQuery))
       : [...candidates];
-    if (this.viewport) {
+    if (this.viewport && resetScroll) {
       this.viewport.scrollTop = 0;
     }
     this.updateStatus(candidates.filter(option => option.value !== '').length);
@@ -1215,38 +1218,38 @@ class MobileWorldPicker {
     }
     const sourceIndex = Number(row.dataset.sourceIndex);
     const option = this.options.find(candidate => candidate.sourceIndex === sourceIndex);
-    if (!option) {
+    const source = this.controller.source;
+    if (!option || !source.isConnected || source.matches(':disabled')) {
+      return;
+    }
+    const current = this.controller.getOptions().find(candidate => candidate.sourceIndex === sourceIndex);
+    if (current?.element !== option.element || current.value !== option.value || current.label !== option.label) {
+      this.refreshFromSource();
       return;
     }
 
     if (target?.closest('.th-modern-mobile-world-picker-favorite')) {
       const favorite = this.manager.toggleFavorite(option.favoriteKey);
-      if (favorite) {
-        this.favoriteSnapshot.add(option.favoriteKey);
-      }
+      if (favorite) this.favoriteSnapshot.add(option.favoriteKey);
+      else this.favoriteSnapshot.delete(option.favoriteKey);
       this.renderTabs();
-      this.updateStatus(
-        this.activeTab === 'all'
-          ? this.options.filter(option => option.value !== '').length
-          : this.activeTab === 'enabled'
-            ? this.options.filter(candidate => this.enabledSnapshot.has(candidate.value)).length
-            : this.options.filter(candidate => this.favoriteSnapshot.has(candidate.favoriteKey)).length,
-      );
-      this.renderRows();
+      this.filterOptions(false);
       return;
     }
 
     const selectButton = target?.closest<HTMLButtonElement>('.th-modern-mobile-world-picker-row-select');
-    if (!selectButton || selectButton.disabled) {
+    if (!selectButton || current.disabled) {
       return;
     }
 
     if (this.controller.config.multiple) {
+      if (!option.value) return;
+      this.selectedValues = this.controller.getSelectedValues();
       if (this.selectedValues.has(option.value)) {
         this.selectedValues.delete(option.value);
       } else {
         this.selectedValues.add(option.value);
-        this.enabledSnapshot.add(option.value);
+        this.enabledSnapshot.add(option.favoriteKey);
       }
       this.controller.commit(this.selectedValues);
       this.renderTabs();
