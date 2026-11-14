@@ -2931,6 +2931,7 @@ body.th-modern-enabled #rm_api_block [id$='_block'] {
 
   body.th-modern-enabled #rm_api_block input:is([type='text'], [type='password'], [type='number'], [type='url']),
   body.th-modern-enabled #rm_api_block select:not([multiple]),
+  body.th-modern-enabled #rm_api_block #quicker_api_model_trigger,
   body.th-modern-enabled #rm_api_block textarea {
     box-sizing: border-box !important;
     width: 100% !important;

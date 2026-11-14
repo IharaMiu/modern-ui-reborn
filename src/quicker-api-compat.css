@@ -37,7 +37,7 @@ body.th-modern-enabled #quicker_api .quicker-api__key-actions {
   }
 }
 
-body.th-modern-enabled #quicker_api :is(.quicker-api__toggle, .menu_button):focus-visible {
+body.th-modern-enabled #quicker_api :is(.quicker-api__toggle, .quicker-api__model-trigger, .menu_button):focus-visible {
   outline: 2px solid var(--SmartThemeQuoteColor) !important;
   outline-offset: 2px;
 }
@@ -58,5 +58,78 @@ body.th-modern-enabled #send_form :is(#quicker_api_quick_left, #quicker_api_quic
   body.th-modern-enabled #rm_api_block #quicker_api .menu_button {
     min-width: 44px;
     min-height: 44px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.th-modern-enabled #quicker_api .quicker-api__field {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  body.th-modern-enabled #quicker_api_body :is(.quicker-api__field > .text_pole, .quicker-api__row > .text_pole, .menu_button) {
+    margin: 0;
+  }
+
+  body.th-modern-enabled #quicker_api .quicker-api__profile-field > .quicker-api__row,
+  body.th-modern-enabled #quicker_api_model_control {
+    display: grid;
+    gap: 8px;
+  }
+
+  body.th-modern-enabled #quicker_api .quicker-api__profile-field > .quicker-api__row {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  body.th-modern-enabled #quicker_api_import_native > .quicker-api__desktop-label {
+    display: none;
+  }
+
+  body.th-modern-enabled #quicker_api .quicker-api__profile-field .menu_button,
+  body.th-modern-enabled #quicker_api_model_control > .menu_button {
+    width: 100%;
+    min-width: 44px;
+    justify-self: stretch;
+  }
+
+  body.th-modern-enabled #quicker_api #quicker_api_profile_select,
+  body.th-modern-enabled #quicker_api_model_control > .quicker-api__model-picker {
+    grid-area: 1 / 1 / auto / -1;
+  }
+
+  body.th-modern-enabled #quicker_api_model_control {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Keep upstream's mobile button positions out of the outer field grid. */
+  body.th-modern-enabled #quicker_api_model_control > .menu_button {
+    grid-area: auto;
+    white-space: normal;
+  }
+
+  body.th-modern-enabled #quicker_api .quicker-api__key-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  body.th-modern-enabled #quicker_api .quicker-api__key-row > .text_pole {
+    flex: auto;
+  }
+
+  body.th-modern-enabled #quicker_api .quicker-api__key-actions {
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  body.th-modern-enabled #quicker_api .quicker-api__parameters-field {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  @container (width < 304px) {
+    body.th-modern-enabled #quicker_api .quicker-api__profile-field > .quicker-api__row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 }

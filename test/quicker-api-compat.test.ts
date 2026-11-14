@@ -18,7 +18,7 @@ const code = ts.transpileModule(`const getHostDocument = () => document; ${const
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None },
 }).outputText;
 
-for (const width of [1280, 800, 390]) {
+for (const width of [1280, 800, 392, 320]) {
   test(`Quicker Api placement, narrow columns and cleanup at ${width}px`, { skip: !existsSync(browser) }, () => {
     // The upstream panel is inserted directly after #chat_completion_source.
     const fixture = `<!doctype html><meta charset="utf-8"><style>
@@ -30,9 +30,16 @@ for (const width of [1280, 800, 390]) {
       @media (max-width:760px) {
         .quicker-api__key-row { display:contents; }
         .quicker-api__key-actions { grid-column:2; grid-row:1; }
+        .quicker-api__model-field { grid-template-columns:minmax(0,1fr) auto auto; }
+        #quicker_api_model_control { display:contents; }
+        #quicker_api_model_control > .quicker-api__model-picker { grid-column:1 / -1; grid-row:2; }
+        #quicker_api_fetch_models { grid-column:2; grid-row:1; }
+        #quicker_api_add_model { grid-column:3; grid-row:1; }
+        #quicker_api_manage_models { grid-column:1; grid-row:3; }
+        #quicker_api_model_control > .quicker-api__manage-actions { grid-column:2 / -1; grid-row:3; }
       }
       .quicker-api { padding:.75rem; border:1px solid; }
-      .menu_button { flex-shrink:0; }
+      .menu_button { flex-shrink:0; margin:5px 0; }
       #quicker_api_body[hidden] { display:none !important; }
       #quicker_api_quick_right { flex:0 0 50px; width:50px; height:50px; order:1; }
       ${read('../src/style.css')}${read('../src/quicker-api-compat.css')}
@@ -50,10 +57,15 @@ for (const width of [1280, 800, 390]) {
       <form id="send_form"><div id="rightSendForm"><div id="quicker_api_quick_right" tabindex="0">⚡</div><div id="send_but">Send</div></div></form>
       <template id="toolbar"><section id="quicker_api" class="quicker-api">
         <button class="quicker-api__toggle" type="button">Quicker Api</button><div id="quicker_api_body">
-        <div class="quicker-api__field"><label>配置</label><div class="quicker-api__row"><select id="quicker_api_profile_select"><option>Long profile name</option></select><button class="menu_button">保存</button><button class="menu_button">复制</button><button class="menu_button">删除</button></div></div>
+        <div class="quicker-api__field quicker-api__profile-field"><label>配置</label><div class="quicker-api__row"><select id="quicker_api_profile_select"><option>Long profile name</option></select>${['新增', '保存', '重命名', '复制', '导入', '删除'].map(label => `<button class="menu_button" aria-label="${label}">•</button>`).join('')}</div></div>
         <div class="quicker-api__field"><label>格式</label><select id="quicker_api_format"><option>OpenAI Compatible</option></select></div>
         <div class="quicker-api__field"><label>URL</label><div class="quicker-api__row quicker-api__url-row"><input type="url" value="https://example.com/v1"><button class="menu_button">URL</button></div></div>
         <div class="quicker-api__field quicker-api__key-field"><label>Key</label><div class="quicker-api__row quicker-api__key-row"><input type="text" placeholder="无凭据"><div class="quicker-api__key-actions"><button class="menu_button">显示</button><button class="menu_button">复制</button></div></div></div>
+        <div class="quicker-api__field quicker-api__model-field"><label>模型</label><div id="quicker_api_model_control" class="quicker-api__row">
+          <div class="quicker-api__model-picker"><button id="quicker_api_model_trigger" class="quicker-api__model-trigger">long-model-name</button></div><select hidden></select>
+          <button id="quicker_api_add_model" class="menu_button">添加模型</button><button id="quicker_api_fetch_models" class="menu_button">获取模型</button>
+          <button id="quicker_api_manage_models" class="menu_button">管理模型</button><button class="menu_button quicker-api__manage-actions">便捷按钮</button>
+        </div></div>
         </div></section></template>
       <pre id="result">PENDING</pre><script>${code}
       const check = (ok, message) => { if (!ok) throw new Error(message); };
@@ -76,7 +88,22 @@ for (const width of [1280, 800, 390]) {
           check(!panel.contains(source), 'source is not duplicated in panel');
           check(getComputedStyle(document.getElementById('custom_form')).display === 'none', 'native hidden form stays hidden');
           check(panel.scrollWidth <= panel.clientWidth + 1, 'panel controls do not overflow');
-          if (${width} < 760) check(getComputedStyle(panel.querySelector('.quicker-api__key-row')).display === 'flex', 'key actions do not create an implicit field column');
+          if (${width} < 760) {
+            const rect = selector => panel.querySelector(selector).getBoundingClientRect();
+            const models = rect('.quicker-api__model-field');
+            const picker = rect('#quicker_api_model_trigger');
+            const add = rect('#quicker_api_add_model');
+            const fetch = rect('#quicker_api_fetch_models');
+            const manage = rect('#quicker_api_manage_models');
+            const quick = rect('.quicker-api__manage-actions');
+            check(Math.abs(picker.width - models.width) < 1 && picker.height >= 44, 'model picker spans the field with a touch-sized target');
+            check(picker.bottom < add.top && add.top === fetch.top && add.bottom < manage.top && manage.top === quick.top, 'model actions form two rows below the picker');
+            check(Math.abs(add.width - fetch.width) < 1 && Math.abs(add.width - manage.width) < 1, 'model actions have equal widths');
+            const profileButtons = [...panel.querySelectorAll('.quicker-api__profile-field .menu_button')].map(button => button.getBoundingClientRect());
+            check(profileButtons.every(button => button.width >= 44 && button.height >= 44), 'profile actions keep their touch targets');
+            check(new Set(profileButtons.map(button => button.top)).size === (${width} === 392 ? 1 : 2), 'profile actions wrap as a group when the column narrows');
+            check(getComputedStyle(panel.querySelector('.quicker-api__key-row')).display === 'flex', 'key actions do not create an implicit field column');
+          }
           const body = document.getElementById('quicker_api_body'); body.hidden = true;
           check(getComputedStyle(body).display === 'none', 'collapsed body stays hidden'); body.hidden = false;
           panel.querySelector('button').focus();
