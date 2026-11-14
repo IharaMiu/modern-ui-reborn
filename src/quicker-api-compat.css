@@ -17,8 +17,31 @@ body.th-modern-enabled #rm_api_block #quicker_api .menu_button {
   min-height: 36px !important;
 }
 
+body.th-modern-enabled #quicker_api .quicker-api__key-row {
+  position: relative;
+}
+
 body.th-modern-enabled #quicker_api .quicker-api__key-actions {
+  position: static;
   flex-wrap: wrap;
+}
+
+body.th-modern-enabled #quicker_api .quicker-api__key-help-tooltip {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+body.th-modern-enabled #quicker_api .quicker-api__title,
+body.th-modern-enabled #quicker_api .quicker-api__parameters-field > .quicker-api__row {
+  flex-wrap: wrap;
+}
+
+body.th-modern-enabled #quicker_api .quicker-api__title > .quicker-api__toggle {
+  min-width: min(8rem, 100%);
+}
+
+body.th-modern-enabled #quicker_api .quicker-api__preset-link {
+  margin-inline-start: 0;
 }
 
 @container (max-width: 36rem) {
@@ -58,6 +81,11 @@ body.th-modern-enabled #send_form :is(#quicker_api_quick_left, #quicker_api_quic
   body.th-modern-enabled #rm_api_block #quicker_api .menu_button {
     min-width: 44px;
     min-height: 44px !important;
+  }
+
+  body.th-modern-enabled #quicker_api :is(.quicker-api__mode-switch, .quicker-api__preset-link) {
+    box-sizing: border-box;
+    min-height: 44px;
   }
 }
 
@@ -121,10 +149,6 @@ body.th-modern-enabled #send_form :is(#quicker_api_quick_left, #quicker_api_quic
   body.th-modern-enabled #quicker_api .quicker-api__key-actions {
     justify-content: flex-end;
     gap: 8px;
-  }
-
-  body.th-modern-enabled #quicker_api .quicker-api__parameters-field {
-    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   @container (width < 304px) {

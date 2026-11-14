@@ -2713,6 +2713,7 @@ body.th-modern-enabled #rm_api_block input[type='text'],
 body.th-modern-enabled #rm_api_block input[type='password'],
 body.th-modern-enabled #rm_api_block input[type='number'],
 body.th-modern-enabled #rm_api_block #quicker_api_url,
+body.th-modern-enabled #rm_api_block #quicker_api_model_trigger,
 body.th-modern-enabled #rm_api_block select:not([size]),
 body.th-modern-enabled #rm_api_block textarea {
   box-sizing: border-box;
@@ -3105,7 +3106,7 @@ body.th-modern-enabled .th-modern-recent-item:hover .th-modern-recent-avatar {
 body.th-modern-enabled #rm_api_block label.menu_button:has(input[type='checkbox']),
 body.th-modern-enabled #rm_api_block label.menu_button_icon:has(input[type='checkbox']),
 body.th-modern-enabled #rm_api_block .menu_button_icon:has(input[type='checkbox']),
-body.th-modern-enabled #rm_api_block label[title*='绑定'],
+body.th-modern-enabled #rm_api_block label[title*='绑定']:not(.quicker-api__switch),
 body.th-modern-enabled #rm_api_block [id*='bind_preset'],
 body.th-modern-enabled #rm_api_block [id*='preset_bind'],
 body.th-modern-enabled #rm_api_block [id*='bind_to_api'] {
@@ -3127,7 +3128,7 @@ body.th-modern-enabled #rm_api_block [id*='bind_to_api'] {
 body.th-modern-enabled #rm_api_block label.menu_button input[type='checkbox'],
 body.th-modern-enabled #rm_api_block label.menu_button_icon input[type='checkbox'],
 body.th-modern-enabled #rm_api_block .menu_button:has(input[type='checkbox']) input[type='checkbox'],
-body.th-modern-enabled #rm_api_block label[title*='绑定'] input[type='checkbox'],
+body.th-modern-enabled #rm_api_block label[title*='绑定']:not(.quicker-api__switch) input[type='checkbox'],
 body.th-modern-enabled #rm_api_block [id*='bind_preset'] input[type='checkbox'],
 body.th-modern-enabled #rm_api_block [id*='preset_bind'] input[type='checkbox'],
 body.th-modern-enabled #rm_api_block [id*='bind_to_api'] input[type='checkbox'] {
