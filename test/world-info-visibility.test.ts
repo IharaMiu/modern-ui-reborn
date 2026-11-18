@@ -15,8 +15,10 @@ const compile = (source: string) => ts.transpileModule(source, {
 
 for (const width of [1280, 800, 390]) {
   test(`world book entry, batch deletion and selector interactions at ${width}px`, { skip: !existsSync(browser) }, () => {
-    const fixture = `<!doctype html><meta charset="utf-8"><style>${read('../src/world-info.css')}${read('../src/mobile-world-select.css')}
+    const fixture = `<!doctype html><meta charset="utf-8"><style>${read('../src/world-info.css')}${read('../src/mobile-world-select.css')}${read('../src/preset.css')}
       #WorldInfo { width:100%; height:800px; } #WorldInfo:not(.openDrawer) { display:none; }
+      #left-nav-panel.closedDrawer { display:none; }
+      .range-block { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; }
       </style><body class="th-modern-enabled">
       <div id="WorldInfo" class="openDrawer"><div id="wiTopBlock"><div id="WIMultiSelector"><div class="range-block-range">
         <select id="world_info" multiple><option value="A">Book A</option></select>
@@ -26,6 +28,8 @@ for (const width of [1280, 800, 390]) {
       <div id="selected-entry"></div><pre id="result">PENDING</pre><script>
       const check = (ok, message) => { if (!ok) throw new Error(message); };
       const tick = () => new Promise(resolve => setTimeout(resolve, 80));
+      const setTimer = window.setTimeout.bind(window);
+      window.setTimeout = (callback, delay, ...args) => setTimer(callback, delay === 30000 ? 200 : delay, ...args);
       window.requestAnimationFrame = callback => setTimeout(() => callback(performance.now()), 1);
       window.cancelAnimationFrame = clearTimeout;
       const handlers = new Map();
@@ -49,36 +53,49 @@ for (const width of [1280, 800, 390]) {
       let world = { entries: { 1: {uid:1}, 2: {uid:2}, 3: {uid:3} } };
       let cachedWorld;
       let changeCacheDuringRead = false;
+      let holdRead = false, finishRead, readSignal;
+      let holdSave = false, finishSave;
       let persistSave = true;
       const savedWorlds = [];
       const reloadedWorlds = [];
       const errors = [];
-      window.toastr = { error: message => errors.push(message) };
+      const notices = [];
+      window.toastr = { error: message => errors.push(message), info: message => notices.push(message) };
       let confirmation;
       window.confirm = message => { confirmation = message; return true; };
       window.fetch = async (url, options) => {
         check(url === '/api/worldinfo/get' && JSON.parse(options.body).name === 'Book A', 'checks the current book');
+        if (holdRead) {
+          readSignal = options.signal;
+          await new Promise(resolve => { finishRead = resolve; });
+        }
         if (changeCacheDuringRead) cachedWorld = {entries: {...world.entries, 2: {uid:2, comment:'changed'}}};
         return { ok:true, json: async () => structuredClone(world) };
       };
       window.SillyTavern = { getContext: () => ({
         loadWorldInfo: async () => structuredClone(cachedWorld ?? world),
         getRequestHeaders: () => ({}),
-        saveWorldInfo: async (name, data, immediately) => { savedWorlds.push([name, immediately]); if (persistSave) world = data; },
+        saveWorldInfo: async (name, data, immediately) => {
+          savedWorlds.push([name, immediately]);
+          if (holdSave) await new Promise(resolve => { finishSave = resolve; });
+          if (persistSave) world = data;
+        },
         reloadWorldInfoEditor: (name, force) => { reloadedWorlds.push([name, force]); },
       }) };
       const host = { getHostDocument: () => document, getHostWindow: () => window };
       let selectors;
       const require = name => name === 'vue' ? {watch: (read, callback) => { callback(read()); return () => {}; }}
         : name.includes('mobile-world-select-module') ? selectors
+        : name.includes('preset-prompt-model') ? presetModel
         : name.includes('world-info-concurrency') ? concurrency : host;
       const load = code => { const exports = {}; new Function('exports', 'require', code)(exports, require); return exports; };
       const concurrency = load(${JSON.stringify(compile(read('../src/world-info-concurrency.ts')))});
+      const presetModel = load(${JSON.stringify(compile(read('../src/preset-prompt-model.ts')))});
       selectors = load(${JSON.stringify(compile(read('../src/mobile-world-select-module.ts') + '\nexport const TestManager = MobileWorldSelectManager;'))});
       let controllerRefreshes = 0;
       const mountControllers = selectors.TestManager.prototype.mountControllers;
       selectors.TestManager.prototype.mountControllers = function() { controllerRefreshes++; return mountControllers.call(this); };
-      const {mountWorldInfoEditor, TestEnhancer} = load(${JSON.stringify(compile(read('../src/world-info-module.ts') + '\nexport const TestEnhancer = NativeWorldInfoEnhancer;'))});
+      const {mountWorldInfoEditor, TestEnhancer, removeWorldInfoEntries} = load(${JSON.stringify(compile(read('../src/world-info-module.ts') + '\nexport { NativeWorldInfoEnhancer as TestEnhancer, removeWorldInfoEntries };'))});
       let enhancer;
       const mount = TestEnhancer.prototype.mount;
       TestEnhancer.prototype.mount = function() { enhancer = this; return mount.call(this); };
@@ -91,6 +108,9 @@ for (const width of [1280, 800, 390]) {
         }
       };
       (async () => {
+        const zeroUid = { entries: { 0: {uid:0} }, originalData: { entries: [{id:0}, {id:null}, {id:''}] } };
+        const afterZero = removeWorldInfoEntries(zeroUid, new Set([0]), window);
+        check(afterZero.originalData.entries.length === 2 && zeroUid.entries[0], 'UID 0 only removes its matching imported entry from the clone');
         const initialPanel = document.getElementById('WorldInfo');
         const replacementPanel = initialPanel.cloneNode(true);
         const delayedPopup = document.getElementById('world_popup');
@@ -121,6 +141,9 @@ for (const width of [1280, 800, 390]) {
         const third = addEntry(3, 'Book A', 'Entry three');
         await tick();
         const summary = entry => entry.querySelector('.th-modern-wi-row-summary');
+        if (!matchMedia('(max-width:899.98px)').matches) {
+          check(enhancer.selectedEntry === first, 'desktop picks the first row of the current book after a stale row');
+        }
         summary(stale).click();
         check(enhancer.selectedEntry !== stale, 'a stale row cannot open in a different book');
         const title = first.querySelector('textarea');
@@ -135,6 +158,17 @@ for (const width of [1280, 800, 390]) {
         summary(third).dispatchEvent(new KeyboardEvent('keydown', {key:'Enter', bubbles:true}));
         third.remove();
         await tick();
+        holdRead = true;
+        deleteButton.click();
+        await tick(); await tick(); await tick();
+        check(readSignal.aborted && errors.pop()?.includes('读取世界书超时') && !deleteButton.disabled, 'read timeout unlocks deletion and aborts the request');
+        holdRead = false;
+        finishRead(); await tick();
+        check(savedWorlds.length === 0 && !deleteButton.hidden, 'late read cannot delete and preserves the selection');
+        world.entries[3].uid = 1;
+        deleteButton.click(); await tick();
+        check(errors.pop()?.includes('重复 UID 1') && savedWorlds.length === 0, 'duplicate UID cannot delete unrelated entries');
+        world.entries[3].uid = 3;
         changeCacheDuringRead = true;
         deleteButton.click();
         await tick();
@@ -153,7 +187,24 @@ for (const width of [1280, 800, 390]) {
         check(confirmation.includes('Book A') && confirmation.includes('UID 3'), 'confirmation identifies the book and off-page entry');
         check(Object.keys(world.entries).join(',') === '2', 'batch delete preserves the unselected entry');
         check(JSON.stringify(savedWorlds) === '[["Book A",true]]', 'batch delete saves once through the host context');
-        check(JSON.stringify(reloadedWorlds) === '[["Book A",true]]', 'batch delete reloads through the host context');
+        check(JSON.stringify(reloadedWorlds) === '[["Book A",null]]', 'batch delete reloads only the selected book through the host context');
+        const selectForDelete = document.getElementById('world_editor_select');
+        world = { entries: { 1: {uid:1}, 2: {uid:2} } };
+        summary(first).click();
+        holdSave = true;
+        deleteButton.click();
+        await tick(); await tick(); await tick();
+        const main = panel.querySelector('.th-modern-wi-native-main');
+        check(finishSave && main.inert && !selectForDelete.disabled && notices.pop()?.includes('仍在保存'), 'slow write protects the book and leaves the selector available');
+        selectForDelete.value = 'B';
+        selectForDelete.dispatchEvent(new Event('change', {bubbles:true}));
+        await tick();
+        check(!main.inert, 'switching away unlocks the other book');
+        holdSave = false;
+        finishSave(); await tick();
+        check(selectForDelete.value === 'B' && reloadedWorlds.length === 1 && Object.keys(world.entries).join(',') === '2', 'late write does not reload the old book over the new selection');
+        selectForDelete.value = 'A';
+        selectForDelete.dispatchEvent(new Event('change', {bubbles:true}));
         multiButton.click();
         list.replaceChildren();
         const openDetail = () => {
@@ -229,6 +280,7 @@ for (const width of [1280, 800, 390]) {
           nativeRefreshes++;
           const entry = first.cloneNode(true);
           entry.querySelector('.move_entry_button').dataset.currentWorld = 'Book B';
+          replacementList.style.display = '';
           replacementList.replaceChildren(entry);
         };
         window.$(editorSelect).on('change', renderBook);
@@ -244,9 +296,37 @@ for (const width of [1280, 800, 390]) {
         window.$(editorSelect).on('change', renderBook);
         await tick();
         check(editorSelect.value === 'new-B' && nativeRefreshes === 2, 'replacing the selector also restores the selected book');
+        const editorSearch = document.getElementById('world_info_search');
+        for (const [display, search, expectedRefreshes] of [['none', '', 3], ['', '', 4], ['', 'no results', 4]]) {
+          replacementPanel.classList.remove('openDrawer'); await tick();
+          // The host can park the list while closed and refresh its options without a change event.
+          replacementList.remove();
+          replacementList.replaceChildren();
+          replacementList.style.display = display;
+          editorSearch.value = search;
+          editorSelect.replaceChildren(new Option('--- Pick to Edit ---', ''), new Option('Book B', 'new-B', false, true), new Option('Book A', 'A'));
+          await tick();
+          replacementPanel.querySelector('#world_popup').append(replacementList);
+          replacementPanel.classList.add('openDrawer'); await tick();
+          check(editorSelect.value === 'new-B' && nativeRefreshes === expectedRefreshes, 'reopening recovers a cleared list once and respects search');
+          check(search ? !replacementList.querySelector('.world_entry') : visible(replacementList.querySelector('.world_entry')), 'entries show on open unless the search excludes them');
+        }
+        editorSearch.value = '';
+        replacementPanel.classList.remove('openDrawer'); await tick();
+        const selectParent = editorSelect.parentElement;
+        editorSelect.remove();
+        editorSelect.value = '';
+        replacementList.replaceChildren();
+        await tick();
+        check(enhancer.selectedWorldName === 'Book B', 'temporarily detached selector keeps the last selected book');
+        selectParent.prepend(editorSelect);
+        replacementPanel.classList.add('openDrawer'); await tick();
+        check(editorSelect.value === 'new-B' && nativeRefreshes === 5 && visible(replacementList.querySelector('.world_entry')), 'reopening restores a temporarily detached selector and its entries');
+        await tick();
+        check(nativeRefreshes === 5, 'entry recovery produces one native reload');
         editorSelect.options[1].remove();
         await tick();
-        check(enhancer.selectedWorldName === '' && nativeRefreshes === 2, 'removing the selected book leaves no book selected');
+        check(enhancer.selectedWorldName === '' && nativeRefreshes === 5, 'removing the selected book leaves no book selected');
         editorSelect.append(new Option('Book B', 'B'));
         await tick();
         check(editorSelect.value === '', 'adding a deleted book back does not reopen it');
@@ -285,6 +365,7 @@ for (const width of [1280, 800, 390]) {
         presetBlock.id = 'respective-presets-block';
         presetBlock.innerHTML = '<select id="settings_preset_openai"><option value="A">A</option><option value="B">B</option></select>';
         document.body.append(presetBlock);
+        localStorage.setItem('th-modern-preset-tab', 'prompts');
         const presetEditor = new PresetEditor({is_active:true, settings:{modernPresetEditor:true}});
         presetEditor.renderDirty = () => {};
         let writes = 0;
@@ -300,19 +381,59 @@ for (const width of [1280, 800, 390]) {
         presetSelect.value = 'B'; presetSelect.dispatchEvent(new Event('change', {bubbles:true}));
         check(writes === 2 && presetEditor.isSwitchingPreset, 'replacement preset selector flushes draft before switching');
         const presetPanel = document.createElement('div'); presetPanel.id = 'left-nav-panel';
-        presetPanel.className = 'openDrawer';
-        presetPanel.innerHTML = '<div id="openai_settings"></div><div id="completion_prompt_manager"></div>';
+        presetPanel.className = 'closedDrawer';
+        presetPanel.style.width = 'min(1024px, 100%)';
+        presetPanel.innerHTML = '<select id="main_api"><option value="openai">Chat Completion</option></select><div class="scrollableInner"><div id="ai_response_configuration"><div id="advanced-ai-config-block"><div id="openai_settings"><div class="range-block"><div id="completion_prompt_manager"></div></div></div></div></div></div>';
+        presetPanel.querySelector('#ai_response_configuration').prepend(presetBlock.closest('.th-modern-preset-toolbar'));
         document.body.append(presetPanel);
-        host.getPromptGroups = () => [];
-        presetEditor.host = {getPromptManager: () => ({serviceSettings:{}})};
-        for (const method of ['ensurePanelPin', 'ensurePromptShell', 'applyTab', 'loadCollapsed', 'syncEditor', 'ensureDirtyPolling']) presetEditor[method] = () => {};
-        presetEditor.buildListSignature = () => '';
+        const order = [{identifier:'sample', enabled:true}], prompt = {identifier:'sample', name:'Sample'};
+        const pm = {configuration:{prefix:'completion_'}, serviceSettings:{prompts:[prompt]},
+          getPromptOrderForCharacter: () => order, getPromptById: id => id === prompt.identifier ? prompt : null,
+          isPromptEditAllowed: () => false, isPromptDeletionAllowed: () => true, isPromptToggleAllowed: () => true};
+        presetEditor.host = {getPromptManager: () => pm};
         const syncPreset = presetEditor.sync.bind(presetEditor);
         let presetSyncs = 0;
         presetEditor.sync = () => { presetSyncs++; syncPreset(); };
         presetEditor.sync();
+        presetPanel.classList.replace('closedDrawer', 'openDrawer');
+        await Promise.resolve();
+        check(presetPanel.querySelector('[data-id="sample"]') && presetPanel.querySelector('.th-modern-pm-editor-placeholder').textContent === '选择提示词条目以查看内容', 'opening the remembered prompts tab renders both panes before delayed sync');
         for (let index = 0; index < 6; index++) await tick();
-        check(presetSyncs <= 2, 'idle preset panel does not continuously schedule itself');
+        check(presetSyncs <= 3, 'idle preset panel does not continuously schedule itself');
+        document.querySelector('.th-modern-preset-tab[data-tab="prompts"]').click();
+        const presetList = presetPanel.querySelector('.th-modern-pm-list');
+        const presetDetail = presetPanel.querySelector('.th-modern-pm-editor');
+        const presetRow = presetList.querySelector('[data-id="sample"]');
+        const desktop = matchMedia('(min-width:900px)').matches;
+        const inset = (node, side) => node.getBoundingClientRect()[side];
+        const fillDrawer = () => {
+          const toolbar = presetPanel.querySelector('.th-modern-pm-toolbar');
+          const section = presetPanel.querySelector('.th-modern-preset-pm-section');
+          check(Math.abs(inset(toolbar, 'left') - inset(section, 'left')) < 1 && Math.abs(inset(toolbar, 'right') - inset(section, 'right')) < 1, 'prompt toolbar stretches across the native range block');
+          if (desktop) check(Math.abs(inset(presetList, 'left') - inset(toolbar, 'left')) < 1 && Math.abs(inset(presetDetail, 'right') - inset(toolbar, 'right')) < 1, 'both panes align with the full-width toolbar');
+        };
+        fillDrawer();
+        check(visible(presetList) && presetRow.getAttribute('aria-selected') === 'false', 'prompt list starts with no selected entry');
+        check(visible(presetDetail) === desktop, 'desktop displays the detail column');
+        if (desktop) {
+          check(presetList.getBoundingClientRect().right < presetDetail.getBoundingClientRect().left, 'prompt list sits to the left of the detail');
+          check(presetDetail.textContent === '选择提示词条目以查看内容', 'desktop detail shows only the empty-state prompt');
+        }
+        const listWidth = presetList.getBoundingClientRect().width;
+        presetRow.click();
+        check(visible(presetDetail) && visible(presetList) === desktop, 'selection shows details with the correct desktop or mobile layout');
+        if (desktop) {
+          fillDrawer();
+          check(Math.abs(presetList.getBoundingClientRect().width - listWidth) < 1, 'selecting a prompt does not resize the list');
+          document.querySelector('.th-modern-preset-tab[data-tab="params"]').click();
+          document.querySelector('.th-modern-preset-tab[data-tab="prompts"]').click();
+          presetPanel.style.width = '510px'; await tick();
+          fillDrawer();
+          check(visible(presetDetail) && presetDetail.textContent === '选择提示词条目以查看内容', 'the empty pane remains visible in a narrow desktop drawer');
+        } else {
+          presetDetail.querySelector('.th-modern-pm-back').click();
+          check(visible(presetList) && !visible(presetDetail), 'mobile can return to the list');
+        }
         presetEditor.destroy();
         const writesAfterDestroy = writes;
         presetSelect.dispatchEvent(new Event('change', {bubbles:true}));
@@ -325,7 +446,7 @@ for (const width of [1280, 800, 390]) {
       const path = join(directory, 'fixture.html');
       writeFileSync(path, fixture);
       const result = spawnSync(browser, ['--headless', '--disable-gpu', '--no-first-run', `--window-size=${width},900`,
-        `--user-data-dir=${join(directory, 'profile')}`, '--dump-dom', '--virtual-time-budget=5000', pathToFileURL(path).href],
+        `--user-data-dir=${join(directory, 'profile')}`, '--dump-dom', '--virtual-time-budget=8000', pathToFileURL(path).href],
       { encoding: 'utf8', timeout: 30000, maxBuffer: 3 * 1024 * 1024, windowsHide: true });
       assert.ifError(result.error);
       const report = result.stdout.match(/<pre id="result">([\s\S]*?)<\/pre>/)?.[1];

@@ -107,6 +107,7 @@ const INDENT_REM = 1;
 const LONG_PRESS_DELAY = 450;
 const LONG_PRESS_TOLERANCE = 8;
 const MULTISELECT_CLASS = 'is-multiselect';
+const pendingPresetSaves = new Set<string>();
 
 const ROLE_LABELS: Record<string, string> = { system: '系统', user: '用户', assistant: 'AI' };
 
@@ -229,25 +230,35 @@ function getErrorMessage(error: unknown): string {
 
 async function loadDefaultHost(): Promise<PresetEditorHost> {
   const hostWindow = getHostWindow() as Window & { Function: FunctionConstructor };
-  const url = new URL('scripts/openai.js', getHostDocument().baseURI || hostWindow.location.href).href;
-  const importModule = hostWindow.Function('url', 'return import(url);') as (url: string) => Promise<unknown>;
+  const base = getHostDocument().baseURI || hostWindow.location.href;
+  const url = new URL('scripts/openai.js', base).href;
   try {
+    const importModule = hostWindow.Function('url', 'return import(url);') as (url: string) => Promise<unknown>;
     const module = (await importModule(url)) as { promptManager?: HostPromptManager | null; getChatCompletionPreset?: () => unknown };
-    let presetManager: { getPresetManager?: (api: string) => { savePreset?: (name: string, data: unknown) => Promise<unknown> } | null } = {};
+    const presetManagerUrl = new URL('scripts/preset-manager.js', base).href;
+    let presetManager: { getPresetManager?: (api: string) => {
+      savePreset?: (name: string, data: unknown, options: { skipUpdate: boolean }) => Promise<unknown>;
+      getPresetList?: () => { presets: unknown[]; preset_names: Record<string, number> };
+    } | null } = {};
     try {
-      presetManager = await importModule(new URL('scripts/preset-manager.js', getHostDocument().baseURI || hostWindow.location.href).href) as typeof presetManager;
-    } catch { /* Older hosts retain the native save button. */ }
+      presetManager = await importModule(presetManagerUrl) as typeof presetManager;
+    } catch (error) {
+      console.warn('[现代化预设] 无法加载宿主预设保存接口：', presetManagerUrl, error);
+    }
     return {
       getPromptManager: () => module.promptManager ?? (hostWindow as any).promptManager ?? null,
       getPreset: module.getChatCompletionPreset,
-      savePreset: async (name, data) => {
+      savePreset: presetManager.getPresetManager && (async (name, data) => {
         const manager = presetManager.getPresetManager?.('openai');
-        if (!manager?.savePreset) throw new Error('宿主未提供预设保存接口');
-        return manager.savePreset(name, data);
-      },
+        if (!manager?.savePreset || !manager.getPresetList) throw new Error('宿主未提供预设保存接口');
+        // 宿主默认会重新应用已保存的预设，覆盖等待期间的编辑或切换。
+        await manager.savePreset(name, data, { skipUpdate: true });
+        const { presets, preset_names } = manager.getPresetList();
+        if (Object.hasOwn(preset_names, name)) presets[preset_names[name]] = data;
+      }),
     };
   } catch (error) {
-    // 降级使用全局挂载
+    console.warn('[现代化预设] 无法加载宿主提示词接口：', url, error);
     return { getPromptManager: () => (hostWindow as any).promptManager ?? null };
   }
 }
@@ -345,7 +356,16 @@ export class PresetEditor {
     this.tab = TABS.some(tab => tab.id === stored) ? (stored as PresetTab) : 'params';
     const HostMutationObserver = (this.window as Window & { MutationObserver: typeof MutationObserver })
       .MutationObserver;
-    this.observer = new HostMutationObserver(() => this.scheduleSync());
+    this.observer = new HostMutationObserver(mutations => {
+      const panel = this.observedPanel;
+      const isOpen = panel?.classList.contains('openDrawer');
+      if (this.dirtyInterval && !isOpen) this.stopDirtyPolling();
+      if (isOpen && mutations.some(mutation => mutation.target === panel && !mutation.oldValue?.split(/\s+/).includes('openDrawer'))) {
+        this.sync();
+      } else {
+        this.scheduleSync();
+      }
+    });
     this.bindHostEventListeners();
   }
 
@@ -380,7 +400,7 @@ export class PresetEditor {
   }
 
   private bindHostEventListeners(): void {
-    const eventSource = (this.window as any).eventSource;
+    const eventSource = this.hostEventSource;
     if (!eventSource || typeof eventSource.on !== 'function') return;
 
     const onPresetBefore = () => {
@@ -414,6 +434,7 @@ export class PresetEditor {
 
     const onPresetChanged = () => {
       this.isSwitchingPreset = false;
+      this.editRevision++;
       if (this.presetSwitchTimer) this.window.clearTimeout(this.presetSwitchTimer);
       this.presetSwitchTimer = 0;
       if (this.shell) {
@@ -464,6 +485,7 @@ export class PresetEditor {
       ['oai_preset_changed_after', onPresetChanged],
       ['preset_changed', onPresetChanged],
       ['oai_preset_import_ready', onImportReady],
+      ['main_api_changed', () => this.sync()],
       ['chatLoaded', onChatChanged],
       ['chat_id_changed', onChatChanged],
     ];
@@ -475,7 +497,7 @@ export class PresetEditor {
   }
 
   private unbindHostEventListeners(): void {
-    const eventSource = (this.window as any).eventSource;
+    const eventSource = this.hostEventSource;
     if (!eventSource || typeof eventSource.removeListener !== 'function') return;
 
     for (const { event, handler } of this.boundHostEvents) {
@@ -488,21 +510,18 @@ export class PresetEditor {
     this.boundHostEvents = [];
   }
 
+  private get hostEventSource() {
+    const win = this.window as any;
+    return win.eventSource ?? win.SillyTavern?.getContext?.()?.eventSource;
+  }
+
   private isChatCompletionApi(): boolean {
     const mainApiSelect = this.document.getElementById('main_api') as HTMLSelectElement | null;
     if (mainApiSelect?.value) {
       return mainApiSelect.value === 'openai';
     }
     const win = this.window as any;
-    if (win.main_api) {
-      return win.main_api === 'openai';
-    }
-    const settings = this.document.getElementById('openai_settings');
-    const presets = this.document.getElementById('openai_api-presets');
-    if (settings || presets) {
-      return true;
-    }
-    return false;
+    return (win.SillyTavern?.getContext?.()?.mainApi || win.main_api) === 'openai';
   }
 
   private sync(): void {
@@ -592,7 +611,7 @@ export class PresetEditor {
     this.observedSettings = settings;
     this.observedContainer = container;
     if (panel) {
-      this.observer.observe(panel, { attributes: true, attributeFilter: ['class'] });
+      this.observer.observe(panel, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
     }
     if (settings) {
       this.observer.observe(settings, { attributes: true, attributeFilter: ['style'] });
@@ -770,32 +789,49 @@ export class PresetEditor {
         (this.window as any).toastr?.error?.('条目内容未能写回，未发起预设保存，请查看控制台错误');
         return;
       }
-      this.flushEditorApply();
-      const preset = (this.document.getElementById('settings_preset_openai') as HTMLSelectElement | null)?.selectedOptions[0]?.textContent?.trim();
-      const presetData = this.host?.getPreset?.();
-      if (!preset || !presetData || !this.host?.savePreset) {
-        (this.window as any).toastr?.error?.('宿主预设保存接口不可用，请使用原生保存按钮。');
+      if (!this.flushEditorApply()) return;
+      const getPresetName = () => (this.document.getElementById('settings_preset_openai') as HTMLSelectElement | null)?.selectedOptions[0]?.textContent;
+      const preset = getPresetName();
+      const host = this.host;
+      const presetData = host?.getPreset?.();
+      const toastr = (this.window as any).toastr;
+      if (!preset?.trim() || !presetData || !host?.savePreset) {
+        toastr?.error?.('宿主预设保存接口不可用，请使用原生保存按钮。');
+        return;
+      }
+      if (pendingPresetSaves.has(preset)) {
+        toastr?.info?.('此预设的上一次保存仍在等待宿主响应，请稍后再试。');
         return;
       }
       this.cancelSaveFeedback();
       const snapshot = this.takeSnapshot();
       const revision = this.editRevision;
       let active = true;
+      const isCurrent = () => active && getPresetName() === preset;
       this.stopSaveFeedback = () => { active = false; };
       this.saveButton!.disabled = true;
       this.saveButton!.textContent = '保存中…';
+      // shortcut: 宿主保存不能取消，等待请求结束后才能安全地重试同一预设。
+      pendingPresetSaves.add(preset);
       try {
-        const saved = await savePresetAndCheck(() => this.host!.savePreset!(preset, presetData), () => active &&
-          (this.document.getElementById('settings_preset_openai') as HTMLSelectElement | null)?.selectedOptions[0]?.textContent?.trim() === preset);
+        const saved = await savePresetAndCheck(async () => {
+          try {
+            await host.savePreset!(preset, presetData);
+          } finally {
+            pendingPresetSaves.delete(preset);
+          }
+        }, isCurrent);
         if (saved && snapshot) {
           this.lastCleanSnapshot = snapshot;
           this.localDirty = hasNewerPresetEdits(revision, this.editRevision);
           this.runDirtyCheck();
-          (this.window as any).toastr?.success?.('预设已更新');
+          toastr?.success?.('预设已更新');
         }
       } catch (error) {
         console.error('[现代化预设] 保存失败', error);
-        (this.window as any).toastr?.error?.('预设保存失败，请重试。');
+        if (isCurrent()) {
+          toastr?.error?.(error?.name === 'TimeoutError' ? '等待保存结果超时。可继续编辑，宿主响应后可再次保存。' : '预设保存失败，请重试。');
+        }
       } finally {
         if (active) this.cancelSaveFeedback();
       }
@@ -822,6 +858,13 @@ export class PresetEditor {
     this.tab = tab;
     writeStorage(TAB_STORAGE_KEY, tab);
     this.applyTab();
+    if (tab === 'prompts') {
+      this.activeId = null;
+      this.activeGroupId = null;
+      this.anchorId = null;
+      this.clearSelection();
+      this.updateNarrow();
+    }
     this.panel?.querySelector('.scrollableInner')?.scrollTo({ top: 0 });
   }
 
@@ -859,8 +902,7 @@ export class PresetEditor {
     const pm = this.promptManager;
     if (!pm) return '';
     try {
-      const target = this.getActiveCharacterTarget();
-      const order = pm.getPromptOrderForCharacter(target) || this.getOrder() || [];
+      const order = this.getOrder();
       const normalizedOrder = order.map(o => ({ identifier: o.identifier, enabled: !!o.enabled }));
       const prompts = (pm.serviceSettings.prompts || [])
         .map(p => ({
@@ -922,10 +964,12 @@ export class PresetEditor {
   private ensureDirtyPolling(): void {
     if (this.dirtyInterval) return;
     this.dirtyInterval = this.window.setInterval(() => {
-      if (this.panel?.classList.contains('openDrawer')) {
-        this.runDirtyCheck();
-        this.scheduleSync();
+      if (!this.panel?.classList.contains('openDrawer')) {
+        this.stopDirtyPolling();
+        return;
       }
+      this.runDirtyCheck();
+      this.scheduleSync();
     }, DIRTY_POLL_INTERVAL);
     this.scheduleDirtyCheck();
   }
@@ -933,11 +977,13 @@ export class PresetEditor {
   readonly scheduleDirtyCheck = (delay = DIRTY_CHECK_DELAY): void => {
     if (!this.toolbar) return;
     this.window.clearTimeout(this.dirtyTimer);
-    this.dirtyTimer = this.window.setTimeout(() => this.runDirtyCheck(), delay);
+    this.dirtyTimer = this.window.setTimeout(() => {
+      this.dirtyTimer = 0;
+      this.runDirtyCheck();
+    }, delay);
   };
 
   private runDirtyCheck(): void {
-    this.dirtyTimer = 0;
     // 防抖期间表单可能尚未写回，不能用旧快照把状态误判为已保存。
     const dirty = this.localDirty || this.applyTimer ? true : this.checkDirtyState();
     if (dirty === this.dirty) return;
@@ -1237,13 +1283,6 @@ export class PresetEditor {
     }
     if (this.activeId && !known.has(this.activeId) && !this.getPrompt(this.activeId)) this.activeId = null;
     if (this.activeGroupId && !this.getGroup(this.activeGroupId)) this.activeGroupId = null;
-    if (!this.activeId && !this.activeGroupId && order.length) {
-      this.activeId = order[0].identifier;
-      this.selected = new Set([this.activeId]);
-      this.anchorId = this.activeId;
-      // 窄屏默认选择时也打开详情；手动返回列表后不再自动切回。
-      this.openDetail();
-    }
 
     const counts = pm.tokenHandler?.getCounts?.() ?? {};
     // 只要有一个条目算出了 Token，就为所有行保留 Token 列，保证标签对齐。
@@ -1968,15 +2007,20 @@ export class PresetEditor {
   private captureOperationContext(): () => boolean {
     const pm = this.promptManager;
     const settings = pm?.serviceSettings;
-    const order = this.getOrder();
+    const targetId = this.getActiveCharacterTarget()?.id;
     const snapshot = this.takeSnapshot();
     const revision = this.editRevision;
     const preset = this.document.querySelector<HTMLSelectElement>('#settings_preset_openai')?.value;
-    return () => !this.destroyed && this.store.is_active && this.store.settings.modernPresetEditor &&
-      !this.isSwitchingPreset && this.promptManager === pm && pm?.serviceSettings === settings &&
-      this.getOrder() === order && this.editRevision === revision && Boolean(snapshot) &&
-      this.document.querySelector<HTMLSelectElement>('#settings_preset_openai')?.value === preset &&
-      this.takeSnapshot() === snapshot;
+    return () => {
+      if (this.destroyed || !this.store.is_active || !this.store.settings.modernPresetEditor) return false;
+      const unchanged = !this.isSwitchingPreset && this.isChatCompletionApi() && this.promptManager === pm &&
+        pm?.serviceSettings === settings && this.getActiveCharacterTarget()?.id === targetId &&
+        this.editRevision === revision && Boolean(snapshot) &&
+        this.document.querySelector<HTMLSelectElement>('#settings_preset_openai')?.value === preset &&
+        this.takeSnapshot() === snapshot;
+      if (!unchanged) (this.window as any).toastr?.warning?.('预设内容或编辑对象已变更，请重新操作。');
+      return unchanged;
+    };
   }
 
   private async deleteEntries(identifiers: string[]): Promise<void> {
@@ -2006,10 +2050,10 @@ export class PresetEditor {
     const currentOrder = this.getOrder();
     const visible = this.rows.flatMap(row => (row.kind === 'prompt' ? [row.identifier] : []));
     for (const entry of pm.serviceSettings.prompt_order ?? []) {
-      const isCurrent = entry.order === currentOrder;
+      const isCurrentOrderSlot = entry.order === currentOrder;
       for (let index = entry.order.length - 1; index >= 0; index -= 1) {
         const id = entry.order[index].identifier;
-        if (removeSet.has(id) || (isCurrent && detachSet.has(id))) entry.order.splice(index, 1);
+        if (removeSet.has(id) || (isCurrentOrderSlot && detachSet.has(id))) entry.order.splice(index, 1);
       }
     }
     for (let index = pm.serviceSettings.prompts.length - 1; index >= 0; index -= 1) {
@@ -2293,7 +2337,20 @@ export class PresetEditor {
       return;
     }
     const identifier = this.activeId;
-    const prompt = identifier ? this.getPrompt(identifier) : null;
+    if (!identifier) {
+      if (!this.flushEditorApply()) return;
+      this.editingId = null;
+      this.editingPrompt = null;
+      if (this.detailOpen) {
+        this.detailOpen = false;
+        this.updateNarrow();
+      }
+      this.editorBody.hidden = true;
+      this.setPlaceholder('选择提示词条目以查看内容');
+      this.renderPromptEditorHeader();
+      return;
+    }
+    const prompt = this.getPrompt(identifier);
     const editArea = this.getEditArea();
     const isEditAreaDetached = editArea ? editArea.parentElement !== this.editorBody : false;
     const isEditAreaHidden = editArea ? (editArea.style.display === 'none' || isEditAreaDetached) : false;
@@ -2388,7 +2445,6 @@ export class PresetEditor {
 
   private loadPromptEditor(): void {
     const pm = this.promptManager;
-    const identifier = this.editingId;
     const editArea = this.getEditArea();
     if (!pm || !this.editorBody) return;
 
@@ -2437,7 +2493,7 @@ export class PresetEditor {
       this.showEditArea(true);
       return;
     }
-    this.showEditArea(false, !identifier ? '在左侧选择一个条目进行编辑' : '这个条目在预设里找不到定义，可以删除后重新添加。');
+    this.showEditArea(false, '这个条目在预设里找不到定义，可以删除后重新添加。');
   }
 
   private ensureEditFormValues(prompt: HostPrompt): void {
@@ -2472,10 +2528,6 @@ export class PresetEditor {
     if (savePromptButton) {
       savePromptButton.dataset.pmPrompt = prompt.identifier;
     }
-  }
-
-  private fallbackFillEditForm(prompt: HostPrompt): void {
-    this.ensureEditFormValues(prompt);
   }
 
   private renderPromptEditorHeader(): void {

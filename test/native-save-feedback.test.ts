@@ -17,3 +17,16 @@ test('edits made during a save remain unsaved', () => {
   assert.equal(hasNewerPresetEdits(4, 4), false);
   assert.equal(hasNewerPresetEdits(4, 5), true);
 });
+
+test('a preset save times out without confirming a late response', async ({ mock }) => {
+  mock.timers.enable({ apis: ['setTimeout'] });
+  let finish!: () => void;
+  let checks = 0;
+  const request = new Promise<void>(resolve => { finish = resolve; });
+  const pending = savePresetAndCheck(() => request, () => { checks++; return true; });
+  mock.timers.tick(30_000);
+  await assert.rejects(pending, { name: 'TimeoutError' });
+  finish();
+  await request;
+  assert.equal(checks, 0);
+});

@@ -126,9 +126,6 @@ body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-prese
   margin: 0;
   padding: 0.25rem 0.75rem;
   white-space: nowrap;
-}
-
-body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-preset-save {
   display: inline-flex;
   align-items: center;
   opacity: 0.85;
@@ -185,6 +182,8 @@ body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled #completion_prom
 body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm {
   display: flex;
   flex: 1 1 auto;
+  /* 宿主的 .range-block 会将内容居中并按内容宽度收窄。 */
+  align-self: stretch;
   flex-direction: column;
   gap: 0.5rem;
   min-height: 0;
@@ -1023,17 +1022,19 @@ body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm-ed
 
 /* ---------- 窄屏：列表与编辑区切换显示 ---------- */
 
-body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.th-modern-pm-narrow .th-modern-pm-body {
-  grid-template-columns: minmax(0, 1fr);
-}
+@media (max-width: 899.98px) {
+  body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.th-modern-pm-narrow .th-modern-pm-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.th-modern-pm-narrow:not(.th-modern-pm-detail-open) .th-modern-pm-editor,
-body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.th-modern-pm-narrow.th-modern-pm-detail-open .th-modern-pm-list {
-  display: none;
-}
+  body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.th-modern-pm-narrow:not(.th-modern-pm-detail-open) .th-modern-pm-editor,
+  body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.th-modern-pm-narrow.th-modern-pm-detail-open .th-modern-pm-list {
+    display: none;
+  }
 
-body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.th-modern-pm-narrow .th-modern-pm-back {
-  display: inline-flex;
+  body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.th-modern-pm-narrow .th-modern-pm-back {
+    display: inline-flex;
+  }
 }
 
 body.th-modern-enabled #left-nav-panel.th-modern-preset-enabled .th-modern-pm.is-multiselect .th-modern-pm-actions {

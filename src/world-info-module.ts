@@ -2,7 +2,7 @@ import { watch } from 'vue';
 
 import { getHostDocument, getHostWindow } from './host-context';
 import { mountMobileWorldSelects } from './mobile-world-select-module';
-import { worldInfoChanged } from './world-info-concurrency';
+import { readWorldInfoWithTimeout, WORLD_INFO_RESPONSE_TIMEOUT, worldInfoChanged, worldInfoSnapshot } from './world-info-concurrency';
 import type { useModernLayoutStore } from './store';
 
 const WORLD_INFO_ENABLED_CLASS = 'th-modern-wi-enabled';
@@ -15,12 +15,12 @@ const DETAIL_OPEN_CLASS = 'th-modern-wi-detail-open';
 const ROOT_DETAIL_OPEN_CLASS = 'th-modern-wi-mobile-detail-open';
 const NATIVE_EDITOR_LOADING_CLASS = 'th-modern-wi-native-editor-loading';
 const TABS_READY_FLAG = 'thModernTabsReady';
-const SUMMARY_READY_FLAG = 'thModernSummaryReady';
 const SUMMARY_LAYOUT_VERSION = '2026-07-18-compact-v2';
 const CONDITIONAL_READY_FLAG = 'thModernConditionalReady';
 const SHORTCUT_SYNC_READY_FLAG = 'thModernShortcutSyncReady';
 const ENTRY_LAYOUT_VERSION = '2026-07-08-tabs-v4';
 const pendingActiveTabsByUid = new Map<number, string>();
+const pendingWorldWrites = new Map<string, Promise<void>>();
 
 type Store = ReturnType<typeof useModernLayoutStore>;
 type HostWindow = Window & {
@@ -31,12 +31,6 @@ type HostWindow = Window & {
 type MovedNode = {
     marker: Comment;
     node: Node;
-};
-
-type NativeWorldInfoController = {
-    destroy: () => boolean;
-    ensureLayout: (targetPopup?: HTMLElement) => boolean;
-    isMounted: () => boolean;
 };
 
 type ScheduleSummaryUpdate = (entry: HTMLElement) => void;
@@ -51,9 +45,13 @@ const SHORTCUT_FIELD_SOURCE_SELECTORS: Array<[string, string]> = [
 ];
 
 function getEntryUid(entry: HTMLElement): number | undefined {
-    const uid = (entry.getAttribute('uid') ?? entry.dataset.uid)?.trim();
-    const parsed = Number(uid);
-    return uid && Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : undefined;
+    return parseEntryUid(entry.getAttribute('uid') ?? entry.dataset.uid);
+}
+
+function parseEntryUid(value: unknown): number | undefined {
+    if (typeof value !== 'number' && (typeof value !== 'string' || !value.trim())) return undefined;
+    const uid = Number(value);
+    return Number.isSafeInteger(uid) && uid >= 0 ? uid : undefined;
 }
 
 function getEntryWorldName(entry: HTMLElement): string | undefined {
@@ -65,7 +63,7 @@ function getSelectedWorldName(document: Document): string {
     if (!select || select.value === '') {
         return '';
     }
-    return select.selectedOptions[0]?.textContent?.trim() ?? '';
+    return select.selectedOptions[0]?.textContent ?? '';
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -82,23 +80,24 @@ function removeWorldInfoEntries(data: unknown, selectedUids: ReadonlySet<number>
         throw new Error('世界书数据缺少 entries 对象');
     }
 
-    let deletedCount = 0;
+    const deletedUids = new Set<number>();
     for (const [key, entry] of Object.entries(cloned.entries)) {
-        const uid = Number(isRecord(entry) && entry.uid !== undefined ? entry.uid : key);
-        if (Number.isFinite(uid) && selectedUids.has(uid)) {
+        const uid = parseEntryUid(isRecord(entry) && entry.uid !== undefined ? entry.uid : key);
+        if (uid !== undefined && selectedUids.has(uid)) {
+            if (deletedUids.has(uid)) throw new Error(`世界书中存在重复 UID ${uid}，请检查后重试`);
             delete cloned.entries[key];
-            deletedCount += 1;
+            deletedUids.add(uid);
         }
     }
 
-    if (deletedCount !== selectedUids.size) {
-        throw new Error(`仅找到 ${deletedCount}/${selectedUids.size} 个待删除条目`);
+    if (deletedUids.size !== selectedUids.size) {
+        throw new Error(`仅找到 ${deletedUids.size}/${selectedUids.size} 个待删除条目`);
     }
 
     if (isRecord(cloned.originalData) && Array.isArray(cloned.originalData.entries)) {
         cloned.originalData.entries = cloned.originalData.entries.filter(entry => {
-            const uid = Number(isRecord(entry) ? entry.uid ?? entry.id : undefined);
-            return !Number.isFinite(uid) || !selectedUids.has(uid);
+            const uid = parseEntryUid(isRecord(entry) ? entry.uid ?? entry.id : undefined);
+            return uid === undefined || !selectedUids.has(uid);
         });
     }
 
@@ -763,7 +762,7 @@ function updateEntrySummary(entry: HTMLElement, source: ParentNode = entry): voi
     }
 }
 
-function ensureEntrySummary(document: Document, entry: HTMLElement, scheduleSummaryUpdate: ScheduleSummaryUpdate): void {
+function ensureEntrySummary(document: Document, entry: HTMLElement): void {
     const header = entry.querySelector<HTMLElement>(':scope > form.world_entry_form > .inline-drawer > .inline-drawer-header');
     if (!header) {
         return;
@@ -794,11 +793,6 @@ function ensureEntrySummary(document: Document, entry: HTMLElement, scheduleSumm
         summary.dataset.layoutVersion = SUMMARY_LAYOUT_VERSION;
     }
 
-    if (entry.dataset[SUMMARY_READY_FLAG] !== 'true') {
-        entry.dataset[SUMMARY_READY_FLAG] = 'true';
-        entry.addEventListener('input', () => scheduleSummaryUpdate(entry));
-        entry.addEventListener('change', () => scheduleSummaryUpdate(entry));
-    }
     updateEntrySummary(entry);
 }
 
@@ -905,7 +899,7 @@ function bindEntryEditorEvents(entry: HTMLElement, editor: HTMLElement): void {
     };
 }
 
-function setupEntryTabs(document: Document, entry: HTMLElement, scheduleSummaryUpdate: ScheduleSummaryUpdate): boolean {
+function setupEntryTabs(document: Document, entry: HTMLElement): boolean {
     const content = entry.querySelector<HTMLElement>(':scope > form.world_entry_form > .inline-drawer > .inline-drawer-content.inline-drawer-outlet');
     const edit = entry.querySelector<HTMLElement>('.world_entry_edit');
     if (!content || !edit) {
@@ -927,7 +921,7 @@ function setupEntryTabs(document: Document, entry: HTMLElement, scheduleSummaryU
     }
 
     entry.dataset[TABS_READY_FLAG] = 'true';
-    ensureEntrySummary(document, entry, scheduleSummaryUpdate);
+    ensureEntrySummary(document, entry);
     localizeEntryStateSelector(entry);
 
     const editor = makeElement(document, 'div', 'th-modern-wi-editor-surface');
@@ -1037,7 +1031,7 @@ function setupEntryTabs(document: Document, entry: HTMLElement, scheduleSummaryU
     return true;
 }
 
-class NativeWorldInfoEnhancer implements NativeWorldInfoController {
+class NativeWorldInfoEnhancer {
     private readonly document: Document;
     private readonly window: HostWindow;
     private readonly moved: MovedNode[] = [];
@@ -1047,6 +1041,8 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
     private editorPane?: HTMLElement;
     private observedList?: HTMLElement;
     private observedEditorSelect?: HTMLSelectElement;
+    private reloadedHiddenList?: HTMLElement;
+    private checkEntriesOnOpen = false;
     private documentClickHandler?: (event: MouseEvent) => void;
     private documentKeyDownHandler?: (event: KeyboardEvent) => void;
     private documentChangeHandler?: (event: Event) => void;
@@ -1058,7 +1054,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
     private readonly pendingSummaryUpdates = new Map<HTMLElement, number>();
     private worldbar?: HTMLElement;
     private toolbar?: HTMLElement;
-    private readonly emptyWorldControls = new Set<HTMLElement>();
+    private readonly unavailableWorldControls = new Set<HTMLElement>();
     private main?: HTMLElement;
     private popupObserver?: MutationObserver;
     private observedPopup?: HTMLElement;
@@ -1070,8 +1066,9 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
     private selectedEntry?: HTMLElement;
     private selectedWorldName = '';
     private worldRevision = 0;
-    private deleteBusy = false;
-    private lockedWorldSelect?: { element: HTMLSelectElement; wasDisabled: boolean };
+    private deletingWorldName?: string;
+    private observedWorldWrite?: Promise<void>;
+    private slowWriteTimer = 0;
     private mounted = false;
     private multiSelect = false;
     private mobileDetailOpen = false;
@@ -1106,6 +1103,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
     mount(): void {
         if (this.mounted) {
             this.ensureLayout();
+            this.restoreNativeWorldEditor();
             return;
         }
 
@@ -1122,20 +1120,19 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         this.ensureLayout(popup);
         this.bindResponsiveMode();
         this.bindEvents();
+        this.restoreNativeWorldEditor();
         this.enhanceEntries();
         if (!this.isNarrowMode()) {
             this.selectFirstEntry();
         }
     }
 
-    isMounted(): boolean {
-        return this.mounted;
-    }
-
     destroy(): boolean {
         const wasMounted = this.mounted;
         this.worldRevision += 1;
-        this.setDeleteBusy(false);
+        this.window.clearTimeout(this.slowWriteTimer);
+        this.deletingWorldName = undefined;
+        this.observedWorldWrite = undefined;
         const worldInfo = this.findWorldInfo();
         worldInfo?.classList.remove(WORLD_INFO_NATIVE_CLASS, MULTI_SELECT_CLASS, ROOT_DETAIL_OPEN_CLASS);
         this.observer?.disconnect();
@@ -1168,6 +1165,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             this.documentKeyDownHandler = undefined;
         }
         if (this.documentChangeHandler) {
+            this.document.removeEventListener('input', this.documentChangeHandler, true);
             this.document.removeEventListener('change', this.documentChangeHandler, true);
             this.documentChangeHandler = undefined;
         }
@@ -1189,8 +1187,10 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         }
         this.observedList = undefined;
         this.observedEditorSelect = undefined;
+        this.reloadedHiddenList = undefined;
+        this.checkEntriesOnOpen = false;
 
-        this.restoreEmptyWorldControls();
+        this.restoreUnavailableWorldControls();
         restoreMovedNodes(this.moved);
         this.shell?.remove();
         this.shell = undefined;
@@ -1465,10 +1465,6 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         return changed;
     }
 
-    private buildLayout(popup: HTMLElement, _list: HTMLElement): void {
-        this.ensureLayout(popup);
-    }
-
     private observePopup(): void {
         const popup = this.findWorldPopup();
         if (!popup || this.observedPopup === popup) {
@@ -1529,30 +1525,30 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         this.documentKeyDownHandler = event => this.onEntryKeyDown(event);
         this.documentChangeHandler = event => {
             const target = targetToElement(event.target);
-            if (target?.matches('#world_editor_select')) {
+            if (event.type === 'change' && target?.matches('#world_editor_select')) {
                 this.syncSelectedWorld();
             }
+            const entry = closestEntry(event.target);
+            if (entry && entry.parentElement === this.observedList) this.scheduleSummaryUpdate(entry);
         };
         this.document.addEventListener('click', this.documentClickHandler, true);
         this.document.addEventListener('keydown', this.documentKeyDownHandler, true);
+        this.document.addEventListener('input', this.documentChangeHandler, true);
         this.document.addEventListener('change', this.documentChangeHandler, true);
 
-        {
-            if (typeof this.window.$ !== 'function') {
-                throw new Error('宿主页缺少世界书切换所需的 jQuery。');
-            }
+        if (typeof this.window.$ === 'function') {
             this.worldSelectChangeHandler = () => this.syncSelectedWorld();
             this.worldSelect = this.window.$(this.document);
             this.worldSelect.on('change.thModernWorldInfo_modern_ui', '#world_editor_select', this.worldSelectChangeHandler);
         }
 
         this.observer = new this.window.MutationObserver(mutations => {
+            const structureChanged = mutations.some(mutation => mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0);
+            if (structureChanged && !this.findWorldInfo()?.classList.contains('openDrawer')) this.checkEntriesOnOpen = true;
             if (mutations.some(mutation => this.observedEditorSelect?.contains(mutation.target))) {
-                this.restoreWorldAfterOptionsChange();
+                this.restoreNativeWorldEditor();
             }
-            if (mutations.some(mutation => mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0)) {
-                this.scheduleEnhance();
-            }
+            if (structureChanged) this.scheduleEnhance();
         });
         this.observeNativeEditor();
         this.observePopup();
@@ -1578,21 +1574,41 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         if (editorSelect) this.observer.observe(editorSelect, { childList: true, subtree: true });
         this.observedList = list;
         this.observedEditorSelect = editorSelect;
-        if (selectReplaced) this.restoreWorldAfterOptionsChange();
+        if (selectReplaced) this.restoreNativeWorldEditor();
     }
 
-    private restoreWorldAfterOptionsChange(): void {
+    private restoreNativeWorldEditor(): void {
         const select = this.observedEditorSelect;
+        if (!select?.isConnected) return;
+
         const worldName = this.selectedWorldName;
-        if (select && select.value === '' && worldName) {
+        let reload = false;
+        if (select.value === '' && worldName) {
             // Rebuilding the options can reset the select without emitting change.
             const option = Array.from(select.options).find(option =>
-                option.value !== '' && option.textContent?.trim() === worldName,
+                option.value !== '' && option.textContent === worldName,
             );
             if (option) {
                 option.selected = true;
-                this.window.$?.(select).trigger('change');
+                reload = true;
             }
+        }
+
+        const list = this.observedList;
+        const isHidden = list?.style.display === 'none';
+        if (!isHidden) this.reloadedHiddenList = undefined;
+        if (list && this.findWorldInfo()?.classList.contains('openDrawer')) {
+            const search = this.document.querySelector<HTMLInputElement>('#world_info_search')?.value;
+            const wasCleared = this.checkEntriesOnOpen && !search && !list.querySelector(':scope > .world_entry');
+            this.checkEntriesOnOpen = false;
+            if (select.value !== '' && !this.deleteBusy && (wasCleared || (isHidden && this.reloadedHiddenList !== list))) {
+                reload = true;
+            }
+        }
+        if (reload) {
+            if (isHidden) this.reloadedHiddenList = list;
+            if (this.window.$) this.window.$(select).trigger('change');
+            else select.dispatchEvent(new Event('change', { bubbles: true }));
         }
         this.syncSelectedWorld();
     }
@@ -1621,7 +1637,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         }
 
         for (const entry of list.querySelectorAll<HTMLElement>(':scope > .world_entry')) {
-            ensureEntrySummary(this.document, entry, this.scheduleSummaryUpdate);
+            ensureEntrySummary(this.document, entry);
             if (this.multiSelect || this.selectedUids.size > 0) {
                 const uid = getEntryUid(entry);
                 entry.classList.toggle(SELECTED_ROW_CLASS, uid !== undefined && this.selectedUids.has(uid));
@@ -1640,14 +1656,35 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         }
     }
 
-    private restoreEmptyWorldControls(): void {
-        for (const control of this.emptyWorldControls) control.inert = false;
-        this.emptyWorldControls.clear();
+    private restoreUnavailableWorldControls(): void {
+        for (const control of this.unavailableWorldControls) control.inert = false;
+        this.unavailableWorldControls.clear();
+    }
+
+    private get deleteBusy(): boolean {
+        const worldName = getSelectedWorldName(this.document);
+        return this.deletingWorldName === worldName || pendingWorldWrites.has(worldName);
     }
 
     private syncWorldAvailability(): void {
         if (!this.shell || !this.main) return;
-        const empty = getSelectedWorldName(this.document) === '';
+        const worldName = getSelectedWorldName(this.document);
+        const empty = worldName === '';
+        const busy = this.deleteBusy;
+        const pending = pendingWorldWrites.get(worldName);
+        if (pending && this.deletingWorldName !== worldName && this.observedWorldWrite !== pending) {
+            this.observedWorldWrite = pending;
+            const refresh = () => {
+                if (!this.mounted || this.observedWorldWrite !== pending) return;
+                this.observedWorldWrite = undefined;
+                this.syncWorldAvailability();
+            };
+            void pending.then(refresh, refresh);
+        }
+        if (busy) this.main.setAttribute('aria-busy', 'true');
+        else this.main.removeAttribute('aria-busy');
+        if (this.multiButton) this.multiButton.disabled = busy;
+        if (this.deleteSelectedButton) this.deleteSelectedButton.disabled = busy;
         this.shell.classList.toggle('th-modern-wi-no-world', empty);
         let message = this.main.querySelector<HTMLElement>(':scope > .th-modern-wi-empty-world');
         if (!message) {
@@ -1656,21 +1693,23 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             this.main.prepend(message);
         }
         message.hidden = !empty;
-        this.restoreEmptyWorldControls();
-        if (empty) {
-            const controls = [this.toolbar, ...this.shell.querySelectorAll<HTMLElement>(
+        this.restoreUnavailableWorldControls();
+        if (empty || busy) {
+            const controls = [this.toolbar, busy ? this.main : undefined, ...this.shell.querySelectorAll<HTMLElement>(
                 '#world_popup_export, #world_popup_name_button, #world_duplicate, #world_popup_delete',
             )];
             for (const control of controls) {
                 if (control && !control.inert) {
                     control.inert = true;
-                    this.emptyWorldControls.add(control);
+                    this.unavailableWorldControls.add(control);
                 }
             }
         }
     }
 
     private syncSelectedWorld(): void {
+        // TauriTavern 会暂时移出关闭面板的内容，等待选择器重新挂载。
+        if (!this.document.getElementById('world_editor_select')) return;
         this.syncWorldAvailability();
         const worldName = getSelectedWorldName(this.document);
         if (worldName === this.selectedWorldName) {
@@ -1744,11 +1783,17 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
     }
 
     private selectFirstEntry(): void {
-        if (this.selectedEntry?.isConnected) {
+        if (this.selectedEntry?.isConnected || this.multiSelect || this.deleteBusy) {
             return;
         }
 
-        const first = this.findEntriesList()?.querySelector<HTMLElement>('.world_entry');
+        const worldName = getSelectedWorldName(this.document);
+        if (!worldName) return;
+        const rows = this.findEntriesList()?.querySelectorAll<HTMLElement>(':scope > .world_entry');
+        const first = rows && Array.from(rows).find(entry => {
+            const entryWorld = getEntryWorldName(entry);
+            return entryWorld === undefined || entryWorld === worldName;
+        });
         if (first) {
             this.selectEntry(first);
         }
@@ -1794,8 +1839,8 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         }
 
         this.cancelPendingEditorRetry();
-        ensureEntrySummary(this.document, entry, this.scheduleSummaryUpdate);
-        if (setupEntryTabs(this.document, entry, this.scheduleSummaryUpdate)) {
+        ensureEntrySummary(this.document, entry);
+        if (setupEntryTabs(this.document, entry)) {
             this.attachEntryEditor(entry);
             return;
         }
@@ -1819,7 +1864,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
                 return;
             }
             attempts += 1;
-            if (setupEntryTabs(this.document, entry, this.scheduleSummaryUpdate)) {
+            if (setupEntryTabs(this.document, entry)) {
                 entry.classList.remove(NATIVE_EDITOR_LOADING_CLASS);
                 this.attachEntryEditor(entry);
                 return;
@@ -1958,48 +2003,7 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         this.deleteSelectedButton.setAttribute('aria-label', this.deleteSelectedButton.title);
     }
 
-    private setDeleteBusy(busy: boolean): void {
-        this.deleteBusy = busy;
-        if (this.shell) {
-            this.shell.inert = busy;
-            if (busy) {
-                this.shell.setAttribute('aria-busy', 'true');
-            } else {
-                this.shell.removeAttribute('aria-busy');
-            }
-        }
-        if (this.multiButton) {
-            this.multiButton.disabled = busy;
-        }
-        if (this.deleteSelectedButton) {
-            this.deleteSelectedButton.disabled = busy;
-            if (busy) {
-                this.deleteSelectedButton.setAttribute('aria-busy', 'true');
-            } else {
-                this.deleteSelectedButton.removeAttribute('aria-busy');
-            }
-        }
-
-        if (busy) {
-            const element = this.document.querySelector<HTMLSelectElement>('#world_editor_select');
-            if (element) {
-                this.lockedWorldSelect = { element, wasDisabled: element.disabled };
-                element.disabled = true;
-            }
-        } else if (this.lockedWorldSelect) {
-            this.lockedWorldSelect.element.disabled = this.lockedWorldSelect.wasDisabled;
-            this.lockedWorldSelect = undefined;
-        }
-    }
-
-    private isDeleteContextCurrent(worldName: string, revision: number): boolean {
-        return this.mounted && this.worldRevision === revision && getSelectedWorldName(this.document) === worldName;
-    }
-
     private async deleteSelectedEntries(): Promise<void> {
-        if (this.deleteBusy) {
-            return;
-        }
         this.syncSelectedWorld();
         const selected = Array.from(this.selectedUids);
         if (!selected.length) {
@@ -2011,7 +2015,14 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
             toastr.error('无法确定当前正在编辑的世界书');
             return;
         }
+        if (this.deletingWorldName || pendingWorldWrites.has(worldName)) {
+            this.window.toastr?.info?.('上一次世界书删除仍在等待结果，请稍后再试。');
+            return;
+        }
+        const popup = this.findWorldPopup();
         const worldRevision = this.worldRevision;
+        const isCurrent = () => this.mounted && this.worldRevision === worldRevision &&
+            getSelectedWorldName(this.document) === worldName && this.findWorldPopup() === popup;
 
         const list = this.findEntriesList();
         const names = selected.slice(0, 5).map(uid => {
@@ -2024,58 +2035,68 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         if (!confirmed) {
             return;
         }
-        if (!this.isDeleteContextCurrent(worldName, worldRevision)) {
+        if (!isCurrent()) {
             return;
         }
 
         const selectedSnapshot = new Set(selected);
-        this.setDeleteBusy(true);
+        this.deletingWorldName = worldName;
+        this.syncWorldAvailability();
+        let write: Promise<void> | undefined;
 
         try {
             const context = this.window.SillyTavern.getContext();
-            const originalWorldInfo = await context.loadWorldInfo(worldName);
-            if (!this.isDeleteContextCurrent(worldName, worldRevision)) {
-                return;
-            }
-            if (!originalWorldInfo) {
-                throw new Error(`无法读取世界书“${worldName}”`);
-            }
-            const baseline = JSON.stringify(originalWorldInfo);
             const headers = context.getRequestHeaders?.();
             if (!headers) throw new Error('宿主不支持验证世界书版本，请使用原生删除功能');
-            const readPersistedWorld = async (errorMessage: string) => {
+            const readPersistedWorld = async (signal: AbortSignal, errorMessage: string) => {
                 const response = await this.window.fetch('/api/worldinfo/get', {
-                    method: 'POST', headers, body: JSON.stringify({ name: worldName }), cache: 'no-cache',
+                    method: 'POST', headers, body: JSON.stringify({ name: worldName }), cache: 'no-cache', signal,
                 });
                 if (!response.ok) throw new Error(errorMessage);
                 return response.json();
             };
-            const latest = await readPersistedWorld('无法验证世界书是否被其他窗口修改');
-            const current = await context.loadWorldInfo(worldName);
-            if (worldInfoChanged(baseline, latest, current)) {
-                throw new Error('世界书已更改，请检查并刷新后重试');
-            }
-            const updatedWorldInfo = removeWorldInfoEntries(originalWorldInfo, selectedSnapshot, this.window);
-            if (!this.isDeleteContextCurrent(worldName, worldRevision)) {
-                return;
-            }
+            const updatedWorldInfo = await readWorldInfoWithTimeout(async signal => {
+                const original = await context.loadWorldInfo(worldName);
+                if (signal.aborted || !isCurrent()) return;
+                if (!original) throw new Error(`无法读取世界书“${worldName}”`);
+                const baseline = worldInfoSnapshot(original);
+                const latest = await readPersistedWorld(signal, '无法验证世界书是否被其他窗口修改');
+                if (signal.aborted || !isCurrent()) return;
+                const current = await context.loadWorldInfo(worldName);
+                if (signal.aborted || !isCurrent()) return;
+                if (worldInfoChanged(baseline, latest, current)) {
+                    throw new Error('世界书已更改，请检查并刷新后重试');
+                }
+                return removeWorldInfoEntries(current, selectedSnapshot, this.window);
+            }, '读取世界书超时，请重试');
+            if (!updatedWorldInfo || !isCurrent() || !this.findWorldInfo()?.classList.contains('openDrawer')) return;
             // shortcut: the host has no atomic version check; concurrent writes after this check can still race.
-            const expected = JSON.stringify(updatedWorldInfo);
-            await context.saveWorldInfo(worldName, updatedWorldInfo, true);
-            const unconfirmed = '无法确认世界书已保存，请重新加载酒馆后核对条目';
-            const persisted = await readPersistedWorld(unconfirmed);
-            if (JSON.stringify(persisted) !== expected) {
-                throw new Error(unconfirmed);
-            }
+            const expected = worldInfoSnapshot(updatedWorldInfo);
+            write = Promise.resolve().then(async () => {
+                // shortcut: the host cannot cancel writes, so keep the affected book protected until it responds.
+                this.slowWriteTimer = this.window.setTimeout(() => {
+                    if (isCurrent()) this.window.toastr?.info?.('宿主仍在保存这本世界书。可以切换到其他书，保存结束后再编辑这本书。');
+                }, WORLD_INFO_RESPONSE_TIMEOUT);
+                await context.saveWorldInfo(worldName, updatedWorldInfo, true);
+                this.window.clearTimeout(this.slowWriteTimer);
+                const unconfirmed = '无法确认世界书已保存，请重新加载酒馆后核对条目';
+                const persisted = await readWorldInfoWithTimeout(signal => readPersistedWorld(signal, unconfirmed), unconfirmed);
+                if (worldInfoSnapshot(persisted) !== expected) throw new Error(unconfirmed);
+            });
+            pendingWorldWrites.set(worldName, write);
+            await write;
         } catch (error) {
             console.error('[现代化界面] 世界书批量删除失败', error);
-            toastr.error(`删除世界书条目失败：${getErrorMessage(error)}`);
+            if (isCurrent()) toastr.error(`删除世界书条目失败：${getErrorMessage(error)}`);
             return;
         } finally {
-            this.setDeleteBusy(false);
+            this.window.clearTimeout(this.slowWriteTimer);
+            if (write) pendingWorldWrites.delete(worldName);
+            this.deletingWorldName = undefined;
+            if (this.mounted) this.syncWorldAvailability();
         }
 
-        if (!this.isDeleteContextCurrent(worldName, worldRevision)) {
+        if (!isCurrent()) {
             return;
         }
         this.clearSelection();
@@ -2085,10 +2106,10 @@ class NativeWorldInfoEnhancer implements NativeWorldInfoController {
         }
         this.updateDeleteSelectedButton();
         try {
-            await this.window.SillyTavern.getContext().reloadWorldInfoEditor(worldName, true);
+            await this.window.SillyTavern.getContext().reloadWorldInfoEditor(worldName);
         } catch (error) {
             console.error('[现代化界面] 世界书删除成功，但编辑器刷新失败', error);
-            toastr.error('条目已删除，但世界书编辑器刷新失败，请手动刷新');
+            if (isCurrent()) toastr.error('条目已删除，但世界书编辑器刷新失败，请手动刷新');
         }
     }
 }
@@ -2100,6 +2121,7 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
     let worldSelects: ReturnType<typeof mountMobileWorldSelects> | undefined;
     let observedWorldInfo: HTMLElement | null = null;
     let scheduledSync = 0;
+    let drawerRetry = 0;
 
     const findWorldInfo = () => hostDocument.querySelector<HTMLElement>('#WorldInfo');
 
@@ -2141,7 +2163,6 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
         if (shouldEnable && isOpen) {
             controller ??= new NativeWorldInfoEnhancer();
             controller.mount();
-            controller.ensureLayout();
         } else if (shouldEnable) {
             controller?.closeMobileDetail();
         } else if (unmount()) {
@@ -2151,18 +2172,10 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
 
     const handleDocumentClick = (event: MouseEvent) => {
         const target = targetToElement(event.target);
-        if (target?.closest('#WIDrawerIcon, .drawer-toggle, [data-target="WorldInfo"]')) {
-            hostWindow.requestAnimationFrame(() => {
-                if (controller?.isMounted()) {
-                    controller.ensureLayout();
-                }
-            });
-            hostWindow.setTimeout(() => {
-                if (controller?.isMounted()) {
-                    controller.ensureLayout();
-                }
-            }, 180);
-        }
+        if (!target?.closest('#WIDrawerIcon, .drawer-toggle:has(#WIDrawerIcon), [data-target="WorldInfo"]')) return;
+        scheduleSync();
+        hostWindow.clearTimeout(drawerRetry);
+        drawerRetry = hostWindow.setTimeout(scheduleSync, 180);
     };
     hostDocument.addEventListener('click', handleDocumentClick, true);
 
@@ -2209,6 +2222,7 @@ export function mountWorldInfoEditor(store: Store): { destroy: () => void } {
             observer?.disconnect();
             documentObserver.disconnect();
             hostDocument.removeEventListener('click', handleDocumentClick, true);
+            hostWindow.clearTimeout(drawerRetry);
             if (scheduledSync) {
                 hostWindow.cancelAnimationFrame(scheduledSync);
                 scheduledSync = 0;
