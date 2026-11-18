@@ -458,6 +458,7 @@ body.th-modern-enabled .th-modern-mobile-world-picker-viewport {
   border-top: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 48%, transparent);
   background: color-mix(in srgb, var(--SmartThemeChatTintColor) 30%, transparent);
   overscroll-behavior: contain;
+  overflow-anchor: none;
   scroll-behavior: auto;
   scrollbar-gutter: stable;
   touch-action: pan-y;
@@ -479,7 +480,7 @@ body.th-modern-enabled .th-modern-mobile-world-picker-row {
   align-items: stretch;
   box-sizing: border-box;
   width: 100%;
-  height: 52px;
+  height: var(--th-modern-world-row-height, 52px);
   border-bottom: 1px solid color-mix(in srgb, var(--SmartThemeBorderColor) 34%, transparent);
   background: transparent;
   content-visibility: auto;
@@ -507,7 +508,7 @@ body.th-modern-enabled .th-modern-mobile-world-picker-row-select {
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  height: 52px;
+  height: var(--th-modern-world-row-height, 52px);
   margin: 0;
   padding: 0 0.4rem 0 0.82rem;
   border: 0;

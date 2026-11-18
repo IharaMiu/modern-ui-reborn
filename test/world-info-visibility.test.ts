@@ -350,12 +350,33 @@ for (const width of [1280, 800, 390]) {
         picker = document.querySelector('.th-modern-mobile-world-picker');
         picker.querySelector('.is-placeholder .th-modern-mobile-world-picker-row-select').click(); await tick();
         check(editorSelect.value === '' && visible(emptyMessage), 'cancel selection returns to empty state');
-        for (let i = 0; i < 30; i++) editorSelect.append(new Option('Additional book '+i, 'extra-'+i));
+        for (let i = 0; i < 1000; i++) editorSelect.append(new Option('Additional book '+i, 'extra-'+i));
         await tick(); trigger.click(); await tick();
         picker = document.querySelector('.th-modern-mobile-world-picker');
         const viewport = picker.querySelector('.th-modern-mobile-world-picker-viewport');
         check(viewport.scrollHeight > viewport.clientHeight, 'long list remains scrollable');
-        picker.querySelector('.th-modern-mobile-world-picker-close').click(); await tick();
+        const pickerRows = '.th-modern-mobile-world-picker-row';
+        check(picker.querySelectorAll(pickerRows).length < 40, 'large world list bounds the number of DOM rows');
+        const pickerSearch = picker.querySelector('.th-modern-mobile-world-picker-search input');
+        const arrowDown = () => document.activeElement.dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowDown', bubbles:true}));
+        pickerSearch.focus(); arrowDown();
+        for (let i = 0; i < 30; i++) arrowDown();
+        check(document.activeElement.closest(pickerRows)?.getAttribute('aria-posinset') === '31', 'keyboard moves beyond the initial virtual world rows');
+        viewport.scrollTop = viewport.scrollHeight;
+        viewport.dispatchEvent(new Event('scroll'));
+        await tick();
+        const lastWorld = picker.querySelector(pickerRows+'[aria-posinset="1003"]:not([hidden])');
+        check(lastWorld?.textContent.includes('Additional book 999'), 'scroll reaches the last virtual world');
+        const favorite = lastWorld.querySelector('.th-modern-mobile-world-picker-favorite');
+        favorite.click();
+        check(favorite.getAttribute('aria-pressed') === 'true', 'last virtual world can be favorited');
+        pickerSearch.value = 'Additional book 999';
+        pickerSearch.dispatchEvent(new Event('input'));
+        await new Promise(resolve => setTimeout(resolve, 125));
+        check(picker.querySelectorAll(pickerRows+':not([hidden])').length === 1, 'search filters the whole world list from the last page');
+        pickerSearch.focus(); arrowDown();
+        document.activeElement.click(); await tick();
+        check(editorSelect.value === 'extra-999' && !picker.isConnected, 'keyboard can select a world found outside the initial window');
         controller.destroy();
         check((handlers.get(document) ?? []).length === 0, 'destroy removes delegated world change handler');
         replacementPanel.append(document.createElement('div')); await tick();
@@ -386,9 +407,10 @@ for (const width of [1280, 800, 390]) {
         presetPanel.innerHTML = '<select id="main_api"><option value="openai">Chat Completion</option></select><div class="scrollableInner"><div id="ai_response_configuration"><div id="advanced-ai-config-block"><div id="openai_settings"><div class="range-block"><div id="completion_prompt_manager"></div></div></div></div></div></div>';
         presetPanel.querySelector('#ai_response_configuration').prepend(presetBlock.closest('.th-modern-preset-toolbar'));
         document.body.append(presetPanel);
-        const order = [{identifier:'sample', enabled:true}], prompt = {identifier:'sample', name:'Sample'};
-        const pm = {configuration:{prefix:'completion_'}, serviceSettings:{prompts:[prompt]},
-          getPromptOrderForCharacter: () => order, getPromptById: id => id === prompt.identifier ? prompt : null,
+        const prompt = {identifier:'sample', name:'Sample'}, spare = {identifier:'spare', name:'Spare'};
+        const order = [prompt, spare].map(({identifier}) => ({identifier, enabled:true}));
+        const pm = {configuration:{prefix:'completion_'}, serviceSettings:{prompts:[prompt, spare]},
+          getPromptOrderForCharacter: () => order, getPromptById: id => pm.serviceSettings.prompts.find(item => item.identifier === id) ?? null,
           isPromptEditAllowed: () => false, isPromptDeletionAllowed: () => true, isPromptToggleAllowed: () => true};
         presetEditor.host = {getPromptManager: () => pm};
         const syncPreset = presetEditor.sync.bind(presetEditor);
@@ -404,6 +426,12 @@ for (const width of [1280, 800, 390]) {
         const presetList = presetPanel.querySelector('.th-modern-pm-list');
         const presetDetail = presetPanel.querySelector('.th-modern-pm-editor');
         const presetRow = presetList.querySelector('[data-id="sample"]');
+        const promptSearch = presetPanel.querySelector('.th-modern-pm-search input');
+        const searchPrompts = value => { promptSearch.value = value; promptSearch.dispatchEvent(new Event('input')); };
+        searchPrompts('sam');
+        check(presetList.querySelector('[data-id="sample"]') === presetRow && !presetList.querySelector('[data-id="spare"]'), 'search preserves the matching row and drops the other row');
+        searchPrompts('');
+        check(presetList.querySelector('[data-id="sample"]') === presetRow && presetRow.nextElementSibling?.dataset.id === 'spare', 'clearing search keeps retained rows and restores order');
         const desktop = matchMedia('(min-width:900px)').matches;
         const inset = (node, side) => node.getBoundingClientRect()[side];
         const fillDrawer = () => {
@@ -422,6 +450,13 @@ for (const width of [1280, 800, 390]) {
         const listWidth = presetList.getBoundingClientRect().width;
         presetRow.click();
         check(visible(presetDetail) && visible(presetList) === desktop, 'selection shows details with the correct desktop or mobile layout');
+        const copyPrompt = presetDetail.querySelector('[title="复制此条目生成副本"]');
+        copyPrompt.focus();
+        presetEditor.sync();
+        check(copyPrompt.isConnected && document.activeElement === copyPrompt, 'unchanged preset sync preserves the focused action');
+        prompt.name = 'Sample renamed';
+        presetEditor.sync();
+        check(presetDetail.querySelector('.th-modern-pm-editor-title').textContent === 'Sample renamed', 'prompt metadata changes still update the editor header');
         if (desktop) {
           fillDrawer();
           check(Math.abs(presetList.getBoundingClientRect().width - listWidth) < 1, 'selecting a prompt does not resize the list');
@@ -434,6 +469,20 @@ for (const width of [1280, 800, 390]) {
           presetDetail.querySelector('.th-modern-pm-back').click();
           check(visible(presetList) && !visible(presetDetail), 'mobile can return to the list');
         }
+        searchPrompts('from-content');
+        check(!presetList.querySelector('[data-id="spare"]'), 'unmatched prompt is hidden');
+        spare.content = 'from-content';
+        presetEditor.sync();
+        check(presetList.querySelector('[data-id="spare"]'), 'external prompt content updates search results');
+        searchPrompts('');
+        pm.serviceSettings.extensions = {luker:{prompt_groups:[{id:'test-group', name:'Test group', identifiers:['sample']}]}};
+        presetEditor.sync();
+        presetList.querySelector('[data-group-id="test-group"]').click();
+        const groupName = presetDetail.querySelector('.th-modern-pm-group-form input');
+        groupName.focus();
+        groupName.value = 'Pending edit';
+        presetEditor.sync();
+        check(document.activeElement === groupName && groupName.value === 'Pending edit', 'unchanged group sync preserves focus and uncommitted text');
         presetEditor.destroy();
         const writesAfterDestroy = writes;
         presetSelect.dispatchEvent(new Event('change', {bubbles:true}));

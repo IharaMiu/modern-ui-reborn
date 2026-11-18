@@ -888,6 +888,7 @@ function mountRecentChats($list: JQuery<HTMLElement>): { refresh: () => void; de
   let request_revision = 0;
   let navigation_revision = 0;
   let navigation_running = false;
+  let has_loaded = false;
   let destroyed = false;
 
   const setNavigationRunning = (running: boolean) => {
@@ -938,13 +939,14 @@ function mountRecentChats($list: JQuery<HTMLElement>): { refresh: () => void; de
     request_controller?.abort();
     request_controller = new AbortController();
     const revision = ++request_revision;
-    renderRecentLoading($list);
+    if (!has_loaded) renderRecentLoading($list);
     void fetchRecentChats(request_controller.signal)
       .then(chats => {
         if (destroyed || revision !== request_revision) {
           return;
         }
-        $list.empty();
+        has_loaded = true;
+        $list.empty().removeAttr('title');
         if (chats.length === 0) {
           $list.append($('<div>').addClass('th-modern-recent-state').text('暂无最近聊天'));
           return;
@@ -960,7 +962,11 @@ function mountRecentChats($list: JQuery<HTMLElement>): { refresh: () => void; de
         if (destroyed || revision !== request_revision || isAbortError(error)) {
           return;
         }
-        renderRecentError($list, error);
+        if (has_loaded) {
+          $list.attr('title', `刷新最近聊天失败：${error instanceof Error ? error.message : String(error)}`);
+        } else {
+          renderRecentError($list, error);
+        }
       });
   };
 
@@ -2875,6 +2881,48 @@ function eventOn(eventType: string, handler: (...args: any[]) => void) {
   return { stop: () => {} };
 }
 
+function watchRecentChatChanges(refresh: () => void): () => void {
+  const body = getHostDocument().body;
+  const isGenerating = () => body.dataset.generating === 'true';
+  let listDirty = false;
+  let messageDirty = false;
+  const flush = _.debounce(() => {
+    const messagesReady = messageDirty && !isGenerating();
+    if (!listDirty && !messagesReady) return;
+    listDirty = false;
+    if (messagesReady) messageDirty = false;
+    refresh();
+  }, 500);
+  const scheduleList = () => {
+    listDirty = true;
+    flush();
+  };
+  const scheduleMessage = () => {
+    messageDirty = true;
+    if (!isGenerating()) flush();
+  };
+  const events = [
+    eventOn(tavern_events.APP_READY, scheduleList),
+    eventOn(tavern_events.CHAT_CHANGED, scheduleList),
+    eventOn(tavern_events.CHAT_CREATED, scheduleList),
+    eventOn(tavern_events.CHAT_DELETED, scheduleList),
+    eventOn(tavern_events.CHARACTER_PAGE_LOADED, scheduleList),
+    eventOn(tavern_events.MESSAGE_SENT, scheduleMessage),
+    eventOn(tavern_events.MESSAGE_RECEIVED, scheduleMessage),
+  ];
+  // The host clears this marker after a reply, cancellation, or failed generation.
+  const observer = new (getHostWindow().MutationObserver)(() => {
+    if (messageDirty && !isGenerating()) flush();
+  });
+  observer.observe(body, { attributes: true, attributeFilter: ['data-generating'] });
+  scheduleList();
+  return () => {
+    observer.disconnect();
+    flush.cancel();
+    events.forEach(event => event.stop());
+  };
+}
+
 function mountActiveRuntime(store: ReturnType<typeof useModernLayoutStore>): { destroy: () => void } {
   const cleanups: Array<() => void> = [clearBodyState];
   let recent_chats: ReturnType<typeof mountRecentChats> | undefined;
@@ -2912,19 +2960,7 @@ function mountActiveRuntime(store: ReturnType<typeof useModernLayoutStore>): { d
     );
     cleanups.push(stop_state_watch);
 
-    const refresh_recent_chats = _.debounce(() => recent_chats?.refresh(), 500);
-    cleanups.push(refresh_recent_chats.cancel);
-    const events = [
-      eventOn(tavern_events.APP_READY, refresh_recent_chats),
-      eventOn(tavern_events.CHAT_CHANGED, refresh_recent_chats),
-      eventOn(tavern_events.CHAT_CREATED, refresh_recent_chats),
-      eventOn(tavern_events.CHAT_DELETED, refresh_recent_chats),
-      eventOn(tavern_events.MESSAGE_SENT, refresh_recent_chats),
-      eventOn(tavern_events.MESSAGE_RECEIVED, refresh_recent_chats),
-      eventOn(tavern_events.CHARACTER_PAGE_LOADED, refresh_recent_chats),
-    ];
-    cleanups.push(() => events.forEach(event => event.stop()));
-    refresh_recent_chats();
+    cleanups.push(watchRecentChatChanges(() => recent_chats?.refresh()));
 
     return { destroy: _.once(() => runCleanupStack(cleanups)) };
   } catch (error) {

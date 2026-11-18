@@ -17,6 +17,8 @@ const HOST_HIDDEN_CLASS = 'th-modern-extension-host-hidden';
 const HOST_ACTIVE_CLASS = 'th-modern-extension-host-active';
 const DRAWER_CLASS = 'th-modern-extension-drawer';
 const DRAWER_ACTIVE_CLASS = 'th-modern-extension-drawer-active';
+const OWN_ENTRY_CLASSES = new Set([HOST_HIDDEN_CLASS, HOST_ACTIVE_CLASS, DRAWER_CLASS, DRAWER_ACTIVE_CLASS]);
+const STRUCTURE_CLASSES = ['inline-drawer', 'inline-drawer-toggle', 'inline-drawer-content', 'standoutHeader'];
 const MOBILE_ACCORDION_CLASS = 'th-modern-extension-mobile-accordion';
 const MOBILE_ACCORDION_MAX_DRAWER_WIDTH = 440;
 const SELECTED_EXTENSION_STORAGE_KEY = 'TavernHelper.modernLayout.selectedExtensionSettings';
@@ -119,8 +121,10 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
   let navigationCount: HTMLElement | null = null;
   let columns: HTMLElement[] = [];
   let entries: ExtensionEntry[] = [];
+  let entryHosts = new Set<HTMLElement>();
   let selectedKey = readSelectedKey();
   let renderedSignature = '';
+  let entriesDirty = false;
   let syncFrame = 0;
   let openFrame = 0;
   let structureObserver: MutationObserver | null = null;
@@ -449,17 +453,21 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       return;
     }
 
+    entriesDirty = false;
     const nextEntries = collectEntries();
+    const nextHosts = new Set(nextEntries.map(entry => entry.host));
+    const nextDrawers = new Set(nextEntries.map(entry => entry.drawer));
     // Keep live entries visible: hiding them during a drag resets the column scroll.
     entries.forEach(entry => {
-      if (!nextEntries.some(next => next.host === entry.host)) {
+      if (!nextHosts.has(entry.host)) {
         entry.host.classList.remove(HOST_HIDDEN_CLASS, HOST_ACTIVE_CLASS);
       }
-      if (!nextEntries.some(next => next.drawer === entry.drawer)) {
+      if (!nextDrawers.has(entry.drawer)) {
         entry.drawer?.classList.remove(DRAWER_CLASS, DRAWER_ACTIVE_CLASS);
       }
     });
     entries = nextEntries;
+    entryHosts = nextHosts;
     entries.forEach(entry => entry.drawer?.classList.add(DRAWER_CLASS));
 
     if (!entries.some(entry => entry.key === selectedKey)) {
@@ -486,15 +494,52 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
   }
 
   function scheduleSyncEntries(): void {
-    if (syncFrame !== 0) {
+    entriesDirty = true;
+    if (!panel?.classList.contains('openDrawer') || syncFrame !== 0) {
       return;
     }
 
-    syncFrame = hostWindow.requestAnimationFrame(syncEntries);
+    syncFrame = hostWindow.requestAnimationFrame(() => {
+      syncFrame = 0;
+      if (panel?.classList.contains('openDrawer')) syncEntries();
+    });
   }
 
-  function handleStructureMutations(): void {
-    scheduleSyncEntries();
+  function handleStructureMutations(records: MutationRecord[]): void {
+    if (entriesDirty || records.some(isDirectoryMutation)) scheduleSyncEntries();
+  }
+
+  function isDirectoryMutation(record: MutationRecord): boolean {
+    const element = record.target instanceof hostWindow.HTMLElement ? record.target : record.target.parentElement;
+    if (!element) return false;
+    const column = columns.find(item => item.contains(element));
+    if (!column) return false;
+    if (element === column) return record.type === 'childList';
+    const closestDrawer = element.closest('.inline-drawer');
+    const drawer = column.contains(closestDrawer) ? closestDrawer : null;
+    if (column.contains(drawer?.parentElement?.closest('.inline-drawer') ?? null)) return false;
+
+    const directChild = element.parentElement === column;
+    const subgroup = element.closest('.mc3-native-subgroup-header');
+    const header = element.closest('.inline-drawer-toggle, h3, h4, .standoutHeader');
+    const content = element.closest('.inline-drawer-content');
+    const inContent = !!drawer && content !== drawer && drawer.contains(content);
+    if (inContent && element.parentElement !== drawer) return false;
+    if (record.type === 'attributes') {
+      if (record.attributeName === 'aria-expanded') return element === subgroup;
+      if (record.attributeName === 'class') {
+        const previous = (record.oldValue ?? '').split(/\s+/).filter(name => name && !OWN_ENTRY_CLASSES.has(name));
+        const current = Array.from(element.classList).filter(name => !OWN_ENTRY_CLASSES.has(name));
+        if (previous.join(' ') === current.join(' ')) return false;
+        if (STRUCTURE_CLASSES.some(name => previous.includes(name) !== current.includes(name))) return true;
+      }
+      return directChild || element === drawer ||
+        ((record.attributeName === 'id' || record.attributeName === 'script_id') && entryHosts.has(element)) ||
+        (record.attributeName === 'class' && !inContent && !!header && !element.closest('a, button, i, svg, .notes-link, .inline-drawer-icon'));
+    }
+    if (inContent) return false;
+    if (subgroup || (header && !element.closest('a, button, i, svg, .notes-link, .inline-drawer-icon'))) return true;
+    return record.type === 'childList' && (!drawer || element === drawer);
   }
 
   function observeStructure(): void {
@@ -503,19 +548,23 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       return;
     }
 
-    if (layout) {
-      structureObserver.observe(layout, {
+    columns.forEach(column => {
+      structureObserver?.observe(column, {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ['class', 'style', 'hidden'],
+        attributeOldValue: true,
+        attributeFilter: ['class', 'style', 'hidden', 'id', 'script_id', 'aria-expanded'],
       });
-    }
+      column.querySelectorAll(':scope > .mc3-native-subgroup-header').forEach(header => {
+        structureObserver?.observe(header, { characterData: true, subtree: true });
+      });
+    });
 
     entries.forEach(entry => {
-      if (entry.header) {
-        structureObserver?.observe(entry.header, {
-          childList: true,
+      const title = entry.header ?? entry.host.querySelector('h3, h4, .standoutHeader');
+      if (title) {
+        structureObserver?.observe(title, {
           characterData: true,
           subtree: true,
         });
@@ -591,7 +640,10 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
 
     structureObserver = new hostWindow.MutationObserver(handleStructureMutations);
     observeStructure();
-    panelObserver = new hostWindow.MutationObserver(() => scheduleEnsureSelectedEntryOpen());
+    panelObserver = new hostWindow.MutationObserver(() => {
+      if (entriesDirty) scheduleSyncEntries();
+      else scheduleEnsureSelectedEntryOpen();
+    });
     panelObserver.observe(panel, { attributes: true, attributeFilter: ['class'] });
     panelResizeObserver = new hostWindow.ResizeObserver(records => {
       const panelRecord = records.find(record => record.target === panel);
@@ -600,7 +652,8 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
       }
     });
     panelResizeObserver.observe(panel);
-    syncEntries();
+    if (panel.classList.contains('openDrawer')) syncEntries();
+    else entriesDirty = true;
   }
 
   function unmountLayout(): void {
@@ -645,7 +698,9 @@ export function mountExtensionSettings(store: Store): { destroy: () => void } {
     navigationCount = null;
     columns = [];
     entries = [];
+    entryHosts.clear();
     renderedSignature = '';
+    entriesDirty = false;
   }
 
   const stopWatch = watch(

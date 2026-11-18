@@ -52,8 +52,13 @@ test(`menu cleaner navigation, menu dismissal and QR folding at ${width}px`, { s
   `))});
   (async () => {
     const store = {is_active:true, settings:{modernExtensionSettings:true, quickReplyCollapsed:true}};
+    const panel = document.getElementById('rm_extensions_block');
+    panel.classList.replace('openDrawer', 'closedDrawer');
     const ext = mountExtensionSettings(store);
     const nav = () => [...document.querySelectorAll('.th-modern-extension-nav-list button')];
+    check(nav().length === 0, 'closed directory defers its initial scan');
+    panel.classList.replace('closedDrawer', 'openDrawer');
+    await tick();
     check(nav().map(n=>n.textContent).join('|') === 'Second|▼ Group|First', 'CSS order and subgroup header reach navigation');
     const group = document.getElementById('group'), first = document.getElementById('first');
     group.addEventListener('click', () => { first.classList.toggle('mc3-hidden'); group.setAttribute('aria-expanded', String(!first.classList.contains('mc3-hidden'))); });
@@ -82,6 +87,27 @@ test(`menu cleaner navigation, menu dismissal and QR folding at ${width}px`, { s
     check(nav().at(-1).textContent === 'First', 'moving columns updates navigation');
     first.firstElementChild.classList.add('mc3-hidden'); await tick();
     check(!nav().some(n=>n.textContent === 'First'), 'hidden nested drawer does not become an unnamed fallback');
+    const originalComputedStyle = window.getComputedStyle;
+    let orderReads = 0;
+    window.getComputedStyle = (node, ...args) => {
+      if (node.parentElement?.id === 'extensions_settings') orderReads++;
+      return originalComputedStyle.call(window, node, ...args);
+    };
+    const second = document.getElementById('second');
+    second.querySelector('.inline-drawer-content').style.opacity = '.5';
+    await tick();
+    check(orderReads === 0, 'settings content changes do not rescan an open directory');
+    panel.classList.replace('openDrawer', 'closedDrawer');
+    const title = second.querySelector('b').firstChild;
+    title.data = 'Renamed';
+    await tick();
+    check(orderReads === 0 && nav()[0].textContent === 'Second', 'closed directory defers title changes');
+    panel.classList.replace('closedDrawer', 'openDrawer');
+    await tick();
+    check(nav()[0].textContent === 'Renamed', 'opening the directory applies deferred title changes');
+    title.data = 'Second';
+    await tick();
+    window.getComputedStyle = originalComputedStyle;
     ext.destroy();
     check(!document.querySelector('.th-modern-extension-nav'), 'navigation cleans up');
 

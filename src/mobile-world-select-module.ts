@@ -11,6 +11,9 @@ const CUSTOM_MODE_CLASS = 'th-modern-world-select-custom';
 const GLOBAL_FAVORITES_KEY = 'th_modern_world_book_favorites';
 const RENAME_INTENT_TIMEOUT_MS = 30_000;
 const SEARCH_DELAY_MS = 90;
+const PICKER_ROW_HEIGHT = 52;
+const VIRTUAL_LIST_THRESHOLD = 128;
+const ROW_OVERSCAN = 4;
 
 type HostWindow = Window &
   typeof globalThis & {
@@ -32,6 +35,7 @@ type PickerOption = {
 };
 
 type PickerRowView = {
+  option?: PickerOption;
   favoriteButton: HTMLButtonElement;
   favoriteOffIcon: HTMLElement;
   favoriteOnIcon: HTMLElement;
@@ -773,6 +777,9 @@ class MobileWorldPicker {
   private emptyState?: HTMLElement;
   private emptyStateText?: Text;
   private rowPool: PickerRowView[] = [];
+  private rowStart = 0;
+  private rowEnd = 0;
+  private scrollFrame = 0;
   private previousFocus?: HTMLElement;
   private searchTimer = 0;
   private query = '';
@@ -856,6 +863,8 @@ class MobileWorldPicker {
       viewport.setAttribute('aria-multiselectable', 'true');
     }
     const rows = makeElement(this.document, 'div', 'th-modern-mobile-world-picker-rows');
+    rows.style.setProperty('--th-modern-world-row-height', `${PICKER_ROW_HEIGHT}px`);
+    viewport.addEventListener('scroll', this.onViewportScroll, { passive: true });
     const emptyState = makeElement(this.document, 'div', 'th-modern-mobile-world-picker-empty');
     const emptyText = this.document.createTextNode('没有找到匹配的世界书');
     emptyState.append(makeIcon(this.document, 'fa-regular fa-folder-open'), emptyText);
@@ -907,6 +916,8 @@ class MobileWorldPicker {
     this.searchInput?.removeEventListener('keydown', this.onSearchKeyDown);
     this.clearSearchButton?.removeEventListener('click', this.clearSearch);
     this.tabs?.removeEventListener('click', this.onTabClick);
+    this.viewport?.removeEventListener('scroll', this.onViewportScroll);
+    if (this.scrollFrame) this.window.cancelAnimationFrame(this.scrollFrame);
     this.overlay?.removeEventListener('touchstart', this.stopDrawerAutoClose);
     this.overlay?.removeEventListener('mousedown', this.stopDrawerAutoClose);
     this.overlay?.removeEventListener('click', this.onOverlayClick);
@@ -979,32 +990,60 @@ class MobileWorldPicker {
     if (this.sheet?.isConnected) this.syncLayout();
   }
 
-  private renderRows(): void {
+  private renderRows(force = true): void {
     if (!this.viewport || !this.rows || !this.emptyState) {
       return;
     }
 
     const total = this.filteredOptions.length;
-    this.emptyState.hidden = total > 0;
-    if (total === 0) {
-      for (const row of this.rowPool) {
-        row.root.hidden = true;
-      }
-      return;
+    const virtual = total > VIRTUAL_LIST_THRESHOLD;
+    let start = 0;
+    let end = total;
+    if (virtual) {
+      const height = this.viewport.clientHeight || Math.min(this.window.innerHeight, 640);
+      const top = Math.min(this.viewport.scrollTop, Math.max(0, total * PICKER_ROW_HEIGHT - height));
+      start = Math.max(0, Math.floor(top / PICKER_ROW_HEIGHT) - ROW_OVERSCAN);
+      end = Math.min(total, Math.ceil((top + height) / PICKER_ROW_HEIGHT) + ROW_OVERSCAN);
     }
+    if (!force && start === this.rowStart && end === this.rowEnd) return;
+    this.rowStart = start;
+    this.rowEnd = end;
+    this.emptyState.hidden = total > 0;
+    this.rows.style.paddingTop = start ? `${start * PICKER_ROW_HEIGHT}px` : '';
+    this.rows.style.paddingBottom = end < total ? `${(total - end) * PICKER_ROW_HEIGHT}px` : '';
 
-    this.ensureRowPool(total);
+    const active = this.document.activeElement;
+    const focusedRow = this.rowPool.find(row => row.root.contains(active));
+    const focusedOption = focusedRow?.option?.element;
+    this.ensureRowPool(end - start);
     for (let poolIndex = 0; poolIndex < this.rowPool.length; poolIndex += 1) {
       const row = this.rowPool[poolIndex];
-      const option = this.filteredOptions[poolIndex];
+      const index = start + poolIndex;
+      const option = index < end ? this.filteredOptions[index] : undefined;
+      row.option = option;
       if (!option) {
         row.root.hidden = true;
         continue;
       }
       row.root.hidden = false;
+      row.root.setAttribute('aria-posinset', String(index + 1));
+      row.root.setAttribute('aria-setsize', String(total));
       this.updatePooledRow(row, option);
     }
+    if (focusedRow && focusedOption && focusedRow.option?.element !== focusedOption) {
+      const replacement = this.rowPool.find(row => row.option?.element === focusedOption);
+      const button = active === focusedRow.favoriteButton ? replacement?.favoriteButton : replacement?.selectButton;
+      (button && !button.disabled && !button.hidden ? button : this.viewport).focus({ preventScroll: true });
+    }
   }
+
+  private readonly onViewportScroll = () => {
+    if (this.filteredOptions.length <= VIRTUAL_LIST_THRESHOLD || this.scrollFrame) return;
+    this.scrollFrame = this.window.requestAnimationFrame(() => {
+      this.scrollFrame = 0;
+      this.renderRows(false);
+    });
+  };
 
   private ensureRowPool(requiredSize: number): void {
     if (!this.rows || this.rowPool.length >= requiredSize) {
@@ -1145,15 +1184,17 @@ class MobileWorldPicker {
       return;
     }
     const targetIndex = Math.max(0, Math.min(index, this.filteredOptions.length - 1));
-    const option = this.filteredOptions[targetIndex];
-    this.window.requestAnimationFrame(() => {
-      const button = this.rows
-        ?.querySelector<HTMLButtonElement>(
-          `.th-modern-mobile-world-picker-row[data-source-index="${option.sourceIndex}"] .th-modern-mobile-world-picker-row-select`,
-        );
-      button?.focus({ preventScroll: true });
-      button?.scrollIntoView({ block: 'nearest' });
-    });
+    if (this.filteredOptions.length > VIRTUAL_LIST_THRESHOLD) {
+      const top = targetIndex * PICKER_ROW_HEIGHT;
+      const bottom = top + PICKER_ROW_HEIGHT;
+      const { scrollTop, clientHeight } = this.viewport;
+      if (top < scrollTop) this.viewport.scrollTop = top;
+      else if (bottom > scrollTop + clientHeight) this.viewport.scrollTop = bottom - clientHeight;
+      this.renderRows(false);
+    }
+    const button = this.rowPool[targetIndex - this.rowStart]?.selectButton;
+    button?.focus({ preventScroll: true });
+    button?.scrollIntoView({ block: 'nearest' });
   }
 
   private readonly syncLayout = () => {
@@ -1167,6 +1208,7 @@ class MobileWorldPicker {
     if (this.layout === 'wide') {
       this.positionWideSheet();
     }
+    if (this.filteredOptions.length > VIRTUAL_LIST_THRESHOLD) this.renderRows(false);
   };
 
   private readonly onTabClick = (event: MouseEvent) => {
@@ -1281,13 +1323,16 @@ class MobileWorldPicker {
       this.close();
       return;
     }
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
     const target = targetToElement(event.target);
     const row = target?.closest<HTMLElement>('.th-modern-mobile-world-picker-row');
-    if (!row || (event.key !== 'ArrowDown' && event.key !== 'ArrowUp')) {
+    if (!row && target === this.viewport && this.filteredOptions.length > VIRTUAL_LIST_THRESHOLD) {
+      event.preventDefault();
+      this.focusFilteredIndex(Math.floor(this.viewport.scrollTop / PICKER_ROW_HEIGHT));
       return;
     }
-    const sourceIndex = Number(row.dataset.sourceIndex);
-    const currentIndex = this.filteredOptions.findIndex(option => option.sourceIndex === sourceIndex);
+    if (!row) return;
+    const currentIndex = Number(row.getAttribute('aria-posinset')) - 1;
     if (currentIndex < 0) {
       return;
     }

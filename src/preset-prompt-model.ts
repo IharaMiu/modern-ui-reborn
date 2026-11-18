@@ -66,7 +66,7 @@ export function buildPromptListSignature(
 ): string {
   return JSON.stringify({
     order: order.map(({ identifier, enabled }) => [identifier, !!enabled]),
-    groups: groups.map(g => [g.id, g.name, g.parentId ?? null, g.identifiers, !!g.single_select]),
+    groups: groups.map(g => [g.id, g.name, g.parentId ?? null, g.identifiers, !!g.single_select, !!g.collapsed]),
     prompts: prompts.map(p => [p.identifier, p.name, p.role, !!p.marker, !!p.system_prompt, p.injection_position, p.injection_depth, search ? p.content : undefined]),
     counts: Object.entries(counts).sort(([a], [b]) => a.localeCompare(b)), tokenUsage,
     collapsed: [...collapsed.entries()], search, onlyEnabled,
@@ -95,6 +95,10 @@ export function ensurePromptGroups(settings: PromptGroupSettings): PromptGroupDa
 /** 外层在前的祖先链，含自身。 */
 export function getGroupChain(groups: readonly PromptGroupData[], groupId: string): PromptGroupData[] {
   const byId = new Map(groups.map(group => [group.id, group]));
+  return readGroupChain(byId, groupId);
+}
+
+function readGroupChain(byId: ReadonlyMap<string, PromptGroupData>, groupId: string): PromptGroupData[] {
   const chain: PromptGroupData[] = [];
   let current = byId.get(groupId);
   while (current && !chain.includes(current) && chain.length < 100) {
@@ -139,11 +143,24 @@ export function buildPromptList(
 ): ListRow[] {
   const rows: ListRow[] = [];
   const seen = new Set<string>();
+  const groupsById = new Map(groups.map(group => [group.id, group]));
+  const owners = new Map<string, PromptGroupData>();
+  const chains = new Map<string, PromptGroupData[]>();
+  for (const group of groups) {
+    for (const identifier of group.identifiers) {
+      if (!owners.has(identifier)) owners.set(identifier, group);
+    }
+  }
   let open: PromptGroupData[] = [];
 
   for (const entry of order) {
-    const owner = findGroupOf(groups, entry.identifier);
-    const chain = owner ? getGroupChain(groups, owner.id) : [];
+    const owner = owners.get(entry.identifier);
+    let chain = owner ? chains.get(owner.id) : undefined;
+    if (!chain && owner) {
+      chain = readGroupChain(groupsById, owner.id);
+      chains.set(owner.id, chain);
+    }
+    chain ??= [];
     let keep = 0;
     while (keep < open.length && keep < chain.length && open[keep] === chain[keep]) keep += 1;
     open = open.slice(0, keep);

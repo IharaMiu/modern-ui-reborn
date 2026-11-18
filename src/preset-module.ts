@@ -318,6 +318,10 @@ export class PresetEditor {
   private collapsedKey = '';
   private rows: ListRow[] = [];
   private visibleRows: ListRow[] = [];
+  private renderedRows = new Map<ListRow, HTMLElement>();
+  private promptContents: HostPrompt['content'][] = [];
+  private unusedSection?: HTMLElement;
+  private editorHeaderSignature = '';
   private groups: PromptGroupData[] = [];
   private orderMap = new Map<string, PromptOrderEntry>();
   /** 列表渲染输入签名；没变化时 sync 不重建 DOM。 */
@@ -565,7 +569,8 @@ export class PresetEditor {
     if (isPanelOpen) {
       this.loadCollapsed();
       this.groups = getPromptGroups(pm.serviceSettings);
-      if (this.buildListSignature() !== this.listSignature) {
+      if (this.buildListSignature() !== this.listSignature ||
+        (this.search && pm.serviceSettings.prompts.some((prompt, index) => prompt.content !== this.promptContents[index]))) {
         this.renderList();
       } else {
         this.syncEditor();
@@ -684,6 +689,9 @@ export class PresetEditor {
     this.shell?.remove();
     this.shell = undefined;
     this.list = undefined;
+    this.unusedSection = undefined;
+    this.renderedRows.clear();
+    this.promptContents = [];
     this.editingId = null;
     this.editingPrompt = null;
     this.promptSection?.classList.remove(PROMPT_SECTION_CLASS);
@@ -1040,6 +1048,7 @@ export class PresetEditor {
 
     const editor = makeElement(this.document, 'section', 'th-modern-pm-editor');
     this.editorHeader = makeElement(this.document, 'div', 'th-modern-pm-editor-header');
+    this.editorHeaderSignature = '';
     this.editorExtra = makeElement(this.document, 'div', 'th-modern-pm-editor-extra');
     this.editorBody = makeElement(this.document, 'div', 'th-modern-pm-editor-body');
     // 增强编辑器可能阻止事件冒泡，捕获阶段仍能检测到用户输入。
@@ -1090,8 +1099,10 @@ export class PresetEditor {
     search.placeholder = '搜索条目名称或内容';
     search.value = this.search;
     search.addEventListener('input', () => {
-      this.search = search.value.trim().toLowerCase();
-      this.renderList();
+      const query = search.value.trim().toLowerCase();
+      if (query === this.search) return;
+      this.search = query;
+      this.renderFilteredRows();
     });
     searchBox.append(search);
 
@@ -1101,7 +1112,7 @@ export class PresetEditor {
     onlyEnabled.addEventListener('click', () => {
       this.onlyEnabled = !this.onlyEnabled;
       onlyEnabled.setAttribute('aria-pressed', String(this.onlyEnabled));
-      this.renderList();
+      this.renderFilteredRows();
     });
 
     const multi = makeElement(this.document, 'button', 'th-modern-pm-chip th-modern-pm-multi');
@@ -1247,13 +1258,8 @@ export class PresetEditor {
       }
       return this.rows.filter(row => (row.kind === 'group' ? groupIds.has(row.group.id) : prompts.has(row)));
     }
-    return this.rows.filter(row => {
-      const hidden = row.ancestors.some(id => {
-        const group = this.getGroup(id);
-        return group ? this.isCollapsed(group) : false;
-      });
-      return !hidden;
-    });
+    const collapsed = new Set(this.groups.filter(group => this.isCollapsed(group)).map(group => group.id));
+    return this.rows.filter(row => !row.ancestors.some(id => collapsed.has(id)));
   }
 
   private buildListSignature(): string {
@@ -1262,7 +1268,7 @@ export class PresetEditor {
     return buildPromptListSignature(
       this.getOrder(), this.groups, pm.serviceSettings.prompts || [],
       pm.tokenHandler?.getCounts?.() ?? {}, pm.tokenUsage,
-      this.collapsed, this.search, this.onlyEnabled,
+      this.collapsed, '', false,
     );
   }
 
@@ -1275,7 +1281,13 @@ export class PresetEditor {
     const order = this.getOrder();
     this.orderMap = new Map(order.map(entry => [entry.identifier, entry]));
     this.groups = getPromptGroups(pm.serviceSettings);
-    this.rows = buildPromptList(order, this.groups, identifier => this.getPrompt(identifier));
+    const prompts = new Map<string, HostPrompt>();
+    this.promptContents = [];
+    for (const prompt of pm.serviceSettings.prompts) {
+      if (!prompts.has(prompt.identifier)) prompts.set(prompt.identifier, prompt);
+      this.promptContents.push(prompt.content);
+    }
+    this.rows = buildPromptList(order, this.groups, identifier => prompts.get(identifier) ?? null);
 
     const known = new Set(order.map(entry => entry.identifier));
     for (const identifier of [...this.selected]) {
@@ -1288,19 +1300,10 @@ export class PresetEditor {
     // 只要有一个条目算出了 Token，就为所有行保留 Token 列，保证标签对齐。
     list.classList.toggle('has-tokens', order.some(entry => typeof counts[entry.identifier] === 'number'));
     const scrollTop = list.scrollTop;
-    const fragment = this.document.createDocumentFragment();
-    this.visibleRows = this.computeVisibleRows();
-    for (const row of this.visibleRows) {
-      fragment.append(row.kind === 'group' ? this.createGroupRow(row) : this.createPromptRow(pm, row, counts[row.identifier]));
-    }
-    if (!this.visibleRows.length) {
-      fragment.append(
-        makeElement(this.document, 'div', 'th-modern-pm-empty', this.rows.length ? '没有符合条件的条目' : '列表里还没有条目'),
-      );
-    }
-    fragment.append(this.createUnusedSection(pm, known));
-    if (this.dropLine) fragment.append(this.dropLine);
-    list.replaceChildren(fragment);
+    this.renderedRows.clear();
+    this.unusedSection = this.createUnusedSection(pm, known);
+    list.replaceChildren(this.unusedSection, ...(this.dropLine ? [this.dropLine] : []));
+    this.renderFilteredRows();
     list.scrollTop = scrollTop;
 
     const countLabel = this.tabButtons.get('prompts')?.querySelector('.th-modern-preset-tab-count');
@@ -1309,6 +1312,41 @@ export class PresetEditor {
     this.renderBatchBar();
     this.syncEditor();
     this.listSignature = this.buildListSignature();
+  }
+
+  private renderFilteredRows(): void {
+    const { list, promptManager: pm, unusedSection } = this;
+    if (!list || !pm || !unusedSection) return;
+
+    const scrollTop = list.scrollTop;
+    this.visibleRows = this.computeVisibleRows();
+    const visible = new Set(this.visibleRows);
+    for (const [row, element] of this.renderedRows) {
+      if (visible.has(row)) continue;
+      element.remove();
+      this.renderedRows.delete(row);
+    }
+    const empty = list.querySelector(':scope > .th-modern-pm-empty');
+    if (!this.visibleRows.length) {
+      if (!empty) list.insertBefore(makeElement(this.document, 'div', 'th-modern-pm-empty',
+        this.rows.length ? '没有符合条件的条目' : '列表里还没有条目'), unusedSection);
+      return;
+    }
+    empty?.remove();
+    const counts = pm.tokenHandler?.getCounts?.() ?? {};
+    const pending = this.document.createDocumentFragment();
+    for (const row of this.visibleRows) {
+      const existing = this.renderedRows.get(row);
+      if (existing) {
+        if (pending.firstChild) list.insertBefore(pending, existing);
+        continue;
+      }
+      const element = row.kind === 'group' ? this.createGroupRow(row) : this.createPromptRow(pm, row, counts[row.identifier]);
+      this.renderedRows.set(row, element);
+      pending.append(element);
+    }
+    if (pending.firstChild) list.insertBefore(pending, unusedSection);
+    list.scrollTop = scrollTop;
   }
 
   private getGroupState(group: PromptGroupData): { enabled: number; total: number } {
@@ -2535,16 +2573,35 @@ export class PresetEditor {
     const extra = this.editorExtra;
     const pm = this.promptManager;
     if (!header || !extra || !pm) return;
-    header.replaceChildren();
-    extra.replaceChildren();
     const identifier = this.editingId;
-    if (!identifier) return;
+    if (!identifier) {
+      if (this.editorHeaderSignature) {
+        this.editorHeaderSignature = '';
+        header.replaceChildren();
+        extra.replaceChildren();
+      }
+      return;
+    }
 
     const prompt = this.getPrompt(identifier);
-    const entry = this.getOrder().find(item => item.identifier === identifier);
-    const actions = makeElement(this.document, 'div', 'th-modern-pm-editor-actions');
+    const order = this.getOrder();
+    const entry = order.find(item => item.identifier === identifier);
     const editable = this.isEditable(prompt);
     const previewing = !!prompt && (this.editorView === 'preview' || !editable);
+    const toggleAllowed = !!prompt && !!entry && pm.isPromptToggleAllowed(prompt);
+    const deletable = !!prompt && !!entry && pm.isPromptDeletionAllowed(prompt);
+    const moveIds = this.multiSelect && this.selected.has(identifier) ? [...this.selected] : [identifier];
+    const owner = findGroupOf(this.groups, identifier);
+    const title = getPromptName(prompt, identifier);
+    const signature = JSON.stringify(['prompt', identifier, title, !!prompt, !!prompt?.marker, editable, previewing,
+      entry?.enabled, toggleAllowed, deletable, moveIds, order.map(item => item.identifier),
+      owner?.id, owner?.single_select, this.groups.map(group => [group.id, group.name])]);
+    if (signature === this.editorHeaderSignature) return;
+    this.editorHeaderSignature = signature;
+    header.replaceChildren();
+    extra.replaceChildren();
+
+    const actions = makeElement(this.document, 'div', 'th-modern-pm-editor-actions');
     if (prompt) {
       const views = makeElement(this.document, 'div', 'th-modern-pm-view-switch');
       views.setAttribute('role', 'group');
@@ -2583,7 +2640,7 @@ export class PresetEditor {
         entry.enabled,
         entry.enabled ? '条目状态：已启用（点击关闭）' : '条目状态：已关闭（点击启用）',
       );
-      toggle.disabled = !pm.isPromptToggleAllowed(prompt);
+      toggle.disabled = !toggleAllowed;
       toggle.addEventListener('click', (e) => {
         e.stopPropagation();
         this.toggleEntry(identifier);
@@ -2591,7 +2648,7 @@ export class PresetEditor {
       actions.append(toggle);
     }
     if (entry) {
-      this.addMoveButtons(actions, this.multiSelect && this.selected.has(identifier) ? [...this.selected] : [identifier]);
+      this.addMoveButtons(actions, moveIds);
       const group = makeIconButton(this.document, '', '将此条目放入新分组', 'bi-folder-plus');
       group.addEventListener('click', () => void this.createGroupFromSelection([identifier]));
       actions.append(group);
@@ -2602,7 +2659,6 @@ export class PresetEditor {
       actions.append(copy);
     }
     if (prompt && entry) {
-      const deletable = pm.isPromptDeletionAllowed(prompt);
       const remove = makeIconButton(
         this.document,
         'is-danger',
@@ -2614,11 +2670,10 @@ export class PresetEditor {
     }
     header.append(
       this.createBackButton(),
-      makeElement(this.document, 'div', 'th-modern-pm-editor-title', getPromptName(prompt, identifier)),
+      makeElement(this.document, 'div', 'th-modern-pm-editor-title', title),
       actions,
     );
 
-    const owner = findGroupOf(this.groups, identifier);
     const groupLabel = makeElement(this.document, 'label', 'th-modern-pm-field');
     groupLabel.append(makeElement(this.document, 'span', '', '所属分组'));
     const groupSelect = makeElement(this.document, 'select', 'text_pole');
@@ -2667,13 +2722,20 @@ export class PresetEditor {
     const extra = this.editorExtra;
     const group = this.getGroup(groupId);
     if (!header || !extra || !group) return;
+    const moveIds = getGroupPromptIds(this.groups, groupId);
+    const enabled = moveIds.filter(id => this.orderMap.get(id)?.enabled).length;
+    const excluded = new Set([groupId, ...getDescendantGroupIds(this.groups, groupId)]);
+    const parents = this.groups.filter(item => !excluded.has(item.id));
+    const signature = JSON.stringify(['group', groupId, group.name, group.single_select, group.parentId,
+      moveIds, enabled, this.getOrder().map(item => item.identifier), parents.map(item => [item.id, item.name])]);
+    if (signature === this.editorHeaderSignature) return;
+    this.editorHeaderSignature = signature;
     this.showEditArea(false);
     header.replaceChildren();
     extra.replaceChildren();
 
-    const state = this.getGroupState(group);
     const actions = makeElement(this.document, 'div', 'th-modern-pm-editor-actions');
-    this.addMoveButtons(actions, getGroupPromptIds(this.groups, groupId));
+    this.addMoveButtons(actions, moveIds);
     const dissolve = makeIconButton(this.document, 'is-danger', '解散分组', 'bi-folder-x');
     dissolve.addEventListener('click', () => void this.dissolveGroup(groupId));
     actions.append(dissolve);
@@ -2723,8 +2785,7 @@ export class PresetEditor {
     const root = makeElement(this.document, 'option', '', '无上级分组');
     root.value = '';
     parentSelect.append(root);
-    const excluded = new Set([groupId, ...getDescendantGroupIds(this.groups, groupId)]);
-    for (const candidate of this.groups.filter(item => !excluded.has(item.id))) {
+    for (const candidate of parents) {
       const option = makeElement(this.document, 'option', '', candidate.name || '未命名分组');
       option.value = candidate.id;
       parentSelect.append(option);
@@ -2744,7 +2805,7 @@ export class PresetEditor {
       this.document,
       'p',
       'th-modern-pm-group-summary',
-      `共 ${state.total} 个条目，已开启 ${state.enabled} 个。拖动组标题可以整组移动；把条目拖进或拖出分组即可调整成员。`,
+      `共 ${moveIds.length} 个条目，已开启 ${enabled} 个。拖动组标题可以整组移动；把条目拖进或拖出分组即可调整成员。`,
     );
     const note = makeElement(
       this.document,

@@ -53,3 +53,110 @@ test('automatic startup reports rejected activation promises', async () => {
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(errors.length, 1);
 });
+
+test('recent chats coalesce message events until generation ends', () => {
+  const body = { dataset: {} as { generating?: string } };
+  const listeners = new Map<string, () => void>();
+  let scheduled: (() => void) | undefined;
+  let onMutation: (() => void) | undefined;
+  let refreshes = 0;
+  const context = vm.createContext({
+    tavern_events: Object.fromEntries(['APP_READY', 'CHAT_CHANGED', 'CHAT_CREATED', 'CHAT_DELETED',
+      'CHARACTER_PAGE_LOADED', 'MESSAGE_SENT', 'MESSAGE_RECEIVED'].map(key => [key, key])),
+    getHostDocument: () => ({ body }),
+    getHostWindow: () => ({
+      MutationObserver: class {
+        constructor(callback: () => void) { onMutation = callback; }
+        observe() {}
+        disconnect() { onMutation = undefined; }
+      },
+    }),
+    eventOn: (event: string, listener: () => void) => {
+      listeners.set(event, listener);
+      return { stop: () => listeners.delete(event) };
+    },
+    _: { debounce: (callback: () => void) => Object.assign(() => { scheduled = callback; }, {
+      cancel: () => { scheduled = undefined; },
+    }) },
+    refresh: () => { refreshes++; },
+  });
+  const fn = ast.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === 'watchRecentChatChanges')!;
+  vm.runInContext(compile(fn.getText(ast)), context);
+  const stop = vm.runInContext('watchRecentChatChanges(refresh)', context) as () => void;
+  const tick = () => {
+    const pending = scheduled;
+    scheduled = undefined;
+    pending?.();
+  };
+  tick();
+  assert.equal(refreshes, 1);
+
+  body.dataset.generating = 'true';
+  listeners.get('MESSAGE_SENT')!();
+  tick();
+  assert.equal(refreshes, 1, 'sending during generation does not request the recent list');
+  listeners.get('MESSAGE_RECEIVED')!();
+  delete body.dataset.generating;
+  onMutation!();
+  tick();
+  assert.equal(refreshes, 2, 'sending and receiving produce a single request');
+
+  listeners.get('MESSAGE_SENT')!();
+  tick();
+  assert.equal(refreshes, 3, 'send without generation still refreshes');
+  body.dataset.generating = 'true';
+  listeners.get('MESSAGE_SENT')!();
+  listeners.get('CHAT_DELETED')!();
+  tick();
+  assert.equal(refreshes, 4, 'chat deletion refreshes during generation');
+  delete body.dataset.generating;
+  onMutation!();
+  tick();
+  assert.equal(refreshes, 5, 'stopped generation refreshes the sent message');
+
+  listeners.get('CHAT_CHANGED')!();
+  stop();
+  tick();
+  assert.equal(refreshes, 5);
+  assert.equal(listeners.size, 0);
+  assert.equal(onMutation, undefined);
+});
+
+test('recent chats preserve existing rows during a background request and failure', async () => {
+  const requests: Array<{ resolve: (value: string[]) => void; reject: (reason: Error) => void }> = [];
+  const rows: string[] = [];
+  const list = {
+    attr() { return this; },
+    removeAttr() { return this; },
+    toggleClass() { return this; },
+    find() { return { prop() {} }; },
+    append(row: string) { rows.push(row); return this; },
+    empty() { rows.length = 0; return this; },
+  };
+  const context = vm.createContext({
+    list, AbortController,
+    createHostNavigationBridge: () => ({ destroy() {} }),
+    renderRecentLoading: () => list.empty().append('loading'),
+    createRecentChatElement: (name: string) => name,
+    fetchRecentChats: () => new Promise<string[]>((resolve, reject) => requests.push({ resolve, reject })),
+    isAbortError: () => false,
+  });
+  const fn = ast.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === 'mountRecentChats')!;
+  vm.runInContext(compile(fn.getText(ast)), context);
+  const recent = vm.runInContext('mountRecentChats(list)', context);
+  recent.refresh();
+  assert.deepEqual(rows, ['loading']);
+  requests[0].resolve(['first']);
+  await Promise.resolve();
+  recent.refresh();
+  assert.deepEqual(rows, ['first']);
+  requests[1].reject(new Error('failed'));
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.deepEqual(rows, ['first']);
+  recent.refresh();
+  requests[2].resolve(['second']);
+  await Promise.resolve();
+  assert.deepEqual(rows, ['second']);
+  recent.destroy();
+});
